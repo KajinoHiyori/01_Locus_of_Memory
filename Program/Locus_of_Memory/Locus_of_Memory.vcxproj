@@ -157,6 +157,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="diagnosis.cpp" />
+    <ClCompile Include="diagnosisui.cpp" />
     <ClCompile Include="loadscript.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -181,6 +183,8 @@
     <ClCompile Include="tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="diagnosis.h" />
+    <ClInclude Include="diagnosisui.h" />
     <ClInclude Include="loadscript.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="camera.h" />

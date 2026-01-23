@@ -126,6 +126,12 @@
     <ClCompile Include="object.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="diagnosis.cpp">
+      <Filter>result\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="diagnosisui.cpp">
+      <Filter>result\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -184,6 +190,12 @@
     </ClInclude>
     <ClInclude Include="object.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="diagnosis.h">
+      <Filter>result\h</Filter>
+    </ClInclude>
+    <ClInclude Include="diagnosisui.h">
+      <Filter>result\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
