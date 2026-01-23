@@ -458,6 +458,8 @@ void Update(void)
 	}
 #endif
 
+	PrintDebugProc("FPS : %d\n", g_nCountFPS);
+
 	// キーボードの更新処理
 	UpdateKeyboard();
 

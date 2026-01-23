@@ -136,317 +136,318 @@ HRESULT LoadScript(const char* pScriptFileName)
 //=============================================================================
 HRESULT LoadMotionInfo(const char* pMotionFileName)
 {
-	//FILE* pMotionFile = fopen(pMotionFileName, "r");
+	FILE* pMotionFile = fopen(pMotionFileName, "r");
 
-	//if (pMotionFile == NULL)
-	//{// 読み込み失敗
-	//	return E_FAIL;
-	//}
+	if (pMotionFile == NULL)
+	{// 読み込み失敗
+		return E_FAIL;
+	}
 
-	//char aStr[MAX_STRING] = {};			   // 文字列読み込み
-	//char aStrCpy[MAX_STRING] = {};		   // 文字列複製(整理)
-	//char* pStart = NULL;				   // 文字列開始位置
-	//char aModelPath[FILENAME_MAX] = {};	   // モデルのファイル名読み込み
-	//int nIdx = 0;						   // モデルのインデックス読み込み
-	//int nParent = 0;					   // モデルの親インデックス読み込み
-	//D3DXVECTOR3 pos = {};				   // 位置読み込み
-	//D3DXVECTOR3 rot = {};				   // 向き読み込み
-	//int nNumModel = 0;					   // モデル数読み込み
-	//int nCntMotion = 0;					   // モーション数カウント
-	//int bLoop = false;					   // ループするかどうか読み込み
-	//int nNumKey = 0;					   // キー数読み込み
-	//KEY_INFO KeyInfo[MAX_KEY] = {};		   // キー情報読み込み
-	//int nCntKey = 0;					   // キー数カウント
-	//int nCntParts = 0;					   // パーツ数カウント
+	char aStr[MAX_STRING] = {};			   // 文字列読み込み
+	char aStrCpy[MAX_STRING] = {};		   // 文字列複製(整理)
+	char* pStart = NULL;				   // 文字列開始位置
+	char aModelPath[FILENAME_MAX] = {};	   // モデルのファイル名読み込み
+	int nIdx = 0;						   // モデルのインデックス読み込み
+	int nParent = 0;					   // モデルの親インデックス読み込み
+	D3DXVECTOR3 pos = {};				   // 位置読み込み
+	D3DXVECTOR3 rot = {};				   // 向き読み込み
+	int nNumModel = 0;					   // モデル数読み込み
+	int nCntMotion = 0;					   // モーション数カウント
+	int bLoop = false;					   // ループするかどうか読み込み
+	int nNumKey = 0;					   // キー数読み込み
+	PLAYERKEY_INFO KeyInfo[MAX_KEY] = {};  // キー情報読み込み
+	int nCntKey = 0;					   // キー数カウント
+	int nCntParts = 0;					   // パーツ数カウント
 
-	//while (true)
-	//{
-	//	memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-	//	(void)fgets(aStr, sizeof(aStr), pMotionFile);	// 一列読み込み
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		(void)fgets(aStr, sizeof(aStr), pMotionFile);	// 一列読み込み
 
-	//	if (strstr(aStr, LOAD_START) != NULL)
-	//	{// LOAD_STARTを読み込めば読み込み開始
-	//		break;
-	//	}
+		if (strstr(aStr, LOAD_START) != NULL)
+		{// LOAD_STARTを読み込めば読み込み開始
+			break;
+		}
 
-	//	if (feof(pMotionFile) != NULL)
-	//	{// 読み込み失敗
-	//		return E_FAIL;
-	//	}
-	//}
+		if (feof(pMotionFile) != NULL)
+		{// 読み込み失敗
+			return E_FAIL;
+		}
+	}
 
-	//while (true)
-	//{
-	//	memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-	//	memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
-	//	(void)fgets(aStr, sizeof(aStr), pMotionFile);	// 一列読み込み
-	//	LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+		(void)fgets(aStr, sizeof(aStr), pMotionFile);	// 一列読み込み
+		LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
 
-	//	if (strstr(aStr, LOAD_NUMMODEL))
-	//	{
-	//		if ((pStart = strchr(aStr, '=')) == NULL)
-	//		{
-	//			continue;
-	//		}
+		if (strstr(aStr, LOAD_NUMMODEL))
+		{// NUM_MODELを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
 
-	//		(void)sscanf(pStart + 1, "%d", &nNumModel);
-	//	}
+			(void)sscanf(pStart + 1, "%d", &nNumModel);
+		}
 
-	//	if (strstr(aStr, LOAD_MODEL))
-	//	{
-	//		if ((pStart = strchr(aStr, '=')) == NULL)
-	//		{
-	//			continue;
-	//		}
+		if (strstr(aStr, LOAD_MODEL))
+		{// MODEL_FILENAMEを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
 
-	//		(void)sscanf(pStart + 1, "%s", &aModelPath);
+			(void)sscanf(pStart + 1, "%s", &aModelPath);
 
-	//		switch (type)
-	//		{
-	//		case OBJECTTYPE_PLAYER:
-	//			LoadPartsPlayer(aModelPath);
-	//			break;
+			//switch (type)
+			//{
+			//case OBJECTTYPE_PLAYER:
+			//	LoadPartsPlayer(aModelPath);
+			//	break;
 
-	//		case OBJECTTYPE_FRIENDS:
-	//			LoadPartsFriends(aModelPath);
-	//			break;
-	//		}
-	//	}
+			//case OBJECTTYPE_FRIENDS:
+			//	LoadPartsFriends(aModelPath);
+			//	break;
+			//}
+		}
 
-	//	if (strstr(aStr, LOAD_PLAYER))
-	//	{
-	//		while (true)
-	//		{
-	//			memset(aStr, NULL, sizeof(aStr));
-	//			memset(aStrCpy, NULL, sizeof(aStrCpy));
-	//			(void)fgets(aStr, sizeof(aStr), pMotionFile);
-	//			LoadEnableString(&aStrCpy[0], &aStr[0]);
+		if (strstr(aStr, LOAD_PLAYER))
+		{// CHARACTERSETを読み込んだ
+			while (true)
+			{
+				memset(aStr, NULL, sizeof(aStr));
+				memset(aStrCpy, NULL, sizeof(aStrCpy));
+				(void)fgets(aStr, sizeof(aStr), pMotionFile);
+				LoadEnableString(&aStrCpy[0], &aStr[0]);
 
-	//			if (strcmp(aStrCpy, LOAD_PARTS) == 0)
-	//			{
-	//				while (true)
-	//				{
-	//					memset(aStr, NULL, sizeof(aStr));
-	//					memset(aStrCpy, NULL, sizeof(aStrCpy));
-	//					(void)fgets(aStr, sizeof(aStr), pMotionFile);
-	//					LoadEnableString(&aStrCpy[0], &aStr[0]);
+				if (strcmp(aStrCpy, LOAD_PARTS) == 0)
+				{// PARTSSETを読み込んだ
+					while (true)
+					{
+						memset(aStr, NULL, sizeof(aStr));
+						memset(aStrCpy, NULL, sizeof(aStrCpy));
+						(void)fgets(aStr, sizeof(aStr), pMotionFile);
+						LoadEnableString(&aStrCpy[0], &aStr[0]);
 
-	//					if (strstr(aStr, LOAD_INDEX))
-	//					{
-	//						if ((pStart = strchr(aStr, '=')) == NULL)
-	//						{
-	//							continue;
-	//						}
+						if (strstr(aStr, LOAD_INDEX))
+						{// INDEXを読み込んだ
+							if ((pStart = strchr(aStr, '=')) == NULL)
+							{
+								continue;
+							}
 
-	//						(void)sscanf(pStart + 1, "%d", &nIdx);
+							(void)sscanf(pStart + 1, "%d", &nIdx);
 
-	//						continue;
-	//					}
+							continue;
+						}
 
-	//					if (strstr(aStr, LOAD_PARENT))
-	//					{
-	//						if ((pStart = strchr(aStr, '=')) == NULL)
-	//						{
-	//							continue;
-	//						}
+						if (strstr(aStr, LOAD_PARENT))
+						{// PARENTを読み込んだ
+							if ((pStart = strchr(aStr, '=')) == NULL)
+							{
+								continue;
+							}
 
-	//						(void)sscanf(pStart + 1, "%d", &nParent);
+							(void)sscanf(pStart + 1, "%d", &nParent);
 
-	//						continue;
-	//					}
+							continue;
+						}
 
-	//					if (strstr(aStr, LOAD_POS))
-	//					{
-	//						if ((pStart = strchr(aStr, '=')) == NULL)
-	//						{
-	//							continue;
-	//						}
+						if (strstr(aStr, LOAD_POS))
+						{// POSを読み込んだ
+							if ((pStart = strchr(aStr, '=')) == NULL)
+							{
+								continue;
+							}
 
-	//						(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+							(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
 
-	//						continue;
-	//					}
+							continue;
+						}
 
-	//					if (strstr(aStr, LOAD_ROT))
-	//					{
-	//						if ((pStart = strchr(aStr, '=')) == NULL)
-	//						{
-	//							continue;
-	//						}
+						if (strstr(aStr, LOAD_ROT))
+						{// ROTを読み込んだ
+							if ((pStart = strchr(aStr, '=')) == NULL)
+							{
+								continue;
+							}
 
-	//						(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
+							(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
 
-	//						continue;
-	//					}
+							continue;
+						}
 
-	//					if (strcmp(aStrCpy, LOAD_ENDPARTS) == 0)
-	//					{
-	//						switch (type)
-	//						{
-	//						case OBJECTTYPE_PLAYER:
-	//							LoadCharacterPlayer(pos, rot, nIdx, nParent);
-	//							break;
+						if (strcmp(aStrCpy, LOAD_ENDPARTS) == 0)
+						{// END_PARTSSETを読み込んだ
+							//switch (type)
+							//{
+							//case OBJECTTYPE_PLAYER:
+							//	LoadCharacterPlayer(pos, rot, nIdx, nParent);
+							//	break;
 
-	//						case OBJECTTYPE_FRIENDS:
-	//							LoadCharacterFriends(pos, rot, nIdx, nParent);
-	//							break;
-	//						}
+							//case OBJECTTYPE_FRIENDS:
+							//	LoadCharacterFriends(pos, rot, nIdx, nParent);
+							//	break;
+							//}
 
-	//						memset(&pos, NULL, sizeof(D3DXVECTOR3));
-	//						memset(&rot, NULL, sizeof(D3DXVECTOR3));
-	//						int nIdx = 0;
-	//						int nParet = 0;
-	//						break;
-	//					}
-	//				}
-	//			}
+							memset(&pos, NULL, sizeof(D3DXVECTOR3));
+							memset(&rot, NULL, sizeof(D3DXVECTOR3));
+							int nIdx = 0;
+							int nParet = 0;
+							break;
+						}
+					}
+				}
 
-	//			if (strcmp(aStrCpy, LOAD_ENDPLAYER) == 0)
-	//			{
-	//				break;
-	//			}
+				if (strcmp(aStrCpy, LOAD_ENDPLAYER) == 0)
+				{// END_CHARACTERSETを読み込んだ
+					break;
+				}
 
-	//		}
-	//	}
+			}
+		}
 
-	//	if (strcmp(aStrCpy, LOAD_MOTIONINFO) == 0)
-	//	{
-	//		while (true)
-	//		{
-	//			memset(aStr, NULL, sizeof(aStr));
-	//			memset(aStrCpy, NULL, sizeof(aStrCpy));
-	//			(void)fgets(aStr, sizeof(aStr), pMotionFile);
-	//			LoadEnableString(&aStrCpy[0], &aStr[0]);
+		if (strcmp(aStrCpy, LOAD_MOTIONINFO) == 0)
+		{// MOTIONSETを読み込んだ
+			while (true)
+			{
+				memset(aStr, NULL, sizeof(aStr));
+				memset(aStrCpy, NULL, sizeof(aStrCpy));
+				(void)fgets(aStr, sizeof(aStr), pMotionFile);
+				LoadEnableString(&aStrCpy[0], &aStr[0]);
 
-	//			if (strstr(aStr, LOAD_MOTIONLOOP))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
+				if (strstr(aStr, LOAD_MOTIONLOOP))
+				{// LOOPを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
 
-	//				(void)sscanf(pStart + 1, "%d", &bLoop);
+					(void)sscanf(pStart + 1, "%d", &bLoop);
 
-	//				continue;
-	//			}
+					continue;
+				}
 
-	//			if (strstr(aStr, LOAD_NUMKEY))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
+				if (strstr(aStr, LOAD_NUMKEY))
+				{// NUM_KEYを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
 
-	//				(void)sscanf(pStart + 1, "%d", &nNumKey);
+					(void)sscanf(pStart + 1, "%d", &nNumKey);
 
-	//				continue;
-	//			}
+					continue;
+				}
 
-	//			if (strcmp(aStrCpy, LOAD_KEYSET) == 0)
-	//			{
-	//				while (true)
-	//				{
-	//					memset(aStr, NULL, sizeof(aStr));
-	//					memset(aStrCpy, NULL, sizeof(aStrCpy));
-	//					(void)fgets(aStr, sizeof(aStr), pMotionFile);
-	//					LoadEnableString(&aStrCpy[0], &aStr[0]);
+				if (strcmp(aStrCpy, LOAD_KEYSET) == 0)
+				{// KEYSETを読み込んだ
+					while (true)
+					{
+						memset(aStr, NULL, sizeof(aStr));
+						memset(aStrCpy, NULL, sizeof(aStrCpy));
+						(void)fgets(aStr, sizeof(aStr), pMotionFile);
+						LoadEnableString(&aStrCpy[0], &aStr[0]);
 
-	//					if (strstr(aStr, LOAD_FRAME))
-	//					{
-	//						if ((pStart = strchr(aStr, '=')) == NULL)
-	//						{
-	//							continue;
-	//						}
+						if (strstr(aStr, LOAD_FRAME))
+						{// FRAMEを読み込んだ
+							if ((pStart = strchr(aStr, '=')) == NULL)
+							{
+								continue;
+							}
 
-	//						(void)sscanf(pStart + 1, "%d", &KeyInfo[nCntKey].nFrame);
+							(void)sscanf(pStart + 1, "%d", &KeyInfo[nCntKey].nFrame);
 
-	//						continue;
-	//					}
+							continue;
+						}
 
-	//					if (strcmp(aStrCpy, LOAD_KEY) == 0)
-	//					{
-	//						while (true)
-	//						{
-	//							memset(aStr, NULL, sizeof(aStr));
-	//							memset(aStrCpy, NULL, sizeof(aStrCpy));
-	//							(void)fgets(aStr, sizeof(aStr), pMotionFile);
-	//							LoadEnableString(&aStrCpy[0], &aStr[0]);
+						if (strcmp(aStrCpy, LOAD_KEY) == 0)
+						{// KEYを読み込んだ
+							while (true)
+							{
+								memset(aStr, NULL, sizeof(aStr));
+								memset(aStrCpy, NULL, sizeof(aStrCpy));
+								(void)fgets(aStr, sizeof(aStr), pMotionFile);
+								LoadEnableString(&aStrCpy[0], &aStr[0]);
 
-	//							if (strstr(aStr, LOAD_POS))
-	//							{
-	//								if ((pStart = strchr(aStr, '=')) == NULL)
-	//								{
-	//									continue;
-	//								}
+								if (strstr(aStr, LOAD_POS))
+								{// POSを読み込んだ
+									if ((pStart = strchr(aStr, '=')) == NULL)
+									{
+										continue;
+									}
 
-	//								(void)sscanf(pStart + 1, "%f %f %f", &KeyInfo[nCntKey].aKey[nCntParts].fPosX, &KeyInfo[nCntKey].aKey[nCntParts].fPosY, &KeyInfo[nCntKey].aKey[nCntParts].fPosZ);
+									(void)sscanf(pStart + 1, "%f %f %f", &KeyInfo[nCntKey].aKey[nCntParts].fPosX, &KeyInfo[nCntKey].aKey[nCntParts].fPosY, &KeyInfo[nCntKey].aKey[nCntParts].fPosZ);
 
-	//								continue;
-	//							}
+									continue;
+								}
 
-	//							if (strstr(aStr, LOAD_ROT))
-	//							{
-	//								if ((pStart = strchr(aStr, '=')) == NULL)
-	//								{
-	//									continue;
-	//								}
+								if (strstr(aStr, LOAD_ROT))
+								{// ROTを読み込んだ
+									if ((pStart = strchr(aStr, '=')) == NULL)
+									{
+										continue;
+									}
 
-	//								(void)sscanf(pStart + 1, "%f %f %f", &KeyInfo[nCntKey].aKey[nCntParts].fRotX, &KeyInfo[nCntKey].aKey[nCntParts].fRotY, &KeyInfo[nCntKey].aKey[nCntParts].fRotZ);
+									(void)sscanf(pStart + 1, "%f %f %f", &KeyInfo[nCntKey].aKey[nCntParts].fRotX, &KeyInfo[nCntKey].aKey[nCntParts].fRotY, &KeyInfo[nCntKey].aKey[nCntParts].fRotZ);
 
-	//								continue;
-	//							}
+									continue;
+								}
 
-	//							if (strcmp(aStrCpy, LOAD_ENDKEY) == 0)
-	//							{
-	//								nCntParts++;
-	//								break;
-	//							}
-	//						}
-	//					}
+								if (strcmp(aStrCpy, LOAD_ENDKEY) == 0)
+								{// END_KEYを読み込んだ
+									nCntParts++;
+									break;
+								}
+							}
+						}
 
-	//					if (strcmp(aStrCpy, LOAD_ENDKEYSET) == 0)
-	//					{
-	//						nCntKey++;
-	//						nCntParts = 0;
-	//						break;
-	//					}
-	//				}
-	//			}
+						if (strcmp(aStrCpy, LOAD_ENDKEYSET) == 0)
+						{// END_KEYSET
+							nCntKey++;
+							nCntParts = 0;
+							break;
+						}
+					}
+				}
 
-	//			if (strcmp(aStrCpy, LOAD_ENDMOTIONINFO) == 0)
-	//			{
-	//				switch (type)
-	//				{
-	//				case OBJECTTYPE_PLAYER:
-	//					LoadMotion(bLoop, nNumKey, &KeyInfo[0], nCntMotion);
-	//					break;
+				if (strcmp(aStrCpy, LOAD_ENDMOTIONINFO) == 0)
+				{// END_MOTIONSETを読み込んだ
+					//switch (type)
+					//{
+					//case OBJECTTYPE_PLAYER:
+					//	LoadMotion(bLoop, nNumKey, &KeyInfo[0], nCntMotion);
+					//	break;
 
-	//				case OBJECTTYPE_FRIENDS:
-	//					LoadMotionFriends(bLoop, nNumKey, &KeyInfo[0], nCntMotion);
-	//					break;
-	//				}
+					//case OBJECTTYPE_FRIENDS:
+					//	LoadMotionFriends(bLoop, nNumKey, &KeyInfo[0], nCntMotion);
+					//	break;
+					//}
 
-	//				nCntMotion++;
+					nCntMotion++;
 
-	//				memset(&KeyInfo, NULL, sizeof(KEY_INFO));
-	//				bLoop = false;
-	//				nNumKey = 0;
+					// 各種変数初期化
+					memset(&KeyInfo, NULL, sizeof(PLAYERKEY_INFO));
+					bLoop = false;
+					nNumKey = 0;
+					nCntKey = 0;
 
-	//				nCntKey = 0;
+					break;
+				}
 
-	//				break;
-	//			}
+			}
+		}
 
-	//		}
-	//	}
+		if (strcmp(aStrCpy, LOAD_END) == 0)
+		{// END_SCRIPTを読み込んだ
+			// 読み込み終了
+			fclose(pMotionFile);
 
-	//	if (strcmp(aStrCpy, LOAD_END) == 0)
-	//	{
-	//		fclose(pMotionFile);
-
-	//		break;
-	//	}
-	//}
+			break;
+		}
+	}
 
 	return S_OK;
 }
