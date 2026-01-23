@@ -8,12 +8,12 @@
 #include "camera.h"
 #include "input.h"
 #include "title.h"
-
 #include "debugproc.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
+#define CAMERA_MOVE		(0.0075f)	// カメラの移動速度
 
 //*****************************************************************************
 // グローバル変数
@@ -84,12 +84,12 @@ void UpdateCamera(void)
 	{
 		if (GetKeyboardPress(DIK_Z) == true)
 		{
-			pCamera->rot.y += 0.05f;
+			pCamera->rot.y += CAMERA_MOVE;
 		}
 
 		if (GetKeyboardPress(DIK_C) == true)
 		{
-			pCamera->rot.y += -0.05f;
+			pCamera->rot.y += -CAMERA_MOVE;
 		}
 
 		PrintDebugProc("[%d] 視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
@@ -97,27 +97,27 @@ void UpdateCamera(void)
 
 		if (GetKeyboardPress(DIK_Z) == true || GetJoypadStickPressR(JOYSTICK_RIGHT, nCntCamera) == true)
 		{
-			pCamera->rot.y += 0.05f;
+			pCamera->rot.y += CAMERA_MOVE;
 		}
 
 		if (GetKeyboardPress(DIK_C) == true || GetJoypadStickPressR(JOYSTICK_LEFT, nCntCamera) == true)
 		{
-			pCamera->rot.y += -0.05f;
+			pCamera->rot.y += -CAMERA_MOVE;
 		}
 
 		if (GetKeyboardPress(DIK_E) == true || GetJoypadStickPressR(JOYSTICK_UP, nCntCamera) == true)
 		{
 			if (pCamera->rot.x < D3DX_PI * 0.25f)
 			{
-				pCamera->rot.x += 0.05f;
+				pCamera->rot.x += CAMERA_MOVE;
 			}
 		}
 
 		if (GetKeyboardPress(DIK_Q) == true || GetJoypadStickPressR(JOYSTICK_DOWN, nCntCamera) == true)
 		{
-			if (pCamera->rot.x > -D3DX_PI * 0.25f)
+			if (pCamera->rot.x > -D3DX_PI * 0.00f)
 			{
-				pCamera->rot.x += -0.05f;
+				pCamera->rot.x += -CAMERA_MOVE;
 			}
 		}
 
