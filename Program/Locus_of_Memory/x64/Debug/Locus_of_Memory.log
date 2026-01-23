@@ -1,0 +1,44 @@
+﻿object.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixMultiply が関数 "void __cdecl DrawObject(void)" (?DrawObject@@YAXXZ) で参照されました
+meshfield.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
+player.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
+shadow.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
+object.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixTranslation が関数 "void __cdecl DrawObject(void)" (?DrawObject@@YAXXZ) で参照されました
+meshfield.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
+player.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
+shadow.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
+object.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixRotationYawPitchRoll が関数 "void __cdecl DrawObject(void)" (?DrawObject@@YAXXZ) で参照されました
+meshfield.obj : error LNK2001: 外部シンボル D3DXMatrixRotationYawPitchRoll は未解決です
+player.obj : error LNK2001: 外部シンボル D3DXMatrixRotationYawPitchRoll は未解決です
+shadow.obj : error LNK2001: 外部シンボル D3DXMatrixRotationYawPitchRoll は未解決です
+object.obj : error LNK2019: 未解決の外部シンボル D3DXLoadMeshFromXA が関数 "void __cdecl LoadObjectModel(char const *)" (?LoadObjectModel@@YAXPEBD@Z) で参照されました
+player.obj : error LNK2001: 外部シンボル D3DXLoadMeshFromXA は未解決です
+object.obj : error LNK2019: 未解決の外部シンボル D3DXGetFVFVertexSize が関数 "void __cdecl LoadObjectModel(char const *)" (?LoadObjectModel@@YAXPEBD@Z) で参照されました
+shadow.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+titleui.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+object.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+meshfield.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+player.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+result.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+camera.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixLookAtLH が関数 "void __cdecl SetCamera(int)" (?SetCamera@@YAXH@Z) で参照されました
+camera.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixPerspectiveFovLH が関数 "void __cdecl SetCamera(int)" (?SetCamera@@YAXH@Z) で参照されました
+debugproc.obj : error LNK2019: 未解決の外部シンボル D3DXCreateFontA が関数 "void __cdecl InitDebugProc(void)" (?InitDebugProc@@YAXXZ) で参照されました
+input.obj : error LNK2019: 未解決の外部シンボル DirectInput8Create が関数 "long __cdecl InitKeyboard(struct HINSTANCE__ *,struct HWND__ *)" (?InitKeyboard@@YAJPEAUHINSTANCE__@@PEAUHWND__@@@Z) で参照されました
+input.obj : error LNK2019: 未解決の外部シンボル XInputGetState が関数 "void __cdecl UpdateJoypad(void)" (?UpdateJoypad@@YAXXZ) で参照されました
+input.obj : error LNK2019: 未解決の外部シンボル XInputSetState が関数 "void __cdecl SetJoypadVibration(int,int,int,int)" (?SetJoypadVibration@@YAXHHHH@Z) で参照されました
+input.obj : error LNK2019: 未解決の外部シンボル XInputEnable が関数 "long __cdecl InitJoypad(void)" (?InitJoypad@@YAJXZ) で参照されました
+input.obj : error LNK2001: 外部シンボル IID_IDirectInput8A は未解決です
+input.obj : error LNK2001: 外部シンボル GUID_SysMouse は未解決です
+input.obj : error LNK2001: 外部シンボル GUID_SysKeyboard は未解決です
+input.obj : error LNK2001: 外部シンボル c_dfDIMouse は未解決です
+input.obj : error LNK2001: 外部シンボル c_dfDIKeyboard は未解決です
+light.obj : error LNK2019: 未解決の外部シンボル D3DXVec3Normalize が関数 "void __cdecl InitLight(void)" (?InitLight@@YAXXZ) で参照されました
+main.obj : error LNK2001: 外部シンボル D3DXVec3Normalize は未解決です
+meshfield.obj : error LNK2001: 外部シンボル D3DXVec3Normalize は未解決です
+main.obj : error LNK2019: 未解決の外部シンボル Direct3DCreate9 が関数 "long __cdecl Init(struct HINSTANCE__ *,struct HWND__ *,int)" (?Init@@YAJPEAUHINSTANCE__@@PEAUHWND__@@H@Z) で参照されました
+meshfield.obj : error LNK2019: 未解決の外部シンボル D3DXVec3TransformCoord が関数 "bool __cdecl CollisionMeshField(struct D3DXVECTOR3 *,struct D3DXVECTOR3 *,struct D3DXVECTOR3 *)" (?CollisionMeshField@@YA_NPEAUD3DXVECTOR3@@00@Z) で参照されました
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\d3d9.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\d3dx9.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\dxguid.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\dinput8.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\xinput.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
+C:\Users\student\Desktop\Locus of Memory\Locus-of-Memory\Program\Locus_of_Memory\Locus_of_Memory.exe : fatal error LNK1120: 21 件の未解決の外部参照
