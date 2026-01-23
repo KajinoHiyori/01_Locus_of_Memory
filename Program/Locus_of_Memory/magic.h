@@ -14,27 +14,27 @@ typedef enum
 {
 	MAGICTYPE_NONE = -1,
 	//浮遊
-	MAGICTYPE_LEVITATION,	//緑緑緑	0番
+	MAGICTYPE_LEVITATION,	//緑緑緑	[0番]
 	//燃焼
-	MAGICTYPE_COMBUSTION,	//赤赤赤	1番
+	MAGICTYPE_COMBUSTION,	//赤赤赤	[1番]
 	//洪水、氾濫
-	MAGICTYPE_FLOOD,		//青青青	2番
+	MAGICTYPE_FLOOD,		//青青青	[2番]
 	//フラッシュ
-	MAGICTYPE_FLASH,		//黄黄黄	3番
+	MAGICTYPE_FLASH,		//黄黄黄	[3番]
 	//火球
-	MAGICTYPE_FIREBALL,		//赤赤緑 | 赤緑赤 | 緑赤赤	4番
+	MAGICTYPE_FIREBALL,		//赤赤緑 | 赤緑赤 | 緑赤赤	[4番]
 	//太陽の動きを遅延する
-	MAGICTYPE_SUNSETDELAY,	//赤黄黄 | 黄赤黄 | 黄黄赤	5番
+	MAGICTYPE_SUNSETDELAY,	//赤黄黄 | 黄赤黄 | 黄黄赤	[5番]
 	//雨乞い
-	MAGICTYPE_RAINPRAY,		//青青緑 | 青緑青 | 緑青青	6番
+	MAGICTYPE_RAINPRAY,		//青青緑 | 青緑青 | 緑青青	[6番]
 	//凍結
-	MAGICTYPE_FREEZE,		//青緑緑 | 緑青緑 | 緑緑青	7番
+	MAGICTYPE_FREEZE,		//青緑緑 | 緑青緑 | 緑緑青	[7番]
 	//成長(植物など)
-	MAGICTYPE_GROWTH,		//青黄黄 | 黄青黄 | 黄黄青	8番
+	MAGICTYPE_GROWTH,		//青黄黄 | 黄青黄 | 黄黄青	[8番]
 	//加速
-	MAGICTYPE_ACCELERATION,	//緑緑黄 | 緑黄緑 | 黄緑緑	9番
+	MAGICTYPE_ACCELERATION,	//緑緑黄 | 緑黄緑 | 黄緑緑	[9番]
 	//時間の巻き戻し(回帰)
-	MAGICTYPE_TIMEREVERT,	//赤緑青	10番
+	MAGICTYPE_TIMEREVERT,	//赤緑青	[10番]
 
 	MAGICTYPE_MAX
 }MAGICTYPE;
@@ -100,10 +100,11 @@ typedef struct
 	bool bUse;
 }Magic;
 
+//リザルトに必要なカウント類
 typedef struct
 {
-	int nCommandCounter[COMMANDTYPE_MAX];
-	int nMagicTypeCounter[MAGICTYPE_MAX];
+	int nCommandCounter[COMMANDTYPE_MAX];		//コマンドの種類のカウント	
+	int nMagicTypeCounter[MAGICTYPE_MAX];		//魔法の種類のカウント
 }MAGICCOUNTER;
 
 void InitMagic(void);

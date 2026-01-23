@@ -5,6 +5,7 @@
 // 
 //===================================================================
 #include "magic.h"
+#include "player.h"
 #include "debugproc.h"
 #include "input.h"
 #include "shadow.h"
@@ -14,14 +15,14 @@
 #define MAX_COMMAND		(3)			//コマンドの最大数
 
 //グローバル変数宣言
-Magic g_aMagic[2][MAX_MAGIC];					//魔法の情報
-COMMANDTYPE g_aCommand[2][MAX_COMMAND];		//コマンドの情報
-int nCntCommand = 0;
+Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
+COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
+int nCntCommand[MAX_PLAYER] = {};
 
 //魔法の初期化処理=============================
 void InitMagic(void)
 {
-	for (int nCntPlayerType = 0; nCntPlayerType < 2; nCntPlayerType++)
+	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
 		for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
 		{
@@ -44,43 +45,51 @@ void UninitMagic(void)
 //魔法の更新処理==============================
 void UpdateMagic(void)
 {
-	
+	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
+	{
+		for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
+		{
+			if (g_aMagic[nCntPlayerType][nCntMagic].bUse == true)
+			{
+
+			}
+		}
+	}
 }
 
 //魔法の描画処理==============================
 void DrawMagic(void)
 {
-
 }
 
 //コマンド入力情報=============================
 MAGICTYPE PressCommand(int nIdx)
 {
-	if (g_aCommand[nIdx][nCntCommand] == COMMANDTYPE_NONE)
+	if (g_aCommand[nIdx][nCntCommand[nIdx]] == COMMANDTYPE_NONE)
 	{//コマンドが何も入力されていないとき
-		if (GetJoypadTrigger(JOYKEY_B, 0) == true)
+		if (GetJoypadTrigger(JOYKEY_B, nIdx) == true)
 		{//B(赤)が入力された
-			g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_R;
+			g_aCommand[nIdx][nCntCommand[nIdx]] = COMMANDTYPE_R;
 		}
-		else if (GetJoypadTrigger(JOYKEY_A, 0) == true)
+		else if (GetJoypadTrigger(JOYKEY_A, nIdx) == true)
 		{//A(緑)が入力された
-			g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_G;
+			g_aCommand[nIdx][nCntCommand[nIdx]] = COMMANDTYPE_G;
 		}
-		else if (GetJoypadTrigger(JOYKEY_X, 0) == true)
+		else if (GetJoypadTrigger(JOYKEY_X, nIdx) == true)
 		{//X(青)が入力された
-			g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_B;
+			g_aCommand[nIdx][nCntCommand[nIdx]] = COMMANDTYPE_B;
 		}
-		else if (GetJoypadTrigger(JOYKEY_Y, 0) == true)
+		else if (GetJoypadTrigger(JOYKEY_Y, nIdx) == true)
 		{//Y(黄)が入力された
-			g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_Y;
+			g_aCommand[nIdx][nCntCommand[nIdx]] = COMMANDTYPE_Y;
 		}
 	}
-	if (g_aCommand[nIdx][nCntCommand] != COMMANDTYPE_NONE)
+	if (g_aCommand[nIdx][nCntCommand[nIdx]] != COMMANDTYPE_NONE)
 	{//コマンドが何かしら入力されているとき
-		nCntCommand++;
+		nCntCommand[nIdx]++;
 	}
 
-	if (nCntCommand == MAX_COMMAND)
+	if (nCntCommand[nIdx] == MAX_COMMAND)
 	{//コマンドが三つ入力されたとき
 		//浮遊-------------------------------------------------------------------------------------------------
 		//緑緑緑
@@ -169,7 +178,7 @@ MAGICTYPE PressCommand(int nIdx)
 
 		}
 		//-----------------------------------------------------------------------------------------------------
-		
+
 		//凍結-------------------------------------------------------------------------------------------------
 		//青緑緑
 		if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
@@ -237,7 +246,7 @@ MAGICTYPE PressCommand(int nIdx)
 
 		}
 	}
-	else if (nCntCommand < MAX_COMMAND)
+	else if (nCntCommand[nIdx] < MAX_COMMAND)
 	{
 		return MAGICTYPE_NONE;
 	}
@@ -246,7 +255,7 @@ MAGICTYPE PressCommand(int nIdx)
 //魔法の設定処理==============================
 void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
-	for (int nCntPlayerType = 0; nCntPlayerType < 2; nCntPlayerType++)
+	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
 		for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
 		{
