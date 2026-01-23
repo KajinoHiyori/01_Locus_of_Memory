@@ -92,6 +92,10 @@ void UpdateTitle(void)
 	if (g_bFade == false)	// フェードをしていない場合
 	{
 		g_nModeResult++;
+		if (GetKeyboardAny() == true || GetJoypadAny(0) == true)
+		{
+			g_nModeResult = 0;
+		}
 		if (g_nModeResult >= NEXT_MODE)
 		{
 			SetFade(MODE_RESULT);

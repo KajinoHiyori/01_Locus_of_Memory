@@ -27,7 +27,7 @@
 #define BACK			(D3DX_PI)			// 後ろを向く
 #define FRONT			(0.0f)				// 正面を向く
 #define LENGTH			(50.0f)				// フィールドの範囲
-#define POS				(D3DXVECTOR3(0.0f, 20.0f, 0.0f))	// プレイヤーの位置
+#define POS				(D3DXVECTOR3(0.0f, 50.0f, 0.0f))	// プレイヤーの位置
 #define DEFALT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// xyzが0.0fの場合
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 基本の法線
 
@@ -41,7 +41,7 @@ Player				g_aPlayer[MAX_PLAYER];						// プレイヤーの情報を格納
 // 1Pのモデル
 const char* c_apFilename1PModel[MAX_MODEL] =
 {
-	"data\\MODEL\\player\\airplane000.x",	// 胴体[0]
+	"data\\MODEL\\player\\player.x",	// 胴体[0]
 };
 
 // 2Pのモデル
@@ -360,8 +360,9 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].pos += g_aPlayer[nCntPlayer].move;
 
 			// メッシュフィールドとの当たり判定
-			if (CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true)
+			if (CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || g_aPlayer[nCntPlayer].pos.y <= 0.0f)
 			{
+				g_aPlayer[nCntPlayer].pos.y = 0.0f;
 				g_aPlayer[nCntPlayer].bJump = false;
 			}
 

@@ -9,7 +9,7 @@
 #include "player.h"
 #include "meshfield.h"
 #include "shadow.h"
-
+#include "player.h"
 #include "loadscript.h"
 
 // マクロ定義
@@ -117,10 +117,19 @@ void UninitObject(void)
 //======================================================================================
 void UpdateObject(void)
 {
+	Player* pPlayer = GetPlayer();
+
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
 		if (g_aObject[nCntObject].bUse == true)
 		{
+			for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+			{
+				//if (CrossCollision(&pPlayer->pos, &pPlayer->posOld, g_aObjectModel[g_aObject[nCntObject].type].vtxMin, g_aObjectModel[g_aObject[nCntObject].type].vtxMax, true, true) == true)
+				//{
+				//
+				//}
+			}
 			// 影の位置を更新
 			SetPositionShadow(g_aObject[nCntObject].nIdxShadow, g_aObject[nCntObject].pos);
 		}

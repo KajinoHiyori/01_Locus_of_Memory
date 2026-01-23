@@ -1,10 +1,12 @@
 //======================================================================================
 // 
-// 3Dアクションゲーム_MASTER KEY[shadow.cpp]
+// 影の管理処理[shadow.cpp]
+// Author : Kaijino Hiyori
 //
 //======================================================================================
 #include "main.h"
 #include "shadow.h"
+#include "meshfield.h"
 #include "input.h"
 #include "debugproc.h"
 
@@ -250,16 +252,18 @@ int SetShadow(SHADOWTYPE type, float fWidth, float fDepth)
 //======================================================================================
 void SetPositionShadow(int nIdxShadow, D3DXVECTOR3 pos)
 {
-	g_aShadow[nIdxShadow].bUse = true;
 	g_aShadow[nIdxShadow].pos = pos;
+
 	while (1)
 	{
-		g_aShadow[nIdxShadow].pos.y -= 0.5f;	// 全く同じ高度で描画を行うとちらつくので、少し浮かせることでこの問題を解決する
-	
-		if (g_aShadow[nIdxShadow].pos.y <= 0.0f)
+		if (CollisionMeshField(&g_aShadow[nIdxShadow].pos, &g_aShadow[nIdxShadow].pos, &g_aShadow[nIdxShadow].pos) == true || g_aShadow[nIdxShadow].pos.y <= 0.0f)
 		{
 			g_aShadow[nIdxShadow].pos.y = 0.0f;
 			break;
+		}
+		else
+		{
+			g_aShadow[nIdxShadow].pos.y -= 0.5f;
 		}
 	}
 }
