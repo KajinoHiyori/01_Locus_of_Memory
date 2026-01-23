@@ -41,8 +41,8 @@ Player				g_aPlayer[MAX_PLAYER];						// プレイヤーの情報を格納
 // 1Pのモデル
 const char* c_apFilename1PModel[MAX_MODEL] =
 {
-	//"data\\MODEL\\player\\player.x",	// 胴体[0]
-	"data\\MODEL\\player\\airplane000.x",	// 胴体[0]
+	"data\\MODEL\\player\\player.x",	// 胴体[0]
+	//"data\\MODEL\\player\\airplane000.x",	// 胴体[0]
 };
 
 // 2Pのモデル
@@ -361,7 +361,8 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].pos += g_aPlayer[nCntPlayer].move;
 
 			// メッシュフィールドとの当たり判定
-			if (CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || g_aPlayer[nCntPlayer].pos.y <= 0.0f)
+			if (//CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || 
+				g_aPlayer[nCntPlayer].pos.y <= 0.0f)
 			{
 				g_aPlayer[nCntPlayer].pos.y = 0.0f;
 				g_aPlayer[nCntPlayer].bJump = false;

@@ -256,7 +256,7 @@ void SetPositionShadow(int nIdxShadow, D3DXVECTOR3 pos)
 
 	while (1)
 	{
-		if (CollisionMeshField(&g_aShadow[nIdxShadow].pos, &g_aShadow[nIdxShadow].pos, &g_aShadow[nIdxShadow].pos) == true || g_aShadow[nIdxShadow].pos.y <= 0.0f)
+		if (g_aShadow[nIdxShadow].pos.y <= 0.0f)
 		{
 			g_aShadow[nIdxShadow].pos.y = 0.0f;
 			break;
