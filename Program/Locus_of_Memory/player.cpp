@@ -281,6 +281,7 @@ void UpdatePlayer(void)
 		{
 			// 過去の位置を保存
 			g_aPlayer[nCntPlayer].posOld = g_aPlayer[nCntPlayer].pos;
+			moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 			// 移動方向を管理
 			if (GetKeyboardPress(DIK_A) == true || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
@@ -312,7 +313,7 @@ void UpdatePlayer(void)
 			if (fMoveDir != 0)
 			{// 移動している場合
 				fRotMove = g_aPlayer[nCntPlayer].rot.y;							// 今の向き
-				fRotDest = atan2f(moveDir.x, moveDir.z) + pCamera->rot.y;		// 目的地への向き
+				fRotDest = atan2f(moveDir.x, moveDir.z) + pCamera[nCntPlayer].rot.y;		// 目的地への向き
 
 				// 目的向きに移動方向を合わせる
 				moveDir.x = sinf(fRotDest) * fMoveDir;
