@@ -41,7 +41,8 @@ Player				g_aPlayer[MAX_PLAYER];						// プレイヤーの情報を格納
 // 1Pのモデル
 const char* c_apFilename1PModel[MAX_MODEL] =
 {
-	"data\\MODEL\\player\\player.x",	// 胴体[0]
+	//"data\\MODEL\\player\\player.x",	// 胴体[0]
+	"data\\MODEL\\player\\airplane000.x",	// 胴体[0]
 };
 
 // 2Pのモデル
