@@ -10,15 +10,15 @@
 
 // マクロ定義
 #define NUM_LIGHT	(3)		// ライトの最大数
-//#define DIRECTOPN0	(D3DXVECTOR3(0.2f, -0.8f, 0.4f))		// ライトの方向
-#define DIRECTOPN0	(D3DXVECTOR3(-1.0f, -0.8f, 0.4f))		// ライトの方向
+#define DIRECTOPN0	(D3DXVECTOR3(0.2f, -0.8f, 0.4f))		// ライトの方向
+//#define DIRECTOPN0	(D3DXVECTOR3(-1.0f, -0.8f, 0.4f))		// ライトの方向
 #define DIRECTOPN1	(D3DXVECTOR3(-0.2f, 0.9f, -0.4f))		// ライトの方向
 #define DIRECTOPN2	(D3DXVECTOR3(0.9f, 0.1f, 0.4f))			// ライトの方向
 
 // グローバル変数
 D3DLIGHT9 g_aLight[NUM_LIGHT];	// ライトの情報
 
-D3DXVECTOR3 g_LightDis;
+float g_fAngle;
 
 //======================================================================================
 // ライトの初期化処理
@@ -27,6 +27,8 @@ void InitLight(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXVECTOR3 vecDir;		// ライトの方向ベクトル
+
+	g_fAngle = -1.70;
 
 	// ライトの情報をクリア
 	ZeroMemory(&g_aLight[0], sizeof(D3DLIGHT9) * NUM_LIGHT);
@@ -42,8 +44,7 @@ void InitLight(void)
 			// ライトの拡散光を設定
 			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTEST;
 			// ライトの方向を設定
-			g_LightDis = DIRECTOPN0;
-			vecDir = g_LightDis;
+			vecDir = DIRECTOPN0;
 			break;
 
 		case 1:	// 1番目のライト
@@ -78,18 +79,16 @@ void UninitLight(void)
 
 }
 
-//======================================================================================
+//========================================================================
 // ライトの更新処理
-//======================================================================================
+//========================================================================
 void UpdateLight(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXVECTOR3 vecDir;		// ライトの方向ベクトル
+	static D3DXVECTOR3 vecDir;		// ライトの方向ベクトル
 
 	// ライトの情報をクリア
 	ZeroMemory(&g_aLight[0], sizeof(D3DLIGHT9) * NUM_LIGHT);
-
-
 
 	for (int nCntLight = 0; nCntLight < NUM_LIGHT; nCntLight++)
 	{
@@ -103,24 +102,24 @@ void UpdateLight(void)
 			// ライトの拡散光を設定
 			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTEST;
 
-			//g_LightDis.x += 0.01f;
-
-			if (GetKeyboardPress(DIK_UP) == true)
-			{
-				// ライトの方向を設定
-				g_LightDis.x += 0.005f;
 
 
-			}
+			//if (GetKeyboardPress(DIK_UP) == true)
+			//{
+			//	// ライトの方向を設定
+			//	g_LightDis.x += 0.005f;
 
-			else if (GetKeyboardPress(DIK_DOWN) == true)
-			{
 
-				// ライトの方向を設定
-				g_LightDis.x -= 0.005f;
+			//}
 
-			}
-			
+			//else if (GetKeyboardPress(DIK_DOWN) == true)
+			//{
+
+			//	// ライトの方向を設定
+			//	g_LightDis.x -= 0.005f;
+
+			//}
+
 
 			//if (GetKeyboardPress(DIK_RIGHT) == true)
 			//{
@@ -147,17 +146,20 @@ void UpdateLight(void)
 
 			//}
 
-			vecDir = g_LightDis;
-			
+			g_fAngle -= 0.01f;
 
-			if (vecDir.x > 1.000f)
+			if (g_fAngle > D3DX_PI)
 			{
-				vecDir.x -= 2.000;
+				g_fAngle = -D3DX_PI;
 			}
-			else if (vecDir.x < -1.000f)
+			else if (g_fAngle < -D3DX_PI)
 			{
-				vecDir.x += 2.000f;
+				g_fAngle = D3DX_PI;
 			}
+
+			vecDir.x = sinf(g_fAngle);
+			vecDir.y = cosf(g_fAngle);
+
 
 			break;
 
@@ -184,10 +186,10 @@ void UpdateLight(void)
 		// ライトを有効にする
 		pDevice->LightEnable(nCntLight, TRUE);
 
+		PrintDebugProc("ライト[%d]の位置 : (%.3f, %.3f, %.3f)\n", 0, vecDir.x, vecDir.y, vecDir.z);
+		PrintDebugProc("ライト[%d]の位置 : (%.3f)\n", 0, g_fAngle);
+
 	}
-
-	PrintDebugProc("ライト[%d]の位置 : (%.3f, %.3f, %.3f)\n", 0, vecDir.x, vecDir.y, vecDir.z);
-
 
 }
 
