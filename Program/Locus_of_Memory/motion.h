@@ -108,7 +108,6 @@ typedef struct Motion
 	D3DXVECTOR3			aOffSet[MAX_MODEL];					// モデルのオフセット[位置]を保存
 	D3DXVECTOR3			aOffSetRot[MAX_MODEL];				// モデルのオフセット[角度]を保存
 	MotionData*			pMotionData;						// モーションデータへのポインタ (現在のモーション)
-	int					nNumMotion;							// 現在のモーションの総数
 	MOTIONTYPE			motionType;							// 現在のモーションの種類
 	bool				bLoopMotion;						// 現在のモーションのループを管理
 	int					nNumKey;							// 現在のキーの総数
