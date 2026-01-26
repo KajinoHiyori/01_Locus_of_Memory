@@ -132,6 +132,9 @@
     <ClCompile Include="diagnosisui.cpp">
       <Filter>result\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="motion.cpp">
+      <Filter>main\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -196,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="diagnosisui.h">
       <Filter>result\h</Filter>
+    </ClInclude>
+    <ClInclude Include="motion.h">
+      <Filter>main\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@
 #include "loadscript.h"
 #include "object.h"
 #include "player.h"
-//#include "model.h"
+#include "motion.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -55,10 +55,10 @@
 #define LOAD_ENDRESULTINFO	"END_RESULTINFO"	// リザルトの仲間の情報読み込み終了
 
 //*****************************************************************************
-// マクロ定義
+// グローバル変数
 //*****************************************************************************
-int g_NumModel;								// 読み込んだモデル数
-int g_NumMotion;							// 読み込んだモーション数
+int g_nNumModel;								// 読み込んだモデル数
+int g_nNumMotion;								// 読み込んだモーション数
 
 //=============================================================================
 //	スクリプトの読み込み処理
@@ -78,8 +78,8 @@ HRESULT LoadScript(const char* pScriptFileName)
 	char aTexPath[FILENAME_MAX] = {};		// テクスチャファイルパス
 	char* pStart = NULL;					// 文字列の開始位置
 	int type = NULL;						// 種類
-	g_NumModel = 0;							// モデル数初期化
-	g_NumMotion = 0;						// モーション数初期化
+	g_nNumModel = 0;						// モデル数初期化
+	g_nNumMotion = 0;						// モーション数初期化
 
 	while (true)
 	{
@@ -155,7 +155,7 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 	int nCntMotion = 0;					   // モーション数カウント
 	int bLoop = false;					   // ループするかどうか読み込み
 	int nNumKey = 0;					   // キー数読み込み
-	PLAYERKEY_INFO KeyInfo[MAX_KEY] = {};  // キー情報読み込み
+	KEY_INFO KeyInfo[MAX_KEY] = {};		   // キー情報読み込み
 	int nCntKey = 0;					   // キー数カウント
 	int nCntParts = 0;					   // パーツ数カウント
 
@@ -415,16 +415,8 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 
 				if (strcmp(aStrCpy, LOAD_ENDMOTIONINFO) == 0)
 				{// END_MOTIONSETを読み込んだ
-					//switch (type)
-					//{
-					//case OBJECTTYPE_PLAYER:
-					//	LoadMotion(bLoop, nNumKey, &KeyInfo[0], nCntMotion);
-					//	break;
 
-					//case OBJECTTYPE_FRIENDS:
-					//	LoadMotionFriends(bLoop, nNumKey, &KeyInfo[0], nCntMotion);
-					//	break;
-					//}
+					LoadMotion(bLoop, nNumKey, &KeyInfo[0], nCntMotion, g_nNumMotion);
 
 					nCntMotion++;
 
@@ -444,7 +436,7 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 		{// END_SCRIPTを読み込んだ
 			// 読み込み終了
 			fclose(pMotionFile);
-
+			g_nNumMotion++;
 			break;
 		}
 	}

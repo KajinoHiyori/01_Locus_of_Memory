@@ -160,6 +160,7 @@
     <ClCompile Include="diagnosis.cpp" />
     <ClCompile Include="diagnosisui.cpp" />
     <ClCompile Include="loadscript.cpp" />
+    <ClCompile Include="motion.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="debugproc.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="diagnosis.h" />
     <ClInclude Include="diagnosisui.h" />
     <ClInclude Include="loadscript.h" />
+    <ClInclude Include="motion.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="debugproc.h" />

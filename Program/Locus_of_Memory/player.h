@@ -38,16 +38,16 @@ typedef enum
 	PLAYERMOTIONTYPE_MAX
 }PLAYERMOTIONTYPE;
 
-// キー要素の構造体
-typedef struct
-{
-	float fPosX;	// 位置X...親からのオフセット
-	float fPosY;	// 位置Y...親からのオフセット
-	float fPosZ;	// 位置Z...親からのオフセット
-	float fRotX;	// 向きX
-	float fRotY;	// 向きY
-	float fRotZ;	// 向きZ
-}KEY;
+//// キー要素の構造体
+//typedef struct
+//{
+//	float fPosX;	// 位置X...親からのオフセット
+//	float fPosY;	// 位置Y...親からのオフセット
+//	float fPosZ;	// 位置Z...親からのオフセット
+//	float fRotX;	// 向きX
+//	float fRotY;	// 向きY
+//	float fRotZ;	// 向きZ
+//}KEY;
 
 // キー情報の構造体
 typedef struct
