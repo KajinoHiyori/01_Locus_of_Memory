@@ -59,6 +59,7 @@
 //*****************************************************************************
 int g_nNumModel;								// 読み込んだモデル数
 int g_nNumMotion;								// 読み込んだモーション数
+int g_nNumParentModel;							// 読み込んだ階層構造モデル数
 
 //=============================================================================
 //	スクリプトの読み込み処理
@@ -80,6 +81,7 @@ HRESULT LoadScript(const char* pScriptFileName)
 	int type = NULL;						// 種類
 	g_nNumModel = 0;						// モデル数初期化
 	g_nNumMotion = 0;						// モーション数初期化
+	g_nNumParentModel = 0;					// 階層構造モデル数初期化
 
 	while (true)
 	{
@@ -132,13 +134,13 @@ HRESULT LoadScript(const char* pScriptFileName)
 }
 
 //=============================================================================
-//	モーション情報読み込み処理
+//	階層構造モデル読み込み処理
 //=============================================================================
-HRESULT LoadMotionInfo(const char* pMotionFileName)
+HRESULT LoadParentModel(const char* pParentModelFileName)
 {
-	FILE* pMotionFile = fopen(pMotionFileName, "r");
+	FILE* pParentModelFile = fopen(pParentModelFileName, "r");
 
-	if (pMotionFile == NULL)
+	if (pParentModelFile == NULL)
 	{// 読み込み失敗
 		return E_FAIL;
 	}
@@ -152,24 +154,19 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 	D3DXVECTOR3 pos = {};				   // 位置読み込み
 	D3DXVECTOR3 rot = {};				   // 向き読み込み
 	int nNumModel = 0;					   // モデル数読み込み
-	int nCntMotion = 0;					   // モーション数カウント
-	int bLoop = false;					   // ループするかどうか読み込み
-	int nNumKey = 0;					   // キー数読み込み
-	KEY_INFO KeyInfo[MAX_KEY] = {};		   // キー情報読み込み
-	int nCntKey = 0;					   // キー数カウント
 	int nCntParts = 0;					   // パーツ数カウント
 
 	while (true)
 	{
-		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-		(void)fgets(aStr, sizeof(aStr), pMotionFile);	// 一列読み込み
+		memset(aStr, NULL, sizeof(aStr));					// 文字列クリア
+		(void)fgets(aStr, sizeof(aStr), pParentModelFile);	// 一列読み込み
 
 		if (strstr(aStr, LOAD_START) != NULL)
 		{// LOAD_STARTを読み込めば読み込み開始
 			break;
 		}
 
-		if (feof(pMotionFile) != NULL)
+		if (feof(pParentModelFile) != NULL)
 		{// 読み込み失敗
 			return E_FAIL;
 		}
@@ -179,7 +176,7 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 	{
 		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
 		memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
-		(void)fgets(aStr, sizeof(aStr), pMotionFile);	// 一列読み込み
+		(void)fgets(aStr, sizeof(aStr), pParentModelFile);	// 一列読み込み
 		LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
 
 		if (strstr(aStr, LOAD_NUMMODEL))
@@ -201,16 +198,7 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 
 			(void)sscanf(pStart + 1, "%s", &aModelPath);
 
-			//switch (type)
-			//{
-			//case OBJECTTYPE_PLAYER:
-			//	LoadPartsPlayer(aModelPath);
-			//	break;
-
-			//case OBJECTTYPE_FRIENDS:
-			//	LoadPartsFriends(aModelPath);
-			//	break;
-			//}
+			LoadParentModel(aModelPath, g_nNumParentModel);
 		}
 
 		if (strstr(aStr, LOAD_PLAYER))
@@ -219,7 +207,7 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 			{
 				memset(aStr, NULL, sizeof(aStr));
 				memset(aStrCpy, NULL, sizeof(aStrCpy));
-				(void)fgets(aStr, sizeof(aStr), pMotionFile);
+				(void)fgets(aStr, sizeof(aStr), pParentModelFile);
 				LoadEnableString(&aStrCpy[0], &aStr[0]);
 
 				if (strcmp(aStrCpy, LOAD_PARTS) == 0)
@@ -228,7 +216,7 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 					{
 						memset(aStr, NULL, sizeof(aStr));
 						memset(aStrCpy, NULL, sizeof(aStrCpy));
-						(void)fgets(aStr, sizeof(aStr), pMotionFile);
+						(void)fgets(aStr, sizeof(aStr), pParentModelFile);
 						LoadEnableString(&aStrCpy[0], &aStr[0]);
 
 						if (strstr(aStr, LOAD_INDEX))
@@ -281,16 +269,8 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 
 						if (strcmp(aStrCpy, LOAD_ENDPARTS) == 0)
 						{// END_PARTSSETを読み込んだ
-							//switch (type)
-							//{
-							//case OBJECTTYPE_PLAYER:
-							//	LoadCharacterPlayer(pos, rot, nIdx, nParent);
-							//	break;
 
-							//case OBJECTTYPE_FRIENDS:
-							//	LoadCharacterFriends(pos, rot, nIdx, nParent);
-							//	break;
-							//}
+							LoadParentModelOffSet(pos, rot, nIdx, nParent, g_nNumParentModel);
 
 							memset(&pos, NULL, sizeof(D3DXVECTOR3));
 							memset(&rot, NULL, sizeof(D3DXVECTOR3));
@@ -305,9 +285,69 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 				{// END_CHARACTERSETを読み込んだ
 					break;
 				}
-
 			}
 		}
+
+		if (strcmp(aStrCpy, LOAD_END) == 0)
+		{// END_SCRIPTを読み込んだ
+			// 読み込み終了
+			fclose(pParentModelFile);
+			g_nNumParentModel++;
+			break;
+		}
+	}
+}
+
+//=============================================================================
+//	モーション情報読み込み処理
+//=============================================================================
+HRESULT LoadMotionInfo(const char* pMotionFileName)
+{
+	FILE* pMotionFile = fopen(pMotionFileName, "r");
+
+	if (pMotionFile == NULL)
+	{// 読み込み失敗
+		return E_FAIL;
+	}
+
+	char aStr[MAX_STRING] = {};			   // 文字列読み込み
+	char aStrCpy[MAX_STRING] = {};		   // 文字列複製(整理)
+	char* pStart = NULL;				   // 文字列開始位置
+	char aModelPath[FILENAME_MAX] = {};	   // モデルのファイル名読み込み
+	int nIdx = 0;						   // モデルのインデックス読み込み
+	int nParent = 0;					   // モデルの親インデックス読み込み
+	D3DXVECTOR3 pos = {};				   // 位置読み込み
+	D3DXVECTOR3 rot = {};				   // 向き読み込み
+	int nNumModel = 0;					   // モデル数読み込み
+	int nCntMotion = 0;					   // モーション数カウント
+	int bLoop = false;					   // ループするかどうか読み込み
+	int nNumKey = 0;					   // キー数読み込み
+	KEY_INFO KeyInfo[MAX_KEY] = {};		   // キー情報読み込み
+	int nCntKey = 0;					   // キー数カウント
+	int nCntParts = 0;					   // パーツ数カウント
+
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		(void)fgets(aStr, sizeof(aStr), pMotionFile);	// 一列読み込み
+
+		if (strstr(aStr, LOAD_START) != NULL)
+		{// LOAD_STARTを読み込めば読み込み開始
+			break;
+		}
+
+		if (feof(pMotionFile) != NULL)
+		{// 読み込み失敗
+			return E_FAIL;
+		}
+	}
+
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));
+		memset(aStrCpy, NULL, sizeof(aStrCpy));
+		(void)fgets(aStr, sizeof(aStr), pMotionFile);
+		LoadEnableString(&aStrCpy[0], &aStr[0]);
 
 		if (strcmp(aStrCpy, LOAD_MOTIONINFO) == 0)
 		{// MOTIONSETを読み込んだ
@@ -421,7 +461,7 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 					nCntMotion++;
 
 					// 各種変数初期化
-					memset(&KeyInfo, NULL, sizeof(PLAYERKEY_INFO));
+					memset(&KeyInfo, NULL, sizeof(KEY_INFO));
 					bLoop = false;
 					nNumKey = 0;
 					nCntKey = 0;

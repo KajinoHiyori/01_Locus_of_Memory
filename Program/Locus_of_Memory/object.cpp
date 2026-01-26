@@ -34,7 +34,9 @@
 
 // グローバル変数
 ObjectModel g_aObjectModel[NUM_OBJECT];		// モデルの種類を管理
-Object g_aObject[MAX_OBJECT];		// オブジェクトの情報を格納
+Object g_aObject[MAX_OBJECT];				// オブジェクトの情報を格納
+ModelData g_aModelData[MAX_PARENTMODEL];	// 階層構造を持ったモデルデータ
+
 int g_nNumObjectModel;	// モデル数を管理
 
 //======================================================================================
@@ -48,6 +50,11 @@ void InitObject(void)
 	//DWORD dwSizeFVF;			// 頂点フォーマットのサイズ
 	//BYTE* pVtxBuff;				// 頂点バッファへのポインタ
 	g_nNumObjectModel = 0;
+
+	ModelData* pModelData = &g_aModelData[0];
+
+	// ModelDataの初期化
+	memset(pModelData, NULL, sizeof(ModelData) * MAX_PARENTMODEL);
 
 	// Object情報の初期化
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
@@ -71,6 +78,8 @@ void InitObject(void)
 	}
 
 	LoadModel(MODEL_SCRIPT);
+
+	LoadParentModel(PARENTMODEL_SCRIPT);
 }
 
 //======================================================================================
@@ -88,6 +97,18 @@ void UninitObject(void)
 		}
 	}
 
+	for (int nCntModelData = 0; nCntModelData < MAX_PARENTMODEL; nCntModelData++)
+	{
+		for (int nCntModel = 0; nCntModel < MAX_PARTS; nCntModel++)
+		{
+			if (g_aModelData[nCntModelData].aModel[nCntModel].pMesh != NULL)
+			{
+				g_aModelData[nCntModelData].aModel[nCntModel].pMesh->Release();
+				g_aModelData[nCntModelData].aModel[nCntModel].pMesh = NULL;
+			}
+		}
+	}
+
 	// テクスチャの破棄
 	for (int nCntModel = 0; nCntModel < NUM_OBJECT; nCntModel++)
 	{
@@ -101,6 +122,21 @@ void UninitObject(void)
 		}
 	}
 
+	for (int nCntModelData = 0; nCntModelData < MAX_PARENTMODEL; nCntModelData++)
+	{
+		for (int nCntModel = 0; nCntModel < MAX_PARTS; nCntModel++)
+		{
+			for (int nCntMat = 0; nCntMat < (int)g_aModelData[nCntModelData].aModel[nCntModel].dwNumMat; nCntMat++)
+			{
+				if (g_aModelData[nCntModelData].aModel[nCntModel].apTexture[nCntMat] != NULL)
+				{
+					g_aModelData[nCntModelData].aModel[nCntModel].apTexture[nCntMat]->Release();
+					g_aModelData[nCntModelData].aModel[nCntModel].apTexture[nCntMat] = NULL;
+				}
+			}
+		}
+	}
+
 	// マテリアルの破棄
 	for (int nCntModel = 0; nCntModel < NUM_OBJECT; nCntModel++)
 	{
@@ -108,6 +144,18 @@ void UninitObject(void)
 		{
 			g_aObjectModel[nCntModel].pBuffMat->Release();
 			g_aObjectModel[nCntModel].pBuffMat = NULL;
+		}
+	}
+
+	for (int nCntModelData = 0; nCntModelData < MAX_PARENTMODEL; nCntModelData++)
+	{
+		for (int nCntModel = 0; nCntModel < MAX_PARTS; nCntModel++)
+		{
+			if (g_aModelData[nCntModelData].aModel[nCntModel].pBuffMat != NULL)
+			{
+				g_aModelData[nCntModelData].aModel[nCntModel].pBuffMat->Release();
+				g_aModelData[nCntModelData].aModel[nCntModel].pBuffMat = NULL;
+			}
 		}
 	}
 }
@@ -228,7 +276,7 @@ ObjectModel* GetObjectModel(void)
 }
 
 //======================================================================================
-// Xファイルの読み込み処理
+// オブジェクトファイルの読み込み処理
 //======================================================================================
 void LoadObjectModel(const char* pModelPath)
 {
@@ -308,4 +356,63 @@ void LoadObjectModel(const char* pModelPath)
 	}
 
 	g_nNumObjectModel++;	// 読み込んだモデル数加算
+}
+
+//======================================================================================
+// 階層構造モデルファイル紐づけ処理
+//======================================================================================
+ModelData* SetModelData(PARENTMODELTYPE type)
+{
+	return &g_aModelData[type];
+}
+
+//======================================================================================
+// 階層構造モデルファイルの読み込み処理
+//======================================================================================
+void LoadParentModel(const char* pModelPath, int nNumParentModel)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+
+	D3DXMATERIAL* pMat;
+
+	Model* pModel = &g_aModelData[nNumParentModel].aModel[g_aModelData[nNumParentModel].nNumModel];
+
+	// Xファイルの読み込み
+	D3DXLoadMeshFromX(pModelPath,
+		D3DXMESH_SYSTEMMEM,
+		pDevice,
+		NULL,
+		&pModel->pBuffMat,
+		NULL,
+		&pModel->dwNumMat,
+		&pModel->pMesh);
+
+	// マテリアルデータへのポインタを取得
+	pMat = (D3DXMATERIAL*)pModel->pBuffMat->GetBufferPointer();
+
+	for (int nCntMat = 0; nCntMat < (int)pModel->dwNumMat; nCntMat++)
+	{
+		if (pMat[nCntMat].pTextureFilename != NULL)
+		{// テクスチャファイルが存在する
+			// テクスチャの読み込み
+			D3DXCreateTextureFromFile(pDevice,
+				pMat[nCntMat].pTextureFilename,
+				&pModel->apTexture[nCntMat]);
+		}
+	}
+
+	g_aModelData[nNumParentModel].nNumModel++;
+}
+
+//=============================================================================
+//	階層構造モデルのオフセット読み込み処理
+//=============================================================================
+void LoadParentModelOffSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nIdxModelParent, int nNumParentModel)
+{
+	Model* pModel = &g_aModelData[nNumParentModel].aModel[nIdxModel];
+
+	pModel->nIdxModel = nIdxModel;
+	pModel->nIdxModelParent = nIdxModelParent;
+	pModel->pos = pModel->posLocal = pos;
+	pModel->rot = pModel->rotLocal = rot;
 }

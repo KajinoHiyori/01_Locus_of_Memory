@@ -20,11 +20,14 @@
 #define OBJECT_SCRIPT		"data/SCRIPTS/object.txt"	// オブジェクト情報スクリプト
 
 #define MODEL_SCRIPT		"data/SCRIPTS/model.txt"	// モデル情報スクリプト
+#define PARENTMODEL_SCRIPT	"data/SCRIPTS/test.txt"		// モデル情報スクリプト
+#define MOTION_SCRIPT		"data/SCRIPTS/motion.txt"	// モデル情報スクリプト
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
 HRESULT LoadScript(const char* pScriptFileName);
+HRESULT LoadParentModel(const char* pParentModelFileName);
 HRESULT LoadMotionInfo(const char* pMotionFileName);
 HRESULT LoadModel(const char* pModelFileName);
 HRESULT LoadObject(const char* pObjectFileName);

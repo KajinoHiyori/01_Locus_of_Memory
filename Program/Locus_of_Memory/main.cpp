@@ -22,6 +22,7 @@
 //#include "light.h"
 
 #include "object.h"
+#include "motion.h"
 #include "shadow.h"
 #include "meshfield.h"
 
@@ -360,6 +361,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// オブジェクトの初期化処理
 	InitObject();
+
+	// モーションの初期化処理
+	InitMotion();
 
 	// モードの設定
 	InitFade(g_mode);

@@ -72,6 +72,8 @@ void InitPlayer(void)
 		g_aPlayer[nCntPlayer].bUse = false;
 		g_aPlayer[nCntPlayer].bJump = false;
 
+#if 0
+
 		for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
 		{
 			switch (nCntPlayer)
@@ -98,6 +100,9 @@ void InitPlayer(void)
 				}
 			}
 		}
+
+#endif
+
 	}
 
 	OPERATIONTYPE operationtyoe = GetOperationType();
@@ -376,6 +381,22 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * 0.1f;
 			g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * 0.1f;
 
+			// モーションの更新処理
+			UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData);
+
+#ifdef _DEBUG
+			// テスト
+			if (GetKeyboardTrigger(DIK_1) == true)
+			{
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, false, true, 10);
+			}
+			
+			if (GetKeyboardTrigger(DIK_2) == true)
+			{
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);
+			}
+#endif	// _DEBUG
+
 			// デバッグ表示
 			PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
 			PrintDebugProc("プレイヤー[%d]の移動量 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].move.x, g_aPlayer[nCntPlayer].move.y, g_aPlayer[nCntPlayer].move.z);
@@ -390,6 +411,9 @@ void UpdatePlayer(void)
 //========================================================================
 void DrawPlayer(void)
 {
+
+#if 0
+
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -437,6 +461,93 @@ void DrawPlayer(void)
 			pDevice->SetMaterial(&matDef);
 		}
 	}
+
+#endif
+
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
+	D3DMATERIAL9 matDef;						// 現在のマテリアル保存用
+	D3DXMATERIAL* pMat;							// マテリアルデータへのポインタ
+	Player* pPlayer = &g_aPlayer[0];
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	{
+		if (pPlayer->bUse == false)
+		{
+			continue;
+		}
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&pPlayer->mtxWorld);
+
+		// 向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, pPlayer->rot.y, pPlayer->rot.x, pPlayer->rot.z);
+		D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxRot);
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, pPlayer->pos.x, pPlayer->pos.y, pPlayer->pos.z);
+		D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxTrans);
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &pPlayer->mtxWorld);
+
+		// 現在のマテリアルを取得
+		pDevice->GetMaterial(&matDef);
+
+		// 全モデル(パーツ)の描画
+		for (int nCntOffSetModel = 0; nCntOffSetModel < pPlayer->pModelData->nNumModel; nCntOffSetModel++)
+		{
+			D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
+			D3DXMATRIX mtxParent;								// 親のマトリックス
+
+			// パーツのワールドマトリックスを初期化
+			D3DXMatrixIdentity(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
+
+			// パーツの向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].rot.y, pPlayer->pModelData->aModel[nCntOffSetModel].rot.x, pPlayer->pModelData->aModel[nCntOffSetModel].rot.z);
+			D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxRotOffSetModel);
+
+			// パーツの位置を反映(オフセット)
+			D3DXMatrixTranslation(&mtxTransOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].pos.x, pPlayer->pModelData->aModel[nCntOffSetModel].pos.y, pPlayer->pModelData->aModel[nCntOffSetModel].pos.z);
+			D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxTransOffSetModel);
+
+			// パーツの「親のマトリックス」を設定
+			if (pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent != -1)
+			{// 親モデルがある場合
+				mtxParent = pPlayer->pModelData->aModel[pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent].mtxWorld;
+			}
+			else
+			{// 親モデルがない場合
+				mtxParent = pPlayer->mtxWorld;
+			}
+
+			// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
+			D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
+				&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
+				&mtxParent);
+
+			// パーツのワールドマトリックスを設定
+			pDevice->SetTransform(D3DTS_WORLD, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
+
+			// マテリアルデータへのポインタを取得
+			pMat = (D3DXMATERIAL*)pPlayer->pModelData->aModel[nCntOffSetModel].pBuffMat->GetBufferPointer();
+
+			for (int nCntMat = 0; nCntMat < (int)pPlayer->pModelData->aModel[nCntOffSetModel].dwNumMat; nCntMat++)
+			{
+				// マテリアルの設定
+				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+
+				// テクスチャの設定
+				pDevice->SetTexture(0, pPlayer->pModelData->aModel[nCntOffSetModel].apTexture[nCntMat]);
+
+				// プレイヤー(パーツ)の描画
+				pPlayer->pModelData->aModel[nCntOffSetModel].pMesh->DrawSubset(nCntMat);
+			}
+		}
+
+		// 保存していたマテリアルを戻す
+		pDevice->SetMaterial(&matDef);
+	}
 }
 
 //========================================================================
@@ -452,9 +563,14 @@ Player* GetPlayer(void)
 //========================================================================
 void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
+	g_aPlayer[nIdx].pModelData = SetModelData(PARENTMODELTYPE_PLAYER);
+	g_aPlayer[nIdx].motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLAYER);
+
 	g_aPlayer[nIdx].bUse = true;
 	g_aPlayer[nIdx].pos = pos;
 	g_aPlayer[nIdx].posOld = pos;
 	g_aPlayer[nIdx].rot = rot;
 	g_aPlayer[nIdx].nIdxShadow = SetShadow(SHADOWTYPE_CIRCLE, SHADOｗ, SHADOｗ);
+
+	SetMotion(&g_aPlayer[nIdx].motion, g_aPlayer[nIdx].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);
 }
