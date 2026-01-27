@@ -7,6 +7,7 @@
 #include"main.h"
 #include"effect.h"
 #include"input.h"
+#include"camera.h"
 
 #define MAX_EFFECT	(4096)
 
@@ -15,6 +16,7 @@ typedef struct
 {
 	D3DXVECTOR3 pos;		//位置
 	D3DXVECTOR3 move;		//移動量
+	D3DXVECTOR3 rot;
 	D3DXCOLOR col;			//色
 	D3DXMATRIX g_mtxWorldPolygon;	//ワールドマトリックス
 	float fRadius;			//半径
@@ -114,6 +116,8 @@ void UninitEffect(void)
 //ポリゴンの更新処理
 void UpdateEffect(void)
 {
+	Camera* pCamera = GetCamera();
+
 	if (GetKeyboardTrigger(DIK_SPACE) == true)
 	{
 		SetEffect(D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20);
@@ -122,6 +126,12 @@ void UpdateEffect(void)
 	{
 		if (g_aEffect[nCntEffect].bUse == true)
 		{
+			if (GetKeyboardTrigger(DIK_W) == true)
+			{
+				g_aEffect->move.x += sinf(pCamera->rot.y - D3DX_PI / 4) * 2.0f;
+				g_aEffect->move.z += cosf(pCamera->rot.y - D3DX_PI / 4) * 2.0f;
+				g_aEffect->rot.y = atan2f(g_aEffect->move.x, g_aEffect->move.z) - D3DX_PI;
+			}
 			g_aEffect[nCntEffect].nLife--;
 			if (g_aEffect[nCntEffect].nLife < 0)
 			{

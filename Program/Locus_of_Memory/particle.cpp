@@ -6,6 +6,7 @@
 
 #include"main.h"
 #include"particle.h"
+#include"effect.h"
 
 #define MAX_PARTICLE	(128)	//パーティクルの最大数
 #define MAX_APPEAR		(10)	//粒子の最大数
@@ -59,7 +60,17 @@ void UpdateParticle(void)
 				move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
 				move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
 				move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+				SetEffect(pos, g_aParticle[nCntParticle].col, g_aParticle[nCntParticle].nLife);
 			}
 		}
 	}
+}
+void DrawParticle(void)
+{
+
+}
+
+void SetParticle(D3DXVECTOR3 pos, D3DXVECTOR3 col, int nLife, int PARTICLETYPE)
+{
+
 }
