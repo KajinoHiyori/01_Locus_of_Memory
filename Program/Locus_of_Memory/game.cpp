@@ -29,6 +29,7 @@
 //#include"half_fence.h"
 //#include"score.h"
 //#include"timer.h"
+#include"effect.h"
 #include"particle.h"
 
 #include"meshfield.h"
@@ -75,6 +76,8 @@ void InitGame(void)
 
 	//InitTimer();
 
+	InitEffect();
+
 	InitParticle();
 	
 	//PlaySound(SOUND_LABEL_GAME);
@@ -114,6 +117,8 @@ void UninitGame(void)
 	//UninitScore();
 
 	//UninitTimer();
+
+	UninitEffect();
 
 	UninitParticle();
 
@@ -164,6 +169,8 @@ void UpdateGame(void)
 	//UpdateScore();
 
 	//UpdateTimer();
+
+	UpdateEffect();
 
 	UpdateParticle();
 
@@ -257,6 +264,8 @@ void DrawGame(void)
 	//DrawTimer();
 
 	DrawGameUI();
+
+	DrawEffect();
 
 	DrawParticle();
 
