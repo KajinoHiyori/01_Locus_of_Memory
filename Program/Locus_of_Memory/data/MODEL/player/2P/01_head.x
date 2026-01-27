@@ -476,7 +476,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\locus of memory\\01_テクスチャ\\face.png";
+    "data\\TEXTURE\face.png";
    }
   }
   Material {

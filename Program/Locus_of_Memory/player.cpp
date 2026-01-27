@@ -12,6 +12,7 @@
 #include "title.h"
 #include "meshfield.h"
 #include "input.h"
+#include "loadscript.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -107,6 +108,7 @@ void InitPlayer(void)
 
 	OPERATIONTYPE operationtyoe = GetOperationType();
 	SetPlayer(0, POS, DEFALT);
+
 	if (operationtyoe == OPERATIONTYPE_2P)
 	{
 		SetPlayer(1, DEFALT, DEFALT);
@@ -510,7 +512,16 @@ Player* GetPlayer(void)
 //========================================================================
 void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	g_aPlayer[nIdx].pModelData = SetModelData(PARENTMODELTYPE_PLAYER);
+	switch (nIdx)
+	{
+	case 0:
+		g_aPlayer[nIdx].pModelData = SetModelData(PARENTMODELTYPE_PLAYER1P);
+		break;
+
+	case 1:
+		g_aPlayer[nIdx].pModelData = SetModelData(PARENTMODELTYPE_PLAYER2P);
+		break;
+	}
 	g_aPlayer[nIdx].motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLAYER);
 
 	g_aPlayer[nIdx].bUse = true;

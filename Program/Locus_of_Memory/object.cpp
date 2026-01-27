@@ -79,7 +79,8 @@ void InitObject(void)
 
 	LoadModel(MODEL_SCRIPT);
 
-	LoadParentModel(PARENTMODEL_SCRIPT);
+	LoadParentModel(PARENTMODEL_1PSCRIPT);
+	LoadParentModel(PARENTMODEL_2PSCRIPT);
 }
 
 //======================================================================================

@@ -21,8 +21,7 @@ void InitMotion(void)
 	MotionData* pMotionData = &g_aMotionData[0];
 
 	memset(pMotionData, NULL, sizeof(MotionData) * MAX_MOTIONDATA);
-
-	LoadMotionInfo(MOTION_SCRIPT);
+	LoadMotionInfo(MOTION_PLAYERSCRIPT);
 }
 
 //=============================================================================

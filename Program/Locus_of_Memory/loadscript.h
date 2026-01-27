@@ -19,9 +19,10 @@
 #define STAGE_SCRIPT		"data/SCRIPTS/stage.txt"	// ステージ情報スクリプト
 #define OBJECT_SCRIPT		"data/SCRIPTS/object.txt"	// オブジェクト情報スクリプト
 
-#define MODEL_SCRIPT		"data/SCRIPTS/model.txt"	// モデル情報スクリプト
-#define PARENTMODEL_SCRIPT	"data/SCRIPTS/test.txt"		// モデル情報スクリプト
-#define MOTION_SCRIPT		"data/SCRIPTS/motion.txt"	// モデル情報スクリプト
+#define MODEL_SCRIPT			"data/SCRIPTS/model.txt"		// モデル情報スクリプト
+#define PARENTMODEL_1PSCRIPT	"data/SCRIPTS/1P_model.txt"		// モデル情報スクリプト
+#define PARENTMODEL_2PSCRIPT	"data/SCRIPTS/2P_model.txt"		// モデル情報スクリプト
+#define MOTION_PLAYERSCRIPT		"data/SCRIPTS/player_motion.txt"	// モーション情報スクリプト
 
 //*****************************************************************************
 // プロトタイプ宣言

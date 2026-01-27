@@ -47,7 +47,8 @@ typedef enum
 //*****************************************************************************
 typedef enum PARENTMODELTYPE
 {
-	PARENTMODELTYPE_PLAYER = 0,
+	PARENTMODELTYPE_PLAYER1P = 0,	// 1P
+	PARENTMODELTYPE_PLAYER2P,	// 2P
 	PARENTMODELTYPE_MAX
 }PARENTMODELTYPE;
 

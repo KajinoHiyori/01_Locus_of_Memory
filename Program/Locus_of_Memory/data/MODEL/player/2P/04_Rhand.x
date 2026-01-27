@@ -227,7 +227,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\locus of memory\\01_テクスチャ\\skin.png";
+    "data\\TEXTURE\skin.png";
    }
   }
  }
