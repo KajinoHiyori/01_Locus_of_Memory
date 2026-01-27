@@ -507,7 +507,7 @@ void Update(void)
 		UpdateResult();
 		break;
 
-		// ランキングモード
+		// 診断モード
 	case MODE_DIAGNOSIS:
 		UpdateDiagnosis();
 		break;
@@ -563,7 +563,7 @@ void Draw(void)
 				DrawResult();
 				break;
 
-				// ランキングモード
+				// 診断モード
 			case MODE_DIAGNOSIS:
 				DrawDiagnosis();
 				break;
@@ -631,7 +631,7 @@ void SetMode(MODE mode)
 		UninitResult();
 		break;
 
-		// ランキングモード
+		// 診断モード
 	case MODE_DIAGNOSIS:
 		UninitDiagnosis();
 		break;
@@ -660,7 +660,7 @@ void SetMode(MODE mode)
 		InitResult();
 		break;
 
-		// ランキングモード
+		// 診断モード
 	case MODE_DIAGNOSIS:
 		InitDiagnosis();
 		break;
