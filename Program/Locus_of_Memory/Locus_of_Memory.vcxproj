@@ -157,6 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="animal.cpp" />
     <ClCompile Include="diagnosis.cpp" />
     <ClCompile Include="diagnosisui.cpp" />
     <ClCompile Include="effect.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="animal.h" />
     <ClInclude Include="diagnosis.h" />
     <ClInclude Include="diagnosisui.h" />
     <ClInclude Include="effect.h" />

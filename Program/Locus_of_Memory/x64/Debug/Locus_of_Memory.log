@@ -1,24 +1,73 @@
-﻿object.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixMultiply が関数 "void __cdecl DrawObject(void)" (?DrawObject@@YAXXZ) で参照されました
+﻿  pch.cpp
+  C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\pch.h(36,1): warning C4005: 'DIRECTINPUT_VERSION': マクロが再定義されました。
+C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include\dinput.h(42): message : 'DIRECTINPUT_VERSION' の以前の定義を確認してください
+  diagnosis.cpp
+  diagnosisui.cpp
+  effect.cpp
+  loadscript.cpp
+  motion.cpp
+  object.cpp
+  camera.cpp
+  debugproc.cpp
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\debugproc.cpp(68,22): warning C4838: 'float' から 'LONG' への変換には縮小変換が必要です
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\debugproc.cpp(68,22): warning C4244: '初期化中': 'float' から 'LONG' への変換です。データが失われる可能性があります。
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\debugproc.cpp(68,36): warning C4838: 'float' から 'LONG' への変換には縮小変換が必要です
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\debugproc.cpp(68,36): warning C4244: '初期化中': 'float' から 'LONG' への変換です。データが失われる可能性があります。
+  fade.cpp
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\fade.cpp(105,34): warning C4305: '-=': 'double' から 'FLOAT' へ切り詰めます。
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\fade.cpp(118,34): warning C4305: '+=': 'double' から 'FLOAT' へ切り詰めます。
+  fog.cpp
+  game.cpp
+  input.cpp
+  light.cpp
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\light.cpp(31,18): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+  magic.cpp
+  main.cpp
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\main.cpp(89,22): warning C4838: 'float' から 'LONG' への変換には縮小変換が必要です
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\main.cpp(89,22): warning C4244: '初期化中': 'float' から 'LONG' への変換です。データが失われる可能性があります。
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\main.cpp(89,36): warning C4838: 'float' から 'LONG' への変換には縮小変換が必要です
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\main.cpp(89,36): warning C4244: '初期化中': 'float' から 'LONG' への変換です。データが失われる可能性があります。
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\main.cpp(158,41): warning C4018: '>=': signed と unsigned の数値を比較しようとしました。
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\main.cpp(256,26): warning C4244: '=': 'float' から 'UINT' への変換です。データが失われる可能性があります。
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\main.cpp(258,27): warning C4244: '=': 'float' から 'UINT' への変換です。データが失われる可能性があります。
+  meshfield.cpp
+  player.cpp
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\player.cpp(60,16): warning C4101: 'pMat': ローカル変数は 1 度も使われていません。
+  result.cpp
+  shadow.cpp
+  title.cpp
+  コードを生成中...
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\magic.cpp(253): warning C4715: 'PressCommand': 値を返さないコントロール パスがあります。
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\input.cpp(397): warning C4715: 'GetJoypadLeftTriggePress': 値を返さないコントロール パスがあります。
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\loadscript.cpp(299): warning C4715: 'LoadParentModel': 値を返さないコントロール パスがあります。
+  コンパイル中...
+  titleui.cpp
+  tutorial.cpp
+  コードを生成中...
+shadow.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
+effect.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
+object.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
 meshfield.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
 player.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
-shadow.obj : error LNK2001: 外部シンボル D3DXMatrixMultiply は未解決です
-object.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixTranslation が関数 "void __cdecl DrawObject(void)" (?DrawObject@@YAXXZ) で参照されました
+effect.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixInverse が関数 "void __cdecl DrawEffect(void)" (?DrawEffect@@YAXXZ) で参照されました
+shadow.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
+effect.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
+object.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
 meshfield.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
 player.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
-shadow.obj : error LNK2001: 外部シンボル D3DXMatrixTranslation は未解決です
+shadow.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+titleui.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+effect.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+object.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+meshfield.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
+result.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
 object.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixRotationYawPitchRoll が関数 "void __cdecl DrawObject(void)" (?DrawObject@@YAXXZ) で参照されました
 meshfield.obj : error LNK2001: 外部シンボル D3DXMatrixRotationYawPitchRoll は未解決です
 player.obj : error LNK2001: 外部シンボル D3DXMatrixRotationYawPitchRoll は未解決です
 shadow.obj : error LNK2001: 外部シンボル D3DXMatrixRotationYawPitchRoll は未解決です
 object.obj : error LNK2019: 未解決の外部シンボル D3DXLoadMeshFromXA が関数 "void __cdecl LoadObjectModel(char const *)" (?LoadObjectModel@@YAXPEBD@Z) で参照されました
-player.obj : error LNK2001: 外部シンボル D3DXLoadMeshFromXA は未解決です
 object.obj : error LNK2019: 未解決の外部シンボル D3DXGetFVFVertexSize が関数 "void __cdecl LoadObjectModel(char const *)" (?LoadObjectModel@@YAXPEBD@Z) で参照されました
-shadow.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
-titleui.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
-object.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
-meshfield.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
-player.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
-result.obj : error LNK2001: 外部シンボル D3DXCreateTextureFromFileA は未解決です
 camera.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixLookAtLH が関数 "void __cdecl SetCamera(int)" (?SetCamera@@YAXH@Z) で参照されました
 camera.obj : error LNK2019: 未解決の外部シンボル D3DXMatrixPerspectiveFovLH が関数 "void __cdecl SetCamera(int)" (?SetCamera@@YAXH@Z) で参照されました
 debugproc.obj : error LNK2019: 未解決の外部シンボル D3DXCreateFontA が関数 "void __cdecl InitDebugProc(void)" (?InitDebugProc@@YAXXZ) で参照されました
@@ -34,6 +83,7 @@ input.obj : error LNK2001: 外部シンボル c_dfDIKeyboard は未解決です
 light.obj : error LNK2019: 未解決の外部シンボル D3DXVec3Normalize が関数 "void __cdecl InitLight(void)" (?InitLight@@YAXXZ) で参照されました
 main.obj : error LNK2001: 外部シンボル D3DXVec3Normalize は未解決です
 meshfield.obj : error LNK2001: 外部シンボル D3DXVec3Normalize は未解決です
+player.obj : error LNK2001: 外部シンボル D3DXVec3Normalize は未解決です
 main.obj : error LNK2019: 未解決の外部シンボル Direct3DCreate9 が関数 "long __cdecl Init(struct HINSTANCE__ *,struct HWND__ *,int)" (?Init@@YAJPEAUHINSTANCE__@@PEAUHWND__@@H@Z) で参照されました
 meshfield.obj : error LNK2019: 未解決の外部シンボル D3DXVec3TransformCoord が関数 "bool __cdecl CollisionMeshField(struct D3DXVECTOR3 *,struct D3DXVECTOR3 *,struct D3DXVECTOR3 *)" (?CollisionMeshField@@YA_NPEAUD3DXVECTOR3@@00@Z) で参照されました
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\d3d9.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
@@ -41,4 +91,4 @@ C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\d3dx9.lib : war
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\dxguid.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\dinput8.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
 C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86\xinput.lib : warning LNK4272: ライブラリのコンピューターの種類 'x86' がターゲットのコンピューターの種類' x64' と競合しています
-C:\Users\student\Desktop\Locus of Memory\Locus-of-Memory\Program\Locus_of_Memory\Locus_of_Memory.exe : fatal error LNK1120: 21 件の未解決の外部参照
+C:\Users\student\Desktop\新しいフォルダー\01_Locus_of_Memory\Program\Locus_of_Memory\Locus_of_Memory.exe : fatal error LNK1120: 22 件の未解決の外部参照

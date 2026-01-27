@@ -138,6 +138,9 @@
     <ClCompile Include="effect.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="animal.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -207,6 +210,9 @@
       <Filter>main\h</Filter>
     </ClInclude>
     <ClInclude Include="effect.h">
+      <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="animal.h">
       <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
