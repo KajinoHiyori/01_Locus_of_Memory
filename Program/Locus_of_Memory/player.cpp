@@ -107,11 +107,11 @@ void InitPlayer(void)
 	}
 
 	OPERATIONTYPE operationtyoe = GetOperationType();
-	SetPlayer(0, POS, DEFALT);
+	SetPlayer(0, POS, DEFALT, PARENTMODELTYPE_PLAYER1P);
 
 	if (operationtyoe == OPERATIONTYPE_2P)
 	{
-		SetPlayer(1, DEFALT, DEFALT);
+		SetPlayer(1, DEFALT, DEFALT, PARENTMODELTYPE_PLAYER2P);
 	}
 }
 
@@ -510,18 +510,9 @@ Player* GetPlayer(void)
 //========================================================================
 // プレイヤーを設置する
 //========================================================================
-void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype)
 {
-	switch (nIdx)
-	{
-	case 0:
-		g_aPlayer[nIdx].pModelData = SetModelData(PARENTMODELTYPE_PLAYER1P);
-		break;
-
-	case 1:
-		g_aPlayer[nIdx].pModelData = SetModelData(PARENTMODELTYPE_PLAYER2P);
-		break;
-	}
+	g_aPlayer[nIdx].pModelData = SetModelData(parentmodeltype);
 	g_aPlayer[nIdx].motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLAYER);
 
 	g_aPlayer[nIdx].bUse = true;

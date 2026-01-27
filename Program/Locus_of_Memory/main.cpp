@@ -17,6 +17,7 @@
 #include "result.h"
 #include "diagnosis.h"
 #include "fade.h"
+#include "loadscript.h"
 
 #include "camera.h"
 //#include "light.h"
@@ -375,6 +376,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// マウスカーソルを非表示
 	ShowCursor(false);
 #endif
+
+	LoadScript(INFORMATION_SCRIPT);
 
 	return S_OK;
 }

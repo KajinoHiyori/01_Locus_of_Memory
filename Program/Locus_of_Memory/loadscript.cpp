@@ -17,6 +17,7 @@
 #define LOAD_START			"SCRIPT"			// 読み込み
 #define LOAD_END			"END_SCRIPT"		// 終了
 #define LOAD_OBJECT			"OBJECTSCRIPT"		// オブジェクトスクリプト読み込み
+#define LOAD_PARENTMODEL	"PARENTSCRIPT"		// 階層構造モデルスクリプト読み込み
 #define LOAD_PLAYER			"CHARACTERSET"		// プレイヤー情報読み込み
 #define LOAD_ENDPLAYER		"END_CHARACTERSET"	// プレイヤー情報読み込み終了
 #define LOAD_PARTS			"PARTSSET"			// パーツ情報読み込み
@@ -105,16 +106,16 @@ HRESULT LoadScript(const char* pScriptFileName)
 		(void)fgets(aStr, sizeof(aStr), pScriptFile);		// 一行読み取り
 
 		if (strstr(aStr, LOAD_MOTION) != NULL)
-		{
+		{// MOTIONSCRIPTを読み込んだ
 			pStart = strchr(aStr, '=');
 
 			(void)sscanf(pStart + 1, "%s %d", &aScriptPath, &type);
 
-			//LoadMotionInfo(aScriptPath, (OBJECTTYPE)type);
+			LoadMotionInfo(aScriptPath);
 		}
 
 		if (strstr(aStr, LOAD_OBJECT) != NULL)
-		{
+		{// OBJECTSCRIPTを読み込んだ
 			pStart = strchr(aStr, '=');
 
 			(void)sscanf(pStart + 1, "%s %d", &aScriptPath, &type);
@@ -122,8 +123,17 @@ HRESULT LoadScript(const char* pScriptFileName)
 			LoadObject(aScriptPath);
 		}
 
+		if (strstr(aStr, LOAD_PARENTMODEL) != NULL)
+		{// PARENTSCRIPTを読み込んだ
+			pStart = strchr(aStr, '=');
+
+			(void)sscanf(pStart + 1, "%s %d", &aScriptPath, &type);
+
+			LoadParentModel(aScriptPath);
+		}
+
 		if (strstr(aStr, LOAD_END))
-		{
+		{// END_SCRIPTを読み込んだ
 			fclose(pScriptFile);
 
 			break;

@@ -8,6 +8,7 @@
 #define	_PLAYER_H_
 
 #include "motion.h"
+#include "object.h"
 
 // マクロ定義
 #define MAX_PLAYERMAT		(16)	// マテリアルの最大数
@@ -113,5 +114,5 @@ void UninitPlayer(void);
 void UpdatePlayer(void);
 void DrawPlayer(void);
 Player* GetPlayer(void);
-void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype);
 #endif
