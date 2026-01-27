@@ -147,6 +147,9 @@
     <ClCompile Include="particle.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="start.cpp">
+      <Filter>title\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -226,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="particle.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="start.h">
+      <Filter>title\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
