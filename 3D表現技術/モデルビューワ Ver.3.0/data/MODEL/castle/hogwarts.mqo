@@ -2,14 +2,14 @@ Metasequoia Document
 Format Text Ver 1.0
 
 Scene {
-	pos 0.0000 0.0000 62500.0000
-	lookat 702.9122 2190.0378 -670.8446
-	head -43.8872
-	pich 0.6392
-	bank -0.0160
+	pos -340.2159 -1660.4574 15728.6416
+	lookat 0.0000 0.0000 0.0000
+	head 0.0264
+	pich 0.0136
+	bank 0.0000
 	ortho 0
-	zoom2 49.1610
-	amb 0.337 0.337 0.337
+	zoom2 0.4768
+	amb 0.250 0.250 0.250
 	dirlights 1 {
 		light {
 			dir 0.408 0.408 0.816
@@ -28,6 +28,18 @@ Material 10 {
 	"mat5" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Pictures\gate000.jpg") proj_type(1) proj_pos(0.000 21.504 0.000) proj_scale(59.529 22.734 100.000) proj_angle(0.000 0.000 0.000)
 	"mat8" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Pictures\gate000.jpg") proj_type(1) proj_pos(0.000 0.000 0.000) proj_scale(100.000 100.000 100.000) proj_angle(99.500 -0.000 0.000)
 	"mat10" col(0.475 0.478 0.533 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.420) power(29.00)
+}
+Object "obj1" {
+	visible 15
+	locking 0
+	shading 1
+	facet 59.5
+	color 0.898 0.498 0.698
+	color_type 0
+	vertex 0 {
+	}
+	face 0 {
+	}
 }
 Object "“ƒ1-1" {
 	visible 15
