@@ -29007,7 +29007,7 @@ Mesh {
    0.040000;0.040000;0.040000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\renga000.jpg";
+    "data\\TEXTURE\\renga000.jpg";
    }
   }
   Material {
@@ -29016,7 +29016,7 @@ Mesh {
    0.040000;0.040000;0.040000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\renga000.jpg";
+    "data\\TEXTURE\\renga000.jpg";
    }
   }
   Material {
@@ -29031,7 +29031,7 @@ Mesh {
    0.070000;0.070000;0.070000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\renga.png";
+    "data\\TEXTURE\\renga.png";
    }
   }
   Material {
@@ -29040,7 +29040,7 @@ Mesh {
    0.080000;0.080000;0.080000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\stend000.jpg";
+    "data\\TEXTURE\\stend000.jpg";
    }
   }
   Material {
@@ -29049,7 +29049,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\stend000.jpg";
+    "data\\TEXTURE\\stend000.jpg";
    }
   }
   Material {
@@ -29058,7 +29058,7 @@ Mesh {
    0.050000;0.050000;0.050000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\renga000.jpg";
+    "data\\TEXTURE\\renga000.jpg";
    }
   }
   Material {
@@ -29067,7 +29067,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\gate000.jpg";
+    "data\\TEXTURE\\gate000.jpg";
    }
   }
   Material {
@@ -29076,7 +29076,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\gate000.jpg";
+    "data\\TEXTURE\\gate000.jpg";
    }
   }
   Material {
