@@ -9,12 +9,12 @@
 #define _ANIMAL_H_
 
 #include "main.h"
+#include "object.h"
 
 //=====================================
 //	マクロ定義
 //=====================================
-#define MAX_ANIMAL (128)			// 動物の最大数
-#define MAX_ANIMALMODEL (4)			// モデルの種類の最大数
+#define MAX_ANIMAL (4)			// パーツ数
 
 //=====================================
 //	構造体
@@ -26,6 +26,8 @@ typedef struct
 	D3DXVECTOR3 rot;			// 向き
 	D3DXMATRIX	mtxWorld;		// ワールドマトリックス
 	int nType;					// モデルの種類
+	Model aModel[4];			// モデル(パーツ)
+	int nNumModel;				// モデル(パーツ)の総数
 	bool bUse;					// 使用状態
 }Animal;
 
@@ -44,9 +46,9 @@ typedef struct
 //=====================================
 
 void InitAnimal(void);
-//void UninitAnimal(void);
-//void UpdateAnimal(void);
-//void DrawAnimal(void);
-//void SetAnimal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType);
+void UninitAnimal(void);
+void UpdateAnimal(void);
+void DrawAnimal(void);
+void SetAnimal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType);
 
 #endif
