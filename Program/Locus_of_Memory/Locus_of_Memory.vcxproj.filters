@@ -141,6 +141,9 @@
     <ClCompile Include="animal.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="gameui.cpp">
+      <Filter>game\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="animal.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="gameui.h">
+      <Filter>game\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
