@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClCompile Include="diagnosis.cpp" />
     <ClCompile Include="diagnosisui.cpp" />
+    <ClCompile Include="effect.cpp" />
     <ClCompile Include="loadscript.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="object.cpp" />
@@ -186,6 +187,7 @@
   <ItemGroup>
     <ClInclude Include="diagnosis.h" />
     <ClInclude Include="diagnosisui.h" />
+    <ClInclude Include="effect.h" />
     <ClInclude Include="loadscript.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="object.h" />

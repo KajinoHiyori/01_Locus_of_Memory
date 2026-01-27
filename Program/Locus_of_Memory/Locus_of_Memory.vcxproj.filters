@@ -135,6 +135,9 @@
     <ClCompile Include="motion.cpp">
       <Filter>main\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="effect.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="motion.h">
       <Filter>main\h</Filter>
+    </ClInclude>
+    <ClInclude Include="effect.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
