@@ -150,6 +150,9 @@
     <ClCompile Include="start.cpp">
       <Filter>title\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="startui.cpp">
+      <Filter>title\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -231,6 +234,9 @@
       <Filter>object\h</Filter>
     </ClInclude>
     <ClInclude Include="start.h">
+      <Filter>title\h</Filter>
+    </ClInclude>
+    <ClInclude Include="startui.h">
       <Filter>title\h</Filter>
     </ClInclude>
   </ItemGroup>
