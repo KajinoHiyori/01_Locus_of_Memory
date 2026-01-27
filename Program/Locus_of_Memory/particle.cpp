@@ -52,7 +52,7 @@ void UpdateParticle(void)
 	D3DXVECTOR3 move;
 	int nCountParticle = 0;
 
-	if (GetKeyboardTrigger(DIK_RETURN) == true)
+	if (GetKeyboardTrigger(DIK_BACK) == true)
 	{
 		SetParticle(D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20,PARTICLETYPE_001);
 	}
