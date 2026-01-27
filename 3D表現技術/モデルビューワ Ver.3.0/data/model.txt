@@ -34,11 +34,13 @@ MODEL_FILENAME = data/MODEL/house/house.x       # [1]家
 MODEL_FILENAME = data/MODEL/shop/X/shop000.x	# [2]店1号
 MODEL_FILENAME = data/MODEL/shop/X/shop001.x	# [3]店2号
 MODEL_FILENAME = data/MODEL/temple/temple.x 	# [4]神殿
-MODEL_FILENAME = data/MODEL/house/house2.x       # [5]家2(仮)
-MODEL_FILENAME = data/MODEL/house/house003.x       # [6]家3(仮)
+MODEL_FILENAME = data/MODEL/house/house2.x      # [5]家2(仮)
+MODEL_FILENAME = data/MODEL/house/house003.x    # [6]家3(仮)
 MODEL_FILENAME = data/MODEL/shop/X/shop002.x	# [7]店3号
-MODEL_FILENAME = data/MODEL/house/house004.x       # [8]家4(仮)
-MODEL_FILENAME = data/MODEL/lectern/lectern.x       # [9]書見台
+MODEL_FILENAME = data/MODEL/house/house004.x    # [8]家4(仮)
+MODEL_FILENAME = data/MODEL/lectern/lectern.x   # [9]書見台
+MODEL_FILENAME = data/MODEL/castle/castle.x     # [10]城
+
 #------------------------------------------------------------------------------
 # カメラ情報
 #------------------------------------------------------------------------------
@@ -91,128 +93,128 @@ WALLSET
 	TEXTYPE = 3
 	POS = -956.71 0 -4809.70
 	ROT = 0 180 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 956.71 0 -4809.70
 	ROT = 0 157.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 2724.48 0 -4077.47
 	ROT = 0 135 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 4077.47 0 -2724.48
 	ROT = 0 112.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 4809.70 0 -956.71
 	ROT = 0 90 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 4809.70 0 956.71
 	ROT = 0 67.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 4077.47 0 2724.48
 	ROT = 0 45 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 2724.48 0 4077.47
 	ROT = 0 22.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 956.71 0 4809.70
 	ROT = 0 0 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -956.71 0 4809.70
 	ROT = 0 337.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -2724.48 0 4077.47
 	ROT = 0 315 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -4077.47 0 2724.48
 	ROT = 0 292.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -4809.70 0 956.71
 	ROT = 0 270 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -4809.70 0 -956.71
 	ROT = 0 247.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -4077.47 0 -2724.48
 	ROT = 0 225 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -2724.48 0 -4077.47
 	ROT = 0 202.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 #------------------------------------------------------------------------------
@@ -652,12 +654,19 @@ END_MODELSET
 
 MODELSET
 	TYPE = 9
-	POS = 110 0 5000
+	POS = 0 0 5000
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 10
+	POS = 0 0 7000
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
 #------------------------------------------------------------------------------
 # ビルボード配置情報
 #------------------------------------------------------------------------------
