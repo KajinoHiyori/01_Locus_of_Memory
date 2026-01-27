@@ -144,6 +144,9 @@
     <ClCompile Include="gameui.cpp">
       <Filter>game\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="particle.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -220,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="gameui.h">
       <Filter>game\h</Filter>
+    </ClInclude>
+    <ClInclude Include="particle.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
