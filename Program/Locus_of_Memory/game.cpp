@@ -8,6 +8,8 @@
 #include"player.h"
 #include"input.h"
 #include "debugproc.h"
+#include "gameui.h"
+#include "main.h"
 //#include"sound.h"
 #include"fade.h"
 //#include"pause.h"
@@ -15,7 +17,6 @@
 #include"light.h"
 //#include"polygon.h"
 //#include"model.h"
-#include"player.h"
 #include"shadow.h"
 //#include"billboard.h"
 //#include"wall.h"
@@ -31,8 +32,6 @@
 
 #include"meshfield.h"
 
-bool g_bPauseMenu = true;					// ポーズメニュー状態のON/OFF
-bool g_bPause = false;
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 int g_nCounterGameState = 0;				// 状態管理カウンター
 
@@ -64,6 +63,8 @@ void InitGame(void)
 	InitShadow();
 
 	InitPlayer();
+
+	InitGameUI();
 
 	//InitModel();
 
@@ -105,6 +106,8 @@ void UninitGame(void)
 
 	//UninitBlock();
 
+	UninitGameUI();
+
 	//UninitScore();
 
 	//UninitTimer();
@@ -121,77 +124,48 @@ void UpdateGame(void)
 	FADE* pFade = GetFade();
 	//Timer* pTimer = GetTimer();
 
-
-	if (GetKeyboardTrigger(DIK_P) == true)
-	{
-		g_bPause = (g_bPause) ? false : true;
-	}
-	PrintDebugProc("ポーズ状態[%d]\n", g_bPause);
-
 	
-	if (g_bPause == true)
-	{// ポーズ中
+	// プレイヤーの更新処理
+	//UpdateBG();
 
-		//if (GetKeyboardTrigger(DIK_F4) == true)
-		//{// ポーズ画面ON/OFF切り替え
+	// ライトの更新処理
+	UpdateLight();
 
-		//	g_bPauseMenu = g_bPauseMenu ? false : true;
-		//}
+	//UpdateField();
 
-		//if (g_bPauseMenu == true)
-		//{// ポーズ画面ON
+	//UpdateMeshsky();
 
-		//	// ポーズの更新処理
-		//	UpdatePause();
-		//}
-	}
-	else
-	{
-		// プレイヤーの更新処理
-		//UpdateBG();
+	// メッシュフィールドの更新処理
+	UpdateMeshField();
 
-		// ライトの更新処理
-		UpdateLight();
+	//UpdateWall();
 
-		//UpdateField();
+	//UpdateMashwall();
 
-		//UpdateMeshsky();
+	//UpdateBullet();
 
-		// メッシュフィールドの更新処理
-		UpdateMeshField();
+	UpdateShadow();
 
-		//UpdateWall();
+	//UpdateBillboard();
 
-		//UpdateMashwall();
+	UpdatePlayer();
 
-		//UpdateBullet();
+	//UpdateMotion();
 
-		UpdateShadow();
+	//UpdateModel();
 
-		//UpdateBillboard();
+	//UpdateBlock();
 
-		UpdatePlayer();
+	//UpdateScore();
 
-		//UpdateMotion();
+	//UpdateTimer();
 
-		//UpdateModel();
-
-		//UpdateBlock();
-
-		//UpdateScore();
-
-		//UpdateTimer();
-	}
+	UpdateGameUI();
+	
 
 	switch (g_gameState)
 	{
 	case GAMESTATE_NORMAL:		// 通常状態
-
-		if (GetKeyboardTrigger(DIK_P) == true && *pFade == FADE_NONE || GetJoypadPress(JOYKEY_B,1) == true && *pFade == FADE_NONE)
-		{// ポーズON/OFF切り替え
-
-			g_bPause = g_bPause ? false : true;
-		}
 
 		break;
 
@@ -275,22 +249,10 @@ void DrawGame(void)
 
 	//DrawTimer();
 
-	if (g_bPause == true)
-	{// ポーズ中
-
-		if (g_bPauseMenu == true)
-		{// ポーズ画面ON
-
-			// ポーズの描画処理
-			//DrawPause();
-		}
-	}
+	DrawGameUI();
 
 }
-void SetEnablePause(bool bPause)
-{
-	g_bPause = bPause;
-}
+
 void SetGameState(GAMESTATE state, int nCounter)
 {
 	g_gameState = state;				// ゲーム状態設定

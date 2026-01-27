@@ -10,23 +10,23 @@
 // UIの種類
 typedef enum
 {
-	PAUSE_MENU_CLOCK = 0,	// 時計
-	PAUSE_MENU_MAGICBOOK,	// 魔導書
-	PAUSE_MENU_CONTINUE,	// CONTINUE
-	PAUSE_MENU_RETRY,		// RETRY
-	PAUSE_MENU_QUIT,		// QUIT
-	PAUSE_MENU_PAUSE,		// PAUSEタイトル
-	PAUSE_MENU_PHONE,		// スマホ
-	PAUSE_MENU_1PALPHA,		// ポーズ背景を暗くする[1P]
-	PAUSE_MENU_2PALPHA,		// ポーズ背景を暗くする[2P]
-	PAUSE_MENU_MAX
-}PAUSE_MENU;
+	GAMEUI_TYPE_CLOCK = 0,	// 時計
+	GAMEUI_TYPE_MAGICBOOK,	// 魔導書
+	GAMEUI_TYPE_CONTINUE,	// CONTINUE
+	GAMEUI_TYPE_RETRY,		// RETRY
+	GAMEUI_TYPE_QUIT,		// QUIT
+	GAMEUI_TYPE_PAUSE,		// PAUSEタイトル
+	GAMEUI_TYPE_PHONE,		// スマホ
+	GAMEUI_TYPE_1PALPHA,		// ポーズ背景を暗くする[1P]
+	GAMEUI_TYPE_2PALPHA,		// ポーズ背景を暗くする[2P]
+	GAMEUI_TYPE_MAX
+}GAMEUI_TYPE;
 
 // プロトタイプ宣言
-void InitPause(void);
-void UninitPause(void);
-void UpdatePause(void);
-void DrawPause(void);
-void SetPause(int pauseMenu);
+void InitGameUI(void);
+void UninitGameUI(void);
+void UpdateGameUI(void);
+void DrawGameUI(void);
+void SetGameUI(int pauseMenu);
 
 #endif

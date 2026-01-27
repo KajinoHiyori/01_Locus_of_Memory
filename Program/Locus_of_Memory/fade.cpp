@@ -112,9 +112,6 @@ void UpdateFade(void)
         }
         else if (g_fade == FADE_OUT)
         {
-            // ƒ|[ƒY‚ð–³Œø‚É‚·‚é
-            SetEnablePause(false);
-
             g_colorFade.a += 0.03;
 
             if (g_colorFade.a >= 1.0f)
