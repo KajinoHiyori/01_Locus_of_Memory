@@ -114,10 +114,10 @@ void InitDiagnosisUI(void)
 			pVtx[2].pos = D3DXVECTOR3(LOGO_POS.x - LOGO_WIDTH, LOGO_POS.y + LOGO_HEIGHT, 0.0f);
 			pVtx[3].pos = D3DXVECTOR3(LOGO_POS.x + LOGO_WIDTH, LOGO_POS.y + LOGO_HEIGHT, 0.0f);
 			// í∏ì_ÉJÉâÅ[ÇÃê›íË
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+			pVtx[1].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+			pVtx[2].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+			pVtx[3].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
 			break;
 
 		case DiagnosisUITYPE_1PPLAY:	// 1PPLAY

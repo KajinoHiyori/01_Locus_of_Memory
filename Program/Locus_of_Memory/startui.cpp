@@ -1,62 +1,62 @@
 #if 0
 
-
+#endif // 0
 
 //======================================================================================
 // 
-// タイトルの2DUI処理[titleui.h]
+// タイトルの2DUI処理[startui.h]
 //
 //======================================================================================
 #include "main.h"
 #include "fade.h"
-#include "titleui.h"
-#include "title.h"
+#include "startui.h"
+#include "start.h"
 #include "input.h"
 
 // タイトルUIの種類
 typedef enum
 {
-	TITLEUITYPE_LOGO = 0,	// タイトルロゴ
-	TITLEUITYPE_1PPLAY,		// 1PPALY
-	TITLEUITYPE_2PPLAY,		// 2PPALY
-	TITLEUITYPE_KEYBOARD,	// KEYBOARD
-	TITLEUITYPE_MAX
-}TITLEUITYPE;
+	StartUITYPE_LOGO = 0,	// タイトルロゴ
+	StartUITYPE_1PPLAY,		// 1PPALY
+	StartUITYPE_2PPLAY,		// 2PPALY
+	StartUITYPE_KEYBOARD,	// KEYBOARD
+	StartUITYPE_MAX
+}STARTUITYPE;
 
 // タイトルUI演出の管理
 typedef enum
 {
-	TITLETEXT_MODE_NONE = 0,	// 通常
-	TITLETEXT_MODE_WIDTH,		// 横長
-	TITLETEXT_MODE_HEIGHT,		// 縦長
-	TITLETEXT_MODE_BLINKING,	// 点滅
-	TITLETEXT_MODE_BLINKING1,	// 高速点滅
-	TITLETEXT_MODE_MAX
-}TITLETEXT_MODE;
+	StartTEXT_MODE_NONE = 0,	// 通常
+	StartTEXT_MODE_WIDTH,		// 横長
+	StartTEXT_MODE_HEIGHT,		// 縦長
+	StartTEXT_MODE_BLINKING,	// 点滅
+	StartTEXT_MODE_BLINKING1,	// 高速点滅
+	StartTEXT_MODE_MAX
+}STARTTEXT_MODE;
 
 // タイトルUIの状態
 typedef enum
 {
-	TITLETEXTSTATE_APPEAR = 0,	// ロゴ出現状態
-	TITLETEXTSTATE_NORMAL,		// 通常状態
-	TITLETEXTSTATE_START,		// チュートリアルへの遷移待機
-	TITLETEXTSTATE_MAX
-}TITLETEXTSTATE;
+	StartTEXTSTATE_APPEAR = 0,	// ロゴ出現状態
+	StartTEXTSTATE_NORMAL,		// 通常状態
+	StartTEXTSTATE_START,		// チュートリアルへの遷移待機
+	StartTEXTSTATE_MAX
+}STARTTEXTSTATE;
 
 // タイトルUIの構造体
 typedef struct
 {
-	TITLEUITYPE		type;	// 種類
-	TITLETEXT_MODE	mode;	// 演出
+	STARTUITYPE		type;	// 種類
+	STARTTEXT_MODE	mode;	// 演出
 	D3DXVECTOR3		pos;	// 位置
 	int nCounterState;		// 拡縮を管理
 	float	fWidth;			// 幅
 	float	fHeight;		// 高さ
 	bool	bDisp;			// 表示状態
-}TitleText;
+}StartText;
 
 // マクロ定義
-#define NUM_TITLEUI			(TITLEUITYPE_MAX)	// タイトルUIのレイヤー数
+#define NUM_StartUI			(StartUITYPE_MAX)	// タイトルUIのレイヤー数
 #define SELECT_NUM			(3)			// 操作方法選択数
 #define LOGO_POS			(D3DXVECTOR3(350.0f, 200.0f, 0.0f))	// ロゴの位置
 #define LOGO_WIDTH			(300.0f)	// ロゴの横幅
@@ -67,65 +67,64 @@ typedef struct
 #define SELECT_MARGIN		(80.0f)		// セレクトボタンの余白
 
 // テクスチャの読み込み
-const char* c_apFilenameTitleUI[TITLEUITYPE_MAX] =
+const char* c_apFilenameStartUI[StartUITYPE_MAX] =
 {
-	"data\\TEXTURE\\title_000.png",	// [TITLETEXT_TYPE_BG]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
+	"data\\TEXTURE\\start_000.png",	// [StartTEXT_TYPE_BG]
+	"data\\TEXTURE\\start_001.png",	// [StartTEXT_TYPE_ENTER]
+	"data\\TEXTURE\\start_001.png",	// [StartTEXT_TYPE_ENTER]
+	"data\\TEXTURE\\start_001.png",	// [StartTEXT_TYPE_ENTER]
 };
 
 // グローバル変数
-LPDIRECT3DTEXTURE9 g_apTextureTitleUI[NUM_TITLEUI] = {};	// テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffTitleUI = NULL; // 頂点バッファへのポインタ
-TitleText g_aTitleUI[NUM_TITLEUI];	// 構造体
-int g_nSelectOperation;	// 選択されている操作方法
+LPDIRECT3DTEXTURE9 g_apTextureStartUI[NUM_StartUI] = {};	// テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffStartUI = NULL; // 頂点バッファへのポインタ
+StartText g_aStartUI[NUM_StartUI];	// 構造体
 
 //========================================================================
 // タイトルUIの初期化処理
 //========================================================================
-void InitTitleUI(void)
+void InitStartUI(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
 	pDevice = GetDevice();
 
 	// テクスチャの読み込み
-	for (int nCntUI = 0; nCntUI < NUM_TITLEUI; nCntUI++)
+	for (int nCntUI = 0; nCntUI < NUM_StartUI; nCntUI++)
 	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameTitleUI[nCntUI], &g_apTextureTitleUI[nCntUI]);
+		D3DXCreateTextureFromFile(pDevice, c_apFilenameStartUI[nCntUI], &g_apTextureStartUI[nCntUI]);
 	}
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_TITLEUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffTitleUI, NULL);
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_StartUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffStartUI, NULL);
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffTitleUI->Lock(0, 0, (void**)&pVtx, 0);
+	g_pVtxBuffStartUI->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntTitle = 0; nCntTitle < NUM_TITLEUI; nCntTitle++, pVtx += 4)
+	for (int nCntStart = 0; nCntStart < NUM_StartUI; nCntStart++, pVtx += 4)
 	{
-		switch (nCntTitle)
+		switch (nCntStart)
 		{
-		case TITLEUITYPE_LOGO:	// タイトルロゴ
+		case StartUITYPE_LOGO:	// タイトルロゴ
 			// 頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(LOGO_POS.x - LOGO_WIDTH, LOGO_POS.y - LOGO_HEIGHT, 0.0f);
 			pVtx[1].pos = D3DXVECTOR3(LOGO_POS.x + LOGO_WIDTH, LOGO_POS.y - LOGO_HEIGHT, 0.0f);
 			pVtx[2].pos = D3DXVECTOR3(LOGO_POS.x - LOGO_WIDTH, LOGO_POS.y + LOGO_HEIGHT, 0.0f);
 			pVtx[3].pos = D3DXVECTOR3(LOGO_POS.x + LOGO_WIDTH, LOGO_POS.y + LOGO_HEIGHT, 0.0f);
 			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
+			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
+			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
+			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
 			break;
 
-		case TITLEUITYPE_1PPLAY:	// 1PPLAY
+		case StartUITYPE_1PPLAY:	// 1PPLAY
 		// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
 			// 頂点カラーの設定
 			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -133,12 +132,12 @@ void InitTitleUI(void)
 			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			break;
 
-		case TITLEUITYPE_2PPLAY:	// 2PPLAY
+		case StartUITYPE_2PPLAY:	// 2PPLAY
 		// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
 			// 頂点カラーの設定
 			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
 			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
@@ -146,12 +145,12 @@ void InitTitleUI(void)
 			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
 			break;
 
-		case TITLEUITYPE_KEYBOARD:	// KEYBOARD
+		case StartUITYPE_KEYBOARD:	// KEYBOARD
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntStart - 1) * SELECT_MARGIN, 0.0f);
 			// 頂点カラーの設定
 			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
 			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
@@ -172,133 +171,94 @@ void InitTitleUI(void)
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 
-		g_aTitleUI[nCntTitle].bDisp = true;
+		g_aStartUI[nCntStart].bDisp = true;
 	}
 	// 頂点バッファをアンロック
-	g_pVtxBuffTitleUI->Unlock();
-
-	g_nSelectOperation = TITLEUITYPE_1PPLAY;	// 1PPALYが選択されている
+	g_pVtxBuffStartUI->Unlock();
 }
 
 //========================================================================
 // タイトルUIの終了処理
 //========================================================================
-void UninitTitleUI(void)
+void UninitStartUI(void)
 {
 	// テクスチャの破棄
-	for (int nCntTitle = 0; nCntTitle < NUM_TITLEUI; nCntTitle++)
+	for (int nCntStart = 0; nCntStart < NUM_StartUI; nCntStart++)
 	{
-		if (g_apTextureTitleUI[nCntTitle] != NULL)
+		if (g_apTextureStartUI[nCntStart] != NULL)
 		{
-			g_apTextureTitleUI[nCntTitle]->Release();
-			g_apTextureTitleUI[nCntTitle] = NULL;
+			g_apTextureStartUI[nCntStart]->Release();
+			g_apTextureStartUI[nCntStart] = NULL;
 		}
 	}
 
 	// 頂点バッファの破棄
-	if (g_pVtxBuffTitleUI != NULL)
+	if (g_pVtxBuffStartUI != NULL)
 	{
-		g_pVtxBuffTitleUI->Release();
-		g_pVtxBuffTitleUI = NULL;
+		g_pVtxBuffStartUI->Release();
+		g_pVtxBuffStartUI = NULL;
 	}
 }
 
 //========================================================================
 // タイトルUIの更新処理
 //========================================================================
-void UpdateTitleUI(void)
+void UpdateStartUI(void)
 {
-	// 現在のフェードの状態を管理
-	FADE *pfade = GetFade();
+	//// 現在のフェードの状態を管理
+	//FADE *pfade = GetFade();
 
-	// 選択状態の変更(Repeat)
-	if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true)
-	{
-		g_nSelectOperation--;
-		if (g_nSelectOperation < TITLEUITYPE_1PPLAY)
-		{
-			g_nSelectOperation = TITLEUITYPE_KEYBOARD;
-		}
-	}
-	else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true)
-	{
-		g_nSelectOperation++;
-		if (g_nSelectOperation > TITLEUITYPE_KEYBOARD)
-		{
-			g_nSelectOperation = TITLEUITYPE_1PPLAY;
-		}
-	}
+	//VERTEX_2D* pVtx;
+	//// 頂点バッファをロックし、頂点情報へのポインタを取得
+	//g_pVtxBuffStartUI->Lock(0, 0, (void**)&pVtx, 0);
 
-	if (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true)
-	{
-		switch (g_nSelectOperation)
-		{
-		case TITLEUITYPE_1PPLAY:	// 1PPLAY
-			SetOperationType(OPERATIONTYPE_1P);
-			break;
+	//pVtx += 4;	// ロゴの分だけポインタを進める
 
-		case TITLEUITYPE_2PPLAY:	// 2PPLAY
-			SetOperationType(OPERATIONTYPE_2P);
-			break;
-
-		case TITLEUITYPE_KEYBOARD:	// KEYBOARD
-			SetOperationType(OPERATIONTYPE_KEYBOARD);
-			break;
-		}
-	}
-
-	VERTEX_2D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffTitleUI->Lock(0, 0, (void**)&pVtx, 0);
-
-	pVtx += 4;	// ロゴの分だけポインタを進める
-
-	for (int nCntUI = 0; nCntUI < SELECT_NUM; nCntUI++, pVtx += 4)
-	{
-		if (nCntUI + 1 == g_nSelectOperation)	// 選択部だけ明るく表示
-		{
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		}
-		else
-		{
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-		}
-	}
-	
-	// 頂点バッファをアンロック
-	g_pVtxBuffTitleUI->Unlock();
+	//for (int nCntUI = 0; nCntUI < SELECT_NUM; nCntUI++, pVtx += 4)
+	//{
+	//	if (nCntUI + 1 == g_nSelectOperation)	// 選択部だけ明るく表示
+	//	{
+	//		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//	}
+	//	else
+	//	{
+	//		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	//		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	//		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	//		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	//	}
+	//}
+	//
+	//// 頂点バッファをアンロック
+	//g_pVtxBuffStartUI->Unlock();
 }
 
 //========================================================================
 // タイトルUIの描画処理
 //========================================================================
-void DrawTitleUI(void)
+void DrawStartUI(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
 	pDevice = GetDevice();
 
 	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffTitleUI, 0, sizeof(VERTEX_2D));
+	pDevice->SetStreamSource(0, g_pVtxBuffStartUI, 0, sizeof(VERTEX_2D));
 
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
-	for (int nCntTitle = 0; nCntTitle < NUM_TITLEUI; nCntTitle++)
+	for (int nCntStart = 0; nCntStart < NUM_StartUI; nCntStart++)
 	{
-		if (g_aTitleUI[nCntTitle].bDisp == true)
+		if (g_aStartUI[nCntStart].bDisp == true)
 		{
 			// テクスチャの設定
-			pDevice->SetTexture(0, g_apTextureTitleUI[nCntTitle]);
+			pDevice->SetTexture(0, g_apTextureStartUI[nCntStart]);
 			// ポリゴンの描画
-			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntTitle * 4, 2);
+			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntStart * 4, 2);
 		}
 	}
 }
-#endif // 0

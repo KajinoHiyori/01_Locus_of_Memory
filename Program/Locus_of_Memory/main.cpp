@@ -11,6 +11,7 @@
 //#include "sound.h"
 //#include "effect.h"
 //#include "particle.h"
+#include "start.h"
 #include "title.h"
 #include "tutorial.h"
 #include "game.h"
@@ -47,7 +48,7 @@ void Draw(void);
 //*****************************************************************************
 LPDIRECT3D9 g_pD3D = NULL;					// Direct3Dオブジェクトへのポインタ
 LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;		// Direct3Dデバイスへのポインタ
-MODE g_mode = MODE_TITLE;					// モード情報
+MODE g_mode = MODE_START;					// モード情報
 int g_nCountFPS = 0;						// FPSカウンタ
 int g_nFPS = 60;							// 現在の最大FPS
 bool g_isFullscreen = false;				// フルスクリーンの使用状況
@@ -414,6 +415,9 @@ void Uninit(void)
 	//UninitLight();
 
 	// タイトル画面の終了処理
+	UninitStart();
+
+	// タイトル画面の終了処理
 	UninitTitle();
 
 	// チュートリアル画面の終了処理
@@ -425,7 +429,7 @@ void Uninit(void)
 	// リザルト画面の終了処理
 	UninitResult();
 
-	// ランキング画面の終了処理
+	// 診断画面の終了処理
 	UninitDiagnosis();
 
 	// フェードの終了処理
@@ -487,6 +491,12 @@ void Update(void)
 
 	switch (g_mode)
 	{
+
+		// スタートモード
+	case MODE_START:
+		UpdateStart();
+		break;
+
 		// タイトルモード
 	case MODE_TITLE:
 		UpdateTitle();
@@ -543,6 +553,11 @@ void Draw(void)
 
 			switch (g_mode)
 			{
+				// スタートモード
+			case MODE_START:
+				DrawStart();
+				break;
+
 				// タイトルモード
 			case MODE_TITLE:
 				DrawTitle();
@@ -611,6 +626,11 @@ void SetMode(MODE mode)
 	// 現在のモードの終了処理
 	switch (g_mode)
 	{
+		// スタートモード
+	case MODE_START:
+		UninitStart();
+		break;
+
 		// タイトルモード
 	case MODE_TITLE:
 		UninitTitle();
@@ -640,6 +660,11 @@ void SetMode(MODE mode)
 	// 新しいモードの初期化処理
 	switch (mode)
 	{
+		// スタートモード
+	case MODE_START:
+		InitStart();
+		break;
+
 		// タイトルモード
 	case MODE_TITLE:
 		InitTitle();

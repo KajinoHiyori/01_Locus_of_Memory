@@ -94,7 +94,7 @@ void UpdateDiagnosis(void)
 	if ((GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true) && *pfade == FADE_NONE)
 	{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
 		g_bFadeScane = true;
-		SetFade(MODE_TITLE);
+		SetFade(MODE_START);
 	}
 	
 }

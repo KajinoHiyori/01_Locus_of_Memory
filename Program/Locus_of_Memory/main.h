@@ -14,6 +14,7 @@
 typedef enum
 {
 	MODE_NONE = -1,			// なにもない
+	MODE_START,				// スタート画面
 	MODE_TITLE,				// タイトル画面
 	MODE_TUTORIAL,			// チュートリアル画面
 	MODE_GAME,				// ゲーム画面
