@@ -263,9 +263,10 @@ void DrawGame(void)
 
 	//DrawTimer();
 
+	DrawEffect();
+
 	DrawGameUI();
 
-	DrawEffect();
 
 	DrawParticle();
 
