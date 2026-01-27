@@ -11,11 +11,14 @@
 #include "shadow.h"
 
 //マクロ定義
-#define MAX_MAGIC		(128)		//魔法の最大数
-#define MAX_COMMAND		(3)			//コマンドの最大数
+#define MAX_MAGIC			(128)		//魔法の最大数
+#define MAX_DROPMAGIC		(32)		//落ちてる魔法の最大数
+#define MAX_COMMAND			(3)			//コマンドの最大数
+#define DROPMAGIC_RADIUS	(15.0f)		//落ちてる魔法の半径
 
 //グローバル変数宣言
 Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
+DropMagic g_aDropMagic[MAX_DROPMAGIC];					//落ちてる魔法の情報
 COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
 int nCntCommand[MAX_PLAYER] = {};
 
@@ -35,11 +38,23 @@ void InitMagic(void)
 			g_aMagic[nCntPlayerType][nCntMagic].nIdxShadow = -1;
 		}
 	}
+
+	for (int nCntMagic = 0; nCntMagic < MAX_DROPMAGIC; nCntMagic++)
+	{
+		g_aDropMagic[nCntMagic].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aDropMagic[nCntMagic].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aDropMagic[nCntMagic].oType = COMMANDOREDER_NONE;
+		g_aDropMagic[nCntMagic].fRadius = DROPMAGIC_RADIUS;
+		g_aDropMagic[nCntMagic].bUse = false;
+	}
+
+	SetMagicPosition(COMMANDOREDER_BBB, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
 //魔法の終了処理==============================
 void UninitMagic(void)
 {
+
 }
 
 //魔法の更新処理==============================
@@ -60,6 +75,7 @@ void UpdateMagic(void)
 //魔法の描画処理==============================
 void DrawMagic(void)
 {
+
 }
 
 //コマンド入力情報=============================
@@ -332,13 +348,61 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 }
 
 //魔法の設定処理==============================
-void SetMagicPosition(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
+	DropMagic* pDropMagic = &g_aDropMagic[0];		// 先頭アドレス	
 
+	for (int nCntMagic = 0; nCntMagic < MAX_DROPMAGIC; nCntMagic++, pDropMagic++)
+	{
+		if (pDropMagic->bUse == true)
+		{// もし使ってたら弾く
+			continue;
+		}
+
+		pDropMagic->pos = pos;
+		pDropMagic->rot = rot;
+		pDropMagic->oType = type;
+		pDropMagic->bUse = true;
+
+		break;
+	}
 }
 
 //魔法情報の取得==============================
 Magic* GetMagic(void)
 {
 	return &g_aMagic[0][0];
+}
+
+//フィールドの魔法との当たり判定==============
+COMMANDOREDER CollisionMagic(D3DXVECTOR3 pos, float fRadius)
+{
+	DropMagic* pDropMagic = &g_aDropMagic[0];	// 先頭アドレス
+
+	float fDiff = 0.0f;		// 判定用変数
+
+	for (int nCntMagic = 0; nCntMagic < MAX_DROPMAGIC; nCntMagic++, pDropMagic++)
+	{
+		if (pDropMagic->bUse == false)
+		{// 使っていなかったら弾く
+			continue;
+		}
+
+		// 各距離を二乗したものをすべて足す
+		fDiff = powf(pDropMagic->pos.x - pos.x, 2) + powf(pDropMagic->pos.y - pos.y, 2) + powf(pDropMagic->pos.z - pos.z, 2);
+
+		if (fDiff <= powf(fRadius + pDropMagic->fRadius, 2))
+		{// 当たっていたら
+			// ここで種類に応じた振動を呼び出す
+			PrintDebugProc("[%d]落ちてる魔法とあたっている\n", nCntMagic);
+			return pDropMagic->oType;
+		}
+	}
+
+	return COMMANDOREDER_NONE;
+}
+//魔法情報の取得==============================
+MAGICTYPE GetFieldMagic(D3DXVECTOR3 pos, float fRadius)
+{
+	return MAGICTYPE_NONE;
 }

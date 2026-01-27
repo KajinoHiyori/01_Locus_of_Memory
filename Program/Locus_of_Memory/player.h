@@ -50,6 +50,7 @@ typedef struct
 	Motion			motion;		// プレイヤーのモーション情報
 	ModelData*		pModelData;	// モデルの情報
 	int				nIdxShadow;	// 影のインデックス
+	float			fRadius;	// 半径
 	float			fSpeed;		// 移動量
 	bool			bJump;		// ジャンプ状態
 	MagicBook		magicbook;	// 魔法の種類
@@ -63,5 +64,4 @@ void UpdatePlayer(void);
 void DrawPlayer(void);
 Player* GetPlayer(void);
 void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype);
-void GetMagic(D3DXVECTOR3* pPos, float fRadius);
 #endif

@@ -32,6 +32,8 @@
 #include"effect.h"
 #include"particle.h"
 
+#include "magic.h"
+
 #include"meshfield.h"
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
@@ -65,6 +67,9 @@ void InitGame(void)
 	InitShadow();
 
 	InitPlayer();
+
+	// 魔法の初期化処理
+	InitMagic();
 
 	InitGameUI();
 
@@ -111,6 +116,9 @@ void UninitGame(void)
 	//UninitModel();
 
 	//UninitBlock();
+
+	// 魔法の終了処理
+	UninitMagic();
 
 	UninitGameUI();
 
@@ -165,6 +173,9 @@ void UpdateGame(void)
 	//UpdateScore();
 
 	//UpdateTimer();
+
+	// 魔法の更新処理
+	UpdateMagic();
 
 	UpdateGameUI();
 	
@@ -246,6 +257,9 @@ void DrawGame(void)
 
 	// プレイヤーの描画処理
 	DrawPlayer();
+
+	// 魔法の描画処理
+	DrawMagic();
 
 	//DrawModel();
 

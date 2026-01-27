@@ -98,6 +98,7 @@ void InitObject(void);
 void UninitObject(void);
 void UpdateObject(void);
 void DrawObject(void);
+void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius);
 void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision);
 void LoadObjectModel(const char* pModelPath);
 ModelData* SetModelData(PARENTMODELTYPE type);

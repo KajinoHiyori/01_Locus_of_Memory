@@ -20,18 +20,6 @@
 #define VTX_MIN		(D3DXVECTOR3(10000.0f, 10000.0f, 10000.0f))		// オブジェクトの大きさの初期化値(最小)
 #define VTX_MAX		(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// オブジェクトの大きさの初期化値(最大)
 
-//// テクスチャの読み込み
-//const char* c_apFilenameObject[NUM_OBJECT] =
-//{
-//	"data\\MODEL\\object\\object_000.x",	// オブジェクト[0]
-//	"data\\MODEL\\object\\object_001.x",	// オブジェクト[0]
-//	"data\\MODEL\\object\\object_002.x",	// オブジェクト[0]
-//	"data\\MODEL\\object\\object_003.x",	// オブジェクト[10]
-//	"data\\MODEL\\object\\object_004.x",	// オブジェクト[11]
-//	"data\\MODEL\\object\\object_005.x",	// オブジェクト[12]
-//	"data\\MODEL\\object\\object_006.x",	// オブジェクト[13]
-//};
-
 // グローバル変数
 ObjectModel g_aObjectModel[NUM_OBJECT];		// モデルの種類を管理
 Object g_aObject[MAX_OBJECT];				// オブジェクトの情報を格納
@@ -234,6 +222,80 @@ void DrawObject(void)
 
 			// 保存していたマテリアルに戻す
 			pDevice->SetMaterial(&matDef);
+		}
+	}
+}
+
+//=============================================================================
+//	オブジェクトの当たり判定処理
+//=============================================================================
+void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius)
+{
+	Object* pObject = &g_aObject[0];				// 先頭アドレス
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale;			// 計算用マトリックス
+	D3DXVECTOR3 posMax, posMin;						// 
+	D3DXVECTOR3 posA, posB, posC, posD;
+
+	for (int nCntModel = 0; nCntModel < MAX_OBJECT; nCntModel++, pObject++)
+	{
+		if (pObject->bUse == false)
+		{// 使用していなかったら戻る
+			continue;
+		}
+
+		ObjectModel* pObjectModel = &g_aObjectModel[pObject->type];	// モデルタイプ
+
+		posA = D3DXVECTOR3(pObjectModel->vtxMin.x, 0.0f, pObjectModel->vtxMax.z);
+		posB = D3DXVECTOR3(pObjectModel->vtxMax.x, 0.0f, pObjectModel->vtxMax.z);
+		posC = D3DXVECTOR3(pObjectModel->vtxMax.x, 0.0f, pObjectModel->vtxMin.z);
+		posD = D3DXVECTOR3(pObjectModel->vtxMin.x, 0.0f, pObjectModel->vtxMin.z);
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&pObject->mtxWorld);
+
+		// 向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, pObject->rot.y, pObject->rot.x, pObject->rot.z);
+		D3DXMatrixMultiply(&pObject->mtxWorld, &pObject->mtxWorld, &mtxRot);
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, pObject->pos.x, pObject->pos.y, pObject->pos.z);
+		D3DXMatrixMultiply(&pObject->mtxWorld, &pObject->mtxWorld, &mtxTrans);
+
+		// 位置と向きを反映した頂点座標を入れる
+		D3DXVec3TransformCoord(&posA, &posA, &pObject->mtxWorld);
+		D3DXVec3TransformCoord(&posB, &posB, &pObject->mtxWorld);
+		D3DXVec3TransformCoord(&posC, &posC, &pObject->mtxWorld);
+		D3DXVec3TransformCoord(&posD, &posD, &pObject->mtxWorld);
+
+		if (pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius < pObject->pos.y + pObjectModel->vtxMax.y)
+		{
+			//// 当たり判定
+			//if (pObject->bCollision == true)
+			//{
+				CrossCollision(pPos, pPosOld, posB, posA, true, false);
+				CrossCollision(pPos, pPosOld, posC, posB, true, false);
+				CrossCollision(pPos, pPosOld, posD, posC, true, false);
+				CrossCollision(pPos, pPosOld, posA, posD, true, false);
+			//}
+
+		}
+
+		// モデルの範囲内か判定
+		if (pPos->x + fRadius > pObject->pos.x + pObjectModel->vtxMin.x && pPos->x +fRadius < pObject->pos.x + pObjectModel->vtxMax.x &&
+			pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y +fRadius < pObject->pos.y + pObjectModel->vtxMax.y &&
+			pPos->z + fRadius > pObject->pos.z + pObjectModel->vtxMin.z && pPos->z +fRadius < pObject->pos.z + pObjectModel->vtxMax.z)
+		{
+			// 上から
+			if (pPosOld->y + fRadius >= pObject->pos.y + pObjectModel->vtxMax.y)
+			{
+				pPos->y = pObject->pos.y + pObjectModel->vtxMax.y - fRadius;
+			}
+
+			// 下から
+			if (pPosOld->y + fRadius <= pObject->pos.y + pObjectModel->vtxMin.y)
+			{
+				pPos->y = pObject->pos.y + pObjectModel->vtxMin.y - fRadius;
+			}
 		}
 	}
 }

@@ -13,6 +13,7 @@
 #include "meshfield.h"
 #include "input.h"
 #include "loadscript.h"
+#include "magic.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -165,6 +166,8 @@ void UpdatePlayer(void)
 	float fRotDest = 0.0f;	// 目的の向きを設定
 	float fRotDiffKey = 0.0f;	// 角度の差分
 	float fAngle = 0.0f;		// 角度
+
+	COMMANDOREDER commandoreder = COMMANDOREDER_NONE;
 
 	// 過去の位置を保存
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -373,6 +376,19 @@ void UpdatePlayer(void)
 			{
 				g_aPlayer[nCntPlayer].pos.y = 0.0f;
 				g_aPlayer[nCntPlayer].bJump = false;
+			}
+
+			// オブジェクトとの当たり判定
+			CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius);
+
+			// 落ちてる魔法との判定 (保管)
+			commandoreder = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
+
+			PrintDebugProc("コマンドタイプ : %d\n", commandoreder);
+
+			if (GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true && commandoreder != COMMANDOREDER_NONE)
+			{// Xボタンを押したかつ何かしらのコマンドが近くにある
+				g_aPlayer[nCntPlayer].magicbook.command0 = commandoreder;
 			}
 
 			// 影の位置を更新

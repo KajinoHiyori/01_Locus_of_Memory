@@ -12,7 +12,7 @@
 //魔法の種類
 typedef enum
 {
-	MAGICTYPE_NONE = -1,
+	MAGICTYPE_NONE = -1,	//何もない
 	//浮遊
 	MAGICTYPE_LEVITATION,	//緑緑緑	[0番]
 	//燃焼
@@ -42,6 +42,7 @@ typedef enum
 //コマンドの並び順
 typedef enum
 {
+	COMMANDOREDER_NONE = -1,
 	//３つ同じ並び
 	COMMANDOREDER_GGG,			//緑緑緑
 	COMMANDOREDER_RRR,			//赤赤赤
@@ -100,6 +101,17 @@ typedef struct
 	bool bUse;
 }Magic;
 
+//落ちてる魔法の構造体定義
+typedef struct DropMagic
+{
+	D3DXVECTOR3 pos;		// 位置
+	D3DXVECTOR3 rot;		// 向き
+	COMMANDOREDER oType;	// 魔法の種類
+	float fRadius;			// 半径
+	bool bUse;				// 使用状態
+}DropMagic;
+
+
 //リザルトに必要なカウント類
 typedef struct
 {
@@ -119,6 +131,13 @@ MAGICTYPE PressCommand(int nIdx);
 //魔法の発動(コマンドの入力回数をカウント)
 void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 
-//フィール都内に魔法を設置
-void SetMagicPosition(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+//フィールド内に魔法を設置
+void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+
+// フィールド内の魔法との当たり判定
+COMMANDOREDER CollisionMagic(D3DXVECTOR3 pos, float fRadius);
+
+// フィールド内の魔法を取得する
+MAGICTYPE GetFieldMagic(D3DXVECTOR3 pos, float fRadius);
+
 #endif
