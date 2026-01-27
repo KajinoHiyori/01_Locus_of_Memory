@@ -12,28 +12,40 @@
 #include "title.h"
 
 // マクロ定義
-#define TEX_PAUSE		(GAMEUI_TYPE_MAX)	// ポーズメニューで使うテクスチャ数
-#define PAUSE_NUMBER	(5)					// ポーズメニューの数
-#define PAUSE_SIZE		(20.0f)				// ポーズのポリゴンサイズ
-#define PAUSE_SPACE		(50.0f)				// ポーズの間隔
-#define PAUSE_POS		(100.0f)			// ポーズの開始位置X
-#define PAUSE_LEFT		(100.0f)			// ポーズの左端
-#define PAUSE_RIGHT		(200.0f)			// ポーズの右端
-#define PAUSE_MAEGIN	(20.0f)				// ポーズ背景分の余白
-#define PRESS_MAEGIN	(-15)				// トリガーとリピートの間隔をあける
-#define PRESS_INTERVAL	(20)				// リピートの時の間隔
-#define PAUSE_BG_ABOVE	(110.0f)			// ポーズ背景の上端
-#define PAUSE_BG_BELOW	(610.0f)			// ポーズ背景の下端
-#define VIBRATION_POWER	(500)				// バイブレーションの強度
-#define VIBRATION_TIME	(10)				// バイブレーションの継続時間
+#define MAX_GAMEUI		(2)					// UIの最大数
+#define NUM_GAMEUI		(GAMEUI_TYPE_MAX)	// ポーズメニューで使うテクスチャ数
+#define NUM_SELECT		(5)					// 選択数
+#define LEFTPHONE_POS	(D3DXVECTOR3(1100.0f, 360.0f, 0.0f))	// 左のスマホの位置
+#define PHONE_WIDTH		(135.0f)			// スマホの幅
+#define PHONE_HEIGHT	(285.0f)			// スマホの縦幅
+#define BGALL_POS		(D3DXVECTOR3(640.0f, 360.0f, 0.0f))	// 1P/KEYBOARDプレイ時の背景
+#define BGALL_WIDTH		(640.0f)							// 全体の背景の幅
+#define BG1P_POS		(D3DXVECTOR3(320.0f, 360.0f, 0.0f))	// 2Pプレイ時の左背景
+#define BG2P_POS		(D3DXVECTOR3(960.0f, 360.0f, 0.0f))	// 2Pプレイ時の右背景
+#define BGHALF_WIDTH	(BGALL_WIDTH / 2)					// 背景の半分の幅
+#define BG_HEIGHT		(360.0f)							// 背景の高さ
+
+#define COLOR_WHITE		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)	// 白
+#define COLOR_CYAN		D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)	// シアン
+
+// ゲームUIの構造体
+typedef struct
+{
+	GAMEUI_TYPE type;		// テクスチャの種類
+	D3DXVECTOR3 pos;		// 中心座標
+	D3DXVECTOR3 posDest;	// 目的の向き
+	float fWidth;			// 幅
+	float fHeight;			// 高さ
+	bool bDisp;				// 表示状態
+}GameUI;
 
 // グローバル変数
-LPDIRECT3DTEXTURE9 g_apTextureGameUI[TEX_PAUSE] = {};	// テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffGameUI = NULL;			// 頂点バッファへのポインタ
-GAMEUI_TYPE g_pauseMenu;									// ポーズの情報
-int g_selectGameUI = 0;									// 選択されているポーズ状態
+LPDIRECT3DTEXTURE9	g_apTextureGameUI[NUM_GAMEUI] = {};	// テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffGameUI = NULL;		// 頂点バッファへのポインタ
+GameUI g_GameUI[MAX_GAMEUI][NUM_GAMEUI + 1];				// UIの表示処理
+int g_nOperationType;									// UI表示数の管理
 
-const char* c_apFilenameGameUI[TEX_PAUSE] =
+const char* c_apFilenameGameUI[NUM_GAMEUI] =
 {
 	"data\\TEXTURE\\pause000.png",
 	"data\\TEXTURE\\pause001.png",
@@ -51,115 +63,158 @@ const char* c_apFilenameGameUI[TEX_PAUSE] =
 //======================================================================================
 void InitGameUI(void)
 {
+#if 0
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
 	pDevice = GetDevice();
 
+	OPERATIONTYPE operationType = GetOperationType();	// 操作方法の取得
+	switch (operationType)
+	{
+	case OPERATIONTYPE_2P:	// 2Pプレイ
+		g_nOperationType = 1;
+		break;
+
+	default:	// 1P/LEYBOARDプレイ
+		g_nOperationType = 0;
+		break;
+	}
+
 	// テクスチャの読み込み
-	for (int nCntGameUI = 0; nCntGameUI < TEX_PAUSE; nCntGameUI++)
+	for (int nCntGameUI = 0; nCntGameUI < NUM_GAMEUI; nCntGameUI++)
 	{
 		D3DXCreateTextureFromFile(pDevice, c_apFilenameGameUI[nCntGameUI], &g_apTextureGameUI[nCntGameUI]);
 	}
-	
+
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * TEX_PAUSE,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&g_pVtxBuffGameUI,
-		NULL);
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_GAMEUI * MAX_GAMEUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffGameUI, NULL);
+	VERTEX_2D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
+	switch (g_nOperationType)
+	{
+	case 1:	// 2PPLAY
+		for (int nCntOP = 0; nCntOP < MAX_GAMEUI; nCntOP++)
+		{
+			for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++, pVtx += 4)
+			{
+				switch (nCntUI)
+				{
+				case GAMEUI_TYPE_PHONE:	// スマホ
+					g_GameUI[nCntOP][nCntUI].type = GAMEUI_TYPE_PHONE;
+					g_GameUI[nCntOP][nCntUI].pos = LEFTPHONE_POS;
+					g_GameUI[nCntOP][nCntUI].fWidth = PHONE_WIDTH;
+					g_GameUI[nCntOP][nCntUI].fHeight = PHONE_HEIGHT;
+					g_GameUI[nCntOP][nCntUI].bDisp = true;
+					break;
+
+				case GAMEUI_TYPE_1PALPHA:	// 背景暗転
+
+					break;
+				}
+
+				//GAMEUI_TYPE_CLOCK = 0,	// 時計
+				//GAMEUI_TYPE_MAGICBOOK,	// 魔導書
+				//GAMEUI_TYPE_CONTINUE,	// CONTINUE
+				//GAMEUI_TYPE_RETRY,		// RETRY
+				//GAMEUI_TYPE_QUIT,		// QUIT
+				//GAMEUI_TYPE_PAUSE,		// PAUSEタイトル
+				//GAMEUI_TYPE_PHONE,		// スマホ
+				//GAMEUI_TYPE_1PALPHA,		// ポーズ背景を暗くする[1P]
+				//GAMEUI_TYPE_2PALPHA,		// ポーズ背景を暗くする[2P]
+
+				// 頂点座標の設定
+				pVtx[0].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x - g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y - g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
+				pVtx[1].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x + g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y - g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
+				pVtx[2].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x - g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y + g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
+				pVtx[3].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x + g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y + g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
+
+				// rhwの設定
+				pVtx[0].rhw = 1.0f;
+				pVtx[1].rhw = 1.0f;
+				pVtx[2].rhw = 1.0f;
+				pVtx[3].rhw = 1.0f;
+
+				// 頂点カラーの設定
+				pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+				// テクスチャ座標の設定
+				pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+				pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+				pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+				pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			}
+		}
+
+	
+	}
+	// 頂点バッファをアンロック
+	g_pVtxBuffGameUI->Unlock();
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntGameUI = 0; nCntGameUI < PAUSE_NUMBER; nCntGameUI++)
+	for (int nCntOPTYPE = 0; nCntOPTYPE < MAX_GAMEUI; nCntOPTYPE++)
 	{
-		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(PAUSE_LEFT, (PAUSE_POS + nCntGameUI * PAUSE_SPACE) - PAUSE_SIZE, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(PAUSE_RIGHT, (PAUSE_POS + nCntGameUI * PAUSE_SPACE) - PAUSE_SIZE, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(PAUSE_LEFT, (PAUSE_POS + nCntGameUI * PAUSE_SPACE) + PAUSE_SIZE, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(PAUSE_RIGHT, (PAUSE_POS + nCntGameUI * PAUSE_SPACE) + PAUSE_SIZE, 0.0f);
+		for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++, pVtx += 4)
+		{
+			switch (nCntUI)
+			{
+			case GAMEUI_TYPE_PHONE:	// スマホ
+				g_gameUI[nCntOPTYPE][nCntUI].type = GAMEUI_TYPE_PHONE;
+				g_gameUI[nCntOPTYPE][nCntUI].pos = LEFTPHONE_POS;
+				g_gameUI[nCntOPTYPE][nCntUI].fWidth = PHONE_WIDTH;
+				g_gameUI[nCntOPTYPE][nCntUI].fHeight = PHONE_HEIGHT;
+				g_gameUI[nCntOPTYPE][nCntUI].bDisp = true;
+				break;
 
-		// rhwの設定
-		pVtx[0].rhw = 1.0f;
-		pVtx[1].rhw = 1.0f;
-		pVtx[2].rhw = 1.0f;
-		pVtx[3].rhw = 1.0f;
+			case GAMEUI_TYPE_1PALPHA:	// 背景暗転
+				
+				break;
+			}
 
-		// 頂点カラーの設定
-		pVtx[0].col = COLOR_WHITE;
-		pVtx[1].col = COLOR_WHITE;
-		pVtx[2].col = COLOR_WHITE;
-		pVtx[3].col = COLOR_WHITE;
+			//GAMEUI_TYPE_CLOCK = 0,	// 時計
+			//GAMEUI_TYPE_MAGICBOOK,	// 魔導書
+			//GAMEUI_TYPE_CONTINUE,	// CONTINUE
+			//GAMEUI_TYPE_RETRY,		// RETRY
+			//GAMEUI_TYPE_QUIT,		// QUIT
+			//GAMEUI_TYPE_PAUSE,		// PAUSEタイトル
+			//GAMEUI_TYPE_PHONE,		// スマホ
+			//GAMEUI_TYPE_1PALPHA,		// ポーズ背景を暗くする[1P]
+			//GAMEUI_TYPE_2PALPHA,		// ポーズ背景を暗くする[2P]
 
-		// テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			// 頂点座標の設定
+			pVtx[0].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x - g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y - g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
+			pVtx[1].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x + g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y - g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
+			pVtx[2].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x - g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y + g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
+			pVtx[3].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x + g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y + g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
 
-		pVtx += 4;
+			// rhwの設定
+			pVtx[0].rhw = 1.0f;
+			pVtx[1].rhw = 1.0f;
+			pVtx[2].rhw = 1.0f;
+			pVtx[3].rhw = 1.0f;
+
+			// 頂点カラーの設定
+			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+			// テクスチャ座標の設定
+			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+		}
 	}
-
-	// ポーズ背景の設定
-	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(PAUSE_LEFT - PAUSE_MAEGIN, PAUSE_BG_ABOVE, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(PAUSE_RIGHT + PAUSE_MAEGIN, PAUSE_BG_ABOVE, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(PAUSE_LEFT - PAUSE_MAEGIN, PAUSE_BG_BELOW, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(PAUSE_RIGHT + PAUSE_MAEGIN, PAUSE_BG_BELOW, 0.0f);
-
-	// rhwの設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
-
-	// 頂点カラーの設定
-	pVtx[0].col = COLOR_WHITE;
-	pVtx[1].col = COLOR_WHITE;
-	pVtx[2].col = COLOR_WHITE;
-	pVtx[3].col = COLOR_WHITE;
-
-	// テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
-	pVtx += 4;
-
-	// 背景を暗くする
-	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(100.0f, 0.0f, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(0.0f, 100.0f, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(100.0f, 100.0f, 0.0f);
-
-	// rhwの設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
-
-	// 頂点カラーの設定
-	pVtx[0].col = COLOR_WHITE;
-	pVtx[1].col = COLOR_WHITE;
-	pVtx[2].col = COLOR_WHITE;
-	pVtx[3].col = COLOR_WHITE;
-
-	// テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
 	// 頂点バッファをアンロック
 	g_pVtxBuffGameUI->Unlock();
-
-	// ポーズ状態の初期化
-	g_pauseMenu = GAMEUI_TYPE_CLOCK;
-	g_selectGameUI = 0;
+#endif
 }
 
 //======================================================================================
@@ -167,8 +222,9 @@ void InitGameUI(void)
 //======================================================================================
 void UninitGameUI(void)
 {
+#if 0
 	// テクスチャの破棄
-	for (int nCntGameUI = 0; nCntGameUI < TEX_PAUSE; nCntGameUI++)
+	for (int nCntGameUI = 0; nCntGameUI < NUM_GAMEUI; nCntGameUI++)
 	{
 		if (g_apTextureGameUI[nCntGameUI] != NULL)
 		{
@@ -183,6 +239,7 @@ void UninitGameUI(void)
 		g_pVtxBuffGameUI->Release();
 		g_pVtxBuffGameUI = NULL;
 	}
+#endif
 }
 
 //======================================================================================
@@ -190,6 +247,7 @@ void UninitGameUI(void)
 //======================================================================================
 void UpdateGameUI(void)
 {
+#if 0
 	// 入力情報の保存
 	static int nCounterUp = 0;
 	static int nCounterDown = 0;
@@ -204,7 +262,7 @@ void UpdateGameUI(void)
 	// WSキーが押された場合、テクスチャの状態を変更する(リピート)
 	else if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true || GetJoypadStickRepeatL(JOYSTICK_UP, 0) == true)	// 上
 	{
-		g_selectGameUI--;
+		g_nSelectGameUI[nCntOP]--;
 		if (g_selectGameUI < 0)
 		{
 			g_selectGameUI = GAMEUI_TYPE_QUIT;
@@ -247,7 +305,7 @@ void UpdateGameUI(void)
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
-	for (int nCntGameUI = 0; nCntGameUI < PAUSE_NUMBER; nCntGameUI++)
+	for (int nCntGameUI = 0; nCntGameUI < NUM_SELECT; nCntGameUI++)
 	{
 		if (nCntGameUI == g_pauseMenu)	// 選択部だけ明るく表示
 		{
@@ -284,6 +342,7 @@ void UpdateGameUI(void)
 			break;
 		}
 	}
+#endif
 }
 
 //======================================================================================
@@ -291,6 +350,7 @@ void UpdateGameUI(void)
 //======================================================================================
 void DrawGameUI(void)
 {
+#if 0
 	OPERATIONTYPE operationType = GetOperationType();
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
@@ -321,7 +381,7 @@ void DrawGameUI(void)
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, GAMEUI_TYPE_PHONE * 4, 2);
 
-	for (int nCntGameUI = 0; nCntGameUI < PAUSE_NUMBER; nCntGameUI++)
+	for (int nCntGameUI = 0; nCntGameUI < NUM_SELECT; nCntGameUI++)
 	{
 		// テクスチャの設定
 		pDevice->SetTexture(0, g_apTextureGameUI[nCntGameUI]);
@@ -329,12 +389,5 @@ void DrawGameUI(void)
 		// ポリゴンの描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntGameUI * 4, 2);
 	}
-}
-
-//======================================================================================
-// ポーズの描画処理
-//======================================================================================
-void SetGameUI(int pauseMenu)
-{
-	g_selectGameUI = pauseMenu;
+#endif
 }

@@ -102,51 +102,7 @@ void UpdateLight(void)
 			// ライトの拡散光を設定
 			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTEST;
 
-
-
-			//if (GetKeyboardPress(DIK_UP) == true)
-			//{
-			//	// ライトの方向を設定
-			//	g_LightDis.x += 0.005f;
-
-
-			//}
-
-			//else if (GetKeyboardPress(DIK_DOWN) == true)
-			//{
-
-			//	// ライトの方向を設定
-			//	g_LightDis.x -= 0.005f;
-
-			//}
-
-
-			//if (GetKeyboardPress(DIK_RIGHT) == true)
-			//{
-			//	// ライトの方向を設定
-			//	g_LightDis.y += 0.005f;
-
-			//}
-			//if (GetKeyboardPress(DIK_LEFT) == true)
-			//{
-			//	// ライトの方向を設定
-			//	g_LightDis.y -= 0.005f;
-
-			//}
-			//if (GetKeyboardPress(DIK_U) == true)
-			//{
-			//	// ライトの方向を設定
-			//	g_LightDis.z += 0.005f;
-
-			//}
-			//if (GetKeyboardPress(DIK_M) == true)
-			//{
-			//	// ライトの方向を設定
-			//	g_LightDis.z -= 0.005f;
-
-			//}
-
-			g_fAngle -= 0.01f;
+			//g_fAngle -= 0.01f;
 
 			if (g_fAngle > D3DX_PI)
 			{

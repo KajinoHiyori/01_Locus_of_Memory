@@ -17,8 +17,8 @@ typedef enum
 	GAMEUI_TYPE_QUIT,		// QUIT
 	GAMEUI_TYPE_PAUSE,		// PAUSEタイトル
 	GAMEUI_TYPE_PHONE,		// スマホ
-	GAMEUI_TYPE_1PALPHA,		// ポーズ背景を暗くする[1P]
-	GAMEUI_TYPE_2PALPHA,		// ポーズ背景を暗くする[2P]
+	GAMEUI_TYPE_1PALPHA,	// ポーズ背景を暗くする[1P]
+	GAMEUI_TYPE_2PALPHA,	// ポーズ背景を暗くする[2P]
 	GAMEUI_TYPE_MAX
 }GAMEUI_TYPE;
 
