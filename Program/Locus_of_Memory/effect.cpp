@@ -120,18 +120,13 @@ void UpdateEffect(void)
 
 	if (GetKeyboardTrigger(DIK_SPACE) == true)
 	{
-		SetEffect(D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20);
+		//SetEffect(D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXVECTOR3(0.0f,50.0f,0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20);
 	}
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
 		if (g_aEffect[nCntEffect].bUse == true)
 		{
-			if (GetKeyboardTrigger(DIK_W) == true)
-			{
-				g_aEffect->move.x += sinf(pCamera->rot.y - D3DX_PI / 4) * 2.0f;
-				g_aEffect->move.z += cosf(pCamera->rot.y - D3DX_PI / 4) * 2.0f;
-				g_aEffect->rot.y = atan2f(g_aEffect->move.x, g_aEffect->move.z) - D3DX_PI;
-			}
+			g_aEffect[nCntEffect].pos += g_aEffect[nCntEffect].move;
 			g_aEffect[nCntEffect].nLife--;
 			if (g_aEffect[nCntEffect].nLife < 0)
 			{
@@ -139,6 +134,7 @@ void UpdateEffect(void)
 			}
 		}
 	}
+
 }
 
 void DrawEffect(void)
@@ -181,6 +177,15 @@ void DrawEffect(void)
 			//テクスチャ
 			pDevice->SetTexture(0, g_pTextureBuffPolygon);
 
+			// Zテストを無効にする
+			pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);	// Zテストの比較方法を変更(Zバッファの前後関係に関わらず描画する)
+			pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);		// Zバッファ更新の有効/無効の設定
+
+			//// アルファテストを有効にする
+			//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
+			//pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法を設定(基準値より大きい場合描画)
+			//pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
+
 			//αブレンディングを加算合成して設定
 			pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 			pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -192,8 +197,16 @@ void DrawEffect(void)
 			//αブレンディングを戻す
 			pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 			pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-			pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
+			// Zテストを有効にする
+			pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+			pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+
+			//// アルファテストを無効にする
+			//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
+			//pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
+			//pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 		}
 
 	}
@@ -202,7 +215,7 @@ void DrawEffect(void)
 //================
 //設定処理
 //================
-void SetEffect(D3DXVECTOR3 pos, D3DXCOLOR col,int nLife)
+void SetEffect(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col,int nLife)
 {
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
@@ -210,6 +223,7 @@ void SetEffect(D3DXVECTOR3 pos, D3DXCOLOR col,int nLife)
 		if (g_aEffect[nCntEffect].bUse == false)
 		{
 			g_aEffect[nCntEffect].pos = pos;
+			g_aEffect[nCntEffect].move = move;
 			g_aEffect[nCntEffect].col = col;
 			g_aEffect[nCntEffect].nLife = nLife;
 			g_aEffect[nCntEffect].bUse = true;
