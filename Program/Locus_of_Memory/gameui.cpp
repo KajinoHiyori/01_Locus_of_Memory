@@ -15,15 +15,13 @@
 #define MAX_GAMEUI		(2)					// UIの最大数
 #define NUM_GAMEUI		(GAMEUI_TYPE_MAX)	// ポーズメニューで使うテクスチャ数
 #define NUM_SELECT		(5)					// 選択数
-#define LEFTPHONE_POS	(D3DXVECTOR3(1100.0f, 360.0f, 0.0f))	// 左のスマホの位置
-#define PHONE_WIDTH		(135.0f)			// スマホの幅
+#define WIDTH			(135.0f)			// UIの基本幅
+#define LEFT_POSX		(1100.0f)			// 左のUIのX軸
+#define LEFTPHONE_POS	(D3DXVECTOR3(LEFT_POSX, 360.0f, 0.0f))	// 左のスマホの位置
 #define PHONE_HEIGHT	(285.0f)			// スマホの縦幅
-#define BGALL_POS		(D3DXVECTOR3(640.0f, 360.0f, 0.0f))	// 1P/KEYBOARDプレイ時の背景
-#define BGALL_WIDTH		(640.0f)							// 全体の背景の幅
-#define BG1P_POS		(D3DXVECTOR3(320.0f, 360.0f, 0.0f))	// 2Pプレイ時の左背景
-#define BG2P_POS		(D3DXVECTOR3(960.0f, 360.0f, 0.0f))	// 2Pプレイ時の右背景
-#define BGHALF_WIDTH	(BGALL_WIDTH / 2)					// 背景の半分の幅
-#define BG_HEIGHT		(360.0f)							// 背景の高さ
+#define PAUSE_POS		(D3DXVECTOR3(LEFT_POSX, 100.0f, 0.0f))	// PAUSEタイトルの位置
+#define PAUSE_HEIGHT	(25.0f)				// PAUSEタイトルの縦幅
+
 
 #define COLOR_WHITE		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)	// 白
 #define COLOR_CYAN		D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)	// シアン
@@ -34,6 +32,7 @@ typedef struct
 	GAMEUI_TYPE type;		// テクスチャの種類
 	D3DXVECTOR3 pos;		// 中心座標
 	D3DXVECTOR3 posDest;	// 目的の向き
+	D3DXCOLOR	col;		// 色
 	float fWidth;			// 幅
 	float fHeight;			// 高さ
 	bool bDisp;				// 表示状態
@@ -42,7 +41,7 @@ typedef struct
 // グローバル変数
 LPDIRECT3DTEXTURE9	g_apTextureGameUI[NUM_GAMEUI] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffGameUI = NULL;		// 頂点バッファへのポインタ
-GameUI g_GameUI[MAX_GAMEUI][NUM_GAMEUI + 1];				// UIの表示処理
+GameUI g_GameUI[MAX_GAMEUI][NUM_GAMEUI];			// UIの表示処理
 int g_nOperationType;									// UI表示数の管理
 
 const char* c_apFilenameGameUI[NUM_GAMEUI] =
@@ -54,8 +53,6 @@ const char* c_apFilenameGameUI[NUM_GAMEUI] =
 	"data\\TEXTURE\\pause101.png",
 	"data\\TEXTURE\\pause101.png",
 	"data\\TEXTURE\\pause101.png",
-	"data\\TEXTURE\\pause101.png",
-	"data\\TEXTURE\\pause101.png",
 };
 
 //======================================================================================
@@ -63,10 +60,102 @@ const char* c_apFilenameGameUI[NUM_GAMEUI] =
 //======================================================================================
 void InitGameUI(void)
 {
-#if 0
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
 	pDevice = GetDevice();
+
+	// テクスチャの読み込み
+	for (int nCntGameUI = 0; nCntGameUI < NUM_GAMEUI; nCntGameUI++)
+	{
+		D3DXCreateTextureFromFile(pDevice, c_apFilenameGameUI[nCntGameUI], &g_apTextureGameUI[nCntGameUI]);
+	}
+
+	// 操作方法の状態を取得
+	OPERATIONTYPE operationType = GetOperationType();
+
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_GAMEUI * MAX_GAMEUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffGameUI, NULL);
+	VERTEX_2D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 左のUIを配置
+	for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++, pVtx += 4)
+	{
+		switch (nCntUI)
+		{
+		case GAMEUI_TYPE_CLOCK:	// 時計
+			g_GameUI[0][nCntUI].type	= GAMEUI_TYPE_CLOCK;
+			g_GameUI[0][nCntUI].pos		= LEFTPHONE_POS;
+			g_GameUI[0][nCntUI].posDest = LEFTPHONE_POS;
+			g_GameUI[0][nCntUI].col		= COLOR_CYAN;
+			g_GameUI[0][nCntUI].fWidth	= WIDTH;
+			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
+			g_GameUI[0][nCntUI].bDisp	= true;
+			break;
+
+		case GAMEUI_TYPE_MAGICBOOK:	// 魔導書
+			g_GameUI[0][nCntUI].type = GAMEUI_TYPE_MAGICBOOK;
+			g_GameUI[0][nCntUI].pos = LEFTPHONE_POS;
+			g_GameUI[0][nCntUI].fWidth = WIDTH;
+			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
+			g_GameUI[0][nCntUI].bDisp = true;
+			break;
+
+		case GAMEUI_TYPE_CONTINUE:	// CONTINUE
+			g_GameUI[0][nCntUI].type = GAMEUI_TYPE_CONTINUE;
+			g_GameUI[0][nCntUI].pos = LEFTPHONE_POS;
+			g_GameUI[0][nCntUI].fWidth = WIDTH;
+			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
+			g_GameUI[0][nCntUI].bDisp = true;
+			break;
+
+		case GAMEUI_TYPE_RETRY:	// RETRY
+			g_GameUI[0][nCntUI].type = GAMEUI_TYPE_RETRY;
+			g_GameUI[0][nCntUI].pos = LEFTPHONE_POS;
+			g_GameUI[0][nCntUI].fWidth = WIDTH;
+			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
+			g_GameUI[0][nCntUI].bDisp = true;
+			break;
+
+		case GAMEUI_TYPE_QUIT:	// QUIT
+			g_GameUI[0][nCntUI].type = GAMEUI_TYPE_QUIT;
+			g_GameUI[0][nCntUI].pos = LEFTPHONE_POS;
+			g_GameUI[0][nCntUI].fWidth = WIDTH;
+			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
+			g_GameUI[0][nCntUI].bDisp = true;
+			break;
+
+		case GAMEUI_TYPE_PAUSE:	// pauseタイトル
+			g_GameUI[0][nCntUI].type	= GAMEUI_TYPE_PAUSE;
+			g_GameUI[0][nCntUI].pos		= PAUSE_POS;
+			g_GameUI[0][nCntUI].posDest = PAUSE_POS;
+			g_GameUI[0][nCntUI].col		= COLOR_CYAN;
+			g_GameUI[0][nCntUI].fWidth	= WIDTH;
+			g_GameUI[0][nCntUI].fHeight = PAUSE_HEIGHT;
+			g_GameUI[0][nCntUI].bDisp	= true;
+			break;
+
+		case GAMEUI_TYPE_PHONE:	// スマホ
+			g_GameUI[0][nCntUI].type	= GAMEUI_TYPE_PHONE;
+			g_GameUI[0][nCntUI].pos		= LEFTPHONE_POS;
+			g_GameUI[0][nCntUI].posDest = PAUSE_POS;
+			g_GameUI[0][nCntUI].col		= COLOR_CYAN;
+			g_GameUI[0][nCntUI].fWidth	= WIDTH;
+			g_GameUI[0][nCntUI].fHeight	= PHONE_HEIGHT;
+			g_GameUI[0][nCntUI].bDisp	= true;
+			break;
+		}
+
+
+
+
+	}
+
+	// 頂点バッファをアンロック
+	g_pVtxBuffGameUI->Unlock();
+#if 0
+	
 
 	OPERATIONTYPE operationType = GetOperationType();	// 操作方法の取得
 	switch (operationType)
@@ -80,11 +169,7 @@ void InitGameUI(void)
 		break;
 	}
 
-	// テクスチャの読み込み
-	for (int nCntGameUI = 0; nCntGameUI < NUM_GAMEUI; nCntGameUI++)
-	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameGameUI[nCntGameUI], &g_apTextureGameUI[nCntGameUI]);
-	}
+	
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_GAMEUI * MAX_GAMEUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffGameUI, NULL);
@@ -350,8 +435,6 @@ void UpdateGameUI(void)
 //======================================================================================
 void DrawGameUI(void)
 {
-#if 0
-	OPERATIONTYPE operationType = GetOperationType();
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
 	pDevice = GetDevice();
@@ -363,23 +446,16 @@ void DrawGameUI(void)
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
 	// テクスチャの設定
-	if (operationType == OPERATIONTYPE_2P)
-	{
-		pDevice->SetTexture(0, g_apTextureGameUI[GAMEUI_TYPE_1PALPHA]);
-		// ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, GAMEUI_TYPE_1PALPHA * 4, 2);
-	}
-	else
-	{
-		pDevice->SetTexture(0, g_apTextureGameUI[GAMEUI_TYPE_2PALPHA]);
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, GAMEUI_TYPE_1PALPHA * 4, 2);
-	}
-
-	// テクスチャの設定
 	pDevice->SetTexture(0, g_apTextureGameUI[GAMEUI_TYPE_PHONE]);
 
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, GAMEUI_TYPE_PHONE * 4, 2);
+
+	// テクスチャの設定
+	pDevice->SetTexture(0, g_apTextureGameUI[GAMEUI_TYPE_PAUSE]);
+
+	// ポリゴンの描画
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, GAMEUI_TYPE_PAUSE * 4, 2);
 
 	for (int nCntGameUI = 0; nCntGameUI < NUM_SELECT; nCntGameUI++)
 	{
@@ -389,5 +465,4 @@ void DrawGameUI(void)
 		// ポリゴンの描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntGameUI * 4, 2);
 	}
-#endif
 }

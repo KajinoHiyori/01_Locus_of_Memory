@@ -54,7 +54,7 @@ typedef enum
 	//Ô‰©‰© | ‰©Ô‰© | ‰©‰©Ô
 	COMMANDOREDER_RYY,
 	COMMANDOREDER_YRY,
-	COMMANDOREDER_TTR,
+	COMMANDOREDER_YYR,
 	//ÂÂ—Î | Â—ÎÂ | —ÎÂÂ
 	COMMANDOREDER_BBG,
 	COMMANDOREDER_BGB,
@@ -75,7 +75,7 @@ typedef enum
 	COMMANDOREDER_RGB,
 
 	COMMANDOREDER_MAX
-}CommandOrder;
+}COMMANDOREDER;
 
 //ƒRƒ}ƒ“ƒh‚ÌŽí—Þ
 typedef enum
