@@ -27,6 +27,8 @@
 #include "motion.h"
 #include "shadow.h"
 #include "meshfield.h"
+#include "effect.h"
+#include "particle.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -372,6 +374,12 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// デバッグ表示の初期化処理
 	InitDebugProc();
+	
+	//エフェクトの初期化処理
+	InitEffect();
+
+	//パーティクルの初期化処理
+	InitParticle();
 
 #ifndef _DEBUG
 	// マウスカーソルを非表示
@@ -434,6 +442,13 @@ void Uninit(void)
 
 	// フェードの終了処理
 	UninitFade();
+
+	//エフェクトの終了処理
+	UninitEffect();
+
+	//パーティクルの終了処理
+	UninitParticle();
+
 
 	//// サウンドを止める
 	//StopSound();
@@ -526,6 +541,13 @@ void Update(void)
 
 	// フェードの更新処理
 	UpdateFade();
+
+	//エフェクトの更新処理
+	UpdateEffect();
+
+	//パーティクルの更新処理
+	UpdateParticle();
+
 }
 
 //===============================================================================
@@ -589,6 +611,12 @@ void Draw(void)
 
 			// フェードの描画処理
 			DrawFade();
+
+			// エフェクトの描画処理
+			DrawEffect();
+
+			// パーティクルの描画処理
+			DrawParticle();
 
 			// ビューポートを元に戻す
 			g_pD3DDevice->SetViewport(&viewportDef);

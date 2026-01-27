@@ -118,10 +118,6 @@ void UninitGame(void)
 
 	//UninitTimer();
 
-	UninitEffect();
-
-	UninitParticle();
-
 	//StopSound();
 
 }
@@ -169,10 +165,6 @@ void UpdateGame(void)
 	//UpdateScore();
 
 	//UpdateTimer();
-
-	UpdateEffect();
-
-	UpdateParticle();
 
 	UpdateGameUI();
 	
@@ -263,12 +255,10 @@ void DrawGame(void)
 
 	//DrawTimer();
 
-	DrawEffect();
 
 	DrawGameUI();
 
 
-	DrawParticle();
 
 }
 
