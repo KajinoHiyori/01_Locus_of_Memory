@@ -366,7 +366,7 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].pos += g_aPlayer[nCntPlayer].move;
 
 			// メッシュフィールドとの当たり判定
-			if (//CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || 
+			if (CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || 
 				g_aPlayer[nCntPlayer].pos.y <= 0.0f)
 			{
 				g_aPlayer[nCntPlayer].pos.y = 0.0f;
@@ -411,59 +411,6 @@ void UpdatePlayer(void)
 //========================================================================
 void DrawPlayer(void)
 {
-
-#if 0
-
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
-	{
-		D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
-		D3DMATERIAL9 matDef;	// 現在のマテリアルを保存
-		D3DXMATERIAL* pMat;		// マテリアルデータへのポインタ
-
-		if (g_aPlayer[nCntPlayer].bUse == true)
-		{
-			// ワールドマトリックスの初期化(デフォルトの値にする)
-			D3DXMatrixIdentity(&g_aPlayer[nCntPlayer].mtxWorld);
-
-			// 向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aPlayer[nCntPlayer].rot.y, g_aPlayer[nCntPlayer].rot.x, g_aPlayer[nCntPlayer].rot.z);
-			D3DXMatrixMultiply(&g_aPlayer[nCntPlayer].mtxWorld, &g_aPlayer[nCntPlayer].mtxWorld, &mtxRot);
-
-			// 位置を反映
-			D3DXMatrixTranslation(&mtxTrans, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
-			D3DXMatrixMultiply(&g_aPlayer[nCntPlayer].mtxWorld, &g_aPlayer[nCntPlayer].mtxWorld, &mtxTrans);
-
-			// ワールドマトリックスの設定
-			pDevice->SetTransform(D3DTS_WORLD, &g_aPlayer[nCntPlayer].mtxWorld);
-
-			// 現在のマテリアルを取得
-			pDevice->GetMaterial(&matDef);
-
-			// マテリアルデータへのポインタを取得
-			pMat = (D3DXMATERIAL*)g_pBuffMatPlayer[nCntPlayer]->GetBufferPointer();
-
-			// マテリアルごとにプレイヤーを描画
-			for (int nCntMat = 0; nCntMat < (int)g_dwNumMatPlayer[nCntPlayer]; nCntMat++)
-			{
-				// マテリアルの設定
-				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
-
-				// テクスチャの設定
-				pDevice->SetTexture(0, g_apTexturePlayer[nCntPlayer][nCntMat]);
-
-				// プレイヤーパーツの描画
-				g_pMeshPlayer[nCntPlayer]->DrawSubset(nCntMat);
-			}
-
-			// 保存していたマテリアルに戻す
-			pDevice->SetMaterial(&matDef);
-		}
-	}
-
-#endif
-
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
 	D3DMATERIAL9 matDef;						// 現在のマテリアル保存用

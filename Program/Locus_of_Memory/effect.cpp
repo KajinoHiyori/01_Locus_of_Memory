@@ -7,7 +7,6 @@
 #include"main.h"
 #include"effect.h"
 #include"input.h"
-#include"color.h"
 
 #define MAX_EFFECT	(4096)
 
@@ -35,7 +34,7 @@ void InitEffect(void)
 
 	//テクスチャ読み込み
 	D3DXCreateTextureFromFile(pDevice,
-		"Data\\Texture\\shadow000.jpg",
+		"data\\TEXTURE\\shadow000.jpg",
 		&g_pTextureBuffPolygon);
 
 	//初期化
@@ -117,7 +116,7 @@ void UpdateEffect(void)
 {
 	if (GetKeyboardTrigger(DIK_SPACE) == true)
 	{
-		SetEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), COLOR_RED, 20);
+		SetEffect(D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20);
 	}
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
@@ -195,8 +194,6 @@ void DrawEffect(void)
 //================
 void SetEffect(D3DXVECTOR3 pos, D3DXCOLOR col,int nLife)
 {
-
-
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
 		//使われていなければ

@@ -4,8 +4,8 @@
 // Author : Kajino Hiyori
 // 
 //==========================================
-#ifndef _Player_H_
-#define	_Player_H_
+#ifndef _PLAYER_H_
+#define	_PLAYER_H_
 
 #include "motion.h"
 
@@ -14,7 +14,7 @@
 #define MAX_PLAYER			(2)		// プレイヤーの最大数
 #define MAX_PLAYERMODEL		(14)	// モデルの最大数
 #define MAX_PLAYERTEXTURE	(16)	// テクスチャの最大数
-#define MAX_KEY		(16)	// キーの最大数
+#define MAX_KEY				(16)	// キーの最大数
 
 //// モデルの構造体
 //typedef struct
@@ -33,9 +33,9 @@
 typedef enum
 {
 	PLAYERMOTIONTYPE_NEUTRAL = 0,	// 待機モーション[0]
-	PLAYERMOTIONTYPE_MOVE,		// 移動モーション[1]
+	PLAYERMOTIONTYPE_MOVE,			// 移動モーション[1]
 	PLAYERMOTIONTYPE_ACTION,		// アクションモーション[2]
-	PLAYERMOTIONTYPE_JUMP,		// ジャンプモーション[3]
+	PLAYERMOTIONTYPE_JUMP,			// ジャンプモーション[3]
 	PLAYERMOTIONTYPE_LANDING,		// 着地モーション[4]
 	PLAYERMOTIONTYPE_MAX
 }PLAYERMOTIONTYPE;
