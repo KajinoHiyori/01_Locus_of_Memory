@@ -39,14 +39,14 @@ MODEL_FILENAME = data/MODEL/house/house003.x    # [6]â∆3(âº)
 MODEL_FILENAME = data/MODEL/shop/X/shop002.x	# [7]ìX3çÜ
 MODEL_FILENAME = data/MODEL/house/house004.x    # [8]â∆4(âº)
 MODEL_FILENAME = data/MODEL/lectern/lectern.x   # [9]èëå©ë‰
-MODEL_FILENAME = data/MODEL/castle/castle000.x     # [10]èÈ
+MODEL_FILENAME = data/MODEL/castle/castle000.x  # [10]èÈ
 
 #------------------------------------------------------------------------------
 # ÉJÉÅÉâèÓïÒ
 #------------------------------------------------------------------------------
 CAMERASET
 	POS = 0.0 180.0 -720.0			# éãì_
-	REF = 0.0 0.0 0.0				# íçéãì_
+	REF = 0.0 20.0 0.0				# íçéãì_
 END_CAMERASET
 
 #------------------------------------------------------------------------------
@@ -221,9 +221,230 @@ END_WALLSET
 # ÉÇÉfÉãîzíuèÓïÒ
 #------------------------------------------------------------------------------
 
+#âEâúâ∆âÆåQ
+MODELSET
+	TYPE = 5
+	POS = 3500 0 -1000
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 6
+	POS = 2900 0 -1000
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 4000 0 -1000
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = 2300 0 -1250
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = 3500 0 -1500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 6
+	POS = 2900 0 -1500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 4000 0 -1500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#íÜâõè§ìXäX
+MODELSET
+	TYPE = 3
+	POS = -800 0 0
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = -630 0 -450
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -630 0 -1200
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -630 0 -1700
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = -630 0 -2300
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -700 0 -3000
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = -1100 0 -450
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -1100 0 -1200
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -1100 0 -1700
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = -1100 0 -2300
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#âEéËëOëÂãKñÕâÆï~
+MODELSET
+	TYPE = 7
+	POS = 1600 0 -4000
+	ROT = 0 157.5 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 8
+	POS = 900 0 -4100
+	ROT = 0 247.5 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#ê_ìaëOèhâÆåQ
+MODELSET
+	TYPE = 7
+	POS = 1700 0 1500
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = -1700 0 1500
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = 2500 0 500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = -2500 0 500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = 3800 0 500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = -3800 0 500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#èÈãﬂï”
+MODELSET
+	TYPE = 4
+	POS = -1100 0 2500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 9
+	POS = -1100 0 2500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 MODELSET
 	TYPE = 10
-	POS = 0 0 0
+	POS = 0 0 2500
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
@@ -237,7 +458,7 @@ END_MODELSET
 #------------------------------------------------------------------------------
 PLAYERSET
 	MOTION_FILENAME = data/motion.txt
-	POS = 10 0 0
+	POS = 0 0 -4500
 	ROT = 0 180 0
 	END_PLAYERSET
 
