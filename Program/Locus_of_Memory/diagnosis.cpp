@@ -1,7 +1,7 @@
 #if 0
 
 
-
+#endif // 0
 //======================================================================================
 // 
 // 3Dアクションゲーム_MASTER KEY[diagnosis.cpp]
@@ -26,7 +26,7 @@
 #define VEC_U			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))			// カメラの向き
 
 // グローバル変数
-bool g_bFade;				// フェード状態を管理
+bool g_bFadeScane;				// フェード状態を管理
 DIAGNOSISTYPE g_diagnosisType;	// 操作方法
 
 //======================================================================================
@@ -34,7 +34,7 @@ DIAGNOSISTYPE g_diagnosisType;	// 操作方法
 //======================================================================================
 void InitDiagnosis(void)
 {
-	g_bFade = false;	// trueで遷移中
+	g_bFadeScane = false;	// trueで遷移中
 
 	SetJoypadVibration(0, 0, 0, 0);
 	SetJoypadVibration(0, 0, 0, 1);
@@ -90,21 +90,13 @@ void UpdateDiagnosis(void)
 	// タイトルUIの更新処理
 	UpdateDiagnosisUI();
 
-	if (g_bFade == false)	// フェードをしていない場合
-	{
-		g_nModeResult++;
-		if (g_nModeResult >= NEXT_MODE)
-		{
-			SetFade(MODE_RESULT);
-			g_bFade = true;
-		}
-		else if ((GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true) && *pfade == FADE_NONE)
-		{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
-			g_nModeResult = 0;
-			g_bFade = true;
-			SetFade(MODE_TUTORIAL);
-		}
+
+	if ((GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true) && *pfade == FADE_NONE)
+	{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
+		g_bFadeScane = true;
+		SetFade(MODE_TITLE);
 	}
+	
 }
 
 //======================================================================================
@@ -131,4 +123,3 @@ DIAGNOSISTYPE GetDiagnosisType(void)
 {
 	return g_diagnosisType;
 }
-#endif // 0

@@ -1,7 +1,7 @@
 #if 0
 
 
-
+#endif // 0
 //========================================================
 // 
 // ƒ^ƒCƒgƒ‹‚Ì2DUIˆ—[diagnosisui.h]
@@ -17,4 +17,3 @@ void UpdateDiagnosisUI(void);
 void DrawDiagnosisUI(void);
 
 #endif
-#endif // 0

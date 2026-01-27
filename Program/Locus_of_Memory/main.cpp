@@ -15,7 +15,7 @@
 #include "tutorial.h"
 #include "game.h"
 #include "result.h"
-//#include "ranking.h"
+#include "diagnosis.h"
 #include "fade.h"
 
 #include "camera.h"
@@ -422,8 +422,8 @@ void Uninit(void)
 	// リザルト画面の終了処理
 	UninitResult();
 
-	//// ランキング画面の終了処理
-	//UninitRanking();
+	// ランキング画面の終了処理
+	UninitDiagnosis();
 
 	// フェードの終了処理
 	UninitFade();
@@ -504,10 +504,10 @@ void Update(void)
 		UpdateResult();
 		break;
 
-	//	// ランキングモード
-	//case MODE_RANKING:
-	//	UpdateRanking();
-	//	break;
+		// ランキングモード
+	case MODE_DIAGNOSIS:
+		UpdateDiagnosis();
+		break;
 	}
 
 
@@ -560,10 +560,10 @@ void Draw(void)
 				DrawResult();
 				break;
 
-			//	// ランキングモード
-			//case MODE_RANKING:
-			//	DrawRanking();
-			//	break;
+				// ランキングモード
+			case MODE_DIAGNOSIS:
+				DrawDiagnosis();
+				break;
 			}
 
 			// オブジェクトの描画処理（仮）
@@ -628,10 +628,10 @@ void SetMode(MODE mode)
 		UninitResult();
 		break;
 
-	//	// ランキングモード
-	//case MODE_RANKING:
-	//	UninitRanking();
-	//	break;
+		// ランキングモード
+	case MODE_DIAGNOSIS:
+		UninitDiagnosis();
+		break;
 	}
 
 	// 新しいモードの初期化処理
@@ -657,10 +657,10 @@ void SetMode(MODE mode)
 		InitResult();
 		break;
 
-	//	// ランキングモード
-	//case MODE_RANKING:
-	//	InitRanking();
-	//	break;
+		// ランキングモード
+	case MODE_DIAGNOSIS:
+		InitDiagnosis();
+		break;
 	}
 
 	// カメラをモードによって切り替える

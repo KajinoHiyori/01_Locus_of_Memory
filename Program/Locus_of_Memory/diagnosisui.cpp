@@ -2,7 +2,7 @@
 
 
 
-
+#endif // 0
 //======================================================================================
 // 
 // タイトルの2DUI処理[diagnosisui.h]
@@ -80,7 +80,6 @@ const char* c_apFilenameDiagnosisUI[DiagnosisUITYPE_MAX] =
 LPDIRECT3DTEXTURE9 g_apTextureDiagnosisUI[NUM_DiagnosisUI] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffDiagnosisUI = NULL; // 頂点バッファへのポインタ
 TitleText g_aDiagnosisUI[NUM_DiagnosisUI];	// 構造体
-int g_nSelectOperation;	// 選択されている操作方法
 
 //========================================================================
 // タイトルUIの初期化処理
@@ -178,7 +177,7 @@ void InitDiagnosisUI(void)
 	// 頂点バッファをアンロック
 	g_pVtxBuffDiagnosisUI->Unlock();
 
-	g_nSelectOperation = DiagnosisUITYPE_1PPLAY;	// 1PPALYが選択されている
+	//g_nSelectOperation = DiagnosisUITYPE_1PPLAY;	// 1PPALYが選択されている
 }
 
 //========================================================================
@@ -212,40 +211,40 @@ void UpdateDiagnosisUI(void)
 	// 現在のフェードの状態を管理
 	FADE *pfade = GetFade();
 
-	// 選択状態の変更(Repeat)
-	if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true)
-	{
-		g_nSelectOperation--;
-		if (g_nSelectOperation < DiagnosisUITYPE_1PPLAY)
-		{
-			g_nSelectOperation = DiagnosisUITYPE_KEYBOARD;
-		}
-	}
-	else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true)
-	{
-		g_nSelectOperation++;
-		if (g_nSelectOperation > DiagnosisUITYPE_KEYBOARD)
-		{
-			g_nSelectOperation = DiagnosisUITYPE_1PPLAY;
-		}
-	}
+	//// 選択状態の変更(Repeat)
+	//if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true)
+	//{
+	//	g_nSelectOperation--;
+	//	if (g_nSelectOperation < DiagnosisUITYPE_1PPLAY)
+	//	{
+	//		g_nSelectOperation = DiagnosisUITYPE_KEYBOARD;
+	//	}
+	//}
+	//else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true)
+	//{
+	//	g_nSelectOperation++;
+	//	if (g_nSelectOperation > DiagnosisUITYPE_KEYBOARD)
+	//	{
+	//		g_nSelectOperation = DiagnosisUITYPE_1PPLAY;
+	//	}
+	//}
 
 	if (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true)
 	{
-		switch (g_nSelectOperation)
-		{
-		case DiagnosisUITYPE_1PPLAY:	// 1PPLAY
-			SetDiagnosisType(DIAGNOSISTYPE_1P);
-			break;
+		//switch (g_nSelectOperation)
+		//{
+		//case DiagnosisUITYPE_1PPLAY:	// 1PPLAY
+		//	SetDiagnosisType(DIAGNOSISTYPE_1P);
+		//	break;
 
-		case DiagnosisUITYPE_2PPLAY:	// 2PPLAY
-			SetDiagnosisType(DIAGNOSISTYPE_2P);
-			break;
+		//case DiagnosisUITYPE_2PPLAY:	// 2PPLAY
+		//	SetDiagnosisType(DIAGNOSISTYPE_2P);
+		//	break;
 
-		case DiagnosisUITYPE_KEYBOARD:	// KEYBOARD
-			SetDiagnosisType(DIAGNOSISTYPE_KEYBOARD);
-			break;
-		}
+		//case DiagnosisUITYPE_KEYBOARD:	// KEYBOARD
+		//	SetDiagnosisType(DIAGNOSISTYPE_KEYBOARD);
+		//	break;
+		//}
 	}
 
 	VERTEX_2D* pVtx;
@@ -254,23 +253,23 @@ void UpdateDiagnosisUI(void)
 
 	pVtx += 4;	// ロゴの分だけポインタを進める
 
-	for (int nCntUI = 0; nCntUI < SELECT_NUM; nCntUI++, pVtx += 4)
-	{
-		if (nCntUI + 1 == g_nSelectOperation)	// 選択部だけ明るく表示
-		{
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		}
-		else
-		{
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-		}
-	}
+	//for (int nCntUI = 0; nCntUI < SELECT_NUM; nCntUI++, pVtx += 4)
+	//{
+	//	if (nCntUI + 1 == g_nSelectOperation)	// 選択部だけ明るく表示
+	//	{
+	//		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//	}
+	//	else
+	//	{
+	//		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	//		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	//		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	//		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+	//	}
+	//}
 	
 	// 頂点バッファをアンロック
 	g_pVtxBuffDiagnosisUI->Unlock();
@@ -302,4 +301,3 @@ void DrawDiagnosisUI(void)
 		}
 	}
 }
-#endif // 0

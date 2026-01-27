@@ -18,7 +18,7 @@ typedef enum
 	MODE_TUTORIAL,			// チュートリアル画面
 	MODE_GAME,				// ゲーム画面
 	MODE_RESULT,			// リザルト画面
-	MODE_RANKING,			// ランキング画面
+	MODE_DIAGNOSIS,			// 診断画面
 	MODE_PAUSE,				// ポーズ画面
 	MODE_MAX				// 総数
 }MODE;

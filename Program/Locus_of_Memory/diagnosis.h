@@ -1,7 +1,7 @@
 #if 0
 
 
-
+#endif // 0
 //========================================================
 // 
 // タイトルのメイン処理[diagnosis.h]
@@ -29,4 +29,3 @@ void SetDiagnosisType(DIAGNOSISTYPE type);	// 操作方法の決定
 DIAGNOSISTYPE GetDiagnosisType(void);		// 操作方法の取得
 
 #endif
-#endif // 0

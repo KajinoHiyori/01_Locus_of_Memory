@@ -114,7 +114,7 @@ void UpdateResult(void)
     {
         //StopSound();
 
-        SetFade(MODE_TITLE);
+        SetFade(MODE_DIAGNOSIS);
     }
 }
 //=======================================================
