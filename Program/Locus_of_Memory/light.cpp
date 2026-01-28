@@ -101,6 +101,28 @@ void UpdateLight(void)
 		case 0:	// 0番目のライト
 			// ライトの拡散光を設定
 			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTEST;
+			
+			//g_fAngle -= 0.01f;
+
+			//if (g_fAngle > D3DX_PI)
+			//{
+			//	g_fAngle = -D3DX_PI;
+			//}
+			//else if (g_fAngle < -D3DX_PI)
+			//{
+			//	g_fAngle = D3DX_PI;
+			//}
+
+			//vecDir.x = sinf(g_fAngle);
+			//vecDir.y = cosf(g_fAngle);
+			
+			// ライトの方向を設定
+			vecDir = DIRECTOPN0;
+			break;
+
+		case 1:	// 1番目のライト
+			// ライトの拡散光を設定
+			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTER;
 
 			//g_fAngle -= 0.01f;
 
@@ -116,14 +138,9 @@ void UpdateLight(void)
 			vecDir.x = sinf(g_fAngle);
 			vecDir.y = cosf(g_fAngle);
 
+			//// ライトの方向を設定
+			//vecDir = DIRECTOPN1;
 
-			break;
-
-		case 1:	// 1番目のライト
-			// ライトの拡散光を設定
-			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTER;
-			// ライトの方向を設定
-			vecDir = DIRECTOPN1;
 			break;
 
 		case 2:	// 2番目のライト
