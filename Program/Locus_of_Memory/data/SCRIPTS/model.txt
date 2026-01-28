@@ -9,7 +9,7 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # テクスチャ数
 #------------------------------------------------------------------------------
-NUM_TEXTURE = 6
+NUM_TEXTURE = 7
 
 #------------------------------------------------------------------------------
 # テクスチャファイル名
@@ -20,31 +20,39 @@ TEXTURE_FILENAME = data/TEXTURE/field000.jpg		# [2]地面テクスチャ
 TEXTURE_FILENAME = data/TEXTURE/wall003.jpg			# [3]壁テクスチャ
 TEXTURE_FILENAME = data/TEXTURE/tree000.png			# [4]木テクスチャ
 TEXTURE_FILENAME = data/TEXTURE/grass000.png		# [5]草テクスチャ
+TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 10
+NUM_MODEL = 16
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/castle/castle.x		# [0]城
+MODEL_FILENAME = data/MODEL/tree/x/big_tree.x	# [0]巨木
 MODEL_FILENAME = data/MODEL/house/house.x       # [1]家
 MODEL_FILENAME = data/MODEL/shop/X/shop000.x	# [2]店1号
 MODEL_FILENAME = data/MODEL/shop/X/shop001.x	# [3]店2号
 MODEL_FILENAME = data/MODEL/temple/temple.x 	# [4]神殿
-MODEL_FILENAME = data/MODEL/house/house2.x       # [5]家2(仮)
-MODEL_FILENAME = data/MODEL/house/house003.x       # [6]家3(仮)
+MODEL_FILENAME = data/MODEL/house/house2.x      # [5]家2(仮)
+MODEL_FILENAME = data/MODEL/house/house003.x    # [6]家3(仮)
 MODEL_FILENAME = data/MODEL/shop/X/shop002.x	# [7]店3号
-MODEL_FILENAME = data/MODEL/house/house004.x       # [8]家4(仮)
-MODEL_FILENAME = data/MODEL/lectern/lectern.x       # [9]書見台
+MODEL_FILENAME = data/MODEL/house/house004.x    # [8]家4(仮)
+MODEL_FILENAME = data/MODEL/lectern/lectern.x   # [9]書見台
+MODEL_FILENAME = data/MODEL/castle/castle000.x  # [10]城
+MODEL_FILENAME = data/MODEL/tree/x/trees000.x	# [11]木 (複数)
+MODEL_FILENAME = data/MODEL/tree/x/tree000.x	# [12]木
+MODEL_FILENAME = data/MODEL/streetlight/streetlight001.x	# [13]街灯
+MODEL_FILENAME = data/MODEL/gate/gate001.x	# [14]門
+MODEL_FILENAME = data/MODEL/animal/dragonAll.x	# [15]ドラゴン
+
 #------------------------------------------------------------------------------
 # カメラ情報
 #------------------------------------------------------------------------------
 CAMERASET
 	POS = 0.0 180.0 -720.0			# 視点
-	REF = 0.0 0.0 0.0				# 注視点
+	REF = 0.0 20.0 0.0				# 注視点
 END_CAMERASET
 
 #------------------------------------------------------------------------------
@@ -77,11 +85,19 @@ END_SKYSET
 # 地面情報
 #------------------------------------------------------------------------------
 FIELDSET
-	TEXTYPE = 2
+	TEXTYPE = 6
 	POS = 0 0 0
 	ROT = 0 0 0
-	BLOCK = 16 16
-	SIZE = 800 700
+	BLOCK = 8 16
+	SIZE = 1850 700
+END_FIELDSET
+
+FIELDSET
+	TEXTYPE = 2
+	POS = -3500.0 1.0 -2825.0
+	ROT = 0 -15 0
+	BLOCK = 6 12
+	SIZE = 500 500
 END_FIELDSET
 
 #------------------------------------------------------------------------------
@@ -91,133 +107,383 @@ WALLSET
 	TEXTYPE = 3
 	POS = -956.71 0 -4809.70
 	ROT = 0 180 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 956.71 0 -4809.70
 	ROT = 0 157.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 2724.48 0 -4077.47
 	ROT = 0 135 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 4077.47 0 -2724.48
 	ROT = 0 112.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 4809.70 0 -956.71
 	ROT = 0 90 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 4809.70 0 956.71
 	ROT = 0 67.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 4077.47 0 2724.48
 	ROT = 0 45 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 2724.48 0 4077.47
 	ROT = 0 22.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = 956.71 0 4809.70
 	ROT = 0 0 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -956.71 0 4809.70
 	ROT = 0 337.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -2724.48 0 4077.47
 	ROT = 0 315 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -4077.47 0 2724.48
 	ROT = 0 292.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -4809.70 0 956.71
 	ROT = 0 270 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -4809.70 0 -956.71
 	ROT = 0 247.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -4077.47 0 -2724.48
 	ROT = 0 225 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 WALLSET
 	TEXTYPE = 3
 	POS = -2724.48 0 -4077.47
 	ROT = 0 202.5 0
-	BLOCK = 30 1
-	SIZE = 100 80
+	BLOCK = 50 10
+	SIZE = 100 100
 END_WALLSET
 
 #------------------------------------------------------------------------------
 # モデル配置情報
 #------------------------------------------------------------------------------
+
+#右奥家屋群
+MODELSET
+	TYPE = 5
+	POS = 3500 0 -1000
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 6
+	POS = 2900 0 -1000
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 4000 0 -1000
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = 2300 0 -1250
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = 3500 0 -1500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 6
+	POS = 2900 0 -1500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 4000 0 -1500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#中央商店街
+
+MODELSET
+	TYPE = 3
+	POS = -630 0 -450
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -630 0 -1200
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -630 0 -1700
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = -630 0 -2300
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -700 0 -3000
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = -1100 0 -530
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -1100 0 -1200
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = -1100 0 -1700
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 3
+	POS = -1100 0 -2300
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#右手前大規模屋敷
+MODELSET
+	TYPE = 7
+	POS = 1136 0 -3162
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#右奥店
+MODELSET
+	TYPE = 3
+	POS = 3600 0 -2800
+	ROT = 0 157.5 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 2250 0 -3000
+	ROT = 0 -45 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 1
+	POS = 1830 0 -3060
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 2
+	POS = 3000 0 -3000
+	ROT = 0 157.5 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 6
+	POS = 444 0 -2470
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#神殿前宿屋群
+
+MODELSET
+	TYPE = 7
+	POS = 2700 0 500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = -2500 0 500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = 3800 0 500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = -3800 0 500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 7
+	POS = 4060 0 -300
+	ROT = 0 90.0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#城近辺
+MODELSET
+	TYPE = 4
+	POS = -1100 0 2500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 9
+	POS = -1100 0 2500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 10
+	POS = 0 0 2500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#作っていただいていた分
 MODELSET
 	TYPE = 1
 	POS = 260 0 313
@@ -228,7 +494,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = -328 0 -1878
+	POS = -269 0 -1920
 	ROT = 0 -90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -236,16 +502,8 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = 394 0 -851
+	POS = 388 0 -753
 	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = -325 0 -1109
-	ROT = 0 -90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
@@ -260,30 +518,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = 836 0 -2217
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = 1450 0 -2217
-	ROT = 0 0 0
-	SHADOW = 0
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = 1753 0 -2217
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = 2107 0 -2054
+	POS = 2349 0 -2184
 	ROT = 0 -90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -291,7 +526,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = 421 0 -1535
+	POS = 421 0 -1580
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -315,7 +550,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = 475 0 -2037
+	POS = 430 0 -1900
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -323,7 +558,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = 2107 0 -1753
+	POS = 2349 0 -1867
 	ROT = 0 -90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -347,7 +582,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = -930 0 -3216
+	POS = -1223 0 -3161
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
@@ -355,7 +590,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = -1295 0 -3239
+	POS = -1534 0 -3240
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
@@ -379,16 +614,8 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = -1433 0 -849
-	ROT = 0 -180 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = -623 0 -790
-	ROT = 0 -180 0
+	POS = -1920 0 -871
+	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
@@ -419,30 +646,6 @@ END_MODELSET
 
 MODELSET
 	TYPE = 1
-	POS = 1660 0 1176
-	ROT = 0 180 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = 1361 0 1176
-	ROT = 0 180 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = 1053 0 1176
-	ROT = 0 180 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
 	POS = -271 0 313
 	ROT = 0 0 0
 	SHADOW = 0
@@ -459,7 +662,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 2
-	POS = 439 0 -1186
+	POS = 439 0 -1203
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -499,14 +702,6 @@ END_MODELSET
 
 MODELSET
 	TYPE = 3
-	POS = 1962 0 800
-	ROT = 0 -90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 3
 	POS = 1655 0 -1248
 	ROT = 0 0 0
 	SHADOW = 0
@@ -515,145 +710,237 @@ END_MODELSET
 
 MODELSET
 	TYPE = 3
-	POS = -1132 0 871
+	POS = -888 0 390
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 5
+	POS = 2300 0 -2570
 	
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 4
-	POS = 110 0 5000
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 5
-	POS = -1769 0 -1996
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 5
-	POS = -352 0 -1493
 	ROT = 0 -90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
 
 MODELSET
-	TYPE = 5
-	POS = 2141 0 -1287
-	ROT = 0 -90 0
+	TYPE = 6
+	POS = 4040 0 -2200
+	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
 
+#------------------------------------------------------------------------------
+# 木の配置情報
+#------------------------------------------------------------------------------
+
 MODELSET
-	TYPE = 5
-	POS = 1135 0 -2217
+	TYPE = 11
+	POS = -2750.0 0.0 -3000.0
+	ROT = 0.0 60.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = -2850.0 0.0 -1500.0
+	ROT = 0.0 165.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = -3750.0 0.0 -250.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -2250.0 0.0 -2750.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -3725.0 0.0 -2500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -3000.0 0.0 -850.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -4125.0 0.0 -1950.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -2000.0 0.0 -4000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -4500.0 0.0 -1450.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -4150.0 0.0 -1000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# 街灯
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 13
+	POS = -980 0 -3220
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
 
 MODELSET
-	TYPE = 5
-	POS = 35 0 313
+	TYPE = 13
+	POS = -1900 0 -2600
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 450 0 -3000
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 270 0 -2100
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = -370 0 -1450
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 270 0 -950
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 1700 0 -3200
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
 
 MODELSET
-	TYPE = 5
-	POS = -120 0 1176
+	TYPE = 13
+	POS = 2460 0 -2760
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 2460 0 -2030
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 3700 0 -1600
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 3100 0 -2600
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 1500 0 -570
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 2200 0 -2600
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+#------------------------------------------------------------------------------
+# 門
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 14
+	POS = 30 0 1200
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# ドラゴン
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 15
+	POS = 0 0 -4500
 	ROT = 0 180 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 6
-	POS = -1772 0 -1045
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 6
-	POS = -796 0 -2589
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 6
-	POS = -802 0 313
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 6
-	POS = 460 0 1176
-	ROT = 0 180 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 6
-	POS = -986 0 2300
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 6
-	POS = 1739 0 2300
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 7
-	POS = -297 0 3162
-	ROT = 0 -90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 7
-	POS = 1000 0 3162
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 8
-	POS = -2101 0 2194
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 9
-	POS = 110 0 5000
-	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
@@ -667,7 +954,7 @@ END_MODELSET
 #------------------------------------------------------------------------------
 PLAYERSET
 	MOTION_FILENAME = data/motion.txt
-	POS = 10 0 0
+	POS = 0 0 -4500
 	ROT = 0 180 0
 	END_PLAYERSET
 

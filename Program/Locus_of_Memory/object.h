@@ -9,7 +9,7 @@
 #include "main.h"
 
 // マクロ定義
-#define MAX_OBJECTMAT	(16)	// マテリアルの最大数
+#define MAX_OBJECTMAT	(32)	// マテリアルの最大数
 #define MAX_OBJECT		(1024)	// オブジェクトの最大数
 #define MAX_PARTS		(14)	// パーツの最大数
 #define MAX_PARENTMODEL	(8)		// 階層構造をもったモデルの最大数
@@ -35,10 +35,16 @@ typedef enum
 	OBJECTTYPE_SHOP000,			// 店[4]
 	OBJECTTYPE_SHOP001,			// 店[5]
 	OBJECTTYPE_SHOP002,			// 店[6]
-	OBJECTTYPE_SHOP003,			// 
-	OBJECTTYPE_SHOP004,			// 
-	OBJECTTYPE_SHOP005,			// 
-	OBJECTTYPE_CASTLE000,		// 城[9]
+	OBJECTTYPE_SHOP003,			// [7]
+	OBJECTTYPE_SHOP004,			// [8]
+	OBJECTTYPE_SHOP005,			// [9]
+	OBJECTTYPE_SHOP006,			// [10]
+	OBJECTTYPE_SHOP007,			// [11]
+	OBJECTTYPE_SHOP008,			// [12]
+	OBJECTTYPE_SHOP009,			// [13]
+	OBJECTTYPE_SHOP010,			// [14]
+	OBJECTTYPE_SHOP011,			// [15]
+	OBJECTTYPE_CASTLE000,		// 城[16]
 	OBJECTTYPE_MAX
 }OBJECTTYPE;
 
