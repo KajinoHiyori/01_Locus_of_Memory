@@ -9,7 +9,7 @@ SCRIPT			# この行は絶対消さないこと！
 #------------------------------------------------------------------------------
 # テクスチャ数
 #------------------------------------------------------------------------------
-NUM_TEXTURE = 6
+NUM_TEXTURE = 7
 
 #------------------------------------------------------------------------------
 # テクスチャファイル名
@@ -20,16 +20,17 @@ TEXTURE_FILENAME = data/TEXTURE/field000.jpg		# [2]地面テクスチャ
 TEXTURE_FILENAME = data/TEXTURE/wall003.jpg			# [3]壁テクスチャ
 TEXTURE_FILENAME = data/TEXTURE/tree000.png			# [4]木テクスチャ
 TEXTURE_FILENAME = data/TEXTURE/grass000.png		# [5]草テクスチャ
+TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 11
+NUM_MODEL = 13
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/castle/castle.x		# [0]城
+MODEL_FILENAME = data/MODEL/tree/x/big_tree.x	# [0]巨木
 MODEL_FILENAME = data/MODEL/house/house.x       # [1]家
 MODEL_FILENAME = data/MODEL/shop/X/shop000.x	# [2]店1号
 MODEL_FILENAME = data/MODEL/shop/X/shop001.x	# [3]店2号
@@ -40,6 +41,8 @@ MODEL_FILENAME = data/MODEL/shop/X/shop002.x	# [7]店3号
 MODEL_FILENAME = data/MODEL/house/house004.x    # [8]家4(仮)
 MODEL_FILENAME = data/MODEL/lectern/lectern.x   # [9]書見台
 MODEL_FILENAME = data/MODEL/castle/castle000.x  # [10]城
+MODEL_FILENAME = data/MODEL/tree/x/trees000.x	# [11]木 (複数)
+MODEL_FILENAME = data/MODEL/tree/x/tree000.x	# [12]木
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -79,11 +82,19 @@ END_SKYSET
 # 地面情報
 #------------------------------------------------------------------------------
 FIELDSET
-	TEXTYPE = 2
+	TEXTYPE = 6
 	POS = 0 0 0
 	ROT = 0 0 0
-	BLOCK = 16 16
-	SIZE = 800 700
+	BLOCK = 8 16
+	SIZE = 1850 700
+END_FIELDSET
+
+FIELDSET
+	TEXTYPE = 2
+	POS = -3500.0 1.0 -2825.0
+	ROT = 0 -15 0
+	BLOCK = 6 12
+	SIZE = 500 500
 END_FIELDSET
 
 #------------------------------------------------------------------------------
@@ -757,6 +768,90 @@ MODELSET
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# 木の配置情報
+#------------------------------------------------------------------------------
+
+MODELSET
+	TYPE = 11
+	POS = -2750.0 0.0 -3000.0
+	ROT = 0.0 60.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = -2850.0 0.0 -1500.0
+	ROT = 0.0 165.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 11
+	POS = -3750.0 0.0 -250.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -2250.0 0.0 -2750.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -3725.0 0.0 -2500.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -3000.0 0.0 -850.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -4125.0 0.0 -1950.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -2000.0 0.0 -4000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 12
+	POS = -4500.0 0.0 -1450.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
+END_MODELSET
+
+MODELSET
+	TYPE = 0
+	POS = -4150.0 0.0 -1000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 0
+	COLLISION = 0
 END_MODELSET
 
 #------------------------------------------------------------------------------
