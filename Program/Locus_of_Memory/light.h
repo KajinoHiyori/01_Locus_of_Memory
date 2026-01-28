@@ -9,7 +9,7 @@
 
 // ƒ}ƒNƒ’è‹`
 #define LIGHT_BRIGHTEST			(D3DXCOLOR(1.000f,	1.000f,	1.000f,	1.000f))	// 1”Ô–Ú‚É–¾‚é‚¢ŒõŒ¹
-#define LIGHT_BRIGHTER			(D3DXCOLOR(0.800f,	0.800f,	0.800f,	1.000f))	// 2”Ô–Ú‚É–¾‚é‚¢ŒõŒ¹
+#define LIGHT_BRIGHTER			(D3DXCOLOR(0.900f,	0.900f,	0.900f,	1.000f))	// 2”Ô–Ú‚É–¾‚é‚¢ŒõŒ¹
 #define LIGHT_BRIGHT			(D3DXCOLOR(0.600f,	0.600f,	0.600f,	1.000f))	// 3”Ô–Ú‚É–¾‚é‚¢ŒõŒ¹
 
 
