@@ -239,5 +239,8 @@
     <ClInclude Include="startui.h">
       <Filter>title\h</Filter>
     </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

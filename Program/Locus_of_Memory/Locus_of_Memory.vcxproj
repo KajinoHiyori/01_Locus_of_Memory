@@ -191,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animal.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="diagnosis.h" />
     <ClInclude Include="diagnosisui.h" />
     <ClInclude Include="effect.h" />

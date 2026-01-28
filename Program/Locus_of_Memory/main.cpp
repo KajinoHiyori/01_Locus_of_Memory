@@ -18,6 +18,7 @@
 #include "result.h"
 #include "diagnosis.h"
 #include "fade.h"
+#include "fog.h"
 #include "loadscript.h"
 
 #include "camera.h"
@@ -324,6 +325,10 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+
+	// 霧の設定
+	SetFogEnable(true);
+	SetFog(D3DXCOLOR(0.84f, 0.86f, 0.87f, 1.0f), FOGSTART, FOGEND);
 
 	// 乱数シードセット
 	srand((unsigned)timeGetTime());
