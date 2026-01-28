@@ -188,6 +188,7 @@
     <ClCompile Include="title.cpp" />
     <ClCompile Include="titleui.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="vibration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animal.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="titleui.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="vibration.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
