@@ -40,6 +40,7 @@ DWORD				g_dwNumMatPlayer[MAX_PLAYER] = {0, 0};		// マテリアルの数
 LPDIRECT3DTEXTURE9	g_apTexturePlayer[MAX_PLAYER][MAX_PLAYERMAT];		// テクスチャへの	ポインタ
 Player				g_aPlayer[MAX_PLAYER];						// プレイヤーの情報を格納
 
+#if 0
 // 1Pのモデル
 const char* c_apFilename1PModel[MAX_MODEL] =
 {
@@ -52,6 +53,7 @@ const char* c_apFilename2PModel[MAX_MODEL] =
 {
 	"data\\MODEL\\player\\tank000.x",	// 胴体[0]
 };
+#endif
 
 //========================================================================
 // プレイヤーの初期化処理
@@ -429,11 +431,26 @@ void UpdatePlayer(void)
 //========================================================================
 void DrawPlayer(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
-	D3DMATERIAL9 matDef;						// 現在のマテリアル保存用
-	D3DXMATERIAL* pMat;							// マテリアルデータへのポインタ
-	Player* pPlayer = &g_aPlayer[0];
+	LPDIRECT3DDEVICE9	pDevice = GetDevice();		// デバイスの取得
+	D3DXMATRIX			mtxRot, mtxTrans;			// 計算用マトリックス
+	D3DMATERIAL9		matDef;						// 現在のマテリアル保存用
+	D3DXMATERIAL*		pMat;						// マテリアルデータへのポインタ
+	Player*				pPlayer = &g_aPlayer[0];	// プレイヤーのポインタを取得
+
+	// 影の描画用変数
+	D3DXMATRIX	mtxShadow;		// シャドウマトリックス
+	D3DLIGHT9	light;			// ライト情報
+	D3DXVECTOR4	posLight;		// ライトの位置
+	D3DXVECTOR3	pos, normal;	// 平面上の任意の点(playerの原点)、法線ベクトル
+	D3DXPLANE	plane;			// 平面情報
+
+	// ライトの位置を設定
+	pDevice->GetLight(0, &light);
+	posLight = D3DXVECTOR4(-light.Direction.x, -light.Direction.y, -light.Direction.z, 0.0f);
+
+	// 平面情報を設定
+	pos = pPlayer->pos;
+	normal = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{

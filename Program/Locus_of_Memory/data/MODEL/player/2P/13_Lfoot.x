@@ -618,7 +618,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\TEXTURE\\shoes.png";
+    "data\\TEXTURE\\2P_shoes.png";
    }
   }
  }
