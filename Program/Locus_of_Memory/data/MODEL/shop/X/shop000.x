@@ -1540,7 +1540,7 @@ Mesh {
    1.000000;1.000000;1.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\Door000.jpg";
+    "data\\TEXTURE\\Door000.jpg";
    }
   }
   Material {
@@ -1549,7 +1549,7 @@ Mesh {
    1.000000;1.000000;1.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\signboard000.jpg";
+    "data\\TEXTURE\\signboard000.jpg";
    }
   }
   Material {
@@ -1558,7 +1558,7 @@ Mesh {
    1.000000;1.000000;1.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\signboard000.jpg";
+    "data\\TEXTURE\\signboard000.jpg";
    }
   }
   Material {
@@ -1567,7 +1567,7 @@ Mesh {
    1.000000;1.000000;1.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\wood002.jpg";
+    "data\\TEXTURE\\wood002.jpg";
    }
   }
   Material {
@@ -1576,7 +1576,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\rengawall000.jpg";
+    "data\\TEXTURE\\rengawall000.jpg";
    }
   }
   Material {
@@ -1585,7 +1585,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\rengawall000.jpg";
+    "data\\TEXTURE\\rengawall000.jpg";
    }
   }
   Material {
@@ -1594,7 +1594,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\rengawall000.jpg";
+    "data\\TEXTURE\\rengawall000.jpg";
    }
   }
   Material {
@@ -1615,7 +1615,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\roof000.jpg";
+    "data\\TEXTURE\\roof000.jpg";
    }
   }
   Material {
@@ -1624,7 +1624,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\各種素材\\3D表\現チーム制作素材\\Locus\\TEXTURE\\roof000.jpg";
+    "data\\TEXTURE\\roof000.jpg";
    }
   }
   Material {
