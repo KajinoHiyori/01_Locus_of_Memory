@@ -16,6 +16,7 @@
 //#include"model.h"
 #include"player.h"
 #include"shadow.h"
+#include "magic.h"
 //#include"billboard.h"
 //#include"wall.h"
 //#include"field.h"
@@ -46,6 +47,9 @@ void InitTutorial(void)
 	InitLight();
 
 	InitCamera();
+
+	// 魔法の初期化処理
+	InitMagic();
 
 	//InitField();
 
@@ -87,6 +91,9 @@ void UninitTutorial(void)
 	UninitLight();
 
 	UninitCamera();
+
+	// 魔法の終了処理
+	UninitMagic();
 
 	//UninitField();
 
@@ -155,6 +162,9 @@ void UpdateTutorial(void)
 		UpdateCamera();
 
 		UpdateLight();
+
+		// 魔法の更新処理
+		UpdateMagic();
 
 		//UpdateField();
 
@@ -246,6 +256,9 @@ void DrawTutorial(void)
 	//DrawMeshsky();
 
 	DrawMeshField();
+
+	// 魔法の描画処理
+	DrawMagic();
 
 	//DrawMashwall();
 
