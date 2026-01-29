@@ -8,6 +8,7 @@
 #include"player.h"
 #include"input.h"
 #include "debugproc.h"
+#include "pause.h"
 #include "gameui.h"
 #include "main.h"
 //#include"sound.h"
@@ -33,17 +34,21 @@
 #include"particle.h"
 #include "spellui.h"
 #include "magic.h"
+#include "fog.h"
 
 #include"meshfield.h"
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 int g_nCounterGameState = 0;				// 状態管理カウンター
+bool g_bPause;								// ポーズ状態
 
 //=======================================================
 // ゲームの初期化処理
 //=======================================================
 void InitGame(void)
 {
+	g_bPause = false;		// ポーズ初期化
+
 	// プレイヤーの初期化設定
 	//InitBG();
 
@@ -70,6 +75,9 @@ void InitGame(void)
 
 	// 魔法の初期化処理
 	InitMagic();
+
+	// ポーズの初期化処理
+	InitPause();
 
 	InitGameUI();
 
@@ -122,6 +130,9 @@ void UninitGame(void)
 	// 魔法の終了処理
 	UninitMagic();
 
+	// ポーズの終了処理
+	UninitPause();
+
 	UninitGameUI();
 
 	UninitSpellUI();
@@ -142,7 +153,12 @@ void UpdateGame(void)
 	FADE* pFade = GetFade();
 	//Timer* pTimer = GetTimer();
 
-	
+	if (GetJoypadTrigger(JOYKEY_START, 0) == true)
+	{
+		g_bPause = g_bPause ? false : true;
+		SetPauseMenu(PAUSE_MENU_MAGICBOOK);
+	}
+
 	// プレイヤーの更新処理
 	//UpdateBG();
 
@@ -180,6 +196,12 @@ void UpdateGame(void)
 
 	// 魔法の更新処理
 	UpdateMagic();
+
+	if (g_bPause == true)
+	{
+		// ポーズの更新処理
+		UpdatePause();
+	}
 
 	UpdateGameUI();
 	
@@ -274,11 +296,28 @@ void DrawGame(void)
 
 	//DrawTimer();
 
+	SetFogEnable(false);		// 霧を無効
 
 	DrawGameUI();
 
 	DrawSpellUI();
 
+	if (g_bPause == true)
+	{
+		// ポーズの描画処理
+		DrawPause();
+	}
+
+	SetFogEnable(true);			// 霧を有効
+
+}
+
+//=============================================================================
+// ポーズメニュー設定処理
+//=============================================================================
+void SetEnablePause(bool bPause)
+{
+	g_bPause = bPause;
 }
 
 void SetGameState(GAMESTATE state, int nCounter)

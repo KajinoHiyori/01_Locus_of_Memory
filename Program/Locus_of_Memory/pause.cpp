@@ -15,22 +15,25 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define PAUSEMENU_WIDTH		(300.0f)
-#define PAUSEMENU_HEIGHT	(100.0f)
+#define PAUSEMENU_WIDTH		(120.0f)			// ポーズメニューの幅
+#define PAUSEMENU_HEIGHT	(30.0f)				// ポーズメニューの高さ
+#define PAUSEMENU_POSX		(1100.0f)			// ポーズメニューの位置
+#define PAUSEMENU_POSY		(320.0f)			// ポーズメニューの位置
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
 LPDIRECT3DTEXTURE9 g_apTexturePause[PAUSE_MENU_MAX] = {};		// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffPause = NULL;					// 頂点バッファへのポインタ
-PAUSE_MENU g_pauseMenu = PAUSE_MENU_CONTINUE;					// ポーズメニューの状態
+PAUSE_MENU g_pauseMenu = PAUSE_MENU_MAGICBOOK;					// ポーズメニューの状態
 bool g_bPauseDisp = true;
 
 PauseMenuInfo g_aPauseMenuInfo[PAUSE_MENU_MAX] =
 {
-	{{ SCREEN_WIDTH / 2, 180.0f, 0.0f }, { 0.0f, 0.0f, 0.95f * D3DX_PI }, PAUSEMENU_WIDTH, PAUSEMENU_HEIGHT, 0.0f, 0.0f },
-	{{ SCREEN_WIDTH / 2, 380.0f, 0.0f }, { 0.0f, 0.0f, -0.95f * D3DX_PI }, PAUSEMENU_WIDTH, PAUSEMENU_HEIGHT, 0.0f, 0.0f },
-	{{ SCREEN_WIDTH / 2, 580.0f, 0.0f }, { 0.0f, 0.0f, 0.95f * D3DX_PI }, PAUSEMENU_WIDTH, PAUSEMENU_HEIGHT, 0.0f, 0.0f },
+	{{ PAUSEMENU_POSX, PAUSEMENU_POSY, 0.0f }, { 0.0f, 0.0f, 1.0f * D3DX_PI }, PAUSEMENU_WIDTH, PAUSEMENU_HEIGHT, 0.0f, 0.0f },
+	{{ PAUSEMENU_POSX, PAUSEMENU_POSY + PAUSEMENU_HEIGHT * 3, 0.0f }, { 0.0f, 0.0f, 1.0f * D3DX_PI }, PAUSEMENU_WIDTH, PAUSEMENU_HEIGHT, 0.0f, 0.0f },
+	{{ PAUSEMENU_POSX, PAUSEMENU_POSY + PAUSEMENU_HEIGHT * 6, 0.0f}, {0.0f, 0.0f, 1.0f * D3DX_PI}, PAUSEMENU_WIDTH, PAUSEMENU_HEIGHT, 0.0f, 0.0f},
+	{{ PAUSEMENU_POSX, PAUSEMENU_POSY + PAUSEMENU_HEIGHT * 9, 0.0f }, { 0.0f, 0.0f, 1.0f * D3DX_PI }, PAUSEMENU_WIDTH, PAUSEMENU_HEIGHT, 0.0f, 0.0f },
 };
 
 //=============================================================================
@@ -40,6 +43,7 @@ void InitPause(void)
 {
 	const char* pPauseMenuFileName[] =
 	{
+		"data\\TEXTURE\\continue000.png",
 		"data\\TEXTURE\\continue000.png",
 		"data\\TEXTURE\\restart000.png",
 		"data\\TEXTURE\\quit000.png"
@@ -66,7 +70,7 @@ void InitPause(void)
 		NULL);
 
 	// 初期化
-	g_pauseMenu = PAUSE_MENU_CONTINUE;
+	g_pauseMenu = PAUSE_MENU_MAGICBOOK;
 	g_bPauseDisp = true;
 
 	PauseMenuInfo* pPauseMenuInfo = &g_aPauseMenuInfo[0];
@@ -151,7 +155,6 @@ void UninitPause(void)
 //=============================================================================
 void DrawPause(void)
 {
-
 	LPDIRECT3DDEVICE9 pDevice;				// デバイスへのポインタ
 
 	// デバイスの取得
@@ -195,8 +198,12 @@ void UpdatePause(void)
 		// 現在のモードに合わせて変更
 		switch (g_pauseMenu)
 		{
-		case PAUSE_MENU_CONTINUE:
+		case PAUSE_MENU_MAGICBOOK:
 			g_pauseMenu = PAUSE_MENU_QUIT;
+			break;
+
+		case PAUSE_MENU_CONTINUE:
+			g_pauseMenu = PAUSE_MENU_MAGICBOOK;
 			break;
 
 		case PAUSE_MENU_RESTART:
@@ -214,6 +221,10 @@ void UpdatePause(void)
 		// 現在のモードに合わせて変更
 		switch (g_pauseMenu)
 		{
+		case PAUSE_MENU_MAGICBOOK:
+			g_pauseMenu = PAUSE_MENU_CONTINUE;
+			break;
+
 		case PAUSE_MENU_CONTINUE:
 			g_pauseMenu = PAUSE_MENU_RESTART;
 			break;
@@ -223,7 +234,7 @@ void UpdatePause(void)
 			break;
 
 		case PAUSE_MENU_QUIT:
-			g_pauseMenu = PAUSE_MENU_CONTINUE;
+			g_pauseMenu = PAUSE_MENU_MAGICBOOK;
 			break;
 		}
 	}
@@ -250,10 +261,10 @@ void UpdatePause(void)
 			pVtx[3].pos.z = 0.0f;
 
 			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+			pVtx[1].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+			pVtx[2].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+			pVtx[3].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
 		}
 		else
 		{ // 選択されていなければ不透明度を下げる
@@ -264,10 +275,10 @@ void UpdatePause(void)
 			pVtx[3].pos = D3DXVECTOR3(pPauseMenuInfo->pos.x + pPauseMenuInfo->fWidth, pPauseMenuInfo->pos.y + pPauseMenuInfo->fHeight, 0.0f);
 
 			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+			pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 0.5f);
+			pVtx[1].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 0.5f);
+			pVtx[2].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 0.5f);
+			pVtx[3].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 0.5f);
 		}
 
 		pVtx += 4;
@@ -276,10 +287,13 @@ void UpdatePause(void)
 	if (GetJoypadTrigger(JOYKEY_A, 0) == true || GetKeyboardTrigger(DIK_RETURN) == true)
 	{ // 決定キーが押されたら
 		// ポーズを解除
-		//SetEnablePause(false);
+		SetEnablePause(false);
 		// 現在のモードに合わせて変更
 		switch (g_pauseMenu)
 		{
+		case PAUSE_MENU_MAGICBOOK:
+			break;
+
 		case PAUSE_MENU_CONTINUE:
 			break;
 
@@ -302,13 +316,13 @@ void UpdatePause(void)
 	g_pVtxBuffPause->Unlock();
 }
 
-////=============================================================================
-////	ポーズメニューの設定処理
-////=============================================================================
-//void SetPauseMenu(PAUSE_MENU pause_menu)
-//{
-//	g_pauseMenu = pause_menu;
-//}
+//=============================================================================
+//	ポーズメニューの設定処理
+//=============================================================================
+void SetPauseMenu(PAUSE_MENU pause_menu)
+{
+	g_pauseMenu = pause_menu;
+}
 
 //=============================================================================
 //	ポーズメニューの表示状態取得処理

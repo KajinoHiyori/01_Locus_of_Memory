@@ -19,7 +19,8 @@
 //*****************************************************************************
 typedef enum
 {
-	PAUSE_MENU_CONTINUE = 0,		// ゲームに戻る
+	PAUSE_MENU_MAGICBOOK = 0,		// 魔導書
+	PAUSE_MENU_CONTINUE,			// ゲームに戻る
 	PAUSE_MENU_RESTART,				// ゲームをやり直す
 	PAUSE_MENU_QUIT,				// タイトル画面に戻る
 	PAUSE_MENU_MAX					// 
@@ -45,7 +46,7 @@ void InitPause(void);
 void UninitPause(void);
 void UpdatePause(void);
 void DrawPause(void);
-//void SetPauseMenu(PAUSE_MENU pause_menu);
+void SetPauseMenu(PAUSE_MENU pause_menu);
 bool GetPauseDisp(void);
 
 #endif
