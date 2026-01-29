@@ -40,6 +40,14 @@ void InitMagic(void)
 		}
 	}
 
+	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
+	{
+		for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+		{
+			g_aCommand[nCntPlayerType][nCntCommand] = COMMANDTYPE_NONE;
+		}
+	}
+
 	for (int nCntMagic = 0; nCntMagic < MAX_DROPMAGIC; nCntMagic++)
 	{
 		g_aDropMagic[nCntMagic].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
