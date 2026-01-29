@@ -267,7 +267,7 @@ void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 		D3DXVec3TransformCoord(&posC, &posC, &pObject->mtxWorld);
 		D3DXVec3TransformCoord(&posD, &posD, &pObject->mtxWorld);
 
-		if (pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius < pObject->pos.y + pObjectModel->vtxMax.y)
+		if (pPos->y + fRadius >= pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius <= pObject->pos.y + pObjectModel->vtxMax.y)
 		{
 			//// “–‚½‚è”»’è
 			//if (pObject->bCollision == true)
@@ -281,9 +281,9 @@ void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 		}
 
 		// ƒ‚ƒfƒ‹‚Ì”ÍˆÍ“à‚©”»’è
-		if (pPos->x + fRadius > pObject->pos.x + pObjectModel->vtxMin.x && pPos->x +fRadius < pObject->pos.x + pObjectModel->vtxMax.x &&
-			pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y +fRadius < pObject->pos.y + pObjectModel->vtxMax.y &&
-			pPos->z + fRadius > pObject->pos.z + pObjectModel->vtxMin.z && pPos->z +fRadius < pObject->pos.z + pObjectModel->vtxMax.z)
+		if (pPos->x + fRadius > pObject->pos.x + pObjectModel->vtxMin.x && pPos->x + fRadius < pObject->pos.x + pObjectModel->vtxMax.x &&
+			pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius < pObject->pos.y + pObjectModel->vtxMax.y &&
+			pPos->z + fRadius > pObject->pos.z + pObjectModel->vtxMin.z && pPos->z + fRadius < pObject->pos.z + pObjectModel->vtxMax.z)
 		{
 			// ã‚©‚ç
 			if (pPosOld->y + fRadius >= pObject->pos.y + pObjectModel->vtxMax.y)
