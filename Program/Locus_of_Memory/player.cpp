@@ -342,7 +342,7 @@ void UpdatePlayer(void)
 				g_aPlayer[nCntPlayer].rotDest.y = fRotDest;
 				fRotDest = AngleNormalize(fRotDest);
 
-				if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer->motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
+				if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
 				{// 
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
 				}
