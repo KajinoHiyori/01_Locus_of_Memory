@@ -31,7 +31,7 @@
 //#include"timer.h"
 #include"effect.h"
 #include"particle.h"
-
+#include "spellui.h"
 #include "magic.h"
 
 #include"meshfield.h"
@@ -72,6 +72,8 @@ void InitGame(void)
 	InitMagic();
 
 	InitGameUI();
+
+	InitSpellUI();
 
 	//InitModel();
 
@@ -121,6 +123,8 @@ void UninitGame(void)
 	UninitMagic();
 
 	UninitGameUI();
+
+	UninitSpellUI();
 
 	//UninitScore();
 
@@ -179,6 +183,7 @@ void UpdateGame(void)
 
 	UpdateGameUI();
 	
+	UpdateSpellUI();
 
 	switch (g_gameState)
 	{
@@ -272,7 +277,7 @@ void DrawGame(void)
 
 	DrawGameUI();
 
-
+	DrawSpellUI();
 
 }
 
