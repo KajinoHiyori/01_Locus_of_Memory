@@ -16,8 +16,8 @@
 #define MAX_SPELLTEX	(SPELLUI_TEX_MAX)	// テクスチャの最大数
 #define MAX_SPELLTYPE	(SPELLUI_TYPE_MAX)	// 表示されるUIの種類
 #define SPELLUI_POSY	(360.0f)			// 左のUIのX軸
-#define LEFT_POS		(D3DXVECTOR3(1100.0f, SPELLUI_POSY, 0.0f))
-#define RIGHT_POS		(D3DXVECTOR3(180.0f, SPELLUI_POSY, 0.0f))
+#define LEFT_POS		(D3DXVECTOR3(180.0f, SPELLUI_POSY, 0.0f))
+#define RIGHT_POS		(D3DXVECTOR3(1100.0f, SPELLUI_POSY, 0.0f))
 #define COMMMAND_Y		(-50.0f)	// コマンド結果の高度
 #define COMMMAND_SIZE	(35.0f)		// コマンドボタンの大きさ
 #define MAGIC_SIZE		(80.0f)		// 発動魔法の大きさ
@@ -133,12 +133,12 @@ void InitSpellUI(void)
 			switch (nCntPlayer)
 			{
 			case 0:
-				MainPos[nCntPlayer] = RIGHT_POS;
-				g_bAllDisp[nCntPlayer] = false;
+				MainPos[nCntPlayer] = LEFT_POS;
+				g_bAllDisp[nCntPlayer] = true;
 
 				break;
 			case 1:
-				MainPos[nCntPlayer] = LEFT_POS;
+				MainPos[nCntPlayer] = RIGHT_POS;
 				g_bAllDisp[nCntPlayer] = true;
 
 				break;
@@ -152,7 +152,7 @@ void InitSpellUI(void)
 				continue;
 			}
 			g_bAllDisp[nCntPlayer] = true;
-			MainPos[nCntPlayer] = LEFT_POS;
+			MainPos[nCntPlayer] = RIGHT_POS;
 			break;
 		}
 			
@@ -350,7 +350,6 @@ void InitSpellUI(void)
 			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 		}
-
 	}
 
 	// 頂点バッファをアンロック
@@ -518,7 +517,7 @@ void DrawSpellUI(void)
 				pDevice->SetTexture(0, g_apTextureSpellUI[g_SpellUI[nCntPlayer][nCntUI].tex]);
 
 				// ポリゴンの描画
-				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + nCntPlayer * MAX_SPELLTYPE, 2);
+				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + (nCntPlayer * MAX_SPELLTYPE * 4), 2);
 			}
 		}
 	}
