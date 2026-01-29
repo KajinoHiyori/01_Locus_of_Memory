@@ -297,19 +297,19 @@ void UpdatePlayer(void)
 			moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 			// 移動方向を管理
-			if (GetKeyboardPress(DIK_A) == true || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
 			{
 				moveDir.x -= 1.0f;
 			}
-			else if (GetKeyboardPress(DIK_D) == true || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
 			{
 				moveDir.x += 1.0f;
 			}
-			if (GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
 			{
 				moveDir.z += 1.0f;
 			}
-			else if (GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
 			{
 				moveDir.z -= 1.0f;
 			}
