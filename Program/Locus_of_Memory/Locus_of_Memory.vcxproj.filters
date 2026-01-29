@@ -171,6 +171,9 @@
     <ClCompile Include="clockui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="spellui.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -267,6 +270,9 @@
       <Filter>UI\h</Filter>
     </ClInclude>
     <ClInclude Include="gameui.h">
+      <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="spellui.h">
       <Filter>UI\h</Filter>
     </ClInclude>
   </ItemGroup>
