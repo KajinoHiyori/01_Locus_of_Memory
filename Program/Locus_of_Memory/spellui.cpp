@@ -16,7 +16,12 @@
 #define MAX_SPELLTYPE	(SPELLUI_TYPE_MAX)	// 表示されるUIの種類
 #define LEFT_POSX		(1100.0f)			// 左のUIのX軸
 #define LEFT_POS		(D3DXVECTOR3(LEFT_POSX, 360.0f, 0.0f))
-#define COMMMAND_WIDTH	(20.0f)				// コマンドボタンの幅
+#define COMMMAND_SIZE	(30.0f)		// コマンドボタンの大きさ
+#define BUTTON_SIZE		(15.0f)		// 操作キー表示の大きさ
+#define SPELL_WIDTH		(135.0f)	// spellメニューの幅
+#define SPELL_HEIGHT	(30.0f)		// spellメニューの高さ
+#define PHONE_WIDTH		(135.0f)	// スマホの幅
+#define PHONE_HEIGHT	(285.0f)	// スマホの幅
 
 // SPELLUIの構造体
 typedef struct
@@ -107,7 +112,7 @@ void InitSpellUI(void)
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffSpellUI->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pVtx +=4)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		switch (operationType)	// 操作人数に応じてUIの位置を変更
 		{
@@ -127,9 +132,9 @@ void InitSpellUI(void)
 				case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].tex = SPELLUI_TEX_MAGICNULL;			// どの魔法も入力されていない
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].type = SPELLUI_TYPE_COMMAND0;			// UIの種類の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].pos = D3DXVECTOR3(-30.0f, 50.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].fWidth = 15.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].fHeight = 15.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].pos = D3DXVECTOR3(-30.0f, 50.0f, 0.0f);// 位置の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].fWidth = COMMMAND_SIZE;						// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].fHeight = COMMMAND_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -137,8 +142,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].tex = SPELLUI_TEX_MAGICNULL;			// どの魔法も入力されていない
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].type = SPELLUI_TYPE_COMMAND1;			// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].pos = D3DXVECTOR3(0.0f, 50.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].fWidth = 15.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].fHeight = 15.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].fWidth = COMMMAND_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].fHeight = COMMMAND_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -146,8 +151,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].tex = SPELLUI_TEX_MAGICNULL;			// どの魔法も入力されていない
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].type = SPELLUI_TYPE_COMMAND2;			// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].pos = D3DXVECTOR3(30.0f, 50.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].fWidth = 15.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].fHeight = 15.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].fWidth = COMMMAND_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].fHeight = COMMMAND_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -155,8 +160,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_MAGICNULL;			// どの魔法も入力されていない
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].type = SPELLUI_TYPE_MAGIC;			// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].pos = D3DXVECTOR3(0.0f, 25.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].fWidth = 30.0f;						// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].fHeight = 30.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].fWidth = COMMMAND_SIZE;						// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].fHeight = COMMMAND_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = false;						// テクスチャの初期化
 					break;
 
@@ -164,8 +169,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_RED].tex = SPELLUI_TEX_RED;					// 赤魔法
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_RED].type = SPELLUI_TYPE_RED;				// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_RED].pos = D3DXVECTOR3(50.0f, 150.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_RED].fWidth = 50.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_RED].fHeight = 50.0f;							// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_RED].fWidth = COMMMAND_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_RED].fHeight = COMMMAND_SIZE;							// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_RED].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -173,8 +178,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_GREEN].tex = SPELLUI_TEX_GREEN;				// 緑魔法
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_GREEN].type = SPELLUI_TYPE_GREEN;			// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_GREEN].pos = D3DXVECTOR3(0.0f, 200.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_GREEN].fWidth = 50.0f;						// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_GREEN].fHeight = 50.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_GREEN].fWidth = COMMMAND_SIZE;						// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_GREEN].fHeight = COMMMAND_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_GREEN].bDisp = true;						// テクスチャの初期化
 					break;
 
@@ -182,8 +187,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_BLUE].tex = SPELLUI_TEX_BLUE;				// 青魔法
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_BLUE].type = SPELLUI_TYPE_BLUE;				// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_BLUE].pos = D3DXVECTOR3(-50.0f, 150.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_BLUE].fWidth = 50.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_BLUE].fHeight = 50.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_BLUE].fWidth = COMMMAND_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_BLUE].fHeight = COMMMAND_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_BLUE].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -191,8 +196,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_YELLOW].tex = SPELLUI_TEX_YELLOW;				// 黄魔法
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_YELLOW].type = SPELLUI_TYPE_YELLOW;				// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_YELLOW].pos = D3DXVECTOR3(0.0f, 100.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_YELLOW].fWidth = 50.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_YELLOW].fHeight = 50.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_YELLOW].fWidth = COMMMAND_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_YELLOW].fHeight = COMMMAND_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_YELLOW].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -207,8 +212,8 @@ void InitSpellUI(void)
 					}
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_R].type = SPELLUI_TYPE_OP_R;				// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_R].pos = D3DXVECTOR3(50.0f, 170.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_R].fWidth = 10.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_R].fHeight = 10.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_R].fWidth = BUTTON_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_R].fHeight = BUTTON_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_R].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -223,8 +228,8 @@ void InitSpellUI(void)
 					}
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_G].type = SPELLUI_TYPE_OP_G;				// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_G].pos = D3DXVECTOR3(0.0f, 220.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_G].fWidth = 10.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_G].fHeight = 10.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_G].fWidth = BUTTON_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_G].fHeight = BUTTON_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_G].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -239,8 +244,8 @@ void InitSpellUI(void)
 					}
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_B].type = SPELLUI_TYPE_OP_B;				// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_B].pos = D3DXVECTOR3(-50.0f, 170.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_B].fWidth = 10.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_B].fHeight = 10.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_B].fWidth = BUTTON_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_B].fHeight = BUTTON_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_B].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -255,8 +260,8 @@ void InitSpellUI(void)
 					}
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_Y].type = SPELLUI_TYPE_OP_Y;				// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_Y].pos = D3DXVECTOR3(0.0f, 120.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_Y].fWidth = 10.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_Y].fHeight = 10.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_Y].fWidth = BUTTON_SIZE;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_Y].fHeight = BUTTON_SIZE;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_OP_Y].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -264,8 +269,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_SPELL].tex = SPELLUI_TEX_SPELL;				// spell
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_SPELL].type = SPELLUI_TYPE_SPELL;				// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_SPELL].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_SPELL].fWidth = 10.0f;							// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_SPELL].fHeight = 10.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_SPELL].fWidth = SPELL_WIDTH;							// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_SPELL].fHeight = SPELL_HEIGHT;						// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_SPELL].bDisp = true;							// テクスチャの初期化
 					break;
 
@@ -273,8 +278,8 @@ void InitSpellUI(void)
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_PHONE].tex = SPELLUI_TEX_PHONE;				// spell
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_PHONE].type = SPELLUI_TYPE_PHONE;			// UIの種類の初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_PHONE].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_PHONE].fWidth = 285.0f;						// 幅の初期化
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_PHONE].fHeight = 135.0f;						// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_PHONE].fWidth = PHONE_WIDTH;					// 幅の初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_PHONE].fHeight = PHONE_HEIGHT;				// 高さの初期化
 					g_SpellUI[nCntPlayer][SPELLUI_TYPE_PHONE].bDisp = true;							// テクスチャの初期化
 					break;
 				}
@@ -287,7 +292,7 @@ void InitSpellUI(void)
 			break;
 		}
 
-		for (int nCntUI = 0; nCntUI < MAX_SPELLTYPE; nCntUI++)	// 頂点バッファに数値を代入
+		for (int nCntUI = 0; nCntUI < MAX_SPELLTYPE; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
 		{
 			// 頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(MainPos[nCntPlayer].x + g_SpellUI[nCntPlayer][nCntUI].pos.x - g_SpellUI[nCntPlayer][nCntUI].fWidth, MainPos[nCntPlayer].y + g_SpellUI[nCntPlayer][nCntUI].pos.y - g_SpellUI[nCntPlayer][nCntUI].fHeight, MainPos[nCntPlayer].z + g_SpellUI[nCntPlayer][nCntUI].pos.z);
