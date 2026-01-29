@@ -8,6 +8,7 @@
 #include"effect.h"
 #include"input.h"
 #include"camera.h"
+#include "fog.h"
 
 #define MAX_EFFECT	(4096)
 
@@ -144,6 +145,8 @@ void DrawEffect(void)
 	D3DXMATRIX mtxRot, mtxTrans;
 	D3DXMATRIX mtxView;
 
+	SetFogEnable(false);		//àÍíUè¡Ç∑
+
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
 		if (g_aEffect[nCntEffect].bUse == true)
@@ -210,6 +213,8 @@ void DrawEffect(void)
 		}
 
 	}
+
+	SetFogEnable(true);
 }
 
 //================
