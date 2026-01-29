@@ -78,12 +78,205 @@ void UpdateParticle(void)
 					{
 						g_aParticle[nCntParticle].bUse = false;
 					}
-
 				}
 				break;
 
+				//•‚—V
 			case PARTICLETYPE_LEVITATION:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//”RÄ
+			case PARTICLETYPE_COMBUSTION:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//^…A”Ã—”
+			case PARTICLETYPE_FLOOD:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//ƒtƒ‰ƒbƒVƒ…
+			case PARTICLETYPE_FLASH:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//‰Î‹…
+			case PARTICLETYPE_FIREBALL:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//‘¾—z‚Ì“®‚«‚ð’x‰„‚·‚é
+			case PARTICLETYPE_SUNSETDELAY:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//‰JŒî‚¢
+			case PARTICLETYPE_RAINPRAY:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//“€Œ‹
+			case PARTICLETYPE_FREEZE:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//¬’·(A•¨‚È‚Ç)
+			case PARTICLETYPE_GROWTH:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//‰Á‘¬
+			case PARTICLETYPE_ACCELERATION:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
+				break;
+
+				//ŽžŠÔ‚ÌŠª‚«–ß‚µ(‰ñ‹A)
+			case PARTICLETYPE_TIMEREVERT:
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				{
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+				}
 				break;
 			}
 			nCountParticle++;

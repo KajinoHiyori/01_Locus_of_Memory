@@ -21,11 +21,16 @@
 Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
 DropMagic g_aDropMagic[MAX_DROPMAGIC];					//落ちてる魔法の情報
 COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
+MagicCounter g_aCounter[MAX_PLAYER];
 int nCntCommand[MAX_PLAYER] = {};
 
 //魔法の初期化処理=============================
 void InitMagic(void)
 {
+	MagicCounter* pCounter = &g_aCounter[0];
+
+	memset(pCounter, NULL, sizeof(MagicCounter) * MAX_PLAYER);
+
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
 		for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
@@ -472,80 +477,96 @@ MAGICTYPE ChangeMagic(COMMANDOREDER commandorder)
 }
 
 //魔法の設定処理==============================
-void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nIdx)
 {
-	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
+	for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
 	{
-		for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
+		if (g_aMagic[nIdx][nCntMagic].bUse == false)
 		{
-			if (g_aMagic[nCntPlayerType][nCntMagic].bUse == false)
+			g_aMagic[nIdx][nCntMagic].mType = type;
+			g_aMagic[nIdx][nCntMagic].pos = pos;
+			g_aMagic[nIdx][nCntMagic].rot = rot;
+			g_aMagic[nIdx][nCntMagic].move = move;
+			g_aMagic[nIdx][nCntMagic].bUse = true;
+
+			switch (type)
 			{
-				g_aMagic[nCntPlayerType][nCntMagic].mType = type;
-				g_aMagic[nCntPlayerType][nCntMagic].pos = pos;
-				g_aMagic[nCntPlayerType][nCntMagic].rot = rot;
-				g_aMagic[nCntPlayerType][nCntMagic].move = move;
-				g_aMagic[nCntPlayerType][nCntMagic].bUse = true;
-
-				switch (type)
-				{
-					//浮遊
-				case MAGICTYPE_LEVITATION:
-
+				//浮遊
+			case MAGICTYPE_LEVITATION:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_LEVITATION]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 3;
 					break;
 
-					//燃焼
-				case MAGICTYPE_COMBUSTION:
+				//燃焼
+			case MAGICTYPE_COMBUSTION:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_COMBUSTION]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R] += 3;
+				break;
 
-					break;
+				//洪水、氾濫
+			case MAGICTYPE_FLOOD:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FLOOD]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B] += 3;
+				break;
 
-					//洪水、氾濫
-				case MAGICTYPE_FLOOD:
+				//フラッシュ
+			case MAGICTYPE_FLASH:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FLASH]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 3;
+				break;
 
-					break;
+				//火球
+			case MAGICTYPE_FIREBALL:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FIREBALL]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R] += 2;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
+				break;
 
-					//フラッシュ
-				case MAGICTYPE_FLASH:
+				//太陽の動きを遅延する
+			case MAGICTYPE_SUNSETDELAY:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_SUNSETDELAY]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 2;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R]++;
+				break;
 
-					break;
+				//雨乞い
+			case MAGICTYPE_RAINPRAY:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_RAINPRAY]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B] += 2;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
+				break;
 
-					//火球
-				case MAGICTYPE_FIREBALL:
+				//凍結
+			case MAGICTYPE_FREEZE:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FREEZE]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
+				break;
 
-					break;
+				//成長(植物など)
+			case MAGICTYPE_GROWTH:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_GROWTH]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 2;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
+				break;
 
-					//太陽の動きを遅延する
-				case MAGICTYPE_SUNSETDELAY:
+				//加速
+			case MAGICTYPE_ACCELERATION:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_ACCELERATION]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y]++;
+				break;
 
-					break;
-
-					//雨乞い
-				case MAGICTYPE_RAINPRAY:
-
-					break;
-
-					//凍結
-				case MAGICTYPE_FREEZE:
-
-					break;
-
-					//成長(植物など)
-				case MAGICTYPE_GROWTH:
-
-					break;
-
-					//加速
-				case MAGICTYPE_ACCELERATION:
-
-					break;
-
-					//時間の巻き戻し(回帰)
-				case MAGICTYPE_TIMEREVERT:
-
-					break;
-				}
-
+				//時間の巻き戻し(回帰)
+			case MAGICTYPE_TIMEREVERT:
+				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_TIMEREVERT]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
+				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
 				break;
 			}
+
+			break;
 		}
 	}
 }
@@ -604,8 +625,15 @@ COMMANDOREDER CollisionMagic(D3DXVECTOR3 pos, float fRadius)
 
 	return COMMANDOREDER_NONE;
 }
+
 //魔法情報の取得==============================
 MAGICTYPE GetFieldMagic(D3DXVECTOR3 pos, float fRadius)
 {
 	return MAGICTYPE_NONE;
+}
+
+//魔法カウントの取得==========================
+MagicCounter* GetMagicCounter(int nIdx)
+{
+	return &g_aCounter[nIdx];
 }

@@ -117,21 +117,23 @@ typedef struct
 {
 	int nCommandCounter[COMMANDTYPE_MAX];		//コマンドの種類のカウント	
 	int nMagicTypeCounter[MAGICTYPE_MAX];		//魔法の種類のカウント
-}MAGICCOUNTER;
+}MagicCounter;
 
 void InitMagic(void);
 void UninitMagic(void);
 void UpdateMagic(void);
 void DrawMagic(void);
 Magic* GetMagic(void);
+MagicCounter* GetMagicCounter(int nIdx);
 
 //入力されたコマンドを配列に格納(playerのMAGICBOOKから魔導書を持っているか確認してセット)
 COMMANDOREDER PressCommand(int nIdx);
 
+//マジックの変換
 MAGICTYPE ChangeMagic(COMMANDOREDER commandorder);
 
 //魔法の発動(コマンドの入力回数をカウント)
-void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
+void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nIdx);
 
 //フィールド内に魔法を設置
 void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
