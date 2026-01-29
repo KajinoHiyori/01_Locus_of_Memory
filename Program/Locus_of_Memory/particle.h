@@ -35,6 +35,6 @@ void InitParticle(void);
 void UninitParticle(void);
 void UpdateParticle(void);
 void DrawParticle(void);
-void SetParticle(D3DXVECTOR3 pos, D3DXCOLOR col,int nLife, PARTICLETYPE type);
+void SetParticle(D3DXVECTOR3 pos, int nLife, PARTICLETYPE type);
 #endif 
 

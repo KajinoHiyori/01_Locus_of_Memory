@@ -9,6 +9,7 @@
 #include"effect.h"
 #include"input.h"
 #include"debugproc.h"
+#include "color.h"
 
 #define MAX_PARTICLE	(128)	//パーティクルの最大数
 #define MAX_APPEAR		(5)	//粒子の最大数
@@ -54,29 +55,39 @@ void UpdateParticle(void)
 
 	if (GetKeyboardTrigger(DIK_BACK) == true)
 	{
-		SetParticle(D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20,PARTICLETYPE_001);
+		SetParticle(D3DXVECTOR3(0.0f, 50.0f, 0.0f), 20, PARTICLETYPE_001);
 	}
 	for (int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 	{
 		if (g_aParticle[nCntParticle].bUse == true)
 		{
-			nCountParticle++;
-			//パーティクルの生成
-			for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+			switch (g_aParticle[nCntParticle].Type)
 			{
-				pos = g_aParticle[nCntParticle].pos;
-				move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-				move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-				move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-				SetEffect(pos,move, g_aParticle[nCntParticle].col, g_aParticle[nCntParticle].nLife);
-
-				g_aParticle[nCntParticle].nLife--;
-				if (g_aParticle[nCntParticle].nLife < 0)
+			case PARTICLETYPE_001:
+				//パーティクルの生成
+				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					g_aParticle[nCntParticle].bUse = false;
-				}
+					pos = g_aParticle[nCntParticle].pos;
+					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
+					g_aParticle[nCntParticle].nLife--;
+					if (g_aParticle[nCntParticle].nLife < 0)
+					{
+						g_aParticle[nCntParticle].bUse = false;
+					}
+
+				}
+				break;
+
+			case PARTICLETYPE_LEVITATION:
+
+				break;
 			}
+			nCountParticle++;
+			
 		}
 	}
 	PrintDebugProc("使用しているパーティクル : %d\n", nCountParticle++);
@@ -86,7 +97,7 @@ void DrawParticle(void)
 
 }
 
-void SetParticle(D3DXVECTOR3 pos, D3DXCOLOR col, int nLife, PARTICLETYPE type)
+void SetParticle(D3DXVECTOR3 pos, int nLife, PARTICLETYPE type)
 {
 	for (int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 	{
@@ -94,7 +105,6 @@ void SetParticle(D3DXVECTOR3 pos, D3DXCOLOR col, int nLife, PARTICLETYPE type)
 		if (g_aParticle[nCntParticle].bUse == false)
 		{
 			g_aParticle[nCntParticle].pos = pos;
-			g_aParticle[nCntParticle].col = col;
 			g_aParticle[nCntParticle].nLife = nLife;
 			g_aParticle[nCntParticle].Type = type;
 			g_aParticle[nCntParticle].bUse = true;

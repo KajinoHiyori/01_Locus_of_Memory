@@ -37,7 +37,7 @@ void InitEffect(void)
 
 	//テクスチャ読み込み
 	D3DXCreateTextureFromFile(pDevice,
-		"data\\TEXTURE\\shadow000.jpg",
+		"data\\TEXTURE\\effect001.jpg",
 		&g_pTextureBuffPolygon);
 
 	//初期化
@@ -46,7 +46,7 @@ void InitEffect(void)
 		g_aEffect[nCntEffect].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aEffect[nCntEffect].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aEffect[nCntEffect].col = D3DXCOLOR(255, 255, 255, 255);
-		g_aEffect[nCntEffect].fRadius = 0;
+		g_aEffect[nCntEffect].fRadius = 10;
 		g_aEffect[nCntEffect].nLife = 0;
 		g_aEffect[nCntEffect].bUse = false;
 	}
@@ -68,10 +68,10 @@ void InitEffect(void)
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++, pVtx += 4)
 	{
 		//頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-50.0f, 50.0f, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(50.0f, 50.0f, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(-50.0f, 0.0f, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(50.0f, 0.0f, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, -g_aEffect[nCntEffect].fRadius, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, -g_aEffect[nCntEffect].fRadius, 0.0f);
 
 		//rhwの設定
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
@@ -117,18 +117,38 @@ void UninitEffect(void)
 //ポリゴンの更新処理
 void UpdateEffect(void)
 {
+	VERTEX_3D* pVtx;    //頂点情報の設定
+
 	Camera* pCamera = GetCamera();
 
 	if (GetKeyboardTrigger(DIK_SPACE) == true)
 	{
 		//SetEffect(D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXVECTOR3(0.0f,50.0f,0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20);
 	}
+
+	//頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
+
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
 		if (g_aEffect[nCntEffect].bUse == true)
 		{
+			//頂点座標の設定
+			pVtx[0].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, 0.0f, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, 0.0f, 0.0f);
+
+			//頂点カラーの設定
+			pVtx[0].col = g_aEffect[nCntEffect].col;
+			pVtx[1].col = g_aEffect[nCntEffect].col;
+			pVtx[2].col = g_aEffect[nCntEffect].col;
+			pVtx[3].col = g_aEffect[nCntEffect].col;
+
+			g_aEffect[nCntEffect].fRadius--;
 			g_aEffect[nCntEffect].pos += g_aEffect[nCntEffect].move;
 			g_aEffect[nCntEffect].nLife--;
+
 			if (g_aEffect[nCntEffect].nLife < 0)
 			{
 				g_aEffect[nCntEffect].bUse = false;
@@ -136,6 +156,7 @@ void UpdateEffect(void)
 		}
 	}
 
+	g_pVtxBuffPolygon->Unlock();
 }
 
 void DrawEffect(void)
@@ -145,7 +166,7 @@ void DrawEffect(void)
 	D3DXMATRIX mtxRot, mtxTrans;
 	D3DXMATRIX mtxView;
 
-	SetFogEnable(false);		//一旦消す
+	SetFogEnable(false);		//一旦fogを消す
 
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
@@ -213,8 +234,7 @@ void DrawEffect(void)
 		}
 
 	}
-
-	SetFogEnable(true);
+	SetFogEnable(true);		//fogをtrueに
 }
 
 //================
