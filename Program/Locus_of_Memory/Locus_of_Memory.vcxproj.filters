@@ -67,6 +67,15 @@
     <Filter Include="object\h">
       <UniqueIdentifier>{73ec0651-9a45-43af-b96f-a5e4af2be307}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{57cf1e49-2e6b-4a46-b3b9-47951558cfed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\cpp">
+      <UniqueIdentifier>{c2a57a5d-bfed-4ea8-99dd-51573a5aa086}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\h">
+      <UniqueIdentifier>{3d3cb075-ad04-4f96-a5fe-41c126672629}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp">
@@ -141,9 +150,6 @@
     <ClCompile Include="animal.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="gameui.cpp">
-      <Filter>game\cpp</Filter>
-    </ClCompile>
     <ClCompile Include="particle.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
@@ -155,6 +161,15 @@
     </ClCompile>
     <ClCompile Include="vibration.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="gameui.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="magicui.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="clockui.cpp">
+      <Filter>UI\cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -230,9 +245,6 @@
     <ClInclude Include="animal.h">
       <Filter>object\h</Filter>
     </ClInclude>
-    <ClInclude Include="gameui.h">
-      <Filter>game\h</Filter>
-    </ClInclude>
     <ClInclude Include="particle.h">
       <Filter>object\h</Filter>
     </ClInclude>
@@ -247,6 +259,15 @@
     </ClInclude>
     <ClInclude Include="vibration.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="magicui.h">
+      <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="clockui.h">
+      <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="gameui.h">
+      <Filter>UI\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

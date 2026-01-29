@@ -158,11 +158,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animal.cpp" />
+    <ClCompile Include="clockui.cpp" />
     <ClCompile Include="diagnosis.cpp" />
     <ClCompile Include="diagnosisui.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="gameui.cpp" />
     <ClCompile Include="loadscript.cpp" />
+    <ClCompile Include="magicui.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -192,12 +194,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animal.h" />
+    <ClInclude Include="clockui.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="diagnosis.h" />
     <ClInclude Include="diagnosisui.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="gameui.h" />
     <ClInclude Include="loadscript.h" />
+    <ClInclude Include="magicui.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="camera.h" />
