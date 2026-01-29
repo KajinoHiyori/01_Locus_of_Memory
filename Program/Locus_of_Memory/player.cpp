@@ -23,7 +23,6 @@
 #define JUMP			(17.0f)				// ジャンプ
 #define SHADOｗ			(10.0f)				// 影の大きさ
 #define CORRECTION_ROT	(0.075f)			// 回転の減衰係数
-#define PI				(D3DX_PI)			// 円周率
 #define RIGHT			(D3DX_PI / 2)		// 右を向く
 #define LEFT			(-(D3DX_PI / 2))	// 左を向く
 #define BACK			(D3DX_PI)			// 後ろを向く
@@ -335,6 +334,12 @@ void UpdatePlayer(void)
 				// 移動量の更新
 				g_aPlayer[nCntPlayer].move.x += (g_aPlayer[nCntPlayer].fSpeed * -moveDir.x);
 				g_aPlayer[nCntPlayer].move.z += (g_aPlayer[nCntPlayer].fSpeed * -moveDir.z);
+
+
+				fAngle = atan2f(-moveDir.x, moveDir.z);
+				fAngle = AngleNormalize(fAngle);
+				g_aPlayer[nCntPlayer].rotDest.y = fRotDest;
+				fRotDest = AngleNormalize(fRotDest);
 			}
 			
 			// ジャンプ処理
@@ -345,20 +350,59 @@ void UpdatePlayer(void)
 			}
 
 			// 移動中の場合、目的の向きを設定
+#if 0
 			if (GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer) == true)
 			{
-				// プレイヤーの方向を設定
-				fAngle = atan2f(moveDir.x, -moveDir.z);
+				fAngle = atan2f(-moveDir.x, moveDir.z);
+				fAngle = AngleNormalize(fAngle);
 				g_aPlayer[nCntPlayer].rotDest.y = atan2f(-(float)(sinf(pCamera[nCntPlayer].rot.y - fAngle)), -(float)cosf(pCamera[nCntPlayer].rot.y - fAngle));
 			}
 			else if (GetKeyboardPress(DIK_A) == true || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true ||	// 左に移動
 					 GetKeyboardPress(DIK_D) == true || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true ||	// 右に移動
 					 GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true ||	// 奥に移動
-					 GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+					 GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動)
 			{
-				fAngle = atan2f(-moveDir.x, moveDir.z);
-				g_aPlayer[nCntPlayer].rotDest.y = atan2f(-(float)(sinf(pCamera[nCntPlayer].rot.y - fAngle)), -(float)cosf(pCamera[nCntPlayer].rot.y - fAngle));
+				// プレイヤーの方向を設定
+				if (GetKeyboardPress(DIK_A) == true || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 右に移動
+				{
+					if (GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+					{
+						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y + D3DX_PI / 2 - D3DX_PI / 4;
+					}
+					else if (GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+					{
+						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y + D3DX_PI / 2 - D3DX_PI / 4;
+					}
+					else
+					{
+						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y + D3DX_PI / 2;
+					}
+				}
+				else if (GetKeyboardPress(DIK_D) == true || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 左に移動
+				{
+					if (GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+					{
+						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y - D3DX_PI / 2 - D3DX_PI / 4;
+					}
+					else if (GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+					{
+						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y - D3DX_PI / 2 + D3DX_PI / 4;
+					}
+					else
+					{
+						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y - D3DX_PI / 2;
+					}
+				}
+				else if (GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+				{
+					g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y + D3DX_PI;
+				}
+				else if (GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+				{
+					g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y;
+				}
 			}
+#endif
 
 			// プレイヤーの方向を補正
 			fRotDiffKey = g_aPlayer[nCntPlayer].rotDest.y - g_aPlayer[nCntPlayer].rot.y;	// 差分を計算
