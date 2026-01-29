@@ -126,7 +126,9 @@ void DrawMagic(void);
 Magic* GetMagic(void);
 
 //入力されたコマンドを配列に格納(playerのMAGICBOOKから魔導書を持っているか確認してセット)
-MAGICTYPE PressCommand(int nIdx);
+COMMANDOREDER PressCommand(int nIdx);
+
+MAGICTYPE ChangeMagic(COMMANDOREDER commandorder);
 
 //魔法の発動(コマンドの入力回数をカウント)
 void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);

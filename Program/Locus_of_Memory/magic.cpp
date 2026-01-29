@@ -80,7 +80,7 @@ void DrawMagic(void)
 }
 
 //コマンド入力情報=============================
-MAGICTYPE PressCommand(int nIdx)
+COMMANDOREDER PressCommand(int nIdx)
 {
 	if (g_aCommand[nIdx][nCntCommand[nIdx]] == COMMANDTYPE_NONE)
 	{//コマンドが何も入力されていないとき
@@ -265,7 +265,77 @@ MAGICTYPE PressCommand(int nIdx)
 	}
 	else if (nCntCommand[nIdx] < MAX_COMMAND)
 	{
-		return MAGICTYPE_NONE;
+		return COMMANDOREDER_NONE;
+	}
+}
+
+//魔法の変換=============================
+MAGICTYPE ChangeMagic(COMMANDOREDER commandorder)
+{
+	//浮遊---------------------------------------
+	if (commandorder == COMMANDOREDER_GGG)
+	{
+		return MAGICTYPE_LEVITATION;
+	}
+
+	//燃焼---------------------------------------
+	if (commandorder == COMMANDOREDER_RRR)
+	{
+		return MAGICTYPE_COMBUSTION;
+	}
+
+	//洪水、氾濫---------------------------------
+	if (commandorder == COMMANDOREDER_BBB)
+	{
+		return MAGICTYPE_FLOOD;
+	}
+
+	//フラッシュ---------------------------------
+	if (commandorder == COMMANDOREDER_YYY)
+	{
+		return MAGICTYPE_FLASH;
+	}
+
+	//火球---------------------------------------
+	if (commandorder == COMMANDOREDER_RRG || commandorder == COMMANDOREDER_RGR || commandorder == COMMANDOREDER_GRR)
+	{
+		return MAGICTYPE_FIREBALL;
+	}
+
+	//太陽の動きを遅延する-----------------------
+	if (commandorder == COMMANDOREDER_RYY || commandorder == COMMANDOREDER_YRY || commandorder == COMMANDOREDER_YYR)
+	{
+		return MAGICTYPE_SUNSETDELAY;
+	}
+
+	//雨乞い-------------------------------------
+	if (commandorder == COMMANDOREDER_BBG || commandorder == COMMANDOREDER_BGB || commandorder == COMMANDOREDER_GBB)
+	{
+		return MAGICTYPE_RAINPRAY;
+	}
+
+	//凍結---------------------------------------
+	if (commandorder == COMMANDOREDER_BGG || commandorder == COMMANDOREDER_GBG || commandorder == COMMANDOREDER_GGB)
+	{
+		return MAGICTYPE_FREEZE;
+	}
+
+	//成長(植物など)-----------------------------
+	if (commandorder == COMMANDOREDER_BYY || commandorder == COMMANDOREDER_YBY || commandorder == COMMANDOREDER_YYB)
+	{
+		return MAGICTYPE_GROWTH;
+	}
+
+	//加速---------------------------------------
+	if (commandorder == COMMANDOREDER_GGY || commandorder == COMMANDOREDER_GYG || commandorder == COMMANDOREDER_YGG)
+	{
+		return MAGICTYPE_ACCELERATION;
+	}
+
+	//時間の巻き戻し(回帰)-----------------------
+	if (commandorder == COMMANDOREDER_RGB)
+	{
+		return MAGICTYPE_TIMEREVERT;
 	}
 }
 
