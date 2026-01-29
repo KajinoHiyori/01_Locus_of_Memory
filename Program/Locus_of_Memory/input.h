@@ -107,6 +107,7 @@ bool GetJoypadRelease(JOYKEY key, int nIdx);
 bool GetJoypadRepeat(JOYKEY key, int nIdx);
 bool GetJoypadAny(int nIdx);
 bool GetJoypadLeftTriggePress(int nIdx);
+bool GetJoypadRightTriggePress(int nIdx);
 bool GetJoypadStickPressL(JOYSTICK stick, int nIdx);
 bool GetJoypadStickPressR(JOYSTICK stick, int nIdx);
 bool GetJoypadStickRepeatL(JOYSTICK stick, int nIdx);
