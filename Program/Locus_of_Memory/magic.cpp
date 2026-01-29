@@ -102,7 +102,7 @@ COMMANDOREDER PressCommand(int nIdx)
 		}
 	}
 	if (g_aCommand[nIdx][nCntCommand[nIdx]] != COMMANDTYPE_NONE)
-	{//ƒRƒ}ƒ“ƒh‚ª‰½‚©‚µ‚ç“ü—Í‚³‚ê‚Ä‚¢‚é‚Æ‚«
+	{//ƒRƒ}ƒ“ƒh‚ª‰½‚©‚µ‚ç“ü—Í‚³‚ê‚½‚Æ‚«
 		nCntCommand[nIdx]++;
 	}
 
@@ -112,155 +112,279 @@ COMMANDOREDER PressCommand(int nIdx)
 		//—Î—Î—Î
 		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_GGG;
 		}
 
 		//”RÄ-------------------------------------------------------------------------------------------------
 		//ÔÔÔ
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_R && g_aCommand[nIdx][2] == COMMANDTYPE_R)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_R && g_aCommand[nIdx][2] == COMMANDTYPE_R)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_RRR;
 		}
 
 		//^…A”Ã—”-------------------------------------------------------------------------------------------
 		//ÂÂÂ
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_B)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_B)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_BBB;
 		}
 
 		//ƒtƒ‰ƒbƒVƒ…-------------------------------------------------------------------------------------------
 		//‰©‰©‰©
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_YYY;
 		}
 
 		//‰Î‹…-------------------------------------------------------------------------------------------------
 		//ÔÔ—Î
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_R && g_aCommand[nIdx][2] == COMMANDTYPE_G)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_R && g_aCommand[nIdx][2] == COMMANDTYPE_G)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_RRG;
 		}
 
 		//Ô—ÎÔ
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_R)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_R)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_RGR;
 		}
 
 		//—ÎÔÔ
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_R && g_aCommand[nIdx][2] == COMMANDTYPE_R)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_R && g_aCommand[nIdx][2] == COMMANDTYPE_R)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_GRR;
 		}
 		//-----------------------------------------------------------------------------------------------------
 
 		//‘¾—z‚Ì“®‚«‚ð’x‰„‚·‚é---------------------------------------------------------------------------------
 		//Ô‰©‰©
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_RYY;
 		}
 
 		//‰©Ô‰©
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_R && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_R && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_YRY;
 		}
 
 		//‰©‰©Ô
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_R)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_R)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_YYR;
 		}
 		//-----------------------------------------------------------------------------------------------------
 
 		//‰JŒî‚¢-----------------------------------------------------------------------------------------------
 		//ÂÂ—Î
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_G)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_G)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_BBG;
 		}
 
 		//Â—ÎÂ
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_B)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_B)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_BGB;
 		}
 
 		//—ÎÂÂ
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_B)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_B)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_GBB;
 		}
 		//-----------------------------------------------------------------------------------------------------
 
 		//“€Œ‹-------------------------------------------------------------------------------------------------
 		//Â—Î—Î
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_BGG;
 		}
 
 		//—ÎÂ—Î
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_G)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_G)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_GBG;
 		}
 
 		//—Î—ÎÂ
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_B)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_B)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_GGB;
 		}
 		//-----------------------------------------------------------------------------------------------------
 
 		//¬’·(A•¨‚È‚Ç)---------------------------------------------------------------------------------------
 		//Â‰©‰©
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_B && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_BYY;
 		}
 
 		//‰©Â‰©
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_B && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_YBY;
 		}
 
 		//‰©‰©Â
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_B)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_B)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_YYB;
 		}
 		//-----------------------------------------------------------------------------------------------------
 
 		//‰Á‘¬-------------------------------------------------------------------------------------------------
 		//—Î—Î‰©
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_Y)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_GGY;
 		}
 
 		//—Î‰©—Î
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_G)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_Y && g_aCommand[nIdx][2] == COMMANDTYPE_G)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_GYG;
 		}
 
 		//‰©—Î—Î
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_Y && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_YGG;
 		}
 		//-----------------------------------------------------------------------------------------------------
 
 		//ŽžŠÔ‚ÌŠª‚«–ß‚µ(‰ñ‹A)---------------------------------------------------------------------------------
 		//Ô—ÎÂ
-		if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_B)
+		else if (g_aCommand[nIdx][0] == COMMANDTYPE_R && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_B)
 		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
 
+			return COMMANDOREDER_RGB;
+		}
+		else if (nCntCommand[nIdx] >= MAX_COMMAND)
+		{
+			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+			{
+				g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+			}
+
+			return COMMANDOREDER_NONE;
 		}
 	}
 	else if (nCntCommand[nIdx] < MAX_COMMAND)
