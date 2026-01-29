@@ -9,6 +9,7 @@
 #include "debugproc.h"
 #include "input.h"
 #include "shadow.h"
+#include "particle.h"
 
 //マクロ定義
 #define MAX_MAGIC			(128)		//魔法の最大数
