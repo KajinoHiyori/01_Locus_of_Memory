@@ -347,7 +347,7 @@ void UpdatePlayer(void)
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
 				}
 			}
-			else if (g_aPlayer->motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
+			else if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
 			{// Ç‡Çµï‡çsíÜÇæÇ¡ÇΩÇÁ
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 			}
