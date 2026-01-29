@@ -28,6 +28,7 @@
 #define BACK			(D3DX_PI)			// 後ろを向く
 #define FRONT			(0.0f)				// 正面を向く
 #define LENGTH			(50.0f)				// フィールドの範囲
+#define BLENDFRAME		(10)				// モーションブレンドのフレーム数
 #define POS				(D3DXVECTOR3(0.0f, 50.0f, 0.0f))	// プレイヤーの位置
 #define DEFALT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// xyzが0.0fの場合
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 基本の法線
@@ -340,6 +341,15 @@ void UpdatePlayer(void)
 				fAngle = AngleNormalize(fAngle);
 				g_aPlayer[nCntPlayer].rotDest.y = fRotDest;
 				fRotDest = AngleNormalize(fRotDest);
+
+				if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer->motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
+				{// 
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
+				}
+			}
+			else if (g_aPlayer->motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
+			{// もし歩行中だったら
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 			}
 			
 			// ジャンプ処理
@@ -347,6 +357,7 @@ void UpdatePlayer(void)
 			{
 				g_aPlayer[nCntPlayer].move.y = JUMP;
 				g_aPlayer[nCntPlayer].bJump = true;
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
 			}
 
 			// 移動中の場合、目的の向きを設定
@@ -420,8 +431,13 @@ void UpdatePlayer(void)
 			if (CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || 
 				g_aPlayer[nCntPlayer].pos.y <= 0.0f)
 			{
+				if (g_aPlayer[nCntPlayer].bJump == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
+				}
 				g_aPlayer[nCntPlayer].pos.y = 0.0f;
 				g_aPlayer[nCntPlayer].bJump = false;
+
 			}
 
 			// オブジェクトとの当たり判定
@@ -429,6 +445,10 @@ void UpdatePlayer(void)
 
 			// 落ちてる魔法との判定 (保管)
 			commandoreder = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
+
+			COMMANDOREDER testcommand = PressCommand(nCntPlayer);
+
+			PrintDebugProc("入力コマンド : %d\n", testcommand);
 
 			PrintDebugProc("コマンドタイプ : %d\n", commandoreder);
 
