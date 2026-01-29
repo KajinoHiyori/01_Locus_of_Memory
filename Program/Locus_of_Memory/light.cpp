@@ -10,9 +10,9 @@
 
 // マクロ定義
 #define NUM_LIGHT	(3)		// ライトの最大数
-#define DIRECTOPN0	(D3DXVECTOR3(0.2f, -0.8f, 0.4f))		// ライトの方向
+#define DIRECTOPN0	(D3DXVECTOR3(0.2f, 0.8f, 0.4f))		// ライトの方向
 //#define DIRECTOPN0	(D3DXVECTOR3(-1.0f, -0.8f, 0.4f))		// ライトの方向
-#define DIRECTOPN1	(D3DXVECTOR3(-0.2f, 0.9f, -0.4f))		// ライトの方向
+#define DIRECTOPN1	(D3DXVECTOR3(-0.2f, -0.25f, -0.4f))		// ライトの方向
 #define DIRECTOPN2	(D3DXVECTOR3(0.9f, 0.1f, 0.4f))			// ライトの方向
 
 // グローバル変数
@@ -101,28 +101,6 @@ void UpdateLight(void)
 		case 0:	// 0番目のライト
 			// ライトの拡散光を設定
 			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTEST;
-			
-			//g_fAngle -= 0.01f;
-
-			//if (g_fAngle > D3DX_PI)
-			//{
-			//	g_fAngle = -D3DX_PI;
-			//}
-			//else if (g_fAngle < -D3DX_PI)
-			//{
-			//	g_fAngle = D3DX_PI;
-			//}
-
-			//vecDir.x = sinf(g_fAngle);
-			//vecDir.y = cosf(g_fAngle);
-			
-			// ライトの方向を設定
-			vecDir = DIRECTOPN0;
-			break;
-
-		case 1:	// 1番目のライト
-			// ライトの拡散光を設定
-			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTER;
 
 			//g_fAngle -= 0.01f;
 
@@ -138,9 +116,15 @@ void UpdateLight(void)
 			vecDir.x = sinf(g_fAngle);
 			vecDir.y = cosf(g_fAngle);
 
-			//// ライトの方向を設定
-			//vecDir = DIRECTOPN1;
+			// ライトの方向を設定
+			//vecDir = DIRECTOPN0;
+			break;
 
+		case 1:	// 1番目のライト
+			// ライトの拡散光を設定
+			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTER;
+			// ライトの方向を設定
+			vecDir = DIRECTOPN1;
 			break;
 
 		case 2:	// 2番目のライト
@@ -187,8 +171,23 @@ void SetLightColors(D3DXCOLOR Brightest, D3DXCOLOR Brighter, D3DXCOLOR Blight)
 		case 0:	// 0番目のライト
 			// ライトの拡散光を設定
 			g_aLight[nCntLight].Diffuse = Brightest;
-			// ライトの方向を設定
-			vecDir = DIRECTOPN0;
+
+			g_fAngle -= 0.01f;
+
+			if (g_fAngle > D3DX_PI)
+			{
+				g_fAngle = -D3DX_PI;
+			}
+			else if (g_fAngle < -D3DX_PI)
+			{
+				g_fAngle = D3DX_PI;
+			}
+
+			vecDir.x = sinf(g_fAngle);
+			vecDir.y = cosf(g_fAngle);
+
+			//// ライトの方向を設定
+			//vecDir = DIRECTOPN0;
 			break;
 
 		case 1:	// 1番目のライト
