@@ -45,7 +45,7 @@ MODEL_FILENAME = data/MODEL/tree/x/trees000.x	# [11]木 (複数)
 MODEL_FILENAME = data/MODEL/tree/x/tree000.x	# [12]木
 MODEL_FILENAME = data/MODEL/streetlight/streetlight001.x	# [13]街灯
 MODEL_FILENAME = data/MODEL/gate/gate001.x	# [14]門
-MODEL_FILENAME = data/MODEL/animal/dragonAll.x	# [15]ドラゴン
+MODEL_FILENAME = data/MODEL/animal/dragon_All.x	# [15]ドラゴン
 MODEL_FILENAME = data/MODEL/benti/benti.x	# [16]ベンチ
 MODEL_FILENAME = data/MODEL/animal/bird000.x	# [17]鳥
 MODEL_FILENAME = data/MODEL/animal/den000.x	# [18]鳥の巣
@@ -1000,7 +1000,7 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 15
-	POS = 0 0 -4500
+	POS = 0 0 -5500
 	ROT = 0 180 0
 	SHADOW = 0
 	COLLISION = 1
