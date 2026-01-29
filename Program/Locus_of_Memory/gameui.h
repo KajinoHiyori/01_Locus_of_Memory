@@ -20,6 +20,14 @@ typedef enum
 	GAMEUI_TYPE_MAX
 }GAMEUI_TYPE;
 
+// UIの状態
+typedef enum
+{
+	GAMEUI_STATE_NONE,	// 何もしていない
+	GAMEUI_STATE_1PPAUSE,	// 1Pのポーズ
+	GAMEUI_STATE_2PPAUSE,	// 2Pのポーズ
+}GAMEUI_STATE;
+
 // プロトタイプ宣言
 void InitGameUI(void);
 void UninitGameUI(void);
