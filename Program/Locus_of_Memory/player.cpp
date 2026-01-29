@@ -180,113 +180,6 @@ void UpdatePlayer(void)
 		}
 	}
 
-#ifdef _DEBUG
-	// キーボード操作[1P] / WASD
-	if (g_aPlayer[0].bUse == true)
-	{
-	
-	}
-
-	// キーボード操作[2P] / IJKL
-	if (g_aPlayer[1].bUse == true)
-	{
-		// プレイヤーの移動を管理
-		if (GetKeyboardPress(DIK_J) == true)	// 右に移動
-		{
-			if (GetKeyboardPress(DIK_I) == true)	// 奥に移動
-			{
-				g_aPlayer[1].move.x -= sinf(pCamera[1].rot.y - D3DX_PI / 4) * MOVE;
-				g_aPlayer[1].move.z -= cosf(pCamera[1].rot.y - D3DX_PI / 4) * MOVE;
-			}
-			else if (GetKeyboardPress(DIK_K) == true)	// 手前に移動
-			{
-				g_aPlayer[1].move.x += sinf(pCamera[1].rot.y + D3DX_PI / 4) * MOVE;
-				g_aPlayer[1].move.z += cosf(pCamera[1].rot.y + D3DX_PI / 4) * MOVE;
-			}
-			else
-			{
-				g_aPlayer[1].move.x += cosf(pCamera[1].rot.y) * MOVE;
-				g_aPlayer[1].move.z -= sinf(pCamera[1].rot.y) * MOVE;
-			}
-		}
-		else if (GetKeyboardPress(DIK_L) == true)	// 左に移動
-		{
-			if (GetKeyboardPress(DIK_I) == true)	// 奥に移動
-			{
-				g_aPlayer[1].move.x -= cosf(pCamera[1].rot.y - D3DX_PI / 4) * MOVE;
-				g_aPlayer[1].move.z += sinf(pCamera[1].rot.y - D3DX_PI / 4) * MOVE;
-			}
-			else if (GetKeyboardPress(DIK_K) == true)	// 手前に移動
-			{
-				g_aPlayer[1].move.x -= cosf(pCamera[1].rot.y + D3DX_PI / 4) * MOVE;
-				g_aPlayer[1].move.z += sinf(pCamera[1].rot.y + D3DX_PI / 4) * MOVE;
-			}
-			else
-			{
-				g_aPlayer[1].move.x -= cosf(pCamera[1].rot.y) * MOVE;
-				g_aPlayer[1].move.z += sinf(pCamera[1].rot.y) * MOVE;
-			}
-		}
-		else if (GetKeyboardPress(DIK_I) == true)	// 奥に移動
-		{
-			g_aPlayer[1].move.x -= sinf(pCamera[1].rot.y) * MOVE;
-			g_aPlayer[1].move.z -= cosf(pCamera[1].rot.y) * MOVE;
-		}
-		else if (GetKeyboardPress(DIK_K) == true)	// 手前に移動
-		{
-			g_aPlayer[1].move.x += sinf(pCamera[1].rot.y) * MOVE;
-			g_aPlayer[1].move.z += cosf(pCamera[1].rot.y) * MOVE;
-		}
-
-		// プレイヤーの向きを設定
-		if (GetKeyboardPress(DIK_J) == true)	// 右に移動
-		{
-			if (GetKeyboardPress(DIK_I) == true)	// 奥に移動
-			{
-				g_aPlayer[1].rotDest.y = pCamera[1].rot.y - D3DX_PI / 2 + D3DX_PI / 4;
-			}
-			else if (GetKeyboardPress(DIK_K) == true)	// 手前に移動
-			{
-				g_aPlayer[1].rotDest.y = pCamera[1].rot.y - D3DX_PI / 2 - D3DX_PI / 4;
-			}
-			else
-			{
-				g_aPlayer[1].rotDest.y = pCamera[1].rot.y - D3DX_PI / 2;
-			}
-		}
-		else if (GetKeyboardPress(DIK_L) == true)	// 左に移動
-		{
-			if (GetKeyboardPress(DIK_I) == true)	// 奥に移動
-			{
-				g_aPlayer[1].rotDest.y = pCamera[1].rot.y + D3DX_PI / 2 - D3DX_PI / 4;
-			}
-			else if (GetKeyboardPress(DIK_K) == true)	// 手前に移動
-			{
-				g_aPlayer[1].rotDest.y = pCamera[1].rot.y + D3DX_PI / 2 + D3DX_PI / 4;
-			}
-			else
-			{
-				g_aPlayer[1].rotDest.y = pCamera[1].rot.y + D3DX_PI / 2;
-			}
-		}
-		else if (GetKeyboardPress(DIK_I) == true)	// 奥に移動
-		{
-			g_aPlayer[1].rotDest.y = pCamera[1].rot.y;
-		}
-		else if (GetKeyboardPress(DIK_K) == true)	// 手前に移動
-		{
-			g_aPlayer[1].rotDest.y = pCamera[1].rot.y + D3DX_PI;
-		}
-
-		// ジャンプ処理
-		if (GetKeyboardTrigger(DIK_RETURN) == true && g_aPlayer[1].bJump == false)
-		{
-			g_aPlayer[1].move.y = JUMP;
-			g_aPlayer[1].bJump = true;
-		}
-	}
-#endif	
-	
 	// 操作
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
@@ -297,19 +190,19 @@ void UpdatePlayer(void)
 			moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 			// 移動方向を管理
-			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
 			{
 				moveDir.x -= 1.0f;
 			}
-			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
 			{
 				moveDir.x += 1.0f;
 			}
-			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
 			{
 				moveDir.z += 1.0f;
 			}
-			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
 			{
 				moveDir.z -= 1.0f;
 			}
