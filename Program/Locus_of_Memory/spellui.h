@@ -45,6 +45,7 @@ typedef enum
 typedef enum
 {
 	SPELLUI_TYPE_PHONE = 0,		// スマホ
+	SPELLUI_TYPE_SPELL,			// SPELLメニュー 
 	SPELLUI_TYPE_COMMAND0,		// コマンド1つ目
 	SPELLUI_TYPE_COMMAND1,		// コマンド2つ目
 	SPELLUI_TYPE_COMMAND2,		// コマンド3つ目
@@ -57,7 +58,6 @@ typedef enum
 	SPELLUI_TYPE_OP_G,			// 緑魔法発動ボタン
 	SPELLUI_TYPE_OP_B,			// 青魔法発動ボタン
 	SPELLUI_TYPE_OP_Y,			// 黄魔法発動ボタン
-	SPELLUI_TYPE_SPELL,			// SPELLメニュー 
 	SPELLUI_TYPE_MAX
 }SPELLUI_TYPE;
 
