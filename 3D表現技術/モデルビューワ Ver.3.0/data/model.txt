@@ -25,7 +25,7 @@ TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 20
+NUM_MODEL = 22
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -50,6 +50,8 @@ MODEL_FILENAME = data/MODEL/benti/benti.x	# [16]ベンチ
 MODEL_FILENAME = data/MODEL/animal/bird000.x	# [17]鳥
 MODEL_FILENAME = data/MODEL/animal/den000.x	# [18]鳥の巣
 MODEL_FILENAME = data/MODEL/taimatsu/taimatsu.x	# [19]松明
+MODEL_FILENAME = data/MODEL/rock/rock000.x	# [20]岩
+MODEL_FILENAME = data/MODEL/rock/rock001.x	# [21]岩
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -1145,6 +1147,26 @@ MODELSET
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
+
+#------------------------------------------------------------------------------
+# 岩
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 20
+	POS = 0 0 -4300
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 21
+	POS = 0 0 -4100
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 
 #------------------------------------------------------------------------------
 # ビルボード配置情報
