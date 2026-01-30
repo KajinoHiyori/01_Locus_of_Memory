@@ -10,7 +10,8 @@
 #include"camera.h"
 #include "fog.h"
 
-#define MAX_EFFECT	(4096)
+#define MAX_EFFECT		(4096)
+#define EFFECT_RADIUS	(25.0f)
 
 //構造体の定義
 typedef struct
@@ -46,7 +47,7 @@ void InitEffect(void)
 		g_aEffect[nCntEffect].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aEffect[nCntEffect].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_aEffect[nCntEffect].col = D3DXCOLOR(255, 255, 255, 255);
-		g_aEffect[nCntEffect].fRadius = 10;
+		g_aEffect[nCntEffect].fRadius = EFFECT_RADIUS;
 		g_aEffect[nCntEffect].nLife = 0;
 		g_aEffect[nCntEffect].bUse = false;
 	}
@@ -136,8 +137,8 @@ void UpdateEffect(void)
 			//頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
 			pVtx[1].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, 0.0f, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, 0.0f, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, -g_aEffect[nCntEffect].fRadius, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, -g_aEffect[nCntEffect].fRadius, 0.0f);
 
 			//頂点カラーの設定
 			pVtx[0].col = g_aEffect[nCntEffect].col;
@@ -250,6 +251,7 @@ void SetEffect(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col,int nLife)
 			g_aEffect[nCntEffect].pos = pos;
 			g_aEffect[nCntEffect].move = move;
 			g_aEffect[nCntEffect].col = col;
+			g_aEffect[nCntEffect].fRadius = EFFECT_RADIUS;
 			g_aEffect[nCntEffect].nLife = nLife;
 			g_aEffect[nCntEffect].bUse = true;
 			break;
