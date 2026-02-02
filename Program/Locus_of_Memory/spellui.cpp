@@ -294,49 +294,22 @@ void UpdateSpellUI(void)
 					g_SpellUI[nCntPlayer][nCntUI + 2].tex = SPELLUI_TEX_YELLOW;
 					break;
 				}
-				if (g_nCounterUI[nCntPlayer] > 0)
-				{
-					switch (g_SpellUI[nCntPlayer][nCntUI + 2].type)
-					{
-					case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
-						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = false;	// テクスチャの初期化
-						break;
-
-					case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
-						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = false;	// テクスチャの初期化
-						break;
-
-					case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
-						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = false;	// テクスチャの初期化
-						break;
-
-					case SPELLUI_TYPE_MAGIC:	// 発動された魔法
-						g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = true;		// テクスチャの初期化
-						break;
-					}
-				}
-				else if (g_nCounterUI[nCntPlayer] <= 0)
-				{
-					switch (g_SpellUI[nCntPlayer][nCntUI + 2].type)
-					{
-					case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
-						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = true;	// テクスチャの初期化
-						break;
-
-					case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
-						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = true;	// テクスチャの初期化
-						break;
-
-					case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
-						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = true;	// テクスチャの初期化
-						break;
-
-					case SPELLUI_TYPE_MAGIC:	// 発動された魔法
-						g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = false;		// テクスチャの初期化
-						break;
-					}
-				}
 			}
+		}
+		if (g_nCounterUI[nCntPlayer] > 0)
+		{
+			g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = false;	// テクスチャの初期化
+			g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = false;	// テクスチャの初期化
+			g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = false;	// テクスチャの初期化	
+			g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = true;		// テクスチャの初期化
+			g_nCounterUI[nCntPlayer]--;
+		}
+		else if (g_nCounterUI[nCntPlayer] <= 0)
+		{
+			g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = true;	// テクスチャの初期化
+			g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = true;	// テクスチャの初期化
+			g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = true;	// テクスチャの初期化
+			g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = false;		// テクスチャの初期化
 		}
 	}
 }
