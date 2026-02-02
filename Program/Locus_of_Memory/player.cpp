@@ -343,6 +343,8 @@ void UpdatePlayer(void)
 
 			COMMANDOREDER testcommand = PressCommand(nCntPlayer);
 
+			
+
 			for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
 			{
 				if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == testcommand)
