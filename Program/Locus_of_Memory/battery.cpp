@@ -11,9 +11,9 @@
 #include "color.h"
 
 // マクロ定義
-#define NUM_PLACE		(3)		// バッテリーの最大数
-#define NUM_SIZE		(40)						// 数字のサイズ
-#define SPELLUI_POSY	(482.0f)			// 左のUIのX軸
+#define NUM_PLACE		(3)				// バッテリーの最大数
+#define NUM_SIZE		(40)			// 数字のサイズ
+#define SPELLUI_POSY	(482.0f)		// 左のUIのX軸
 #define LEFT_POS		(D3DXVECTOR3(120.0f, SPELLUI_POSY, 0.0f))		// onscreenの左のUI座標
 #define RIGHT_POS		(D3DXVECTOR3(1160.0f, SPELLUI_POSY, 0.0f))		// onscreenの右のUI座標
 #define PHONE_WIDTH		(108.0f)		// スマホの幅
@@ -32,7 +32,7 @@ typedef struct
 // グローバル変数
 LPDIRECT3DTEXTURE9 g_pTextureBattery = NULL;
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBattery = NULL;
-Battery g_aButtery[MAX_PLAYER];
+Battery g_aBattery[MAX_PLAYER];
 
 //======================================================================================
 // バッテリーの初期化処理
@@ -56,11 +56,11 @@ void InitBattery(void)
 		case OPERATIONTYPE_2P:	// 2人操作
 			if (nCntPlayer == 0)
 			{
-				g_aButtery[nCntPlayer].Pos = LEFT_POS;
+				g_aBattery[nCntPlayer].Pos = LEFT_POS;
 			}
 			else if (nCntPlayer == 1)
 			{
-				g_aButtery[nCntPlayer].Pos = RIGHT_POS;
+				g_aBattery[nCntPlayer].Pos = RIGHT_POS;
 			}
 			break;
 
@@ -69,11 +69,11 @@ void InitBattery(void)
 			{
 				continue;
 			}
-			g_aButtery[nCntPlayer].Pos = RIGHT_POS;
+			g_aBattery[nCntPlayer].Pos = RIGHT_POS;
 			break;
 		}
-		g_aButtery[nCntPlayer].nBattery = MAX_BATTERY;
-		g_aButtery[nCntPlayer].bDisp = false;
+		g_aBattery[nCntPlayer].nBattery = MAX_BATTERY;
+		g_aBattery[nCntPlayer].bDisp = false;
 	}
 
 	// 頂点バッファの生成
@@ -87,18 +87,18 @@ void InitBattery(void)
 		for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
 		{
 			// 位置の設定
-			pVtx[0].pos.x = g_aButtery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
-			pVtx[0].pos.y = g_aButtery[nCntBattery].Pos.y;
-			pVtx[0].pos.z = g_aButtery[nCntBattery].Pos.z;
-			pVtx[1].pos.x = g_aButtery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
-			pVtx[1].pos.y = g_aButtery[nCntBattery].Pos.y;
-			pVtx[1].pos.z = g_aButtery[nCntBattery].Pos.z;
-			pVtx[2].pos.x = g_aButtery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
-			pVtx[2].pos.y = g_aButtery[nCntBattery].Pos.y + NUM_SIZE;
-			pVtx[2].pos.z = g_aButtery[nCntBattery].Pos.z;
-			pVtx[3].pos.x = g_aButtery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
-			pVtx[3].pos.y = g_aButtery[nCntBattery].Pos.y + NUM_SIZE;
-			pVtx[3].pos.z = g_aButtery[nCntBattery].Pos.z;
+			pVtx[0].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
+			pVtx[0].pos.y = g_aBattery[nCntBattery].Pos.y;
+			pVtx[0].pos.z = g_aBattery[nCntBattery].Pos.z;
+			pVtx[1].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
+			pVtx[1].pos.y = g_aBattery[nCntBattery].Pos.y;
+			pVtx[1].pos.z = g_aBattery[nCntBattery].Pos.z;
+			pVtx[2].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
+			pVtx[2].pos.y = g_aBattery[nCntBattery].Pos.y + NUM_SIZE;
+			pVtx[2].pos.z = g_aBattery[nCntBattery].Pos.z;
+			pVtx[3].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
+			pVtx[3].pos.y = g_aBattery[nCntBattery].Pos.y + NUM_SIZE;
+			pVtx[3].pos.z = g_aBattery[nCntBattery].Pos.z;
 
 			// rhwの設定
 			pVtx[0].rhw = 1.0f;
@@ -184,10 +184,10 @@ void SetBattery(int nIdx, int nBattery, D3DXVECTOR3 pos)
 {
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
 
-	g_aButtery[nIdx].nBattery = nBattery;
-	aTexU[0] = g_aButtery[nIdx].nBattery % 1000 / 100;
-	aTexU[1] = g_aButtery[nIdx].nBattery % 100 / 10;
-	aTexU[2] = g_aButtery[nIdx].nBattery % 10 / 1;
+	g_aBattery[nIdx].nBattery = nBattery;
+	aTexU[0] = g_aBattery[nIdx].nBattery % 1000 / 100;
+	aTexU[1] = g_aBattery[nIdx].nBattery % 100 / 10;
+	aTexU[2] = g_aBattery[nIdx].nBattery % 10 / 1;
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -195,18 +195,18 @@ void SetBattery(int nIdx, int nBattery, D3DXVECTOR3 pos)
 	for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++, pVtx += 4)
 	{
 		// 位置の設定
-		pVtx[0].pos.x = g_aButtery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
-		pVtx[0].pos.y = g_aButtery[nCntBattery].Pos.y;
-		pVtx[0].pos.z = g_aButtery[nCntBattery].Pos.z;
-		pVtx[1].pos.x = g_aButtery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
-		pVtx[1].pos.y = g_aButtery[nCntBattery].Pos.y;
-		pVtx[1].pos.z = g_aButtery[nCntBattery].Pos.z;
-		pVtx[2].pos.x = g_aButtery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
-		pVtx[2].pos.y = g_aButtery[nCntBattery].Pos.y + NUM_SIZE;
-		pVtx[2].pos.z = g_aButtery[nCntBattery].Pos.z;
-		pVtx[3].pos.x = g_aButtery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
-		pVtx[3].pos.y = g_aButtery[nCntBattery].Pos.y + NUM_SIZE;
-		pVtx[3].pos.z = g_aButtery[nCntBattery].Pos.z;
+		pVtx[0].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
+		pVtx[0].pos.y = g_aBattery[nCntBattery].Pos.y;
+		pVtx[0].pos.z = g_aBattery[nCntBattery].Pos.z;
+		pVtx[1].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
+		pVtx[1].pos.y = g_aBattery[nCntBattery].Pos.y;
+		pVtx[1].pos.z = g_aBattery[nCntBattery].Pos.z;
+		pVtx[2].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
+		pVtx[2].pos.y = g_aBattery[nCntBattery].Pos.y + NUM_SIZE;
+		pVtx[2].pos.z = g_aBattery[nCntBattery].Pos.z;
+		pVtx[3].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
+		pVtx[3].pos.y = g_aBattery[nCntBattery].Pos.y + NUM_SIZE;
+		pVtx[3].pos.z = g_aBattery[nCntBattery].Pos.z;
 
 		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f, 0.0f);
@@ -225,21 +225,21 @@ void ChangeBattery(int nIdx, int nValue)
 {
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
 
-	g_aButtery[nIdx].nBattery += nValue;
+	g_aBattery[nIdx].nBattery += nValue;
 	// カンストしたら加算を停止する
-	if (g_aButtery[nIdx].nBattery >= MAX_BATTERY)
+	if (g_aBattery[nIdx].nBattery >= MAX_BATTERY)
 	{
-		g_aButtery[nIdx].nBattery = MAX_BATTERY;
+		g_aBattery[nIdx].nBattery = MAX_BATTERY;
 	}
 	// 最低値になったら0に戻る
-	if (g_aButtery[nIdx].nBattery >= MIN_BATTERY)
+	if (g_aBattery[nIdx].nBattery >= MIN_BATTERY)
 	{
-		g_aButtery[nIdx].nBattery = MIN_BATTERY;
+		g_aBattery[nIdx].nBattery = MIN_BATTERY;
 	}
 
-	aTexU[0] = g_aButtery[nIdx].nBattery % 1000 / 100;
-	aTexU[1] = g_aButtery[nIdx].nBattery % 100 / 10;
-	aTexU[2] = g_aButtery[nIdx].nBattery % 10 / 1;
+	aTexU[0] = g_aBattery[nIdx].nBattery % 1000 / 100;
+	aTexU[1] = g_aBattery[nIdx].nBattery % 100 / 10;
+	aTexU[2] = g_aBattery[nIdx].nBattery % 10 / 1;
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
