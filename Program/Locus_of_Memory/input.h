@@ -13,13 +13,15 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define NUM_KEY_MAX			(256)		// キーの最大数
-#define NUM_MOUSE_MAX		(3)			// ボタンの最大数
-#define MAX_JOYPAD			(4)			// ジョイパッドの最大数
-#define JOYSTICKVALUE_MAX	(32767)		// スティックの値の最大
-#define JOYSTICKVALUE_MIN	(-32768)	// スティックの値の最小
-#define CUSTOM_DEADZONE		(512)		// デッドゾーン
-#define ZLRTRIGGER			(255)		// ZLZRトリガーの値
+#define NUM_KEY_MAX			(256)				// キーの最大数
+#define NUM_MOUSE_MAX		(3)					// ボタンの最大数
+#define MAX_JOYPAD			(4)					// ジョイパッドの最大数
+#define JOYSTICKVALUE_MAX	(32767)				// スティックの値の最大
+#define JOYSTICKVALUE_MIN	(-32768)			// スティックの値の最小
+#define CUSTOM_DEADZONE		(512)				// デッドゾーン
+#define ZLRTRIGGER			(255)				// ZLZRトリガーの値
+#define LEFTTRIGGER			((WORD)0x0400)		// ZLトリガーのビット
+#define RIGHTTRIGGER		((WORD)0x0800)		// ZRトリガーのビット
 
 //*****************************************************************************
 // ジョイパッドのキーの種類
@@ -36,8 +38,8 @@ typedef enum JOYKEY
 	JOYKEY_RIGHT_THUMB,			// 右スティック押し込み
 	JOYKEY_LEFT_SHOULDER,		// Lボタン
 	JOYKEY_RIGHT_SHOULDER,		// Rボタン
-	JOYKEY_NULL1,				// 未定義
-	JOYKEY_NULL2,				// 未定義
+	JOYKEY_LEFT_TRIGGER,		// ZLトリガー
+	JOYKEY_RIGHT_TRIGGER,		// ZRトリガー
 	JOYKEY_A,					// Aボタン
 	JOYKEY_B,					// Bボタン
 	JOYKEY_X,					// Xボタン

@@ -161,13 +161,23 @@ void UpdateJoypad(void)
 
 		if (XInputGetState(nCntJoypad, &joykeyState) == ERROR_SUCCESS)
 		{// ジョイパッドの情報が取得出来たら
+			// トリガー判定
+			if (joykeyState.Gamepad.bLeftTrigger >= ZLRTRIGGER)
+			{
+				joykeyState.Gamepad.wButtons += LEFTTRIGGER;
+			}
+
+			if (joykeyState.Gamepad.bRightTrigger >= ZLRTRIGGER)
+			{
+				joykeyState.Gamepad.wButtons += RIGHTTRIGGER;
+			}
+
 			pJoykeyStateTrigger->Gamepad.wButtons = (pJoykeyState->Gamepad.wButtons ^ joykeyState.Gamepad.wButtons) & joykeyState.Gamepad.wButtons;
 			pJoykeyStateRelease->Gamepad.wButtons = (pJoykeyState->Gamepad.wButtons ^ joykeyState.Gamepad.wButtons) & pJoykeyState->Gamepad.wButtons;
 			pJoykeyStateRepeat->Gamepad.wButtons = (pJoykeyState->Gamepad.wButtons & joykeyState.Gamepad.wButtons);
 			*pJoykeyState = joykeyState;		// ジョイパッドのプレス情報を保存
 
-			PrintDebugProc("%d\n", pJoykeyState->Gamepad.bLeftTrigger);
-			PrintDebugProc("%d\n", pJoykeyState->Gamepad.bRightTrigger);
+			PrintDebugProc("入力キー : %d\n", pJoykeyState->Gamepad.wButtons);
 
 			//-----スティックの情報-----//
 
@@ -362,8 +372,6 @@ bool GetJoypadRelease(JOYKEY key, int nIdx)
 bool GetJoypadRepeat(JOYKEY key, int nIdx)
 {
 	JoypadState* pJoypadState = &g_JoypadState[nIdx];
-
-	PrintDebugProc("%d\n", pJoypadState->JoykeyStateTrigger.Gamepad.wButtons);
 
 	if (pJoypadState->JoykeyStateTrigger.Gamepad.wButtons & (0x01 << key))
 	{// 最初はトリガー
