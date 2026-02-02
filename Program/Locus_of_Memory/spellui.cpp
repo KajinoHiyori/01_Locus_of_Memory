@@ -194,7 +194,7 @@ void InitSpellUI(void)
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].pos		= D3DXVECTOR3(-COMMMAND_DIGIT, COMMMAND_Y, 0.0f);	// 位置の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].fWidth		= COMMMAND_SIZE;									// 幅の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].fHeight	= COMMMAND_SIZE;									// 高さの初期化
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp		= false;												// テクスチャの初期化
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp		= true;												// テクスチャの初期化
 				break;
 
 			case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
@@ -203,7 +203,7 @@ void InitSpellUI(void)
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].pos		= D3DXVECTOR3(0.0f, COMMMAND_Y, 0.0f);	// 位置の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].fWidth		= COMMMAND_SIZE;						// 幅の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].fHeight	= COMMMAND_SIZE;						// 高さの初期化
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp		= false;									// テクスチャの初期化
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp		= true;									// テクスチャの初期化
 				break;
 
 			case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
@@ -212,7 +212,7 @@ void InitSpellUI(void)
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].pos		= D3DXVECTOR3(COMMMAND_DIGIT, COMMMAND_Y, 0.0f);	// 位置の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].fWidth		= COMMMAND_SIZE;									// 幅の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].fHeight	= COMMMAND_SIZE;									// 高さの初期化
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp		= false;												// テクスチャの初期化
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp		= true;												// テクスチャの初期化
 				break;
 
 			case SPELLUI_TYPE_MAGIC:	// 発動された魔法
@@ -221,7 +221,7 @@ void InitSpellUI(void)
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].pos			= D3DXVECTOR3(0.0f, MAGIC_Y, 0.0f);	// 位置の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].fWidth		= MAGIC_SIZE;						// 幅の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].fHeight		= MAGIC_SIZE;						// 高さの初期化
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp			= true;							// テクスチャの初期化
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp			= false;							// テクスチャの初期化
 				break;
 
 			case SPELLUI_TYPE_RED:	// 赤魔法
@@ -410,6 +410,7 @@ void UpdateSpellUI(void)
 			}
 			else
 			{
+				ResetSpellUI(nCntPlayer);
 				g_bAllDisp[nCntPlayer] = false;
 			}
 			break;
@@ -425,10 +426,49 @@ void UpdateSpellUI(void)
 		{
 			COMMANDTYPE* commandType = GetCommandType(nCntPlayer);
 			COMMANDTYPE CommandUI[MAX_COMMAND];
+
 			for (int nCntUI = 0; nCntUI < MAX_COMMAND; nCntUI++)
 			{
 				CommandUI[nCntUI] = commandType[nCntUI];
-				PrintDebugProc("コマンドの種類 %d", CommandUI[nCntUI]);
+				switch (CommandUI[nCntUI])
+				{
+				case COMMANDTYPE_NONE:	// 入力なし
+					g_SpellUI[nCntPlayer][nCntUI].tex = SPELLUI_TEX_NONE;
+					break;
+				case COMMANDTYPE_R:	// 赤魔法
+					g_SpellUI[nCntPlayer][nCntUI].tex = SPELLUI_TEX_RED;
+					break;
+				case COMMANDTYPE_G:	// 緑魔法
+					g_SpellUI[nCntPlayer][nCntUI].tex = SPELLUI_TEX_GREEN;
+					break;
+				case COMMANDTYPE_B:	// 青魔法
+					g_SpellUI[nCntPlayer][nCntUI].tex = SPELLUI_TEX_BLUE;
+					break;
+				case COMMANDTYPE_Y:	// 黄魔法
+					g_SpellUI[nCntPlayer][nCntUI].tex = SPELLUI_TEX_YELLOW;
+					break;
+				}
+			}
+			if (CommandUI[2] != MAGICTYPE_NONE)
+			{
+				switch (g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].type)
+				{
+				case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = false;												// テクスチャの初期化
+					break;
+
+				case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = false;									// テクスチャの初期化
+					break;
+
+				case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド									// 高さの初期化
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = false;												// テクスチャの初期化
+					break;
+
+				case SPELLUI_TYPE_MAGIC:	// 発動された魔法
+					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = true;							// テクスチャの初期化
+					break;
+				}
 			}
 		}
 	}
