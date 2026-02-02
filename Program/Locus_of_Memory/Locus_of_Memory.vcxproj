@@ -158,6 +158,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animal.cpp" />
+    <ClCompile Include="battery.cpp" />
+    <ClCompile Include="clock.cpp" />
     <ClCompile Include="clockui.cpp" />
     <ClCompile Include="diagnosis.cpp" />
     <ClCompile Include="diagnosisui.cpp" />
@@ -196,6 +198,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animal.h" />
+    <ClInclude Include="battery.h" />
+    <ClInclude Include="clock.h" />
     <ClInclude Include="clockui.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="diagnosis.h" />

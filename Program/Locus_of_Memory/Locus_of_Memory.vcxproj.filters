@@ -177,6 +177,12 @@
     <ClCompile Include="pause.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="clock.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="battery.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -280,6 +286,12 @@
     </ClInclude>
     <ClInclude Include="pause.h">
       <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="clock.h">
+      <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="battery.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
