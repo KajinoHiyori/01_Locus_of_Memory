@@ -504,7 +504,7 @@ void Update(void)
 	UpdateDebugProc();
 
 	// カメラの更新処理
-	UpdateCamera();
+	UpdateCamera(g_mode);
 
 	// オブジェクトの更新処理(仮)
 	UpdateObject();
@@ -725,7 +725,7 @@ void SetMode(MODE mode)
 	}
 
 	// カメラをモードによって切り替える
-	SetNumCamera(mode);
+	SetModeCamera(mode);
 
 	// モードの更新
 	g_mode = mode;

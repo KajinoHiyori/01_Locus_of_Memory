@@ -38,9 +38,6 @@ void InitTitle(void)
 	SetJoypadVibration(0, 0, 0, 0);
 	SetJoypadVibration(0, 0, 0, 1);
 
-	// カメラの初期化処理
-	InitCamera();
-
 	// カメラの位置を設定
 	Camera* pCamera = GetCamera();
 	pCamera->posV = POS_V;
@@ -65,8 +62,6 @@ void InitTitle(void)
 //======================================================================================
 void UninitTitle(void)
 {
-	// カメラの終了処理
-	UninitCamera();
 
 	// ライトの終了処理
 	UninitLight();

@@ -46,8 +46,6 @@ void InitTutorial(void)
 
 	InitLight();
 
-	InitCamera();
-
 	// 魔法の初期化処理
 	InitMagic();
 
@@ -89,8 +87,6 @@ void UninitTutorial(void)
 	//UninitPause();
 
 	UninitLight();
-
-	UninitCamera();
 
 	// 魔法の終了処理
 	UninitMagic();
@@ -158,8 +154,6 @@ void UpdateTutorial(void)
 	{
 		// プレイヤーの更新処理
 		//UpdateBG();
-
-		UpdateCamera();
 
 		UpdateLight();
 
