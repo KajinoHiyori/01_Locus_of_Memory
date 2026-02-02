@@ -13,28 +13,29 @@
 #include "fog.h"
 
 // マクロ定義
-#define MAX_SPELLTEX	(SPELLUI_TEX_MAX)	// テクスチャの最大数
-#define MAX_SPELLTYPE	(SPELLUI_TYPE_MAX)	// 表示されるUIの種類
-#define SPELLUI_POSY	(360.0f)			// 左のUIのX軸
-#define LEFT_POS		(D3DXVECTOR3(180.0f, SPELLUI_POSY, 0.0f))
-#define RIGHT_POS		(D3DXVECTOR3(1100.0f, SPELLUI_POSY, 0.0f))
-#define COMMMAND_Y		(-50.0f)	// コマンド結果の高度
-#define COMMMAND_SIZE	(35.0f)		// コマンドボタンの大きさ
-#define MAGIC_SIZE		(80.0f)		// 発動魔法の大きさ
-#define BUTTON_SIZE		(15.0f)		// 操作キー表示の大きさ
-#define SPELL_WIDTH		(135.0f)	// spellメニューの幅
-#define SPELL_HEIGHT	(30.0f)		// spellメニューの高さ
-#define SPELL_Y			(-200.0f)	// spellメニューの高度
-#define MAGIC_Y			(-35.0f)	// magicの種類の高度
-#define PHONE_WIDTH		(135.0f)	// スマホの幅
-#define PHONE_HEIGHT	(285.0f)	// スマホの幅
-#define COMMMAND_DIGIT	(85.0f)		// コマンドの表示幅
-#define RBCOMMAND_Y		(150.0f)	// RBコマンドの高度
-#define YCOMMAND_Y		(RBCOMMAND_Y - COMMMAND_DIGIT)	// Yコマンドの高度
-#define GCOMMAND_Y		(RBCOMMAND_Y + COMMMAND_DIGIT)	// Gコマンドの高度
-#define RB_OPTYPE_X		(COMMMAND_DIGIT - 55.0f)		// RB操作コマンドの高度
-#define Y_OPTYPE_Y		(YCOMMAND_Y + 55.0f)			// Y操作コマンドの高度
-#define G_OPTYPE_Y		(GCOMMAND_Y - 55.0f)				// G操作コマンドの高度
+#define MAX_SPELLTEX		(SPELLUI_TEX_MAX)	// テクスチャの最大数
+#define MAX_SPELLTYPE		(SPELLUI_TYPE_MAX)	// 表示されるUIの種類
+#define SPELLUI_POSY		(482.0f)			// 左のUIのX軸
+#define LEFT_POS			(D3DXVECTOR3(120.0f, SPELLUI_POSY, 0.0f))
+#define RIGHT_POS			(D3DXVECTOR3(1160.0f, SPELLUI_POSY, 0.0f))
+#define COMMMAND_Y			(-60.0f)		// コマンド結果の高度
+#define COMMMAND_SIZE		(25.0f)			// コマンドボタンの大きさ
+#define MAGIC_SIZE			(60.0f)			// 発動魔法の大きさ
+#define BUTTON_SIZE			(15.0f)			// 操作キー表示の大きさ
+#define SPELL_WIDTH			(PHONE_WIDTH)	// spellメニューの幅
+#define SPELL_HEIGHT		(24.0f)			// spellメニューの高さ
+#define SPELL_Y				(-170.0f)		// spellメニューの高度
+#define MAGIC_Y				(-65.0f)		// magicの種類の高度
+#define PHONE_WIDTH			(108.0f)		// スマホの幅
+#define PHONE_HEIGHT		(228.0f)		// スマホの高さ
+#define COMMMAND_DIGIT		(75.0f)			// コマンドの表示幅
+#define COMMMAND_OPDIGIT	(85.0f)			// コマンドの表示幅
+#define RBCOMMAND_Y			(110.0f)		// RBコマンドの高度
+#define YCOMMAND_Y			(RBCOMMAND_Y - COMMMAND_OPDIGIT)	// Yコマンドの高度
+#define GCOMMAND_Y			(RBCOMMAND_Y + COMMMAND_OPDIGIT)	// Gコマンドの高度
+#define RB_OPTYPE_X			(COMMMAND_OPDIGIT - 55.0f)		// RB操作コマンドの高度
+#define Y_OPTYPE_Y			(YCOMMAND_Y + 55.0f)			// Y操作コマンドの高度
+#define G_OPTYPE_Y			(GCOMMAND_Y - 55.0f)			// G操作コマンドの高度
 
 // SPELLUIの構造体
 typedef struct
@@ -77,7 +78,7 @@ const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
 	"data\\TEXTURE\\SpellUI\\18_FireBall.png",
 	"data\\TEXTURE\\SpellUI\\19_SunsetDelay.png",
 	"data\\TEXTURE\\SpellUI\\20_RainPray.png",
-	"data\\TEXTURE\\SpellUI\\21_Freeze.png",
+	"data\\TEXTURE\\SpellUI\\freeze.png",
 	"data\\TEXTURE\\SpellUI\\22_Grouth.png",
 	"data\\TEXTURE\\SpellUI\\23_Acceleration.png",
 	"data\\TEXTURE\\SpellUI\\24_TimeRevert.png",
@@ -86,7 +87,7 @@ const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
 };
 
 //======================================================================================
-// ポーズの初期化処理
+// spellの初期化処理
 //======================================================================================
 void InitSpellUI(void)
 {
@@ -106,7 +107,7 @@ void InitSpellUI(void)
 			g_SpellUI[nCntPlayer][nCntUI].fHeight	= 0.0f;								// 高さの初期化
 			g_SpellUI[nCntPlayer][nCntUI].bDisp		= false;							// テクスチャの初期化
 		}
-		g_bAllDisp[nCntPlayer] = true;
+		g_bAllDisp[nCntPlayer] = false;
 		MainPos[nCntPlayer] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
 	}
 
@@ -184,7 +185,7 @@ void InitSpellUI(void)
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].pos		= D3DXVECTOR3(-COMMMAND_DIGIT, COMMMAND_Y, 0.0f);	// 位置の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].fWidth		= COMMMAND_SIZE;									// 幅の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].fHeight	= COMMMAND_SIZE;									// 高さの初期化
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp		= true;												// テクスチャの初期化
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp		= false;												// テクスチャの初期化
 				break;
 
 			case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
@@ -193,7 +194,7 @@ void InitSpellUI(void)
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].pos		= D3DXVECTOR3(0.0f, COMMMAND_Y, 0.0f);	// 位置の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].fWidth		= COMMMAND_SIZE;						// 幅の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].fHeight	= COMMMAND_SIZE;						// 高さの初期化
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp		= true;									// テクスチャの初期化
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp		= false;									// テクスチャの初期化
 				break;
 
 			case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
@@ -202,16 +203,16 @@ void InitSpellUI(void)
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].pos		= D3DXVECTOR3(COMMMAND_DIGIT, COMMMAND_Y, 0.0f);	// 位置の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].fWidth		= COMMMAND_SIZE;									// 幅の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].fHeight	= COMMMAND_SIZE;									// 高さの初期化
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp		= true;												// テクスチャの初期化
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp		= false;												// テクスチャの初期化
 				break;
 
 			case SPELLUI_TYPE_MAGIC:	// 発動された魔法
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].tex			= SPELLUI_TEX_NONE;					// どの魔法も入力されていない
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].tex			= SPELLUI_TEX_FREEZE;					// どの魔法も入力されていない
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].type			= SPELLUI_TYPE_MAGIC;				// UIの種類の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].pos			= D3DXVECTOR3(0.0f, MAGIC_Y, 0.0f);	// 位置の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].fWidth		= MAGIC_SIZE;						// 幅の初期化
 				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].fHeight		= MAGIC_SIZE;						// 高さの初期化
-				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp			= false;							// テクスチャの初期化
+				g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp			= true;							// テクスチャの初期化
 				break;
 
 			case SPELLUI_TYPE_RED:	// 赤魔法
@@ -357,7 +358,7 @@ void InitSpellUI(void)
 }
 
 //======================================================================================
-// ポーズの終了処理
+// spellの終了処理
 //======================================================================================
 void UninitSpellUI(void)
 {
@@ -382,110 +383,35 @@ void UninitSpellUI(void)
 }
 
 //======================================================================================
-// ポーズの更新処理
+// spellの更新処理
 //======================================================================================
 void UpdateSpellUI(void)
 {
-#if 0
-	// 入力情報の保存
-	static int nCounterUp = 0;
-	static int nCounterDown = 0;
+	// 操作方法の状態を取得
+	OPERATIONTYPE operationType = GetOperationType();
 
-	// 同時押しされた場合、処理を行わない
-	if ((GetKeyboardPress(DIK_W) == true && GetKeyboardPress(DIK_S) == true) ||
-		(GetJoypadPress(JOYKEY_UP, 0) == true && GetJoypadPress(JOYKEY_DOWN, 0) == true))
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		return;
-	}
-
-	// WSキーが押された場合、テクスチャの状態を変更する(リピート)
-	else if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true || GetJoypadStickRepeatL(JOYSTICK_UP, 0) == true)	// 上
-	{
-		g_nSelectSpellUI[nCntOP]--;
-		if (g_selectSpellUI < 0)
+		switch (operationType)
 		{
-			g_selectSpellUI = GAMEUI_TYPE_QUIT;
-		}
-	}
-	else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, 0) == true)	// 下
-	{
-		g_selectSpellUI++;
-		if (g_selectSpellUI > GAMEUI_TYPE_QUIT)
-		{
-			g_selectSpellUI = GAMEUI_TYPE_CLOCK;
-		}
-	}
-
-	// 何が選ばれているかの判定
-	switch (g_selectSpellUI)
-	{
-	case GAMEUI_TYPE_CLOCK:	// 時計
-		g_pauseMenu = GAMEUI_TYPE_CONTINUE;
-		break;
-
-	case GAMEUI_TYPE_MAGICBOOK:	// 魔導書
-		g_pauseMenu = GAMEUI_TYPE_MAGICBOOK;
-		break;
-
-	case GAMEUI_TYPE_CONTINUE:	// CONTINUE
-		g_pauseMenu = GAMEUI_TYPE_CONTINUE;
-		break;
-
-	case GAMEUI_TYPE_RETRY:		// RETRY
-		g_pauseMenu = GAMEUI_TYPE_RETRY;
-		break;
-	
-	case GAMEUI_TYPE_QUIT:		// QUIT
-		g_pauseMenu = GAMEUI_TYPE_QUIT;
-		break;
-	}
-
-	// 頂点座標の更新
-	VERTEX_2D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffSpellUI->Lock(0, 0, (void**)&pVtx, 0);
-	for (int nCntSpellUI = 0; nCntSpellUI < NUM_SELECT; nCntSpellUI++)
-	{
-		if (nCntSpellUI == g_pauseMenu)	// 選択部だけ明るく表示
-		{
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-		}
-		else
-		{
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-		}
-		pVtx += 4;
-	}
-	// アンロック
-	g_pVtxBuffSpellUI->Unlock();
-
-	// ENTERキーで確定した場合
-	if (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true)
-	{
-		switch (g_pauseMenu)
-		{
-		case GAMEUI_TYPE_CONTINUE:	// コンテニュー
-
+		case OPERATIONTYPE_2P:	// 2人操作
+		//	if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_RSHIFT) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT_THUMB))
+			{
+			}
 			break;
-		case GAMEUI_TYPE_RETRY:		// リトライ
-			SetFade(MODE_GAME);
-			break;
-		case GAMEUI_TYPE_QUIT:		// タイトルへ戻る
-			SetFade(MODE_TITLE);
+
+		default:	// 1人操作
+			if (nCntPlayer > 0)
+			{
+				continue;
+			}
 			break;
 		}
 	}
-#endif
 }
 
 //======================================================================================
-// ポーズの描画処理
+// spellの描画処理
 //======================================================================================
 void DrawSpellUI(void)
 {
