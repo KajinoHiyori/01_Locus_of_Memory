@@ -81,6 +81,8 @@ typedef struct
 LPDIRECT3DTEXTURE9	g_apTextureSpellUI[MAX_SPELLTEX] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffSpellUI = NULL;			// 頂点バッファへのポインタ
 SpellUI g_aSpellUI[MAX_PLAYER];		// SPELLUIの全体管理
+
+// テクスチャの読み込み
 const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
 {
 	"data\\TEXTURE\\SpellUI\\00_MagicNull.png",
