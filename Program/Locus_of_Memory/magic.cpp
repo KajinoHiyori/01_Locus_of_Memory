@@ -5,6 +5,7 @@
 // 
 //===================================================================
 #include "magic.h"
+#include "spellui.h"
 #include "player.h"
 #include "debugproc.h"
 #include "input.h"
@@ -16,6 +17,7 @@
 #define MAX_DROPMAGIC		(32)		//落ちてる魔法の最大数
 #define MAX_COMMAND			(3)			//コマンドの最大数
 #define DROPMAGIC_RADIUS	(15.0f)		//落ちてる魔法の半径
+#define DISP_MAGIC			(30)			// UIの発動魔法表示時間管理
 
 //グローバル変数宣言
 Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
@@ -422,6 +424,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			g_aMagic[nIdx][nCntMagic].rot = rot;
 			g_aMagic[nIdx][nCntMagic].move = move;
 			g_aMagic[nIdx][nCntMagic].bUse = true;
+			SetSpellUI(g_aMagic[nIdx][nCntMagic].mType, nIdx, DISP_MAGIC);
 
 			switch (type)
 			{

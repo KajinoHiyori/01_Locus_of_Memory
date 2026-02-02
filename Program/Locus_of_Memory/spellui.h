@@ -6,7 +6,7 @@
 //========================================================
 #ifndef _SPELLUI_H_
 #define	_SPELLUI_H_
-
+#include "magic.h"
 
 // UIのテクスチャの種類
 typedef enum
@@ -75,4 +75,5 @@ void UninitSpellUI(void);
 void UpdateSpellUI(void);
 void DrawSpellUI(void);
 void ResetSpellUI(int nIdx);
+void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime);
 #endif

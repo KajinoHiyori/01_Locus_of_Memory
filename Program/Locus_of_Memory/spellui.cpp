@@ -11,7 +11,6 @@
 #include "input.h"
 #include "title.h"
 #include "fog.h"
-#include "magic.h"
 #include "debugproc.h"
 
 // マクロ定義
@@ -57,6 +56,7 @@ LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffSpellUI = NULL;			// 頂点バッファへのポインタ
 SPELLUI g_SpellUI[MAX_PLAYER][MAX_SPELLTEX];				// UIの表示処理
 bool g_bAllDisp[MAX_PLAYER];								// UIの全体表示管理
 D3DXVECTOR3 MainPos[MAX_PLAYER];							// UIの全体管理位置
+int g_nCounterUI[MAX_PLAYER];								// UIの発動魔法表示時間管理
 
 const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
 {
@@ -81,7 +81,7 @@ const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
 	"data\\TEXTURE\\SpellUI\\18_FireBall.png",
 	"data\\TEXTURE\\SpellUI\\19_SunsetDelay.png",
 	"data\\TEXTURE\\SpellUI\\20_RainPray.png",
-	"data\\TEXTURE\\SpellUI\\freeze.png",
+	"data\\TEXTURE\\SpellUI\\21_freeze.png",
 	"data\\TEXTURE\\SpellUI\\22_Grouth.png",
 	"data\\TEXTURE\\SpellUI\\23_Acceleration.png",
 	"data\\TEXTURE\\SpellUI\\24_TimeRevert.png",
@@ -111,6 +111,7 @@ void InitSpellUI(void)
 			g_SpellUI[nCntPlayer][nCntUI].bDisp		= false;							// テクスチャの初期化
 		}
 		g_bAllDisp[nCntPlayer] = false;
+		g_nCounterUI[nCntPlayer] = 0;
 		MainPos[nCntPlayer] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
 	}
 
@@ -256,6 +257,15 @@ void UpdateSpellUI(void)
 			{
 				continue;
 			}
+			if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true)
+			{
+				g_bAllDisp[nCntPlayer] = true;
+			}
+			else
+			{
+				ResetSpellUI(nCntPlayer);
+				g_bAllDisp[nCntPlayer] = false;
+			}
 			break;
 		}
 		if (g_bAllDisp[nCntPlayer] == true)
@@ -284,26 +294,47 @@ void UpdateSpellUI(void)
 					g_SpellUI[nCntPlayer][nCntUI + 2].tex = SPELLUI_TEX_YELLOW;
 					break;
 				}
-			}
-			if (CommandUI[2] != MAGICTYPE_NONE)
-			{
-				switch (g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].type)
+				if (g_nCounterUI[nCntPlayer] > 0)
 				{
-				case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = false;	// テクスチャの初期化
-					break;
+					switch (g_SpellUI[nCntPlayer][nCntUI + 2].type)
+					{
+					case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
+						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = false;	// テクスチャの初期化
+						break;
 
-				case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = false;	// テクスチャの初期化
-					break;
+					case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
+						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = false;	// テクスチャの初期化
+						break;
 
-				case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = false;	// テクスチャの初期化
-					break;
+					case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
+						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = false;	// テクスチャの初期化
+						break;
 
-				case SPELLUI_TYPE_MAGIC:	// 発動された魔法
-					g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = true;		// テクスチャの初期化
-					break;
+					case SPELLUI_TYPE_MAGIC:	// 発動された魔法
+						g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = true;		// テクスチャの初期化
+						break;
+					}
+				}
+				else if (g_nCounterUI[nCntPlayer] <= 0)
+				{
+					switch (g_SpellUI[nCntPlayer][nCntUI + 2].type)
+					{
+					case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
+						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND0].bDisp = true;	// テクスチャの初期化
+						break;
+
+					case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
+						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND1].bDisp = true;	// テクスチャの初期化
+						break;
+
+					case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
+						g_SpellUI[nCntPlayer][SPELLUI_TYPE_COMMAND2].bDisp = true;	// テクスチャの初期化
+						break;
+
+					case SPELLUI_TYPE_MAGIC:	// 発動された魔法
+						g_SpellUI[nCntPlayer][SPELLUI_TYPE_MAGIC].bDisp = false;		// テクスチャの初期化
+						break;
+					}
 				}
 			}
 		}
@@ -523,4 +554,62 @@ void ResetSpellUI(int nIdx)
 		}
 
 	}
+}
+
+//======================================================================================
+// UIを発動中の魔法に変更
+//======================================================================================
+void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime)
+{
+	switch (magicType)
+	{
+	case MAGICTYPE_NONE:	// 何もない場合
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_NONE;			// 詠唱失敗のテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_LEVITATION:	// 浮遊
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_LEVITATION;	// 浮遊のテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_COMBUSTION:	// 燃焼
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_COMBUSTION;	// 燃焼のテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_FLOOD:	// 洪水、氾濫
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_FLOOD;	// 洪水、氾濫のテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_FLASH:	// フラッシュ
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_FLASH;	// フラッシュのテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_FIREBALL:	// 火球
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_FIREBALL;	// 火球のテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_SUNSETDELAY:	// 太陽の動きを止める
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_SUNSETDELAY;	// 太陽の動きを止めるテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_RAINPRAY:	// 雨乞い
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_RAINPRAY;	// 雨乞いのテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_FREEZE:	// 凍結
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_FREEZE;	// 凍結のテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_GROWTH:	// 成長
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_GROWTH;	// 成長のテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_ACCELERATION:	// 加速
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_ACCELERATION;	// 加速のテクスチャに切り替え
+		break;
+
+	case MAGICTYPE_TIMEREVERT:	// 巻き戻し
+		g_SpellUI[nIdx][SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_TIMEREVERT;	// 巻き戻しのテクスチャに切り替え
+		break;
+	}
+	g_nCounterUI[nIdx] = nDispTime;
 }

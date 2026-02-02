@@ -347,7 +347,7 @@ void UpdatePlayer(void)
 
 			for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
 			{
-				if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == testcommand)
+				if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == testcommand && g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] != MAGICTYPE_NONE)
 				{
 					SetMagic(ChangeMagic(testcommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
 					break;
