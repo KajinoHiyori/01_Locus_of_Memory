@@ -61,14 +61,6 @@ typedef enum
 	SPELLUI_TYPE_MAX
 }SPELLUI_TYPE;
 
-// UIの状態
-typedef enum
-{
-	SPELL_UI_STATE_NONE,	// 何もしていない
-	SPELL_UI_STATE_1PSPELL,	// 1PのSPELL
-	SPELL_UI_STATE_2PSPELL,	// 2PのSPELL
-}SPELLUI_STATE;
-
 // プロトタイプ宣言
 void InitSpellUI(void);
 void UninitSpellUI(void);
