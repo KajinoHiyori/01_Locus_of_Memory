@@ -160,6 +160,7 @@ void DrawFade(void)
     // ƒ|ƒŠƒSƒ“‚Ì•`ŽÊ
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
+
 void SetFade(MODE modeNext)
 {
     g_fade = FADE_OUT;

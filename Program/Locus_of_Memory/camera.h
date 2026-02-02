@@ -85,6 +85,11 @@ typedef struct CameraInfo
 void InitCamera(void);
 void UninitCamera(void);
 void UpdateCamera(MODE mode);
+void UpdateStartCamera(void);
+void UpdateTitleCamera(void);
+void UpdateGameCamera(void);
+void UpdateResultCamera(void);
+void UpdateDiagnosisCamera(void);
 void SetCamera(int nIdx);
 void SetModeCamera(MODE mode);
 Camera* GetCamera(void);

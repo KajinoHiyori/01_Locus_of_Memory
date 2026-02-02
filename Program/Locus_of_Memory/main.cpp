@@ -353,8 +353,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
-	//// カメラの初期化
-	//InitCamera();
+	// カメラの初期化
+	InitCamera();
 
 	//// ライトの初期化
 	//InitLight();
