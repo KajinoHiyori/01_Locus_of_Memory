@@ -128,7 +128,6 @@ COMMANDOREDER PressCommand(int nIdx)
 
 	if (g_aCntCommand[nIdx] == MAX_COMMAND)
 	{//コマンドが三つ入力されたとき
-		memset(&g_aCntCommand[0], NULL, sizeof(int) * MAX_PLAYER);
 		//浮遊-------------------------------------------------------------------------------------------------
 		//緑緑緑
 		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
@@ -585,6 +584,7 @@ COMMANDTYPE* GetCommandType(int nIdx)
 // 入力情報リセット処理==========================
 void ResetCommand(int nIdx)
 {
+	memset(&g_aCntCommand[nIdx], NULL, sizeof(int));
 	for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
 	{
 		g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;

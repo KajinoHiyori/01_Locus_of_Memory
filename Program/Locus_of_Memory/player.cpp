@@ -173,6 +173,7 @@ void UpdatePlayer(void)
 	float fAngle = 0.0f;		// 角度
 
 	int nDropMagicIdx;		// 落ちてる魔法保管用
+	COMMANDOREDER testcommand = COMMANDOREDER_NONE;
 
 	// 過去の位置を保存
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -341,9 +342,15 @@ void UpdatePlayer(void)
 			// 落ちてる魔法との判定 (保管)
 			nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
 
-			COMMANDOREDER testcommand = PressCommand(nCntPlayer);
+			if (GetJoypadPress(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+			{
+				testcommand = PressCommand(nCntPlayer);
+			}
 
-			
+			if (GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+			{
+				ResetCommand(nCntPlayer);
+			}
 
 			for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
 			{
