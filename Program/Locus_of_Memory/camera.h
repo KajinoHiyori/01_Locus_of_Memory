@@ -32,7 +32,7 @@
 #define INIT_2PCAMERAPOSV		(D3DXVECTOR3(0.0f, 100.0f, 0.0f))			// 2Pカメラの視点
 #define INIT_2PCAMERAPOSR		(D3DXVECTOR3(0.0f, 50.0f, 0.0f))			// 2Pカメラの注視点
 #define INIT_2PCAMERAROT		(D3DXVECTOR3(0.0f, D3DX_PI, 0.0f))			// 2Pカメラの向き
-#define INIT_RADIUS				(175.0f)									// 視点と注視点との距離(半径)
+#define INIT_RADIUS				(200.0f)									// 視点と注視点との距離(半径)
 
 // タイトル
 #define INIT_TITLECAMERA_POSV	(D3DXVECTOR3(0.0f, 100.0f, 0.0f))			// タイトルカメラの視点
