@@ -61,7 +61,10 @@ const char* c_apFilename2PModel[MAX_MODEL] =
 void InitPlayer(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATERIAL* pMat;
+
+	Player* pPlayer = &g_aPlayer[0];		// プレイヤーの先頭アドレス
+
+	memset(&pPlayer->magicbook.OwnCommand[0], COMMANDOREDER_NONE, sizeof(COMMANDOREDER) * MAX_OWNCOMMAND);
 
 	// 初期化
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -169,7 +172,7 @@ void UpdatePlayer(void)
 	float fRotDiffKey = 0.0f;	// 角度の差分
 	float fAngle = 0.0f;		// 角度
 
-	COMMANDOREDER commandoreder = COMMANDOREDER_NONE;
+	int nDropMagicIdx;		// 落ちてる魔法保管用
 
 	// 過去の位置を保存
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -311,7 +314,7 @@ void UpdatePlayer(void)
 			// プレイヤーの方向を補正
 			fRotDiffKey = g_aPlayer[nCntPlayer].rotDest.y - g_aPlayer[nCntPlayer].rot.y;	// 差分を計算
 			fRotDiffKey = AngleNormalize(fRotDiffKey);
-			g_aPlayer[nCntPlayer].rot.y += (fRotDiffKey)*CORRECTION_ROT;
+			g_aPlayer[nCntPlayer].rot.y += (fRotDiffKey) * CORRECTION_ROT;
 			g_aPlayer[nCntPlayer].rot.y = AngleNormalize(g_aPlayer[nCntPlayer].rot.y);
 
 			// 重力
@@ -330,28 +333,41 @@ void UpdatePlayer(void)
 				}
 				g_aPlayer[nCntPlayer].pos.y = 0.0f;
 				g_aPlayer[nCntPlayer].bJump = false;
-
 			}
 
 			// オブジェクトとの当たり判定
 			CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius);
 
 			// 落ちてる魔法との判定 (保管)
-			commandoreder = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
+			nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
 
 			COMMANDOREDER testcommand = PressCommand(nCntPlayer);
 
+			for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
+			{
+				if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == testcommand)
+				{
+					SetMagic(ChangeMagic(testcommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
+					break;
+				}
+			}
+
 			PrintDebugProc("入力コマンド : %d\n", testcommand);
 
-			PrintDebugProc("コマンドタイプ : %d\n", commandoreder);
+			PrintDebugProc("コマンドタイプ : %d\n", nDropMagicIdx);
 
-			if (GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true && commandoreder != COMMANDOREDER_NONE)
+			if (GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true && nDropMagicIdx != COMMANDOREDER_NONE)
 			{// Xボタンを押したかつ何かしらのコマンドが近くにある
-				g_aPlayer[nCntPlayer].magicbook.command0 = commandoreder;
+				OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
+			}
+
+			for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
+			{
+				PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
 			}
 
 			// 影の位置を更新
-			SetPositionShadow(g_aPlayer[nCntPlayer].nIdxShadow, g_aPlayer[nCntPlayer].pos);
+			//SetPositionShadow(g_aPlayer[nCntPlayer].nIdxShadow, g_aPlayer[nCntPlayer].pos);
 
 			// 移動量の更新
 			g_aPlayer[nCntPlayer].move.x += (0.0f - g_aPlayer[nCntPlayer].move.x) * 0.1f;
@@ -736,4 +752,25 @@ void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE paren
 	g_aPlayer[nIdx].nIdxShadow = SetShadow(SHADOWTYPE_CIRCLE, SHADOｗ, SHADOｗ);
 
 	SetMotion(&g_aPlayer[nIdx].motion, g_aPlayer[nIdx].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);
+}
+
+//========================================================================
+// コマンドを取得する
+//========================================================================
+void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
+{
+	if (pMagicBook->nCntOwn <= 0)
+	{
+		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
+		pMagicBook->nCntOwn++;
+		return;
+	}
+
+	for (int nCntCommand = 0; nCntCommand < pMagicBook->nCntOwn; nCntCommand++)
+	{
+		pMagicBook->OwnCommand[pMagicBook->nCntOwn - nCntCommand] = pMagicBook->OwnCommand[pMagicBook->nCntOwn - nCntCommand - 1];
+	}
+
+	pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
+	pMagicBook->nCntOwn++;
 }

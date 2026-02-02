@@ -22,7 +22,7 @@ Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
 DropMagic g_aDropMagic[MAX_DROPMAGIC];					//落ちてる魔法の情報
 COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
 MagicCounter g_aCounter[MAX_PLAYER];
-int nCntCommand[MAX_PLAYER] = {};
+int g_aCntCommand[MAX_PLAYER] = {};
 
 //魔法の初期化処理=============================
 void InitMagic(void)
@@ -30,6 +30,7 @@ void InitMagic(void)
 	MagicCounter* pCounter = &g_aCounter[0];
 
 	memset(pCounter, NULL, sizeof(MagicCounter) * MAX_PLAYER);
+	memset(&g_aCntCommand[0], NULL, sizeof(int) * MAX_PLAYER);
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
@@ -63,6 +64,8 @@ void InitMagic(void)
 	}
 
 	SetMagicPosition(COMMANDOREDER_BBB, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetMagicPosition(COMMANDOREDER_RRR, D3DXVECTOR3(150.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetMagicPosition(COMMANDOREDER_GGG, D3DXVECTOR3(-150.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
 //魔法の終了処理==============================
@@ -80,10 +83,12 @@ void UpdateMagic(void)
 		{
 			if (g_aMagic[nCntPlayerType][nCntMagic].bUse == true)
 			{
-
+				PrintDebugProc("発動中魔法 : %d\n", g_aMagic[nCntPlayerType][nCntMagic].mType);
 			}
 		}
 	}
+
+	PrintDebugProc("入力コマンド数 : %d\n", g_aCntCommand[0]);
 }
 
 //魔法の描画処理==============================
@@ -95,32 +100,33 @@ void DrawMagic(void)
 //コマンド入力情報=============================
 COMMANDOREDER PressCommand(int nIdx)
 {
-	if (g_aCommand[nIdx][nCntCommand[nIdx]] == COMMANDTYPE_NONE)
+	if (g_aCommand[nIdx][g_aCntCommand[nIdx]] == COMMANDTYPE_NONE)
 	{//コマンドが何も入力されていないとき
 		if (GetJoypadTrigger(JOYKEY_B, nIdx) == true)
 		{//B(赤)が入力された
-			g_aCommand[nIdx][nCntCommand[nIdx]] = COMMANDTYPE_R;
+			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_R;
 		}
 		else if (GetJoypadTrigger(JOYKEY_A, nIdx) == true)
 		{//A(緑)が入力された
-			g_aCommand[nIdx][nCntCommand[nIdx]] = COMMANDTYPE_G;
+			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_G;
 		}
 		else if (GetJoypadTrigger(JOYKEY_X, nIdx) == true)
 		{//X(青)が入力された
-			g_aCommand[nIdx][nCntCommand[nIdx]] = COMMANDTYPE_B;
+			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_B;
 		}
 		else if (GetJoypadTrigger(JOYKEY_Y, nIdx) == true)
 		{//Y(黄)が入力された
-			g_aCommand[nIdx][nCntCommand[nIdx]] = COMMANDTYPE_Y;
+			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_Y;
 		}
 	}
-	if (g_aCommand[nIdx][nCntCommand[nIdx]] != COMMANDTYPE_NONE)
+	if (g_aCommand[nIdx][g_aCntCommand[nIdx]] != COMMANDTYPE_NONE)
 	{//コマンドが何かしら入力されたとき
-		nCntCommand[nIdx]++;
+		g_aCntCommand[nIdx]++;
 	}
 
-	if (nCntCommand[nIdx] == MAX_COMMAND)
+	if (g_aCntCommand[nIdx] == MAX_COMMAND)
 	{//コマンドが三つ入力されたとき
+		memset(&g_aCntCommand[0], NULL, sizeof(int) * MAX_PLAYER);
 		//浮遊-------------------------------------------------------------------------------------------------
 		//緑緑緑
 		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
@@ -390,7 +396,7 @@ COMMANDOREDER PressCommand(int nIdx)
 
 			return COMMANDOREDER_RGB;
 		}
-		else if (nCntCommand[nIdx] >= MAX_COMMAND)
+		else
 		{
 			for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
 			{
@@ -400,7 +406,7 @@ COMMANDOREDER PressCommand(int nIdx)
 			return COMMANDOREDER_NONE;
 		}
 	}
-	else if (nCntCommand[nIdx] < MAX_COMMAND)
+	else if (g_aCntCommand[nIdx] < MAX_COMMAND)
 	{
 		return COMMANDOREDER_NONE;
 	}
@@ -599,7 +605,7 @@ Magic* GetMagic(void)
 }
 
 //フィールドの魔法との当たり判定==============
-COMMANDOREDER CollisionMagic(D3DXVECTOR3 pos, float fRadius)
+int CollisionMagic(D3DXVECTOR3 pos, float fRadius)
 {
 	DropMagic* pDropMagic = &g_aDropMagic[0];	// 先頭アドレス
 
@@ -619,17 +625,18 @@ COMMANDOREDER CollisionMagic(D3DXVECTOR3 pos, float fRadius)
 		{// 当たっていたら
 			// ここで種類に応じた振動を呼び出す
 			PrintDebugProc("[%d]落ちてる魔法とあたっている\n", nCntMagic);
-			return pDropMagic->oType;
+			return nCntMagic;
 		}
 	}
 
-	return COMMANDOREDER_NONE;
+	return -1;
 }
 
 //魔法情報の取得==============================
-MAGICTYPE GetFieldMagic(D3DXVECTOR3 pos, float fRadius)
+COMMANDOREDER GetFieldMagic(int nIdx)
 {
-	return MAGICTYPE_NONE;
+	g_aDropMagic[nIdx].bUse = false;
+	return g_aDropMagic[nIdx].oType;
 }
 
 //魔法カウントの取得==========================

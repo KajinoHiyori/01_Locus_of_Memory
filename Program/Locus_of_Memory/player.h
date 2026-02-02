@@ -17,6 +17,7 @@
 #define MAX_PLAYERMODEL		(14)	// モデルの最大数
 #define MAX_PLAYERTEXTURE	(16)	// テクスチャの最大数
 #define MAX_KEY				(16)	// キーの最大数
+#define MAX_OWNCOMMAND		(4)		// 所有できるコマンドの最大数
 
 // モーションの種類
 typedef enum
@@ -32,10 +33,8 @@ typedef enum
 // 魔導書に記録されている魔法の種類
 typedef struct
 {
-	COMMANDOREDER command0;
-	COMMANDOREDER command1;
-	COMMANDOREDER command2;
-	COMMANDOREDER command3;
+	COMMANDOREDER OwnCommand[MAX_OWNCOMMAND];		// 所有コマンド
+	int nCntOwn;									// 何個持っているか
 }MagicBook;
 
 // モデルの構造体
@@ -64,4 +63,5 @@ void UpdatePlayer(void);
 void DrawPlayer(void);
 Player* GetPlayer(void);
 void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype);
+void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx);										// コマンドを取得する
 #endif

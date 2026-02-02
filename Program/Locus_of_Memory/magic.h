@@ -139,10 +139,10 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 // フィールド内の魔法との当たり判定
-COMMANDOREDER CollisionMagic(D3DXVECTOR3 pos, float fRadius);
+int CollisionMagic(D3DXVECTOR3 pos, float fRadius);
 
 // フィールド内の魔法を取得する
-MAGICTYPE GetFieldMagic(D3DXVECTOR3 pos, float fRadius);
+COMMANDOREDER GetFieldMagic(int nIdx);
 
 // 入力された魔法の種類を取得
 COMMANDTYPE* GetCommandType(int nIdx);
