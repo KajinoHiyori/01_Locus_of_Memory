@@ -11,8 +11,11 @@
 #include "input.h"
 #include "title.h"
 #include "fog.h"
+#include "magic.h"
+#include "debugproc.h"
 
 // マクロ定義
+#define MAX_COMMAND			(3)					// 受け付けるコマンドの最大数
 #define MAX_SPELLTEX		(SPELLUI_TEX_MAX)	// テクスチャの最大数
 #define MAX_SPELLTYPE		(SPELLUI_TYPE_MAX)	// 表示されるUIの種類
 #define SPELLUI_POSY		(482.0f)			// 左のUIのX軸
@@ -52,6 +55,7 @@ typedef struct
 LPDIRECT3DTEXTURE9	g_apTextureSpellUI[MAX_SPELLTEX] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffSpellUI = NULL;			// 頂点バッファへのポインタ
 SPELLUI g_SpellUI[MAX_PLAYER][MAX_SPELLTEX];				// UIの表示処理
+COMMANDTYPE g_CommandUI[MAX_PLAYER][MAX_COMMAND];			// 魔法のコマンド最大数
 bool g_bAllDisp[MAX_PLAYER];								// UIの全体表示管理
 D3DXVECTOR3 MainPos[MAX_PLAYER];							// UIの全体管理位置
 
@@ -106,6 +110,11 @@ void InitSpellUI(void)
 			g_SpellUI[nCntPlayer][nCntUI].fWidth	= 0.0f;								// 幅の初期化
 			g_SpellUI[nCntPlayer][nCntUI].fHeight	= 0.0f;								// 高さの初期化
 			g_SpellUI[nCntPlayer][nCntUI].bDisp		= false;							// テクスチャの初期化
+		}
+		// コマンドの初期化
+		for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+		{
+			g_CommandUI[nCntPlayer][nCntCommand] = COMMANDTYPE_NONE;
 		}
 		g_bAllDisp[nCntPlayer] = false;
 		MainPos[nCntPlayer] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
@@ -395,8 +404,13 @@ void UpdateSpellUI(void)
 		switch (operationType)
 		{
 		case OPERATIONTYPE_2P:	// 2人操作
-		//	if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_RSHIFT) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT_THUMB))
+			if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_RSHIFT) == true && nCntPlayer == 1) || GetJoypadRightTriggePress(nCntPlayer) == true)
 			{
+				g_bAllDisp[nCntPlayer] = true;
+			}
+			else
+			{
+				g_bAllDisp[nCntPlayer] = false;
 			}
 			break;
 
@@ -406,6 +420,16 @@ void UpdateSpellUI(void)
 				continue;
 			}
 			break;
+		}
+		if (g_bAllDisp[nCntPlayer] == true)
+		{
+			COMMANDTYPE* commandType = GetCommandType(nCntPlayer);
+			COMMANDTYPE CommandUI[MAX_COMMAND];
+			for (int nCntUI = 0; nCntUI < MAX_COMMAND; nCntUI++)
+			{
+				CommandUI[nCntUI] = commandType[nCntUI];
+				PrintDebugProc("コマンドの種類 %d", CommandUI[nCntUI]);
+			}
 		}
 	}
 }
@@ -450,4 +474,24 @@ void DrawSpellUI(void)
 
 	// fogを戻す
 	SetFogEnable(true);
+}
+
+//======================================================================================
+// spellの中身の初期化処理
+//======================================================================================
+void ResetSpellUI(int nIdx)
+{
+	for (int nCntUI = 0; nCntUI < MAX_SPELLTEX; nCntUI++)
+	{
+		g_SpellUI[nIdx][nCntUI].tex = SPELLUI_TEX_MAGICNULL;			// テクスチャの初期化
+		g_SpellUI[nIdx][nCntUI].type = SPELLUI_TYPE_COMMAND0;			// UIの種類の初期化
+		g_SpellUI[nIdx][nCntUI].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
+		g_SpellUI[nIdx][nCntUI].fWidth = 0.0f;								// 幅の初期化
+		g_SpellUI[nIdx][nCntUI].fHeight = 0.0f;								// 高さの初期化
+		g_SpellUI[nIdx][nCntUI].bDisp = false;							// テクスチャの初期化
+	}
+	for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
+	{
+		g_CommandUI[nIdx][nCntCommand] = COMMANDTYPE_NONE;
+	}
 }

@@ -637,3 +637,9 @@ MagicCounter* GetMagicCounter(int nIdx)
 {
 	return &g_aCounter[nIdx];
 }
+
+// “ü—Í‚³‚ê‚½–‚–@‚ÌŽí—Þ‚ðŽæ“¾==========================
+COMMANDTYPE* GetCommandType(int nIdx)
+{
+	return &g_aCommand[nIdx][0];
+}

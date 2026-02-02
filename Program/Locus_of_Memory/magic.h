@@ -144,4 +144,7 @@ COMMANDOREDER CollisionMagic(D3DXVECTOR3 pos, float fRadius);
 // フィールド内の魔法を取得する
 MAGICTYPE GetFieldMagic(D3DXVECTOR3 pos, float fRadius);
 
+// 入力された魔法の種類を取得
+COMMANDTYPE* GetCommandType(int nIdx);
+
 #endif

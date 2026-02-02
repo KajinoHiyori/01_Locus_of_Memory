@@ -74,5 +74,5 @@ void InitSpellUI(void);
 void UninitSpellUI(void);
 void UpdateSpellUI(void);
 void DrawSpellUI(void);
-
+void ResetSpellUI(int nIdx);
 #endif
