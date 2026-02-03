@@ -16,8 +16,8 @@
 #define MAX_MAGIC			(128)		//魔法の最大数
 #define MAX_DROPMAGIC		(32)		//落ちてる魔法の最大数
 #define MAX_COMMAND			(3)			//コマンドの最大数
-#define DROPMAGIC_RADIUS	(15.0f)		//落ちてる魔法の半径
-#define DISP_MAGIC			(30)			// UIの発動魔法表示時間管理
+#define DROPMAGIC_RADIUS	(30.0f)		//落ちてる魔法の半径
+#define DISP_MAGIC			(30)		// UIの発動魔法表示時間管理
 
 //グローバル変数宣言
 Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
@@ -68,6 +68,9 @@ void InitMagic(void)
 	SetMagicPosition(COMMANDOREDER_BBB, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	SetMagicPosition(COMMANDOREDER_RRR, D3DXVECTOR3(150.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	SetMagicPosition(COMMANDOREDER_GGG, D3DXVECTOR3(-150.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	SetMagicPosition(COMMANDOREDER_YYY, D3DXVECTOR3(0.0f, 0.0f, 300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetMagicPosition(COMMANDOREDER_RGB, D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
 //魔法の終了処理==============================

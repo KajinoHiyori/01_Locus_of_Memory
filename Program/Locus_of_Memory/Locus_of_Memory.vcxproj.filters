@@ -168,9 +168,6 @@
     <ClCompile Include="magicui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="clockui.cpp">
-      <Filter>UI\cpp</Filter>
-    </ClCompile>
     <ClCompile Include="spellui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
@@ -273,9 +270,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="magicui.h">
-      <Filter>UI\h</Filter>
-    </ClInclude>
-    <ClInclude Include="clockui.h">
       <Filter>UI\h</Filter>
     </ClInclude>
     <ClInclude Include="gameui.h">
