@@ -11,6 +11,9 @@
 #include "input.h"
 #include "titleui.h"
 
+#include "fog.h"
+#include "debugproc.h"
+
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
 #define WIDTH			(650.0f)	// 幅
@@ -26,6 +29,9 @@
 int g_nModeResult;			// リザルト画面への遷移
 bool g_bFade;				// フェード状態を管理
 OPERATIONTYPE g_operationType;	// 操作方法
+
+// 霧の演出のテスト
+float g_fTitleFogEnd;			// タイトル画面の霧の終了位置
 
 //======================================================================================
 // タイトルの初期化処理
@@ -47,6 +53,8 @@ void InitTitle(void)
 	pCamera->vecU = VEC_U;
 	pCamera->rot = ROT;
 	pCamera->rotDest = ROT;
+
+	g_fTitleFogEnd = 5000.0f;
 
 	// ライトの初期化処理
 	InitLight();
@@ -83,6 +91,16 @@ void UpdateTitle(void)
 
 	// タイトルUIの更新処理
 	UpdateTitleUI();
+
+	// 霧の演出のテスト
+#ifdef _DEBUG
+	if (g_fTitleFogEnd < 50000.0f)
+	{
+		g_fTitleFogEnd += (50000.0f * 0.00075f);
+	}
+
+	SetFog(COLOR_WHITE, 0.0f, g_fTitleFogEnd);
+#endif // _DEBUG
 
 	if (g_bFade == false)	// フェードをしていない場合
 	{

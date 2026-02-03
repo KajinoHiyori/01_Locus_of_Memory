@@ -28,7 +28,7 @@ void InitFade(MODE modeNext)
 
     g_fade = FADE_IN;
     g_modeNext = g_modeNext;
-    g_colorFade = D3DXCOLOR(1.0f,1.0f,1.0f,0.0f);
+    g_colorFade = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
     // 頂点バッファの生成
     pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,

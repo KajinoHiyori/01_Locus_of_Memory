@@ -35,9 +35,9 @@
 #define INIT_RADIUS				(200.0f)									// 視点と注視点との距離(半径)
 
 // タイトル
-#define INIT_TITLECAMERA_POSV	(D3DXVECTOR3(0.0f, 100.0f, 0.0f))			// タイトルカメラの視点
-#define INIT_TITLECAMERA_POSR	(D3DXVECTOR3(0.0f, 150.0f, 150.0f))			// タイトルカメラの注視点
-#define INIT_TITLECAMERA_ROT	(D3DXVECTOR3(0.0f, D3DX_PI, 0.0f))			// タイトルカメラの向き
+#define INIT_TITLECAMERA_POSV	(D3DXVECTOR3(3500.0f, 550.0f, -2275.0f))	// タイトルカメラの視点
+#define INIT_TITLECAMERA_POSR	(D3DXVECTOR3(3375.0f, 605.0f, -2125.0f))	// タイトルカメラの注視点
+#define INIT_TITLECAMERA_ROT	(D3DXVECTOR3(0.0f, 2.44f, 0.0f))			// タイトルカメラの向き
 
 // ビューポート生成用マクロ
 #define DEFAULT_VEIWPORT		(SetViewPort((DWORD)0.0f, (DWORD)0.0f, (DWORD)SCREEN_WIDTH, (DWORD)SCREEN_HEIGHT))

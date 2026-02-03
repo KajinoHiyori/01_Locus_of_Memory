@@ -10,6 +10,8 @@
 #include "title.h"
 #include "debugproc.h"
 
+#include "fog.h"
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -96,6 +98,95 @@ void UninitCamera(void)
 //=============================================================================
 void UpdateCamera(MODE mode)
 {
+	static bool isEdit = false;
+
+	if (GetKeyboardPress(DIK_LSHIFT) == true && GetKeyboardTrigger(DIK_SPACE) == true)
+	{
+		isEdit = isEdit ? false : true;
+	}
+
+	PrintDebugProc("isEdit : %d\n", isEdit);
+
+	if (isEdit == true)
+	{
+		Camera* pCamera = &g_acamera[0];
+
+		if (GetKeyboardPress(DIK_W) == true)
+		{
+			pCamera->posRDest.x += sinf(pCamera->rot.y) * -5.0f;
+			pCamera->posRDest.z += cosf(pCamera->rot.y) * -5.0f;
+		}
+
+		if (GetKeyboardPress(DIK_A) == true)
+		{
+			pCamera->posRDest.x += sinf(pCamera->rot.y + (D3DX_PI * -0.5f)) * -5.0f;
+			pCamera->posRDest.z += cosf(pCamera->rot.y + (D3DX_PI * -0.5f)) * -5.0f;
+		}
+
+		if (GetKeyboardPress(DIK_S) == true)
+		{
+			pCamera->posRDest.x += sinf(pCamera->rot.y + (D3DX_PI)) * -5.0f;
+			pCamera->posRDest.z += cosf(pCamera->rot.y + (D3DX_PI)) * -5.0f;
+		}
+
+		if (GetKeyboardPress(DIK_D) == true)
+		{
+			pCamera->posRDest.x += sinf(pCamera->rot.y + (D3DX_PI * 0.5f)) * -5.0f;
+			pCamera->posRDest.z += cosf(pCamera->rot.y + (D3DX_PI * 0.5f)) * -5.0f;
+		}
+
+		if (GetKeyboardPress(DIK_Q) == true)
+		{
+			pCamera->posRDest.y += 1.0f;
+		}
+
+		if (GetKeyboardPress(DIK_E) == true)
+		{
+			pCamera->posRDest.y += -1.0f;
+		}
+
+		if (GetKeyboardPress(DIK_I) == true)
+		{
+			pCamera->posVDest.y += 1.0f;
+		}
+
+		if (GetKeyboardPress(DIK_K) == true)
+		{
+			pCamera->posVDest.y += -1.0f;
+		}
+
+		if (GetKeyboardPress(DIK_Z) == true)
+		{
+			pCamera->rot.y += CAMERA_MOVE;
+		}
+
+		if (GetKeyboardPress(DIK_C) == true)
+		{
+			pCamera->rot.y += -CAMERA_MOVE;
+		}
+
+		// 目的視点を目的注視点から離す
+		pCamera->posVDest.x = pCamera->posRDest.x + sinf(pCamera->rot.y) * pCamera->fRadiusHorizonttal;
+		//pCamera->posVDest.y = pCamera->posRDest.y + sinf(pCamera->rot.x) * pCamera->fRadiusVertical;
+		pCamera->posVDest.z = pCamera->posRDest.z + cosf(pCamera->rot.y) * pCamera->fRadiusHorizonttal;
+
+		// 注視点を目的注視点に移動
+		pCamera->posR.x += (pCamera->posRDest.x - pCamera->posR.x) * CAMERA_INERTIA;
+		pCamera->posR.y += (pCamera->posRDest.y - pCamera->posR.y) * CAMERA_INERTIA;
+		pCamera->posR.z += (pCamera->posRDest.z - pCamera->posR.z) * CAMERA_INERTIA;
+
+		// 視点を目的視点に移動
+		pCamera->posV.x += (pCamera->posVDest.x - pCamera->posV.x) * CAMERA_INERTIA;
+		pCamera->posV.y += (pCamera->posVDest.y - pCamera->posV.y) * CAMERA_INERTIA;
+		pCamera->posV.z += (pCamera->posVDest.z - pCamera->posV.z) * CAMERA_INERTIA;
+
+		PrintDebugProc("視点 = { %.2f %.2f %.2f }\n", pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
+		PrintDebugProc("注視点 = { %.2f %.2f %.2f }\n", pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
+		PrintDebugProc("カメラの向き = { %.2f %.2f %.2f }\n", pCamera->rot.x, pCamera->rot.y, pCamera->rot.z);
+
+		return;
+	}
+
 	// モードに合わせたカメラ更新処理
 	if (UpdateModeCamera[mode] != NULL)
 	{
@@ -131,7 +222,10 @@ void UpdateGameCamera(void)
 	{
 		if (GetJoypadAny(nCntCamera) == false)
 		{// 何もしていなければ
-			pCamera->nRollCounter++;	// カウンター加算
+			if (pCamera->nRollCounter < CAMERA_ROLLCOUNT)
+			{
+				pCamera->nRollCounter++;	// カウンター加算
+			}
 		}
 		else
 		{// 何かしていたら
@@ -158,12 +252,12 @@ void UpdateGameCamera(void)
 
 		if (GetKeyboardPress(DIK_Z) == true)
 		{
-			pCamera->rotDest.y += CAMERA_MOVE;
+			pCamera->rot.y += CAMERA_MOVE;
 		}
 
 		if (GetKeyboardPress(DIK_C) == true)
 		{
-			pCamera->rotDest.y += -CAMERA_MOVE;
+			pCamera->rot.y += -CAMERA_MOVE;
 		}
 
 		PrintDebugProc("[%d] 視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
