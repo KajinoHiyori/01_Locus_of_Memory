@@ -40,21 +40,6 @@ DWORD				g_dwNumMatPlayer[MAX_PLAYER] = {0, 0};		// マテリアルの数
 LPDIRECT3DTEXTURE9	g_apTexturePlayer[MAX_PLAYER][MAX_PLAYERMAT];		// テクスチャへの	ポインタ
 Player				g_aPlayer[MAX_PLAYER];						// プレイヤーの情報を格納
 
-#if 0
-// 1Pのモデル
-const char* c_apFilename1PModel[MAX_MODEL] =
-{
-	"data\\MODEL\\player\\player.x",	// 胴体[0]
-	//"data\\MODEL\\player\\airplane000.x",	// 胴体[0]
-};
-
-// 2Pのモデル
-const char* c_apFilename2PModel[MAX_MODEL] =
-{
-	"data\\MODEL\\player\\tank000.x",	// 胴体[0]
-};
-#endif
-
 //========================================================================
 // プレイヤーの初期化処理
 //========================================================================
@@ -76,40 +61,9 @@ void InitPlayer(void)
 		g_aPlayer[nCntPlayer].move = DEFALT;
 		g_aPlayer[nCntPlayer].nIdxShadow = -1;
 		g_aPlayer[nCntPlayer].fSpeed = MOVE;
+		g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
 		g_aPlayer[nCntPlayer].bUse = false;
 		g_aPlayer[nCntPlayer].bJump = false;
-
-#if 0
-
-		for (int nCntModel = 0; nCntModel < MAX_MODEL; nCntModel++)
-		{
-			switch (nCntPlayer)
-			{
-			case 0:	// 1P
-				// Xファイルの読み込み
-				D3DXLoadMeshFromX(c_apFilename1PModel[nCntModel], D3DXMESH_SYSTEMMEM, pDevice, NULL, &g_pBuffMatPlayer[nCntPlayer], NULL, &g_dwNumMatPlayer[nCntPlayer], &g_pMeshPlayer[nCntPlayer]);
-				break;
-
-			case 1:	// 2P
-				D3DXLoadMeshFromX(c_apFilename2PModel[nCntModel], D3DXMESH_SYSTEMMEM, pDevice, NULL, &g_pBuffMatPlayer[nCntPlayer], NULL, &g_dwNumMatPlayer[nCntPlayer], &g_pMeshPlayer[nCntPlayer]);
-				break;
-			}
-
-			// マテリアルデータへのポインタを取得
-			pMat = (D3DXMATERIAL*)g_pBuffMatPlayer[nCntPlayer]->GetBufferPointer();
-
-			for (int nCntMat = 0; nCntMat < (int)g_dwNumMatPlayer[nCntPlayer]; nCntMat++)
-			{
-				if (pMat[nCntMat].pTextureFilename != NULL)	// テクスチャファイルが存在する場合
-				{
-					// テクスチャの読み込み
-					D3DXCreateTextureFromFile(pDevice, pMat[nCntMat].pTextureFilename, &g_apTexturePlayer[nCntPlayer][nCntMat]);
-				}
-			}
-		}
-
-#endif
-
 	}
 
 	OPERATIONTYPE operationtyoe = GetOperationType();
@@ -193,32 +147,72 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].posOld = g_aPlayer[nCntPlayer].pos;
 			moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-			// 移動方向を管理
-			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
-			{
-				moveDir.x -= 1.0f;
-			}
-			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
-			{
-				moveDir.x += 1.0f;
-			}
-			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
-			{
-				moveDir.z += 1.0f;
-			}
-			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
-			{
-				moveDir.z -= 1.0f;
-			}
+			// 落ちてる魔法との判定 (保管)
+			nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
 
-			// 移動方向の正規化
-			D3DXVec3Normalize(&moveDir, &moveDir);
+			switch (g_aPlayer[nCntPlayer].state)
+			{
+			case PLAYERSTATE_NORMAL:	// 通常時
+			// キー入力を受け付ける====================================
+				// 移動方向を管理
+				if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+				{
+					moveDir.x -= 1.0f;
+				}
+				else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+				{
+					moveDir.x += 1.0f;
+				}
+				if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+				{
+					moveDir.z += 1.0f;
+				}
+				else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+				{
+					moveDir.z -= 1.0f;
+				}
 
-			// スティックの入力方向を利用
-			GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer);
+				// ジャンプ処理
+				if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
+				{
+					g_aPlayer[nCntPlayer].move.y = JUMP;
+					g_aPlayer[nCntPlayer].bJump = true;
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
+				}
 
-			// 移動状態を求める(fMoveDir == 0は移動していない)
-			fMoveDir = SQRTF(moveDir.x, moveDir.z);
+				if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
+				{// Xボタンを押したかつ何かしらのコマンドが近くにある
+					OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
+				}
+
+				// 移動方向の正規化
+				D3DXVec3Normalize(&moveDir, &moveDir);
+
+				// スティックの入力方向を利用
+				GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer);
+
+				// 移動状態を求める(fMoveDir == 0は移動していない)
+				fMoveDir = SQRTF(moveDir.x, moveDir.z);
+
+				
+				break;
+
+			case PLAYERSTATE_PAUSE:
+
+				break;
+
+			case PLAYERSTATE_SPELL:
+				if (GetJoypadPress(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true || (GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0))
+				{
+					testcommand = PressCommand(nCntPlayer);
+				}
+
+				if (GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true || (GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0))
+				{
+					ResetCommand(nCntPlayer);
+				}
+				break;
+			}
 
 			if (fMoveDir != 0)
 			{// 移動している場合
@@ -248,69 +242,6 @@ void UpdatePlayer(void)
 			{// もし歩行中だったら
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 			}
-			
-			// ジャンプ処理
-			if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
-			{
-				g_aPlayer[nCntPlayer].move.y = JUMP;
-				g_aPlayer[nCntPlayer].bJump = true;
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
-			}
-
-			// 移動中の場合、目的の向きを設定
-#if 0
-			if (GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer) == true)
-			{
-				fAngle = atan2f(-moveDir.x, moveDir.z);
-				fAngle = AngleNormalize(fAngle);
-				g_aPlayer[nCntPlayer].rotDest.y = atan2f(-(float)(sinf(pCamera[nCntPlayer].rot.y - fAngle)), -(float)cosf(pCamera[nCntPlayer].rot.y - fAngle));
-			}
-			else if (GetKeyboardPress(DIK_A) == true || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true ||	// 左に移動
-					 GetKeyboardPress(DIK_D) == true || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true ||	// 右に移動
-					 GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true ||	// 奥に移動
-					 GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動)
-			{
-				// プレイヤーの方向を設定
-				if (GetKeyboardPress(DIK_A) == true || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 右に移動
-				{
-					if (GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
-					{
-						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y + D3DX_PI / 2 - D3DX_PI / 4;
-					}
-					else if (GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
-					{
-						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y + D3DX_PI / 2 - D3DX_PI / 4;
-					}
-					else
-					{
-						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y + D3DX_PI / 2;
-					}
-				}
-				else if (GetKeyboardPress(DIK_D) == true || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 左に移動
-				{
-					if (GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
-					{
-						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y - D3DX_PI / 2 - D3DX_PI / 4;
-					}
-					else if (GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
-					{
-						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y - D3DX_PI / 2 + D3DX_PI / 4;
-					}
-					else
-					{
-						g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y - D3DX_PI / 2;
-					}
-				}
-				else if (GetKeyboardPress(DIK_W) == true || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
-				{
-					g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y + D3DX_PI;
-				}
-				else if (GetKeyboardPress(DIK_S) == true || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
-				{
-					g_aPlayer[nCntPlayer].rotDest.y = pCamera->rot.y;
-				}
-			}
-#endif
 
 			// プレイヤーの方向を補正
 			fRotDiffKey = g_aPlayer[nCntPlayer].rotDest.y - g_aPlayer[nCntPlayer].rot.y;	// 差分を計算
@@ -339,19 +270,6 @@ void UpdatePlayer(void)
 			// オブジェクトとの当たり判定
 			CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius);
 
-			// 落ちてる魔法との判定 (保管)
-			nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
-
-			if (GetJoypadPress(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-			{
-				testcommand = PressCommand(nCntPlayer);
-			}
-
-			if (GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-			{
-				ResetCommand(nCntPlayer);
-			}
-
 			for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
 			{
 				if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == testcommand && g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] != MAGICTYPE_NONE)
@@ -365,18 +283,12 @@ void UpdatePlayer(void)
 
 			PrintDebugProc("コマンドタイプ : %d\n", nDropMagicIdx);
 
-			if (GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true && nDropMagicIdx != COMMANDOREDER_NONE)
-			{// Xボタンを押したかつ何かしらのコマンドが近くにある
-				OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
-			}
+			
 
 			for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
 			{
 				PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
 			}
-
-			// 影の位置を更新
-			//SetPositionShadow(g_aPlayer[nCntPlayer].nIdxShadow, g_aPlayer[nCntPlayer].pos);
 
 			// 移動量の更新
 			g_aPlayer[nCntPlayer].move.x += (0.0f - g_aPlayer[nCntPlayer].move.x) * 0.1f;
@@ -385,19 +297,6 @@ void UpdatePlayer(void)
 
 			// モーションの更新処理
 			UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData);
-
-#ifdef _DEBUG
-			// テスト
-			if (GetKeyboardTrigger(DIK_1) == true)
-			{
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, false, true, 10);
-			}
-			
-			if (GetKeyboardTrigger(DIK_2) == true)
-			{
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);
-			}
-#endif	// _DEBUG
 
 			// デバッグ表示
 			PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);

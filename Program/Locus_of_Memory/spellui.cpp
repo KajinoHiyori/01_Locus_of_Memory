@@ -266,6 +266,8 @@ void UpdateSpellUI(void)
 {
 	// 操作方法の状態を取得
 	OPERATIONTYPE operationType = GetOperationType();
+	// プレイヤーの情報を取得
+	Player* pPlayer = GetPlayer();
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -291,6 +293,7 @@ void UpdateSpellUI(void)
 					g_aSpellUI[nCntPlayer].nFrame = 0;
 				}
 				g_aSpellUI[nCntPlayer].bDisp = true;
+				pPlayer[nCntPlayer].state = PLAYERSTATE_SPELL;
 			}
 			else
 			{
@@ -307,6 +310,7 @@ void UpdateSpellUI(void)
 					g_aSpellUI[nCntPlayer].posDest = RIGHT_OUTPOS;
 					g_aSpellUI[nCntPlayer].nFrame = 0;
 				}
+				pPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
 			}
 			break;
 
@@ -324,6 +328,7 @@ void UpdateSpellUI(void)
 					g_aSpellUI[nCntPlayer].posDest = RIGHT_POS;
 					g_aSpellUI[nCntPlayer].nFrame = 0;
 				}
+				pPlayer[nCntPlayer].state = PLAYERSTATE_SPELL;
 			}
 			else
 			{
@@ -334,6 +339,7 @@ void UpdateSpellUI(void)
 					g_aSpellUI[nCntPlayer].posDest = RIGHT_OUTPOS;
 					g_aSpellUI[nCntPlayer].nFrame = 0;
 				}
+				pPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
 			}
 			break;
 		}

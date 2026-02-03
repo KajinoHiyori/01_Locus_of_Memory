@@ -107,19 +107,19 @@ COMMANDOREDER PressCommand(int nIdx)
 {
 	if (g_aCommand[nIdx][g_aCntCommand[nIdx]] == COMMANDTYPE_NONE)
 	{//ƒRƒ}ƒ“ƒh‚ª‰½‚à“ü—Í‚³‚ê‚Ä‚¢‚È‚¢‚Æ‚«
-		if (GetJoypadTrigger(JOYKEY_B, nIdx) == true)
+		if (GetJoypadTrigger(JOYKEY_B, nIdx) == true || (GetKeyboardTrigger(DIK_3) == true && nIdx == 0))
 		{//B(Ô)‚ª“ü—Í‚³‚ê‚½
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_R;
 		}
-		else if (GetJoypadTrigger(JOYKEY_A, nIdx) == true)
+		else if (GetJoypadTrigger(JOYKEY_A, nIdx) == true || (GetKeyboardTrigger(DIK_4) == true && nIdx == 0))
 		{//A(—Î)‚ª“ü—Í‚³‚ê‚½
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_G;
 		}
-		else if (GetJoypadTrigger(JOYKEY_X, nIdx) == true)
+		else if (GetJoypadTrigger(JOYKEY_X, nIdx) == true || (GetKeyboardTrigger(DIK_2) == true && nIdx == 0))
 		{//X(Â)‚ª“ü—Í‚³‚ê‚½
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_B;
 		}
-		else if (GetJoypadTrigger(JOYKEY_Y, nIdx) == true)
+		else if (GetJoypadTrigger(JOYKEY_Y, nIdx) == true || (GetKeyboardTrigger(DIK_1) == true && nIdx == 0))
 		{//Y(‰©)‚ª“ü—Í‚³‚ê‚½
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_Y;
 		}

@@ -30,6 +30,15 @@ typedef enum
 	PLAYERMOTIONTYPE_MAX
 }PLAYERMOTIONTYPE;
 
+// プレイヤーの状態
+typedef enum 
+{
+	PLAYERSTATE_NORMAL = 0,	// フィールド上
+	PLAYERSTATE_PAUSE,		// ポーズ中
+	PLAYERSTATE_SPELL,		// 呪文入力中
+	PLAYERSTATE_MAX
+}PLAYERSTATE;
+
 // 魔導書に記録されている魔法の種類
 typedef struct
 {
@@ -48,11 +57,12 @@ typedef struct
 	D3DXVECTOR3		rotDest;	// プレイヤーの目的の向き
 	Motion			motion;		// プレイヤーのモーション情報
 	ModelData*		pModelData;	// モデルの情報
+	PLAYERSTATE		state;		// プレイヤーの状態
+	MagicBook		magicbook;	// 魔法の種類
 	int				nIdxShadow;	// 影のインデックス
 	float			fRadius;	// 半径
 	float			fSpeed;		// 移動量
 	bool			bJump;		// ジャンプ状態
-	MagicBook		magicbook;	// 魔法の種類
 	bool			bUse;		// 使用状態
 }Player;
 
