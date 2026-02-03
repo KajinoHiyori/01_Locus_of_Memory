@@ -1,0 +1,61 @@
+Metasequoia Document
+Format Text Ver 1.0
+
+Scene {
+	pos 254.2250 -230.9618 18272.0684
+	lookat 0.0000 0.0000 0.0000
+	head 745.5422
+	pich 0.3808
+	bank 0.0000
+	ortho 0
+	zoom2 0.4105
+	amb 0.250 0.250 0.250
+	dirlights 1 {
+		light {
+			dir 0.408 0.408 0.816
+			color 1.000 1.000 1.000
+		}
+	}
+}
+Material 9 {
+	"壁" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\wall001.jpg") proj_type(1) proj_pos(0.000 0.000 0.000) proj_scale(250.000 250.000 250.000) proj_angle(39.000 0.000 0.000)
+	"壁中" col(1.000 0.973 0.796 1.000) dif(0.700) amb(0.390) emi(0.000) spc(0.000) power(5.00)
+	"床" col(1.000 0.910 0.675 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Pictures\flooring000.jpg") proj_type(1) proj_pos(0.000 0.000 0.000) proj_scale(600.000 600.000 600.000) proj_angle(0.000 90.000 0.000)
+	"柱" col(1.000 0.918 0.835 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\wood000.jpg")
+	"屋根" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\rengawall000.jpg") proj_type(1) proj_pos(0.000 0.000 0.000) proj_scale(450.000 450.000 450.000) proj_angle(45.000 0.000 0.000)
+	"扉(仮)" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\Door002.png") proj_type(1) proj_pos(4.700 -124.200 0.000) proj_scale(323.000 558.700 440.000) proj_angle(0.000 0.000 0.000)
+	"底上げ(石イメージ)" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\stone000.jpg") proj_type(1) proj_pos(0.000 0.000 0.000) proj_scale(450.000 450.000 450.000) proj_angle(45.000 0.000 0.000)
+	"階段" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\renga000.jpg") proj_type(1) proj_pos(0.000 0.000 0.000) proj_scale(450.000 450.000 450.000) proj_angle(45.500 0.000 0.000)
+	"階段１" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\renga000.jpg") proj_type(1) proj_pos(0.000 0.000 0.000) proj_scale(300.000 300.000 300.000) proj_angle(0.000 24.000 0.000)
+}
+Object "大屋根3" {
+	visible 15
+	locking 0
+	shading 1
+	facet 59.5
+	color 0.898 0.498 0.698
+	color_type 0
+	vertex 12 {
+		-163.1181 158.8234 296.6494
+		-754.4227 1341.4333 -491.7561
+		625.2869 1341.4333 -491.7561
+		625.2869 158.8234 296.6494
+		786.5162 1504.1570 -544.4368
+		788.6364 0.8375 479.0745
+		-788.6364 1504.1570 -544.4368
+		-56.6360 0.8375 479.0745
+		-786.5179 1587.1624 -495.3025
+		-56.6360 44.9244 544.4368
+		785.9311 1587.1624 -495.3025
+		785.9311 44.9244 544.4358
+	}
+	face 6 {
+		4 V(0 3 2 1) M(1) UV(1.43147 -3.37671 2.65688 -3.37671 3.64920 -5.74193 1.50473 -5.74193)
+		4 V(4 6 7 5) M(4) UV(1.54570 -1.17129 0.30814 -1.17129 0.07911 0.49907 0.74321 0.49907)
+		4 V(6 8 9 7) M(0) UV(-0.04052 -2.50831 -0.09907 -2.67432 -0.27328 0.41015 -0.19101 0.49832)
+		4 V(8 10 11 9) M(4) UV(0.27120 -1.26351 1.50663 -1.26351 0.68974 0.45008 0.02775 0.45008)
+		4 V(10 4 5 11) M(4) UV(1.50663 -1.26351 1.54570 -1.17129 0.74321 0.49907 0.68974 0.45008)
+		4 V(5 7 9 11) M(4) UV(0.74321 0.49907 0.07911 0.49907 0.02775 0.45008 0.68974 0.45008)
+	}
+}
+Eof
