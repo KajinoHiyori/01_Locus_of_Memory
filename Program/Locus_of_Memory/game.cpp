@@ -10,6 +10,7 @@
 #include "debugproc.h"
 #include "pause.h"
 #include "gameui.h"
+#include "magicui.h"
 #include "main.h"
 //#include"sound.h"
 #include"fade.h"
@@ -83,6 +84,8 @@ void InitGame(void)
 
 	InitSpellUI();
 
+	InitMagicUI();
+
 	//InitModel();
 
 	//InitBlock();
@@ -136,6 +139,8 @@ void UninitGame(void)
 	UninitGameUI();
 
 	UninitSpellUI();
+
+	UninitMagicUI();
 
 	//UninitScore();
 
@@ -206,6 +211,8 @@ void UpdateGame(void)
 	UpdateGameUI();
 	
 	UpdateSpellUI();
+
+	UpdateMagicUI();
 
 	switch (g_gameState)
 	{
@@ -301,6 +308,8 @@ void DrawGame(void)
 	DrawGameUI();
 
 	DrawSpellUI();
+
+	DrawMagicUI();
 
 	if (g_bPause == true)
 	{
