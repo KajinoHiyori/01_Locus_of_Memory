@@ -68,6 +68,7 @@ void InitCamera(void)
 		pCamera->posR = pCameraInfo->posR;
 		pCamera->vecU = pCameraInfo->vecU;
 		pCamera->rot = pCameraInfo->rot;
+		pCamera->fSpeed = INIT_CAMERASPEED;
 		pCamera->fRadiusVertical = INIT_RADIUS;
 
 		pCamera->viewport = DEFAULT_VEIWPORT;		// ビューポート設定
@@ -98,19 +99,21 @@ void UninitCamera(void)
 //=============================================================================
 void UpdateCamera(MODE mode)
 {
-	static bool isEdit = false;
+	static bool isEdit = false;		// エディットモード
 
 	if (GetKeyboardPress(DIK_LSHIFT) == true && GetKeyboardTrigger(DIK_SPACE) == true)
-	{
+	{// 左シフトキーが押されている状態でスペースキーが押された
+		// 切り替え
 		isEdit = isEdit ? false : true;
 	}
 
 	PrintDebugProc("isEdit : %d\n", isEdit);
 
 	if (isEdit == true)
-	{
+	{// エディットモード起動中
 		Camera* pCamera = &g_acamera[0];
 
+		// 各種移動処理
 		if (GetKeyboardPress(DIK_W) == true)
 		{
 			pCamera->posRDest.x += sinf(pCamera->rot.y) * -5.0f;
@@ -184,12 +187,12 @@ void UpdateCamera(MODE mode)
 		PrintDebugProc("注視点 = { %.2f %.2f %.2f }\n", pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
 		PrintDebugProc("カメラの向き = { %.2f %.2f %.2f }\n", pCamera->rot.x, pCamera->rot.y, pCamera->rot.z);
 
-		return;
+		return;		// 早期リターン
 	}
 
 	// モードに合わせたカメラ更新処理
 	if (UpdateModeCamera[mode] != NULL)
-	{
+	{// 関数が存在したら
 		UpdateModeCamera[mode]();
 	}
 }
@@ -263,6 +266,29 @@ void UpdateGameCamera(void)
 		PrintDebugProc("[%d] 視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
 		PrintDebugProc("[%d] 注視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
 
+		D3DXVECTOR3 move = {};		// 移動量格納用
+		
+		if (GetJoypadStickRight(&move.x, &move.y, nCntCamera) == true)
+		{// 右スティックが動いていたら
+			PrintDebugProc("move = { %.2f, %.2f }\n", move.x, move.y);
+
+			// 直接入れる
+			pCamera->rot.x += move.y * pCamera->fSpeed;
+			pCamera->rot.y += move.x * pCamera->fSpeed;
+
+			// 角度制限
+			if (pCamera->rot.x < -D3DX_PI * CAMERAROT_RESTRICTION)
+			{
+				pCamera->rot.x = -D3DX_PI * CAMERAROT_RESTRICTION;
+			}
+
+			if (pCamera->rot.x > D3DX_PI * CAMERAROT_RESTRICTION)
+			{
+				pCamera->rot.x = D3DX_PI * CAMERAROT_RESTRICTION;
+			}
+		}
+		
+#if 0
 		if (GetKeyboardPress(DIK_Z) == true || GetJoypadStickPressR(JOYSTICK_RIGHT, nCntCamera) == true)
 		{
 			pCamera->rot.y += CAMERA_MOVE;
@@ -288,6 +314,7 @@ void UpdateGameCamera(void)
 				pCamera->rot.x += -CAMERA_MOVE;
 			}
 		}
+#endif
 
 		PrintDebugProc("[%d]カメラの向きX : %.2f\n", nCntCamera, pCamera->rot.x);
 		PrintDebugProc("[%d]カメラの向きY : %.2f\n", nCntCamera, pCamera->rot.y);

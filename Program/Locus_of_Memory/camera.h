@@ -33,6 +33,7 @@
 #define INIT_2PCAMERAPOSR		(D3DXVECTOR3(0.0f, 50.0f, 0.0f))			// 2Pカメラの注視点
 #define INIT_2PCAMERAROT		(D3DXVECTOR3(0.0f, D3DX_PI, 0.0f))			// 2Pカメラの向き
 #define INIT_RADIUS				(200.0f)									// 視点と注視点との距離(半径)
+#define INIT_CAMERASPEED		(0.0025f)									// カメラの移動速度
 
 // タイトル
 #define INIT_TITLECAMERA_POSV	(D3DXVECTOR3(3500.0f, 550.0f, -2275.0f))	// タイトルカメラの視点
@@ -58,10 +59,10 @@ typedef struct Camera
 	D3DXVECTOR3 posRDest;			// 目的の注視点
 	D3DXVECTOR3 rot;				// 向き
 	D3DXVECTOR3 rotDest;			// 目的の向き
+	float fSpeed;					// 移動スピード
 	float fRadiusVertical;			// 縦軸距離(基本)
 	float fRadiusHorizonttal;		// 横軸距離
 	int nRollCounter;				// 回り込みカウント
-	int nRollFrame;					// 回り込みフレーム
 	Player* pPlayer;				// 追従してるプレイヤーのポインタ
 	D3DXMATRIX mtxProjection;		// プロジェクションマトリックス
 	D3DXMATRIX mtxView;				// ビューマトリックス

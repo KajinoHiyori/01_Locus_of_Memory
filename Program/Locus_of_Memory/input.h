@@ -18,7 +18,7 @@
 #define MAX_JOYPAD			(4)					// ジョイパッドの最大数
 #define JOYSTICKVALUE_MAX	(32767)				// スティックの値の最大
 #define JOYSTICKVALUE_MIN	(-32768)			// スティックの値の最小
-#define CUSTOM_DEADZONE		(512)				// デッドゾーン
+#define CUSTOM_DEADZONE		(2048)				// デッドゾーン
 #define ZLRTRIGGER			(255)				// ZLZRトリガーの値
 #define LEFTTRIGGER			((WORD)0x0400)		// ZLトリガーのビット
 #define RIGHTTRIGGER		((WORD)0x0800)		// ZRトリガーのビット
