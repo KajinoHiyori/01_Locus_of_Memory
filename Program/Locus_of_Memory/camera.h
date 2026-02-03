@@ -60,7 +60,8 @@ typedef struct Camera
 	D3DXVECTOR3 rotDest;			// 目的の向き
 	float fRadiusVertical;			// 縦軸距離(基本)
 	float fRadiusHorizonttal;		// 横軸距離
-	int nCntCameraRoll;				// 回り込みカウント
+	int nRollCounter;				// 回り込みカウント
+	int nRollFrame;					// 回り込みフレーム
 	Player* pPlayer;				// 追従してるプレイヤーのポインタ
 	D3DXMATRIX mtxProjection;		// プロジェクションマトリックス
 	D3DXMATRIX mtxView;				// ビューマトリックス

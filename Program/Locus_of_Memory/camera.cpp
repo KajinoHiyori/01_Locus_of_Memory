@@ -15,6 +15,8 @@
 //*****************************************************************************
 #define CAMERA_MOVE					(0.0075f)	// カメラの移動速度
 #define CAMERAROT_RESTRICTION		(0.125f)	// カメラの角度制限
+#define CAMERA_ROLLCOUNT			(180)		// カメラが回り込むまでのカウント
+#define CAMERA_ROLLFRAME			(60)		// カメラが回り込むまでのフレーム
 
 //*****************************************************************************
 // グローバル変数
@@ -127,14 +129,41 @@ void UpdateGameCamera(void)
 
 	for (int nCntCamera = 0; nCntCamera < g_nNumCamera; nCntCamera++, pCamera++, pPlayer++)
 	{
+		if (GetJoypadAny(nCntCamera) == false)
+		{// 何もしていなければ
+			pCamera->nRollCounter++;	// カウンター加算
+		}
+		else
+		{// 何かしていたら
+			pCamera->nRollCounter = 0;	// カウンターリセット
+		}
+
+		if (pCamera->nRollCounter >= CAMERA_ROLLCOUNT)
+		{// 回り込みカウンターが回り切ったら
+			// 差分取得
+			float fDiffRot = pPlayer->rot.y - pCamera->rot.y;
+
+			fDiffRot = AngleNormalize(fDiffRot);			// 補正
+
+			pCamera->rot.y += fDiffRot * CAMERA_INERTIA;	// 加算
+
+			pCamera->rotDest.x = 0.0f;						// 初期向きに
+
+			// 角度を補正
+			pCamera->rotDest.x = AngleNormalize(pCamera->rotDest.x);
+
+			// カメラの慣性移動
+			pCamera->rot.x += (pCamera->rotDest.x - pCamera->rot.x) * CAMERA_INERTIA;
+		}
+
 		if (GetKeyboardPress(DIK_Z) == true)
 		{
-			pCamera->rot.y += CAMERA_MOVE;
+			pCamera->rotDest.y += CAMERA_MOVE;
 		}
 
 		if (GetKeyboardPress(DIK_C) == true)
 		{
-			pCamera->rot.y += -CAMERA_MOVE;
+			pCamera->rotDest.y += -CAMERA_MOVE;
 		}
 
 		PrintDebugProc("[%d] 視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
@@ -167,6 +196,7 @@ void UpdateGameCamera(void)
 		}
 
 		PrintDebugProc("[%d]カメラの向きX : %.2f\n", nCntCamera, pCamera->rot.x);
+		PrintDebugProc("[%d]カメラの向きY : %.2f\n", nCntCamera, pCamera->rot.y);
 
 		// 角度を補正
 		pCamera->rot.x = AngleNormalize(pCamera->rot.x);
