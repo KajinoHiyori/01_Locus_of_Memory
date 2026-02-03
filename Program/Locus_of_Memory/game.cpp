@@ -11,6 +11,7 @@
 #include "pause.h"
 #include "gameui.h"
 #include "magicui.h"
+#include "clock.h"
 #include "main.h"
 //#include"sound.h"
 #include"fade.h"
@@ -86,6 +87,8 @@ void InitGame(void)
 
 	InitMagicUI();
 
+	InitClock();
+
 	//InitModel();
 
 	//InitBlock();
@@ -141,6 +144,8 @@ void UninitGame(void)
 	UninitSpellUI();
 
 	UninitMagicUI();
+
+	UninitClock();
 
 	//UninitScore();
 
@@ -213,6 +218,8 @@ void UpdateGame(void)
 	UpdateSpellUI();
 
 	UpdateMagicUI();
+
+	UpdateClock();
 
 	switch (g_gameState)
 	{
@@ -310,6 +317,8 @@ void DrawGame(void)
 	DrawSpellUI();
 
 	DrawMagicUI();
+
+	DrawClock();
 
 	if (g_bPause == true)
 	{

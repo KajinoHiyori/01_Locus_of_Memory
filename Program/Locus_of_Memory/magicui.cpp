@@ -268,7 +268,7 @@ void UpdateMagicUI(void)
 		SetMagicUI(0);
 
 	if (GetKeyboardTrigger(DIK_9) == true)
-		DisAppearMagicUI(0);
+		DisappearMagicUI(0);
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -864,7 +864,7 @@ void SetMagicUI(int nIdx)
 //======================================================================================
 // UIを非表示にする
 //======================================================================================
-void DisAppearMagicUI(int nIdx)
+void DisappearMagicUI(int nIdx)
 {
 	for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++)
 	{

@@ -91,7 +91,7 @@ void InitClock(void)
 	g_time.nHour = START_HOUR;
 	g_time.nMinute = START_MIN;
 	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
-	g_time.state = CLOCKSTATE_STOP;
+	g_time.state = CLOCKSTATE_OPERATION;
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_PLACE * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffClock, NULL);
@@ -140,6 +140,8 @@ void InitClock(void)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffClock->Unlock();
+
+	SetClock(0, D3DXVECTOR3(10.0f, 10.0f, 0.0f));
 }
 
 //======================================================================================
@@ -182,8 +184,38 @@ void UpdateClock(void)
 			g_time.nHour++;
 			g_time.nMinute = 0;
 		}
+		if (g_time.nHour >= 24)
+		{
+			g_time.nHour = 0;
+		}
 	}
 	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
+
+	int aTexU[NUM_PLACE];	// 各桁の数値を格納
+
+	aTexU[0] = g_time.nTime % 10000 / 1000;
+	aTexU[1] = g_time.nTime % 1000 / 100;
+	aTexU[2] = g_time.nTime % 100 / 10;
+	aTexU[3] = g_time.nTime % 10 / 1;
+
+	VERTEX_2D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffClock->Lock(0, 0, (void**)&pVtx, 0);
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
+		{
+			// テクスチャ座標の設定
+			pVtx[0].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f + 0.1f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f + 0.1f, 1.0f);
+
+			pVtx += 4;
+		}
+	}
+	// 頂点バッファをアンロック
+	g_pVtxBuffClock->Unlock();
 }
 
 //======================================================================================
@@ -203,10 +235,16 @@ void DrawClock(void)
 	// テクスチャの設定
 	pDevice->SetTexture(0, g_pTextureClock);
 
-	for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		// ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntClock * 4, 2);
+		if (g_aClock[nCntPlayer].bDisp == true)
+		{
+			for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
+			{
+				// ポリゴンの描画
+				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntClock * 4, 2);
+			}
+		}
 	}
 }
 
@@ -218,37 +256,57 @@ void SetClock(int nIdx, D3DXVECTOR3 pos)
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
 
 	aTexU[0] = g_time.nTime % 10000 / 1000;
-	aTexU[0] = g_time.nTime % 1000 / 100;
-	aTexU[1] = g_time.nTime % 100 / 10;
-	aTexU[2] = g_time.nTime % 10 / 1;
+	aTexU[1] = g_time.nTime % 1000 / 100;
+	aTexU[2] = g_time.nTime % 100 / 10;
+	aTexU[3] = g_time.nTime % 10 / 1;
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffClock->Lock(0, 0, (void**)&pVtx, 0);
-	for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++, pVtx += 4)
+
+	g_aClock[nIdx].Pos = pos;
+
+	for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
 	{
 		// 位置の設定
-		pVtx[0].pos.x = g_aClock[nCntClock].Pos.x + nCntClock * NUM_SIZE;
-		pVtx[0].pos.y = g_aClock[nCntClock].Pos.y;
-		pVtx[0].pos.z = g_aClock[nCntClock].Pos.z;
-		pVtx[1].pos.x = g_aClock[nCntClock].Pos.x + nCntClock * NUM_SIZE + NUM_SIZE;
-		pVtx[1].pos.y = g_aClock[nCntClock].Pos.y;
-		pVtx[1].pos.z = g_aClock[nCntClock].Pos.z;
-		pVtx[2].pos.x = g_aClock[nCntClock].Pos.x + nCntClock * NUM_SIZE;
-		pVtx[2].pos.y = g_aClock[nCntClock].Pos.y + NUM_SIZE;
-		pVtx[2].pos.z = g_aClock[nCntClock].Pos.z;
-		pVtx[3].pos.x = g_aClock[nCntClock].Pos.x + nCntClock * NUM_SIZE + NUM_SIZE;
-		pVtx[3].pos.y = g_aClock[nCntClock].Pos.y + NUM_SIZE;
-		pVtx[3].pos.z = g_aClock[nCntClock].Pos.z;
+		pVtx[0].pos.x = g_aClock[nIdx].Pos.x + nCntClock * NUM_SIZE;
+		pVtx[0].pos.y = g_aClock[nIdx].Pos.y;
+		pVtx[0].pos.z = g_aClock[nIdx].Pos.z;
+		pVtx[1].pos.x = g_aClock[nIdx].Pos.x + nCntClock * NUM_SIZE + NUM_SIZE;
+		pVtx[1].pos.y = g_aClock[nIdx].Pos.y;
+		pVtx[1].pos.z = g_aClock[nIdx].Pos.z;
+		pVtx[2].pos.x = g_aClock[nIdx].Pos.x + nCntClock * NUM_SIZE;
+		pVtx[2].pos.y = g_aClock[nIdx].Pos.y + NUM_SIZE;
+		pVtx[2].pos.z = g_aClock[nIdx].Pos.z;
+		pVtx[3].pos.x = g_aClock[nIdx].Pos.x + nCntClock * NUM_SIZE + NUM_SIZE;
+		pVtx[3].pos.y = g_aClock[nIdx].Pos.y + NUM_SIZE;
+		pVtx[3].pos.z = g_aClock[nIdx].Pos.z;
+
+		// rhwの設定
+		pVtx[0].rhw = 1.0f;
+		pVtx[1].rhw = 1.0f;
+		pVtx[2].rhw = 1.0f;
+		pVtx[3].rhw = 1.0f;
+
+		// 色の設定
+		pVtx[0].col = COLOR_WHITE;
+		pVtx[1].col = COLOR_WHITE;
+		pVtx[2].col = COLOR_WHITE;
+		pVtx[3].col = COLOR_WHITE;
 
 		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f, 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f + 0.1f, 0.0f);
 		pVtx[2].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f, 1.0f);
 		pVtx[3].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f + 0.1f, 1.0f);
+
+		pVtx += 4;
 	}
+	
 	// 頂点バッファをアンロック
 	g_pVtxBuffClock->Unlock();
+
+	g_aClock[nIdx].bDisp = true;
 }
 
 //======================================================================================
@@ -265,4 +323,12 @@ void SetClockState(CLOCKSTATE clockState)
 CLOCKSTATE GetClockState(void)
 {
 	return g_time.state;
+}
+
+//======================================================================================
+// 時計を非表示にする
+//======================================================================================
+void DisappearClock(int nIdx)
+{
+	g_aClock[nIdx].bDisp = false;
 }

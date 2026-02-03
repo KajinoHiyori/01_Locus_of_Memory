@@ -87,6 +87,6 @@ void UpdateMagicUI(void);
 void DrawMagicUI(void);
 void ResetMagicUI(int nIdx);
 void SetMagicUI(int nIdx);
-void DisAppearMagicUI(int nIdx);
+void DisappearMagicUI(int nIdx);
 void SetPlayerMagic(int nIdx);
 #endif
