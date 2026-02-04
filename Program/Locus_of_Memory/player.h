@@ -36,6 +36,7 @@ typedef enum
 	PLAYERSTATE_NORMAL = 0,	// フィールド上
 	PLAYERSTATE_PAUSE,		// ポーズ中
 	PLAYERSTATE_SPELL,		// 呪文入力中
+	PLAYERSTATE_MAGIC,		// 魔法発動中
 	PLAYERSTATE_MAX
 }PLAYERSTATE;
 

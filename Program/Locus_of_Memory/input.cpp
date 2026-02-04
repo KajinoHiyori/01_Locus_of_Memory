@@ -606,6 +606,19 @@ void SetJoypadVibration(int nLVibration, int nRVibration, int nVibCounter, int n
 }
 
 //=============================================================================
+//	ジョイパッドの振動取得
+//=============================================================================
+bool GetJoypadVibration(int nIdx)
+{
+	if (g_JoypadState[nIdx].JoypadVibration.wLeftMotorSpeed != NULL || g_JoypadState[nIdx].JoypadVibration.wRightMotorSpeed != NULL)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+//=============================================================================
 //	ジョイパッドの情報取得
 //=============================================================================
 JoypadState* GetJoypadState(int nIdx)

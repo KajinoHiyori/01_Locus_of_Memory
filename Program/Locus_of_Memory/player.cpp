@@ -126,8 +126,8 @@ void UpdatePlayer(void)
 	float fRotDiffKey = 0.0f;	// 角度の差分
 	float fAngle = 0.0f;		// 角度
 
-	int nDropMagicIdx;		// 落ちてる魔法保管用
-	COMMANDOREDER testcommand = COMMANDOREDER_NONE;
+	int nDropMagicIdx;									// 落ちてる魔法保管用
+	COMMANDOREDER InputCommand = COMMANDOREDER_NONE;	// 入力したコマンド
 
 	// 過去の位置を保存
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -204,13 +204,17 @@ void UpdatePlayer(void)
 			case PLAYERSTATE_SPELL:
 				if (GetJoypadPress(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true || (GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0))
 				{
-					testcommand = PressCommand(nCntPlayer);
+					InputCommand = PressCommand(nCntPlayer);
 				}
 
 				if (GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true || (GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0))
 				{
 					ResetCommand(nCntPlayer);
 				}
+				break;
+
+			case PLAYERSTATE_MAGIC:
+
 				break;
 			}
 
@@ -234,7 +238,7 @@ void UpdatePlayer(void)
 				fRotDest = AngleNormalize(fRotDest);
 
 				if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
-				{// 
+				{// ジャンプ状態じゃないかつ移動モーション中じゃない
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
 				}
 			}
@@ -260,7 +264,8 @@ void UpdatePlayer(void)
 				g_aPlayer[nCntPlayer].pos.y <= 0.0f)
 			{
 				if (g_aPlayer[nCntPlayer].bJump == true)
-				{
+				{// ジャンプしている状態で判定があったら
+					// 着地モーション
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
 				}
 				g_aPlayer[nCntPlayer].pos.y = 0.0f;
@@ -270,24 +275,17 @@ void UpdatePlayer(void)
 			// オブジェクトとの当たり判定
 			CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius);
 
+			// 使用したコマンドと所持コマンドを判定
 			for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
 			{
-				if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == testcommand && g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] != MAGICTYPE_NONE)
-				{
-					SetMagic(ChangeMagic(testcommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
+				if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == InputCommand && g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] != MAGICTYPE_NONE)
+				{// コマンドを所有していたら
+					// 魔法を使用する (モーションセット, 魔法セット)
+					g_aPlayer[nCntPlayer].state = PLAYERSTATE_MAGIC;
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, false, true, BLENDFRAME);
+					SetMagic(ChangeMagic(InputCommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
 					break;
 				}
-			}
-
-			PrintDebugProc("入力コマンド : %d\n", testcommand);
-
-			PrintDebugProc("コマンドタイプ : %d\n", nDropMagicIdx);
-
-			
-
-			for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
-			{
-				PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
 			}
 
 			// 移動量の更新
@@ -303,6 +301,15 @@ void UpdatePlayer(void)
 			PrintDebugProc("プレイヤー[%d]の移動量 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].move.x, g_aPlayer[nCntPlayer].move.y, g_aPlayer[nCntPlayer].move.z);
 			PrintDebugProc("プレイヤー[%d]の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rot.x, g_aPlayer[nCntPlayer].rot.y, g_aPlayer[nCntPlayer].rot.z);
 			PrintDebugProc("プレイヤー[%d]の目的の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rotDest.x, g_aPlayer[nCntPlayer].rotDest.y, g_aPlayer[nCntPlayer].rotDest.z);
+
+			PrintDebugProc("入力コマンド : %d\n", InputCommand);
+
+			PrintDebugProc("コマンドタイプ : %d\n", nDropMagicIdx);
+
+			for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
+			{
+				PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
+			}
 		}
 	}
 }
@@ -650,15 +657,17 @@ Player* GetPlayer(void)
 //========================================================================
 void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype)
 {
-	g_aPlayer[nIdx].pModelData = SetModelData(parentmodeltype);
-	g_aPlayer[nIdx].motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLAYER);
+	g_aPlayer[nIdx].pModelData = SetModelData(parentmodeltype);					// モデルデータを設定
+	g_aPlayer[nIdx].motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLAYER);	// モーションデータを設定
 
+	// 各種設定
 	g_aPlayer[nIdx].bUse = true;
 	g_aPlayer[nIdx].pos = pos;
 	g_aPlayer[nIdx].posOld = pos;
 	g_aPlayer[nIdx].rot = rot;
 	g_aPlayer[nIdx].nIdxShadow = SetShadow(SHADOWTYPE_CIRCLE, SHADOｗ, SHADOｗ);
 
+	// モーションを設定
 	SetMotion(&g_aPlayer[nIdx].motion, g_aPlayer[nIdx].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);
 }
 

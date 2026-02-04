@@ -116,6 +116,7 @@ bool GetJoypadStickRepeatL(JOYSTICK stick, int nIdx);
 bool GetJoypadStickRepeatR(JOYSTICK stick, int nIdx);
 bool GetJoypadStickLeft(float* pValueH, float* pValueV, int nIdx);
 bool GetJoypadStickRight(float* pValueH, float* pValueV, int nIdx);
+bool GetJoypadVibration(int nIdx);
 void SetJoypadVibration(int nLVibration, int nRVibration, int nVibCounter, int nIdx);
 JoypadState* GetJoypadState(int nIdx);
 bool GetJoypadControl(void);
