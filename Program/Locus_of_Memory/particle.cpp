@@ -49,13 +49,14 @@ void UninitParticle(void)
 
 void UpdateParticle(void)
 {
-	D3DXVECTOR3 pos;
-	D3DXVECTOR3 move;
+	D3DXVECTOR3 pos1, pos2;
+	D3DXVECTOR3 move1, move2;
+	D3DXVECTOR3 rot1, rot2;
 	int nCountParticle = 0;
 
 	if (GetKeyboardTrigger(DIK_BACK) == true)
 	{
-		SetParticle(D3DXVECTOR3(0.0f, 50.0f, 0.0f), 20, PARTICLETYPE_001);
+		SetParticle(D3DXVECTOR3(0.0f, 50.0f, 0.0f), 100, PARTICLETYPE_COMBUSTION);
 	}
 	for (int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 	{
@@ -67,11 +68,11 @@ void UpdateParticle(void)
 				//パーティクルの生成
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -85,11 +86,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_LEVITATION:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -103,11 +104,31 @@ void UpdateParticle(void)
 			case PARTICLETYPE_COMBUSTION:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					//位置の設定
+					pos1.x = g_aParticle[nCntAppear].pos.x + (float)(rand() % 10);
+					pos1.y = g_aParticle[nCntAppear].pos.y + 100;
+					pos1.z = g_aParticle[nCntAppear].pos.y + (float)(rand() % 10);
+
+					pos2.x = g_aParticle[nCntAppear].pos.x + (float)(rand() % 10 + 10);
+					pos2.y = g_aParticle[nCntAppear].pos.y + (float)(rand() % 10 + 10);
+					pos2.z = g_aParticle[nCntAppear].pos.y + (float)(rand() % 10 + 10);
+
+					//移動量						　　　//ここ500にするとフレアに使えそう
+					rot1.x = ((float)(rand() % 629 - 314) / -500);
+					move1.x = sinf(rot1.x) * 1.0f;
+					move1.y = cosf(rot1.x) * 1.0f;
+					move1.z = tanf(rot1.x) * 1.0f;
+
+					//移動量						　　　//ここ500にするとフレアに使えそう
+					rot2.x = ((float)(rand() % 629 - 314) / 50);
+					rot2.z = ((float)(rand() % 629 - 314) / 50);
+
+					move2.x = sinf(rot2.x) * 1.2f;
+					move2.y += 1.0f;
+					/*move2.z = tanf(rot2.z) * 1.2f;*/
+
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					SetEffect(pos2, move2, COLOR_ORANGE, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -121,11 +142,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_FLOOD:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -139,11 +160,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_FLASH:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -157,11 +178,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_FIREBALL:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -175,11 +196,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_SUNSETDELAY:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -193,11 +214,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_RAINPRAY:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -211,11 +232,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_FREEZE:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -229,11 +250,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_GROWTH:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -247,11 +268,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_ACCELERATION:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)
@@ -265,11 +286,11 @@ void UpdateParticle(void)
 			case PARTICLETYPE_TIMEREVERT:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos = g_aParticle[nCntParticle].pos;
-					move.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(pos, move, COLOR_RED, g_aParticle[nCntParticle].nLife);
+					pos1 = g_aParticle[nCntParticle].pos;
+					move1.x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					move1.z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
+					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 
 					g_aParticle[nCntParticle].nLife--;
 					if (g_aParticle[nCntParticle].nLife < 0)

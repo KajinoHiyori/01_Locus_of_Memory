@@ -10,7 +10,7 @@
 #include"camera.h"
 #include "fog.h"
 
-#define MAX_EFFECT		(4096)
+#define MAX_EFFECT		(16384)
 #define EFFECT_RADIUS	(25.0f)
 
 //ç\ë¢ëÃÇÃíËã`
@@ -146,11 +146,15 @@ void UpdateEffect(void)
 			pVtx[2].col = g_aEffect[nCntEffect].col;
 			pVtx[3].col = g_aEffect[nCntEffect].col;
 
-			g_aEffect[nCntEffect].fRadius--;
+			g_aEffect[nCntEffect].fRadius -= 0.1f;;
 			g_aEffect[nCntEffect].pos += g_aEffect[nCntEffect].move;
 			g_aEffect[nCntEffect].nLife--;
 
 			if (g_aEffect[nCntEffect].nLife < 0)
+			{
+				g_aEffect[nCntEffect].bUse = false;
+			}
+			if (g_aEffect[nCntEffect].fRadius < 0)
 			{
 				g_aEffect[nCntEffect].bUse = false;
 			}
