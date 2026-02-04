@@ -166,6 +166,7 @@
     <ClCompile Include="gameui.cpp" />
     <ClCompile Include="loadscript.cpp" />
     <ClCompile Include="magicui.cpp" />
+    <ClCompile Include="menubg.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="gameui.h" />
     <ClInclude Include="loadscript.h" />
     <ClInclude Include="magicui.h" />
+    <ClInclude Include="menubg.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="camera.h" />
