@@ -8,7 +8,6 @@
 #include"player.h"
 #include"input.h"
 #include "debugproc.h"
-#include "pause.h"
 #include "gameui.h"
 #include "magicui.h"
 #include "spellui.h"
