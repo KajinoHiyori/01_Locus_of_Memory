@@ -25,7 +25,7 @@ TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 22
+NUM_MODEL = 28
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -52,6 +52,12 @@ MODEL_FILENAME = data/MODEL/animal/den000.x	# [18]鳥の巣
 MODEL_FILENAME = data/MODEL/taimatsu/taimatsu.x	# [19]松明
 MODEL_FILENAME = data/MODEL/rock/rock000.x	# [20]岩
 MODEL_FILENAME = data/MODEL/rock/rock001.x	# [21]岩
+MODEL_FILENAME = data/MODEL/rabbit/rabbit.x	# [22]兎
+MODEL_FILENAME = data/MODEL/key/key.x	# [23]鍵
+MODEL_FILENAME = data/MODEL/key/key001.x	# [24]鍵
+MODEL_FILENAME = data/MODEL/key/key002.x	# [25]鍵
+MODEL_FILENAME = data/MODEL/chain/chain.x	# [26]鎖
+MODEL_FILENAME = data/MODEL/padlock/padlock.x	# [27]南京錠
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -1144,8 +1150,24 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 17
-	POS = 2400 380 -2600
-	ROT = 0 180 0
+	POS = -850 350 -3000
+	ROT = 0 30 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 17
+	POS = 2332 30 400
+	ROT = 0 30 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 17
+	POS = 1100 330 -1880
+	ROT = 0 30 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
@@ -1155,26 +1177,7 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 18
-	POS = 2400 320 -2600
-	ROT = 0 180 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-#------------------------------------------------------------------------------
-# 松明
-#------------------------------------------------------------------------------
-MODELSET
-	TYPE = 19
-	POS = -240 0 2010
-	ROT = 0 180 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 19
-	POS = 370 0 2040
+	POS = -790 550 -3000
 	ROT = 0 180 0
 	SHADOW = 0
 	COLLISION = 1
@@ -1184,16 +1187,140 @@ END_MODELSET
 # 岩
 #------------------------------------------------------------------------------
 MODELSET
-	TYPE = 20
-	POS = 0 0 -4300
-	ROT = 0 0 0
+	TYPE = 21
+	POS = 4300 90 350
+	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
 
 MODELSET
 	TYPE = 21
-	POS = 0 0 -4100
+	POS = 4300 0 350
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# 兎
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 22
+	POS = -3500 0 -1600
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = -4000 0 -800
+	ROT = 0 -45 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = -4400 0 -1400
+	ROT = 0 15 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = -3390 0 -350
+	ROT = 0 25 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = -3500 0 -2800
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = 1700 0 -2400
+	ROT = 0 -40 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = 870 0 -2500
+	ROT = 0 -40 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# 鍵
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 23
+	POS = 1111 0 -2300
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 24
+	POS = -4200 0 -1700
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 25
+	POS = 3000 0 1500
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# 鎖
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 26
+	POS = 70 100 2244
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# 南京錠
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 27
+	POS = 50 65 2244
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 27
+	POS = 80 65 2244
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 27
+	POS = 20 65 2244
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
