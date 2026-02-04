@@ -1172,6 +1172,46 @@ MODELSET
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 17
+	POS = -549 330 -2539
+	ROT = 0 30 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 17
+	POS = 1233 720 2188
+	ROT = 0 30 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 17
+	POS = -754 432 749
+	ROT = 0 30 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 17
+	POS = -1781 0 -4278
+	ROT = 0 -37 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 17
+	POS = -2065 0 -3295
+	ROT = 0 11 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 #------------------------------------------------------------------------------
 # ’¹‚Ì‘ƒ
 #------------------------------------------------------------------------------
@@ -1183,12 +1223,36 @@ MODELSET
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 18
+	POS = -1778 553 -1585
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 18
+	POS = 442 553 -1112
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 18
+	POS = 2293 553 -1010
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 #------------------------------------------------------------------------------
 # Šâ
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 21
-	POS = 4300 90 350
+	POS = 4300 80 350
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -1257,6 +1321,22 @@ MODELSET
 	TYPE = 22
 	POS = 870 0 -2500
 	ROT = 0 -40 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = -2500 0 -3250
+	ROT = 0 -21 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = -2300 0 -2200
+	ROT = 0 33 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
