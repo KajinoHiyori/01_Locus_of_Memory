@@ -98,9 +98,9 @@ const char* c_apFilenameMagicUI[MAX_MAGICUI_TEX] =
 	"data\\TEXTURE\\SpellUI\\23_Acceleration.png",
 	"data\\TEXTURE\\SpellUI\\24_TimeRevert.png",
 	"data\\TEXTURE\\SpellUI\\27_MagicBook.png",
-	"data\\TEXTURE\\SpellUI\\28_MagicBookBG.png",
-	"data\\TEXTURE\\SpellUI\\29_Plus.png",
-	"data\\TEXTURE\\SpellUI\\30_Equal.png",
+	"data\\TEXTURE\\SpellUI\\29_MagicBookBG.png",
+	"data\\TEXTURE\\SpellUI\\30_Plus.png",
+	"data\\TEXTURE\\SpellUI\\31_Equal.png",
 };
 
 //======================================================================================

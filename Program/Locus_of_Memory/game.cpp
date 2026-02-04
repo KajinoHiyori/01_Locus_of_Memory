@@ -11,6 +11,8 @@
 #include "pause.h"
 #include "gameui.h"
 #include "magicui.h"
+#include "spellui.h"
+#include "menubg.h"
 #include "clock.h"
 #include "main.h"
 //#include"sound.h"
@@ -34,7 +36,6 @@
 //#include"timer.h"
 #include"effect.h"
 #include"particle.h"
-#include "spellui.h"
 #include "magic.h"
 #include "fog.h"
 
@@ -77,6 +78,8 @@ void InitGame(void)
 
 	// 魔法の初期化処理
 	InitMagic();
+
+	InitMenuBG();
 
 	// ポーズの初期化処理
 	InitPause();
@@ -135,6 +138,8 @@ void UninitGame(void)
 
 	// 魔法の終了処理
 	UninitMagic();
+
+	UninitMenuBG();
 
 	// ポーズの終了処理
 	UninitPause();
@@ -206,6 +211,8 @@ void UpdateGame(void)
 
 	// 魔法の更新処理
 	UpdateMagic();
+
+	UpdateMenuBG();
 
 	if (g_bPause == true)
 	{
@@ -311,6 +318,8 @@ void DrawGame(void)
 	//DrawTimer();
 
 	SetFogEnable(false);		// 霧を無効
+
+	DrawMenuBG();
 
 	DrawGameUI();
 

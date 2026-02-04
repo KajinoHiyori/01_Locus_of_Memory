@@ -130,7 +130,7 @@ void UpdateEffect(void)
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
+	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++, pVtx += 4)
 	{
 		if (g_aEffect[nCntEffect].bUse == true)
 		{
@@ -139,12 +139,6 @@ void UpdateEffect(void)
 			pVtx[1].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
 			pVtx[2].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, -g_aEffect[nCntEffect].fRadius, 0.0f);
 			pVtx[3].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, -g_aEffect[nCntEffect].fRadius, 0.0f);
-
-			//頂点カラーの設定
-			pVtx[0].col = g_aEffect[nCntEffect].col;
-			pVtx[1].col = g_aEffect[nCntEffect].col;
-			pVtx[2].col = g_aEffect[nCntEffect].col;
-			pVtx[3].col = g_aEffect[nCntEffect].col;
 
 			g_aEffect[nCntEffect].fRadius -= 0.1f;;
 			g_aEffect[nCntEffect].pos += g_aEffect[nCntEffect].move;
