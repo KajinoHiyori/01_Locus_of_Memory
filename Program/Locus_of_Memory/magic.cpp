@@ -544,6 +544,7 @@ Magic* GetMagic(void)
 int CollisionMagic(D3DXVECTOR3 pos, float fRadius)
 {
 	DropMagic* pDropMagic = &g_aDropMagic[0];	// 先頭アドレス
+	bool isSearch = false;
 
 	//VIBRATIONTYPE* pVibration = GetVibration();
 
@@ -561,7 +562,6 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius)
 
 		if (fDiff <= powf(fRadius + pDropMagic->fRadius, 2))
 		{// 当たっていたら
-		
 			// ここで種類に応じた振動を呼び出す
 			VibrationType(VIBRATIONTYPE_CLOSE, MAGICTYPE_COMBUSTION);
 			PrintDebugProc("[%d]落ちている魔法とあたっている\n", nCntMagic);
@@ -569,33 +569,27 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius)
 		}
 		else if (fDiff <= powf(fRadius + DROPMAGIC_MEDIUMRADIUS, 2))
 		{// 落ちている魔法の周辺にいたら
-
 			// ここで種類に応じた振動を呼び出す
 			VibrationType(VIBRATIONTYPE_MEDIUM, MAGICTYPE_COMBUSTION);
 			PrintDebugProc("[%d]周辺に魔法が落ちている\n", nCntMagic);
-			return nCntMagic;
+			isSearch = true;
 		}
 		else if (fDiff <= powf(fRadius + DROPMAGIC_FARRADIUS, 2))
 		{// 遠くに魔法が落ちていたら
-			
 			 // ここで種類に応じた振動を呼び出す
 			VibrationType(VIBRATIONTYPE_FAR, MAGICTYPE_COMBUSTION);
 
 			PrintDebugProc("[%d]遠くに魔法が落ちている\n", nCntMagic);
-
-			return nCntMagic;
+			isSearch = true;
 		}
 
 
 	}
 
-	if (fDiff >= powf(fRadius + DROPMAGIC_FARRADIUS, 2))
+	if (isSearch == false)
 	{// 範囲外に出た場合
-
 		// ここで種類に応じた振動を呼び出す
 		VibrationType(VIBRATIONTYPE_NOTHING, MAGICTYPE_COMBUSTION);
-
-
 	}
 
 	return -1;

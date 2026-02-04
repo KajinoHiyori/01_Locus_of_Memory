@@ -25,6 +25,7 @@
 //#include "light.h"
 
 #include "object.h"
+#include "skybox.h"
 #include "motion.h"
 #include "shadow.h"
 #include "meshfield.h"
@@ -372,6 +373,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// オブジェクトの初期化処理
 	InitObject();
 
+	// スカイボックスの初期化処理
+	InitSkyBox();
+
 	// モーションの初期化処理
 	InitMotion();
 
@@ -424,6 +428,9 @@ void Uninit(void)
 
 	// オブジェクトの終了処理
 	UninitObject();
+
+	// スカイボックスの終了処理
+	UninitSkyBox();
 
 	//// ライトの終了処理
 	//UninitLight();
@@ -509,6 +516,9 @@ void Update(void)
 
 	// オブジェクトの更新処理(仮)
 	UpdateObject();
+
+	// スカイボックスの更新処理
+	UpdateSkyBox();
 
 	switch (g_mode)
 	{
@@ -616,6 +626,9 @@ void Draw(void)
 
 			// オブジェクトの描画処理（仮）
 			DrawObject();
+
+			// スカイボックスの描画処理
+			DrawSkyBox();
 
 			// フェードの描画処理
 			DrawFade();
