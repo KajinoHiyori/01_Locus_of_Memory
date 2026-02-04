@@ -18,6 +18,7 @@
 #define INERTIA				(0.1f)				// UI出現の慣性
 #define FRAME				(20)				// 出現/退出を管理するフレーム数
 #define MENUBG_POSY			(482.0f)			// 左のUIのY軸
+#define PHONE_WIDTH			(108.0f)			// スマホの幅
 #define LEFT_POS			(D3DXVECTOR3(120.0f, MENUBG_POSY, 0.0f))		// onscreenの左のUI座標
 #define RIGHT_POS			(D3DXVECTOR3(1160.0f, MENUBG_POSY, 0.0f))		// onscreenの右のUI座標
 
@@ -67,10 +68,10 @@ void InitMenuBG(void)
 	{
 		g_aMenuBG[nCntPlayer].tex				= MENUBG_TEX_CLOCK;					// テクスチャの初期化
 		g_aMenuBG[nCntPlayer].pos				= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
-		g_aMenuBG[nCntPlayer].fWidth			= 0.0f;								// 幅の初期化
+		g_aMenuBG[nCntPlayer].fWidth			= PHONE_WIDTH;								// 幅の初期化
 		g_aMenuBG[nCntPlayer].fPosY				= 0.0f;								// 開始地点Y
-		g_aMenuBG[nCntPlayer].fHeightUp			= 0.0f;								// 高さ[上]の初期化
-		g_aMenuBG[nCntPlayer].fHeightDown		= 0.0f;								// 高さ[下]の初期化
+		g_aMenuBG[nCntPlayer].fHeightUp			= HEIGHT_POSUP;								// 高さ[上]の初期化
+		g_aMenuBG[nCntPlayer].fHeightDown		= HEIGHT_POSDOWN;								// 高さ[下]の初期化
 		g_aMenuBG[nCntPlayer].fHeightDestUp		= 0.0f;								// 高さ[上]の目的地の初期化
 		g_aMenuBG[nCntPlayer].fHeightDestDown	= 0.0f;								// 高さ[下]の目的地の初期化
 		g_aMenuBG[nCntPlayer].bDisp				= false;							// 表示状態の初期化
@@ -129,16 +130,16 @@ void InitMenuBG(void)
 
 		// 頂点座標の設定
 		pVtx[0].pos.x = g_aMenuBG[nCntPlayer].pos.x - g_aMenuBG[nCntPlayer].fWidth;
-		pVtx[0].pos.y = g_aMenuBG[nCntPlayer].pos.y + g_aMenuBG[nCntPlayer].fHeightUp;
+		pVtx[0].pos.y = g_aMenuBG[nCntPlayer].fHeightUp;
 		pVtx[0].pos.z = 0.0f;					    
 		pVtx[1].pos.x = g_aMenuBG[nCntPlayer].pos.x + g_aMenuBG[nCntPlayer].fWidth;
-		pVtx[1].pos.y = g_aMenuBG[nCntPlayer].pos.y + g_aMenuBG[nCntPlayer].fHeightUp;
+		pVtx[1].pos.y = g_aMenuBG[nCntPlayer].fHeightUp;
 		pVtx[1].pos.z = 0.0f;					    
 		pVtx[2].pos.x = g_aMenuBG[nCntPlayer].pos.x - g_aMenuBG[nCntPlayer].fWidth;
-		pVtx[2].pos.y = g_aMenuBG[nCntPlayer].pos.y + g_aMenuBG[nCntPlayer].fHeightDown;
+		pVtx[2].pos.y = g_aMenuBG[nCntPlayer].fHeightDown;
 		pVtx[2].pos.z = 0.0f;					    
 		pVtx[3].pos.x = g_aMenuBG[nCntPlayer].pos.x + g_aMenuBG[nCntPlayer].fWidth;
-		pVtx[3].pos.y = g_aMenuBG[nCntPlayer].pos.y + g_aMenuBG[nCntPlayer].fHeightDown;
+		pVtx[3].pos.y = g_aMenuBG[nCntPlayer].fHeightDown;
 		pVtx[3].pos.z = 0.0f;
 
 		// rhwの設定
@@ -202,10 +203,14 @@ void UpdateMenuBG(void)
 	Player* pPlayer = GetPlayer();
 
 	if (GetKeyboardTrigger(DIK_5) == true)
-		SetMenuBG(0, RIGHT_POS.y);
+	{
+		SetMenuBG(0, 300.0f, MENUBG_TEX_CLOCK);
+	}
 
 	if (GetKeyboardTrigger(DIK_6) == true)
-		DisappearMenuBG(0, RIGHT_POS.y);
+	{
+		DisappearMenuBG(0);
+	}
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -216,6 +221,7 @@ void UpdateMenuBG(void)
 		float fDiffKeyUp = 0.0f;	// 現在の位置と目的の位置の差分を計算[上]
 		float fDiffKeyDown = 0.0f;	// 現在の位置と目的の位置の差分を計算[下]
 		float fRateKey = (float)g_aMenuBG[nCntPlayer].nFrame / (float)g_aMenuBG[nCntPlayer].nNumFrame;	// フレームの差分を求める
+		PrintDebugProc("フレーム処理 : %f\n", fRateKey);
 
 		switch (g_aMenuBG[nCntPlayer].state)
 		{
@@ -224,7 +230,7 @@ void UpdateMenuBG(void)
 			break;
 
 		case MENUBG_STATE_APPEAR:	// 出現
-			// MENUBGの出現処理
+			// MAGICUIの出現処理
 			fDiffKeyUp = g_aMenuBG[nCntPlayer].fHeightDestUp - g_aMenuBG[nCntPlayer].fHeightUp;
 			fDiffKeyDown = g_aMenuBG[nCntPlayer].fHeightDestDown - g_aMenuBG[nCntPlayer].fHeightDown;
 
@@ -240,8 +246,8 @@ void UpdateMenuBG(void)
 			}
 			break;
 
-		case MENUBG_STATE_DISPLAY:	// 非表示
-
+		case MENUBG_STATE_DISPLAY:	// 表示
+			g_aMenuBG[nCntPlayer].bDisp = true;
 			break;
 
 		case MENUBG_STATE_DISAPPERA:	// 収縮
@@ -264,16 +270,16 @@ void UpdateMenuBG(void)
 		}
 		// 頂点座標の設定
 		pVtx[0].pos.x = g_aMenuBG[nCntPlayer].pos.x - g_aMenuBG[nCntPlayer].fWidth;
-		pVtx[0].pos.y = g_aMenuBG[nCntPlayer].pos.y + g_aMenuBG[nCntPlayer].fHeightUp;
-		pVtx[0].pos.z = 0.0f;
+		pVtx[0].pos.y = g_aMenuBG[nCntPlayer].fHeightUp;
+		pVtx[0].pos.z = 0.0f;					    
 		pVtx[1].pos.x = g_aMenuBG[nCntPlayer].pos.x + g_aMenuBG[nCntPlayer].fWidth;
-		pVtx[1].pos.y = g_aMenuBG[nCntPlayer].pos.y + g_aMenuBG[nCntPlayer].fHeightUp;
-		pVtx[1].pos.z = 0.0f;
+		pVtx[1].pos.y = g_aMenuBG[nCntPlayer].fHeightUp;
+		pVtx[1].pos.z = 0.0f;					    
 		pVtx[2].pos.x = g_aMenuBG[nCntPlayer].pos.x - g_aMenuBG[nCntPlayer].fWidth;
-		pVtx[2].pos.y = g_aMenuBG[nCntPlayer].pos.y + g_aMenuBG[nCntPlayer].fHeightDown;
-		pVtx[2].pos.z = 0.0f;
+		pVtx[2].pos.y = g_aMenuBG[nCntPlayer].fHeightDown;
+		pVtx[2].pos.z = 0.0f;					    
 		pVtx[3].pos.x = g_aMenuBG[nCntPlayer].pos.x + g_aMenuBG[nCntPlayer].fWidth;
-		pVtx[3].pos.y = g_aMenuBG[nCntPlayer].pos.y + g_aMenuBG[nCntPlayer].fHeightDown;
+		pVtx[3].pos.y = g_aMenuBG[nCntPlayer].fHeightDown;
 		pVtx[3].pos.z = 0.0f;
 	}
 	// 頂点バッファをアンロック
@@ -318,12 +324,13 @@ void DrawMenuBG(void)
 //======================================================================================
 // UIを配置
 //======================================================================================
-void SetMenuBG(int nIdx, float fPosY)
+void SetMenuBG(int nIdx, float fPosY, MENUBG_TEX tex)
 {
 	g_aMenuBG[nIdx].bDisp = true;
 	g_aMenuBG[nIdx].nFrame = 0;
+	g_aMenuBG[nIdx].tex = tex;
 	g_aMenuBG[nIdx].state = MENUBG_STATE_APPEAR;
-	g_aMenuBG[nIdx].bDisp = true;			// 幅の初期化
+	g_aMenuBG[nIdx].pos.y = fPosY;
 	g_aMenuBG[nIdx].fPosY = fPosY;			// 開始地点Y
 	g_aMenuBG[nIdx].fHeightUp = fPosY;			// 高さ[上]の初期化
 	g_aMenuBG[nIdx].fHeightDown = fPosY;		// 高さ[下]の初期化
@@ -334,10 +341,10 @@ void SetMenuBG(int nIdx, float fPosY)
 //======================================================================================
 // UIを非表示にする
 //======================================================================================
-void DisappearMenuBG(int nIdx, float fPosY)
+void DisappearMenuBG(int nIdx)
 {
 	g_aMenuBG[nIdx].nFrame = 0;
 	g_aMenuBG[nIdx].state = MENUBG_STATE_DISAPPERA;
-	g_aMenuBG[nIdx].fHeightDestUp = fPosY;				// 高さ[上]の目的地の初期化
-	g_aMenuBG[nIdx].fHeightDestDown = fPosY;			// 高さ[下]の目的地の初期化
+	g_aMenuBG[nIdx].fHeightDestUp = g_aMenuBG[nIdx].fPosY;				// 高さ[上]の目的地の初期化
+	g_aMenuBG[nIdx].fHeightDestDown = g_aMenuBG[nIdx].fPosY;			// 高さ[下]の目的地の初期化
 }

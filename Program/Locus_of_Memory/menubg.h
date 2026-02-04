@@ -34,6 +34,6 @@ void InitMenuBG(void);
 void UninitMenuBG(void);
 void UpdateMenuBG(void);
 void DrawMenuBG(void);
-void SetMenuBG(int nIdx, float fPosY);
-void DisappearMenuBG(int nIdx, float fPosY);
+void SetMenuBG(int nIdx, float fPosY, MENUBG_TEX tex);
+void DisappearMenuBG(int nIdx);
 #endif
