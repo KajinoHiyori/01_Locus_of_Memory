@@ -11,13 +11,16 @@
 #include "input.h"
 #include "shadow.h"
 #include "particle.h"
+#include "vibration.h"
 
 //マクロ定義
-#define MAX_MAGIC			(128)		//魔法の最大数
-#define MAX_DROPMAGIC		(32)		//落ちてる魔法の最大数
-#define MAX_COMMAND			(3)			//コマンドの最大数
-#define DROPMAGIC_RADIUS	(30.0f)		//落ちてる魔法の半径
-#define DISP_MAGIC			(30)		// UIの発動魔法表示時間管理
+#define MAX_MAGIC				(128)		//魔法の最大数
+#define MAX_DROPMAGIC			(32)		//落ちてる魔法の最大数
+#define MAX_COMMAND				(3)			//コマンドの最大数
+#define DROPMAGIC_RADIUS		(50.0f)		//落ちてる魔法の半径
+#define DROPMAGIC_MEDIUMRADIUS	(100.0f)	//落ちてる魔法の半径
+#define DROPMAGIC_FARRADIUS		(150.0f)	//落ちてる魔法の半径
+#define DISP_MAGIC				(30)		// UIの発動魔法表示時間管理
 
 //グローバル変数宣言
 Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
@@ -542,6 +545,8 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius)
 {
 	DropMagic* pDropMagic = &g_aDropMagic[0];	// 先頭アドレス
 
+	//VIBRATIONTYPE* pVibration = GetVibration();
+
 	float fDiff = 0.0f;		// 判定用変数
 
 	for (int nCntMagic = 0; nCntMagic < MAX_DROPMAGIC; nCntMagic++, pDropMagic++)
@@ -556,10 +561,41 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius)
 
 		if (fDiff <= powf(fRadius + pDropMagic->fRadius, 2))
 		{// 当たっていたら
+		
 			// ここで種類に応じた振動を呼び出す
-			PrintDebugProc("[%d]落ちてる魔法とあたっている\n", nCntMagic);
+			VibrationType(VIBRATIONTYPE_CLOSE, MAGICTYPE_COMBUSTION);
+			PrintDebugProc("[%d]落ちている魔法とあたっている\n", nCntMagic);
 			return nCntMagic;
 		}
+		else if (fDiff <= powf(fRadius + DROPMAGIC_MEDIUMRADIUS, 2))
+		{// 落ちている魔法の周辺にいたら
+
+			// ここで種類に応じた振動を呼び出す
+			VibrationType(VIBRATIONTYPE_MEDIUM, MAGICTYPE_COMBUSTION);
+			PrintDebugProc("[%d]周辺に魔法が落ちている\n", nCntMagic);
+			return nCntMagic;
+		}
+		else if (fDiff <= powf(fRadius + DROPMAGIC_FARRADIUS, 2))
+		{// 遠くに魔法が落ちていたら
+			
+			 // ここで種類に応じた振動を呼び出す
+			VibrationType(VIBRATIONTYPE_FAR, MAGICTYPE_COMBUSTION);
+
+			PrintDebugProc("[%d]遠くに魔法が落ちている\n", nCntMagic);
+
+			return nCntMagic;
+		}
+
+
+	}
+
+	if (fDiff >= powf(fRadius + DROPMAGIC_FARRADIUS, 2))
+	{// 範囲外に出た場合
+
+		// ここで種類に応じた振動を呼び出す
+		VibrationType(VIBRATIONTYPE_NOTHING, MAGICTYPE_COMBUSTION);
+
+
 	}
 
 	return -1;

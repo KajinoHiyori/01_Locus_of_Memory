@@ -3,6 +3,9 @@
 #include "input.h"
 #include "debugproc.h"
 
+VIBRATIONTYPE g_Vibration;
+int nVibration = 0;
+
 void InitVibration(void)
 {
 
@@ -59,4 +62,35 @@ void UpdateVibration(void)
 		// êUìÆéùë±ÉtÉåÅ[ÉÄÇÇ†Ç∞ÇÈ
 		nVibrationCounter++;
 	}
+
+}
+void VibrationType(VIBRATIONTYPE Type, int nDropMagic)
+{
+
+	int nVibForce = 10000;
+
+	if (nDropMagic == 1)
+	{
+		nVibration++;
+
+			if (nVibration % 60 < 15)
+			{
+				SetJoypadVibration(30000 - (nVibForce * Type), 0, 60, 0);
+			}
+			else if (nVibration % 60 >= 15 && nVibration % 60 < 30 || nVibration % 60 >= 45 && nVibration % 60 < 60)
+			{
+				SetJoypadVibration(0, 0, 1, 0);
+			}
+			else if (nVibration % 60 >= 30)
+			{
+				SetJoypadVibration(0, 30000 - (nVibForce * Type), 60, 0);
+			}
+		
+
+		if (nVibration >= 120)
+		{
+			nVibration = 0;
+		}
+	}
+
 }
