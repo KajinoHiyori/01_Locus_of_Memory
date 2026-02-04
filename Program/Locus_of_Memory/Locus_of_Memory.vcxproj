@@ -187,6 +187,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="skybox.cpp" />
     <ClCompile Include="spellui.cpp" />
     <ClCompile Include="start.cpp" />
     <ClCompile Include="startui.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="shadow.h" />
+    <ClInclude Include="skybox.h" />
     <ClInclude Include="spellui.h" />
     <ClInclude Include="start.h" />
     <ClInclude Include="startui.h" />

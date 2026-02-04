@@ -180,6 +180,9 @@
     <ClCompile Include="menubg.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="skybox.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -286,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="menubg.h">
       <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="skybox.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
