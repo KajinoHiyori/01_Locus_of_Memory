@@ -51,8 +51,12 @@ void UpdateParticle(void)
 {
 	D3DXVECTOR3 pos1, pos2;
 	D3DXVECTOR3 move1, move2;
-	D3DXVECTOR3 rot1, rot2;
 	int nCountParticle = 0;
+
+	pos1 = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	pos2 = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	move1 = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	move2 = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	if (GetKeyboardTrigger(DIK_BACK) == true)
 	{
@@ -113,19 +117,12 @@ void UpdateParticle(void)
 					pos2.y = g_aParticle[nCntAppear].pos.y + (float)(rand() % 10 + 10);
 					pos2.z = g_aParticle[nCntAppear].pos.y + (float)(rand() % 10 + 10);
 
-					//移動量						　　　//ここ500にするとフレアに使えそう
-					rot1.x = ((float)(rand() % 629 - 314) / -500);
-					move1.x = sinf(rot1.x) * 1.0f;
-					move1.y = cosf(rot1.x) * 1.0f;
-					move1.z = tanf(rot1.x) * 1.0f;
+					//移動量
+					move1.x = sinf((float)(rand() % 629 - 314)) * 1.0f;
+					move1.y = cosf((float)(rand() % 629 - 314)) * 1.0f;
 
-					//移動量						　　　//ここ500にするとフレアに使えそう
-					rot2.x = ((float)(rand() % 629 - 314) / 50);
-					rot2.z = ((float)(rand() % 629 - 314) / 50);
-
-					move2.x = sinf(rot2.x) * 1.2f;
-					move2.y += 1.0f;
-					/*move2.z = tanf(rot2.z) * 1.2f;*/
+					move2.x = sinf((float)(rand() % 629 - 314)) * 1.0f;
+					move2.y = cosf((float)(rand() % 629 - 314)) * 1.0f;
 
 					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 					SetEffect(pos2, move2, COLOR_ORANGE, g_aParticle[nCntParticle].nLife);
