@@ -146,7 +146,7 @@ void UpdateEffect(void)
 			pVtx[2].col = g_aEffect[nCntEffect].col;
 			pVtx[3].col = g_aEffect[nCntEffect].col;
 
-			g_aEffect[nCntEffect].fRadius -= 0.1f;;
+			/*g_aEffect[nCntEffect].fRadius -= 0.01f;*/
 			g_aEffect[nCntEffect].pos += g_aEffect[nCntEffect].move;
 			g_aEffect[nCntEffect].nLife--;
 

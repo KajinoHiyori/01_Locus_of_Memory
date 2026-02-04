@@ -109,20 +109,22 @@ void UpdateParticle(void)
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
 					//ˆÊ’u‚ÌÝ’è
-					pos1.x = g_aParticle[nCntAppear].pos.x + (float)(rand() % 10);
+					pos1.x = g_aParticle[nCntAppear].pos.x + sinf((float)(rand() % 70));
 					pos1.y = g_aParticle[nCntAppear].pos.y + 100;
-					pos1.z = g_aParticle[nCntAppear].pos.y + (float)(rand() % 10);
+					pos1.z = g_aParticle[nCntAppear].pos.z + sinf((float)(rand() % 70));
 
-					pos2.x = g_aParticle[nCntAppear].pos.x + (float)(rand() % 10 + 10);
-					pos2.y = g_aParticle[nCntAppear].pos.y + (float)(rand() % 10 + 10);
-					pos2.z = g_aParticle[nCntAppear].pos.y + (float)(rand() % 10 + 10);
+					pos2.x = g_aParticle[nCntAppear].pos.x + sinf((float)(rand() % 40));
+					pos2.y = g_aParticle[nCntAppear].pos.y + 30;
+					pos2.z = g_aParticle[nCntAppear].pos.z + sinf((float)(rand() % 40));
 
 					//ˆÚ“®—Ê
-					move1.x = sinf((float)(rand() % 629 - 314)) * 1.0f;
-					move1.y = cosf((float)(rand() % 629 - 314)) * 1.0f;
+					move1.x = sinf((float)(rand() % 629 - 314)) * 2.0f;
+					move1.y = cosf((float)(rand() % 629 - 314)) * 2.4f;
+					move1.z = sinf((float)(rand() % 629 - 314)) * 2.0f;
 
 					move2.x = sinf((float)(rand() % 629 - 314)) * 1.0f;
 					move2.y = cosf((float)(rand() % 629 - 314)) * 1.0f;
+					move2.z = sinf((float)(rand() % 629 - 314)) * 1.0f;
 
 					SetEffect(pos1, move1, COLOR_RED, g_aParticle[nCntParticle].nLife);
 					SetEffect(pos2, move2, COLOR_ORANGE, g_aParticle[nCntParticle].nLife);
