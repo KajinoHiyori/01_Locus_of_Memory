@@ -7,6 +7,30 @@
 #ifndef _GAMEUI_H_
 #define	_GAMEUI_H_
 
+//*****************************************************************************
+// ポーズ状態
+//*****************************************************************************
+typedef enum PAUSE_STATE
+{
+	PAUSE_STATE_NEUTRAL = 0,		// なにもない
+	PAUSE_STATE_CLOCK,				// 時計
+	PAUSE_STATE_MAGICBOOK,			// 魔導書
+	PAUSE_STATE_MAX,
+}PAUSE_STATE;
+
+//*****************************************************************************
+// ポーズメニュー
+//*****************************************************************************
+typedef enum PAUSE_MENU
+{
+	PAUSE_MENU_CLOCK = 0,			// 時計
+	PAUSE_MENU_MAGICBOOK,			// 魔導書
+	PAUSE_MENU_CONTINUE,			// ゲームに戻る
+	PAUSE_MENU_RESTART,				// ゲームをやり直す
+	PAUSE_MENU_QUIT,				// タイトル画面に戻る
+	PAUSE_MENU_MAX					// 
+}PAUSE_MENU;
+
 // UIの種類
 typedef enum
 {

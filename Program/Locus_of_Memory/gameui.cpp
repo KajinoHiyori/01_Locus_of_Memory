@@ -11,6 +11,11 @@
 #include "input.h"
 #include "title.h"
 
+#include "player.h"
+#include "clock.h"
+#include "magicui.h"
+#include "spellui.h"
+
 // マクロ定義
 #define MAX_GAMEUI		(2)					// UIの最大数
 #define NUM_GAMEUI		(GAMEUI_TYPE_MAX)	// ポーズメニューで使うテクスチャ数
@@ -44,6 +49,11 @@ LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffGameUI = NULL;		// 頂点バッファへのポインタ
 GameUI g_GameUI[MAX_GAMEUI][NUM_GAMEUI];			// UIの表示処理
 int g_nOperationType;									// UI表示数の管理
 
+PAUSE_MENU g_apauseMenu[MAX_PLAYER] = {};						// ポーズメニューの状態
+PAUSE_STATE g_apauseState[MAX_PLAYER] = {};						// ポーズ状態
+bool g_aisPause[MAX_PLAYER];									// ポーズしているかどうか
+bool g_bPauseDisp = true;										// ポーズ画面表示状態
+
 const char* c_apFilenameGameUI[NUM_GAMEUI] =
 {
 	"data\\TEXTURE\\pause000.png",
@@ -72,6 +82,15 @@ void InitGameUI(void)
 
 	// 操作方法の状態を取得
 	OPERATIONTYPE operationType = GetOperationType();
+
+	// 初期化
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		g_apauseMenu[nCntPlayer] = PAUSE_MENU_CLOCK;
+		g_apauseState[nCntPlayer] = PAUSE_STATE_NEUTRAL;
+		g_aisPause[nCntPlayer] = false;
+	}
+	g_bPauseDisp = true;
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_GAMEUI * MAX_GAMEUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffGameUI, NULL);
@@ -307,7 +326,7 @@ void InitGameUI(void)
 //======================================================================================
 void UninitGameUI(void)
 {
-#if 0
+#if 1
 	// テクスチャの破棄
 	for (int nCntGameUI = 0; nCntGameUI < NUM_GAMEUI; nCntGameUI++)
 	{
@@ -332,6 +351,127 @@ void UninitGameUI(void)
 //======================================================================================
 void UpdateGameUI(void)
 {
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		if (g_apauseState[nCntPlayer] != PAUSE_STATE_NEUTRAL)
+		{
+			if (GetJoypadTrigger(JOYKEY_B, 0) == true)
+			{
+				switch (g_apauseState[nCntPlayer])
+				{
+				case PAUSE_STATE_CLOCK:
+					DisappearClock(nCntPlayer);
+					break;
+
+				case PAUSE_STATE_MAGICBOOK:
+					DisappearMagicUI(0);
+					break;
+				}
+				g_apauseState[nCntPlayer] = PAUSE_STATE_NEUTRAL;
+			}
+
+			continue;
+		}
+
+		if (GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true)
+		{
+			g_aisPause[nCntPlayer] = g_aisPause[nCntPlayer] ? false : true;
+		}
+
+		if (g_aisPause[nCntPlayer] == false)
+		{
+			continue;
+		}
+
+		if (GetJoypadRepeat(JOYKEY_UP, 0) == true || GetKeyboardRepeat(DIK_W) == true || GetJoypadStickRepeatL(JOYSTICK_UP, 0) == true)
+		{ // 上方向キーが押されたら
+			// 現在のモードに合わせて変更
+			switch (g_apauseMenu[nCntPlayer])
+			{
+			case PAUSE_MENU_CLOCK:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_QUIT;
+				break;
+
+			case PAUSE_MENU_MAGICBOOK:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_CLOCK;
+				break;
+
+			case PAUSE_MENU_CONTINUE:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_MAGICBOOK;
+				break;
+
+			case PAUSE_MENU_RESTART:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_CONTINUE;
+				break;
+
+			case PAUSE_MENU_QUIT:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_RESTART;
+				break;
+			}
+		}
+
+		if (GetJoypadRepeat(JOYKEY_DOWN, 0) == true || GetKeyboardRepeat(DIK_S) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, 0) == true)
+		{ // 下方向キーが押されたら
+			// 現在のモードに合わせて変更
+			switch (g_apauseMenu[nCntPlayer])
+			{
+			case PAUSE_MENU_CLOCK:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_MAGICBOOK;
+				break;
+
+			case PAUSE_MENU_MAGICBOOK:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_CONTINUE;
+				break;
+
+			case PAUSE_MENU_CONTINUE:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_RESTART;
+				break;
+
+			case PAUSE_MENU_RESTART:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_QUIT;
+				break;
+
+			case PAUSE_MENU_QUIT:
+				g_apauseMenu[nCntPlayer] = PAUSE_MENU_CLOCK;
+				break;
+			}
+		}
+
+		if (GetJoypadTrigger(JOYKEY_A, 0) == true || GetKeyboardTrigger(DIK_RETURN) == true)
+		{ // 決定キーが押されたら
+			// 現在のモードに合わせて変更
+			switch (g_apauseMenu[nCntPlayer])
+			{
+			case PAUSE_MENU_CLOCK:
+				g_apauseState[nCntPlayer] = PAUSE_STATE_CLOCK;
+				SetClock(nCntPlayer, INIT_D3DXVEC3);
+				break;
+
+			case PAUSE_MENU_MAGICBOOK:
+				g_apauseState[nCntPlayer] = PAUSE_STATE_MAGICBOOK;
+				SetMagicUI(nCntPlayer);
+				break;
+
+			case PAUSE_MENU_CONTINUE:
+				g_aisPause[nCntPlayer] = false;
+				break;
+
+			case PAUSE_MENU_RESTART:
+				SetFade(MODE_GAME);
+				break;
+
+			case PAUSE_MENU_QUIT:
+				SetFade(MODE_TITLE);
+				break;
+}
+		}
+
+		if (GetKeyboardTrigger(DIK_F5) == true)
+		{
+			g_bPauseDisp = g_bPauseDisp ? false : true;
+		}
+	}
 #if 0
 	// 入力情報の保存
 	static int nCounterUp = 0;

@@ -30,6 +30,7 @@
 #include "meshfield.h"
 #include "effect.h"
 #include "particle.h"
+#include "vibration.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -552,6 +553,8 @@ void Update(void)
 
 	//パーティクルの更新処理
 	UpdateParticle();
+
+	UpdateVibration();
 
 }
 

@@ -82,7 +82,7 @@ void InitGame(void)
 	InitMenuBG();
 
 	// ポーズの初期化処理
-	InitPause();
+	//InitPause();
 
 	InitGameUI();
 
@@ -142,7 +142,7 @@ void UninitGame(void)
 	UninitMenuBG();
 
 	// ポーズの終了処理
-	UninitPause();
+	//UninitPause();
 
 	UninitGameUI();
 
@@ -171,7 +171,7 @@ void UpdateGame(void)
 	if (GetJoypadTrigger(JOYKEY_START, 0) == true)
 	{
 		g_bPause = g_bPause ? false : true;
-		SetPauseMenu(PAUSE_MENU_MAGICBOOK);
+		//SetPauseMenu(PAUSE_MENU_MAGICBOOK);
 	}
 
 	// プレイヤーの更新処理
@@ -217,7 +217,7 @@ void UpdateGame(void)
 	if (g_bPause == true)
 	{
 		// ポーズの更新処理
-		UpdatePause();
+		//UpdatePause();
 	}
 
 	UpdateGameUI();
@@ -332,7 +332,7 @@ void DrawGame(void)
 	if (g_bPause == true)
 	{
 		// ポーズの描画処理
-		DrawPause();
+		//DrawPause();
 	}
 
 	SetFogEnable(true);			// 霧を有効
