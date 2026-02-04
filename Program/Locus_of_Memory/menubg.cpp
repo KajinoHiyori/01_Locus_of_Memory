@@ -11,6 +11,8 @@
 #include "fog.h"
 #include "debugproc.h"
 #include "input.h"
+#include "clock.h"
+#include "magicui.h"
 
 // マクロ定義
 #define MAX_MAGIC			(4)					// 記録できる魔法の最大数
@@ -200,24 +202,6 @@ void UpdateMenuBG(void)
 	// playerの情報を取得
 	Player* pPlayer = GetPlayer();
 
-	if (GetKeyboardTrigger(DIK_5) == true)
-	{
-		SetMenuBG(0, 300.0f, MENUBG_TEX_CLOCK);
-		if (operationType == OPERATIONTYPE_2P)
-		{
-			SetMenuBG(1, 300.0f, MENUBG_TEX_CLOCK);
-		}
-	}
-
-	if (GetKeyboardTrigger(DIK_6) == true)
-	{
-		DisappearMenuBG(0);
-		if (operationType == OPERATIONTYPE_2P)
-		{
-			DisappearMenuBG(1);
-		}
-	}
-
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffMenuBG->Lock(0, 0, (void**)&pVtx, 0);
@@ -249,6 +233,30 @@ void UpdateMenuBG(void)
 				g_aMenuBG[nCntPlayer].fHeightUp = HEIGHT_POSUP;
 				g_aMenuBG[nCntPlayer].fHeightDown = HEIGHT_POSDOWN;
 				g_aMenuBG[nCntPlayer].state = MENUBG_STATE_DISPLAY;	// 表示状態に切り替え
+				switch (g_aMenuBG[nCntPlayer].tex)
+				{
+				case MENUBG_TEX_CLOCK:	// 時計
+					if (operationType == OPERATIONTYPE_2P)
+					{
+						if (nCntPlayer == 0)
+						{
+							SetClock(nCntPlayer, D3DXVECTOR3(LEFT_POS.x - PHONE_WIDTH, LEFT_POS.y, LEFT_POS.z));
+						}
+						else if (nCntPlayer == 1)
+						{
+							SetClock(nCntPlayer, D3DXVECTOR3(RIGHT_POS.x - PHONE_WIDTH, RIGHT_POS.y, RIGHT_POS.z));
+						}
+					}
+					else
+					{
+						SetClock(nCntPlayer, D3DXVECTOR3(RIGHT_POS.x - PHONE_WIDTH, RIGHT_POS.y, RIGHT_POS.z));
+					}
+					break;
+
+				case MENUBG_TEX_MAGICBOOK:	// 魔導書
+					SetMagicUI(nCntPlayer);
+					break;
+				}
 			}
 			break;
 
@@ -349,8 +357,35 @@ void SetMenuBG(int nIdx, float fPosY, MENUBG_TEX tex)
 //======================================================================================
 void DisappearMenuBG(int nIdx)
 {
+	// 操作方法の状態を取得
+	OPERATIONTYPE operationType = GetOperationType();
+
 	g_aMenuBG[nIdx].nFrame = 0;
 	g_aMenuBG[nIdx].state = MENUBG_STATE_DISAPPERA;
 	g_aMenuBG[nIdx].fHeightDestUp = g_aMenuBG[nIdx].fPosY;				// 高さ[上]の目的地の初期化
 	g_aMenuBG[nIdx].fHeightDestDown = g_aMenuBG[nIdx].fPosY;			// 高さ[下]の目的地の初期化
+	switch (g_aMenuBG[nIdx].tex)
+	{
+		case MENUBG_TEX_CLOCK:	// 時計
+			if (operationType == OPERATIONTYPE_2P)
+			{
+				if (nIdx == 0)
+				{
+					DisappearClock(nIdx);
+				}
+				else if (nIdx == 1)
+				{
+					DisappearClock(nIdx);
+				}
+			}
+			else
+			{
+				DisappearClock(nIdx);
+			}
+			break;
+
+		case MENUBG_TEX_MAGICBOOK:	// 魔導書
+			DisappearMagicUI(nIdx);
+			break;
+		}
 }

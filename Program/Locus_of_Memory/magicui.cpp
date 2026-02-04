@@ -62,7 +62,6 @@ typedef struct
 // MAGICUIの全体管理
 typedef struct
 {
-	MAGICUISTATE state;					// 出現状態
 	MAGICUI aMagicUI[MAX_MAGICUI_TYPE];	// UIの種類ごとの表示管理
 	D3DXVECTOR3 pos;					// 中心位置
 	D3DXVECTOR3 posDest;				// 目的の向き
@@ -127,7 +126,6 @@ void InitMagicUI(void)
 			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDestDown	= 0.0f;				// 高さ[下]の目的地の初期化
 			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp = false;							// 表示状態の初期化
 		}
-		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_NONDISPLAY;		// 画面外にある
 		g_aMagicUI[nCntPlayer].bDisp = false;						// 全体の表示状態の初期化
 		g_aMagicUI[nCntPlayer].nCounterUI = 0;						// 発動魔法の初期化
 		g_aMagicUI[nCntPlayer].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
@@ -777,9 +775,12 @@ void ResetMagicUI(int nIdx)
 //======================================================================================
 void SetMagicUI(int nIdx)
 {
+	for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++)
+	{
+		g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;
+	}
 	g_aMagicUI[nIdx].bDisp = true;
 	g_aMagicUI[nIdx].nFrame = 0;
-	g_aMagicUI[nIdx].state = MAGICUISTATE_APPEAR;
 }
 
 //======================================================================================
@@ -792,7 +793,6 @@ void DisappearMagicUI(int nIdx)
 		g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = false;
 	}
 	g_aMagicUI[nIdx].nFrame = 0;
-	g_aMagicUI[nIdx].state = MAGICUISTATE_DISAPPERA;
 }
 
 //======================================================================================

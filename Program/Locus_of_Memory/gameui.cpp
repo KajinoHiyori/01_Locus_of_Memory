@@ -373,6 +373,11 @@ void UpdateGameUI(void)
 					g_aGameUI[nCntPlayer].bPause = false;
 					g_aGameUI[nCntPlayer].state = GAMEUI_STATE_DISAPPEAR;
 					g_aGameUI[nCntPlayer].nFrame = 0;
+					if (g_aGameUI[nCntPlayer].bMenu == true)
+					{
+						DisappearMenuBG(nCntPlayer);
+						g_aGameUI[nCntPlayer].bMenu = false;
+					}
 				}
 			}
 			break;
@@ -422,37 +427,66 @@ void UpdateGameUI(void)
 							{
 								if (nCntPlayer == 0)
 								{
-									SetClock(nCntPlayer, D3DXVECTOR3(LEFT_POS.x - PHONE_WIDTH, LEFT_POS.y, LEFT_POS.z));
 									SetMenuBG(nCntPlayer, CLOCK_Y, MENUBG_TEX_CLOCK);
 								}
 								else if (nCntPlayer == 1)
 								{
-									SetClock(nCntPlayer, D3DXVECTOR3(RIGHT_POS.x - PHONE_WIDTH, RIGHT_POS.y, RIGHT_POS.z));
 									SetMenuBG(nCntPlayer, CLOCK_Y, MENUBG_TEX_CLOCK);
 								}
 							}
 							else
 							{
-								SetClock(nCntPlayer, D3DXVECTOR3(RIGHT_POS.x - PHONE_WIDTH, RIGHT_POS.y, RIGHT_POS.z));
 								SetMenuBG(nCntPlayer, CLOCK_Y, MENUBG_TEX_CLOCK);
 							}
 							g_aGameUI[nCntPlayer].bMenu = true;
 						}
 						else if (g_aGameUI[nCntPlayer].bMenu == true)
 						{
-							DisappearClock(nCntPlayer);
 							DisappearMenuBG(nCntPlayer);
+							g_aGameUI[nCntPlayer].bMenu = false;
 						}
 						break;
 
 					case GAMEUI_TYPE_MAGICBOOK:	// ñÇì±èë
-						SetMagicUI(nCntPlayer);
-						SetMenuBG(nCntPlayer, MAGICBOOK_Y, MENUBG_TEX_MAGICBOOK);
-						g_aGameUI[nCntPlayer].bMenu = true;
+						if (g_aGameUI[nCntPlayer].bMenu == false)
+						{
+							SetMenuBG(nCntPlayer, MAGICBOOK_Y, MENUBG_TEX_MAGICBOOK);
+							g_aGameUI[nCntPlayer].bMenu = true;
+						}
+						else
+						{
+							DisappearMenuBG(nCntPlayer);
+							g_aGameUI[nCntPlayer].bMenu = false;
+						}
 						break;
 
 					case GAMEUI_TYPE_CONTINUE:	// CONTINUE
-						g_aGameUI[nCntPlayer].state = GAMEUI_STATE_DISAPPEAR;
+						if (g_aGameUI[nCntPlayer].state != GAMEUI_STATE_DISAPPEAR)
+						{
+							g_aGameUI[nCntPlayer].bDisp = true;
+							g_aGameUI[nCntPlayer].bPause = false;
+							if (operationType == OPERATIONTYPE_2P)	// 2PëÄçÏÇÃèÍçá
+							{
+								if (nCntPlayer == 0)
+								{
+									g_aGameUI[nCntPlayer].posDest = LEFT_OUTPOS;
+								}
+								else if (nCntPlayer == 1)
+								{
+									g_aGameUI[nCntPlayer].posDest = RIGHT_OUTPOS;
+								}
+							}
+							else
+							{
+								g_aGameUI[nCntPlayer].posDest = RIGHT_OUTPOS;
+							}
+							g_aGameUI[nCntPlayer].state = GAMEUI_STATE_DISAPPEAR;
+							g_aGameUI[nCntPlayer].nFrame = 0;
+						}
+						if (g_aGameUI[nCntPlayer].bMenu == true)
+						{
+							DisappearMenuBG(nCntPlayer);
+						}
 						break;
 
 					case GAMEUI_TYPE_RETRY:	// RETRY
@@ -508,6 +542,7 @@ void UpdateGameUI(void)
 				{
 					g_aGameUI[nCntPlayer].state = GAMEUI_STATE_OFFSCREEN;
 					g_aGameUI[nCntPlayer].bDisp = false;
+					g_aGameUI[nCntPlayer].nSelect = GAMEUI_TYPE_CLOCK;
 					switch (operationType)
 					{
 					case OPERATIONTYPE_2P:	// 2êlëÄçÏ

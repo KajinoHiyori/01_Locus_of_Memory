@@ -68,16 +68,6 @@ typedef enum
 	MAGICUI_TYPE_MAX
 }MAGICUI_TYPE;
 
-// UIの状態
-typedef enum
-{
-	MAGICUISTATE_NONDISPLAY = 0,	// 非表示
-	MAGICUISTATE_APPEAR,			// 出現
-	MAGICUISTATE_DISPLAY,			// 表示
-	MAGICUISTATE_DISAPPERA,			// 収縮
-	MAGICUISTATE_MAX
-}MAGICUISTATE;
-
 // プロトタイプ宣言
 void InitMagicUI(void);
 void UninitMagicUI(void);
