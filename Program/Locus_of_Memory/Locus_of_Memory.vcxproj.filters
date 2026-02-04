@@ -180,6 +180,9 @@
     <ClCompile Include="battery.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="menubg.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -286,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="battery.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="menubg.h">
+      <Filter>UI\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
