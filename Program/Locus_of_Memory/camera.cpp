@@ -436,7 +436,7 @@ void SetCamera(int nIdx)
 							D3DXToRadian(45.0f),
 							(float)pCamera->viewport.Width / (float)pCamera->viewport.Height,
 							10.0f,
-							10000.0f);
+							15000.0f);
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &pCamera->mtxProjection);
