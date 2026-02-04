@@ -28,7 +28,6 @@ typedef enum
 	MAGICUI_TEX_ACCELERATION,	//加速	
 	MAGICUI_TEX_TIMEREVERT,		//時間の巻き戻し(回帰)
 	MAGICUI_TEX_MAGICBOOK,		// 魔導書
-	MAGICUI_TEX_BG,				// 背景
 	MAGICUI_TEX_ADD,			// +
 	MAGICUI_TEX_EQUAL,			// =
 	MAGICUI_TEX_MAX
@@ -37,7 +36,6 @@ typedef enum
 // UIの種類
 typedef enum
 {
-	MAGICUI_TYPE_BG = 0,		// 背景
 	MAGICUI_TYPE_MAGICBOOK,		// 魔導書 
 	MAGICUI_TYPE_0COMMAND0,		// 1つ目のコマンド1
 	MAGICUI_TYPE_0_01ADD,		// +

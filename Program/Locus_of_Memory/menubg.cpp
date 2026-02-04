@@ -16,13 +16,11 @@
 #define MAX_MAGIC			(4)					// 記録できる魔法の最大数
 #define MAX_MENUBG_TEX		(MENUBG_TEX_MAX)	// テクスチャの最大数
 #define INERTIA				(0.1f)				// UI出現の慣性
-#define FRAME				(20)				// 出現/退出を管理するフレーム数
+#define FRAME				(60)				// 出現/退出を管理するフレーム数
 #define MENUBG_POSY			(482.0f)			// 左のUIのY軸
 #define PHONE_WIDTH			(108.0f)			// スマホの幅
 #define LEFT_POS			(D3DXVECTOR3(120.0f, MENUBG_POSY, 0.0f))		// onscreenの左のUI座標
 #define RIGHT_POS			(D3DXVECTOR3(1160.0f, MENUBG_POSY, 0.0f))		// onscreenの右のUI座標
-
-// 
 
 // MENUBGの構造体
 typedef struct
@@ -205,11 +203,19 @@ void UpdateMenuBG(void)
 	if (GetKeyboardTrigger(DIK_5) == true)
 	{
 		SetMenuBG(0, 300.0f, MENUBG_TEX_CLOCK);
+		if (operationType == OPERATIONTYPE_2P)
+		{
+			SetMenuBG(1, 300.0f, MENUBG_TEX_CLOCK);
+		}
 	}
 
 	if (GetKeyboardTrigger(DIK_6) == true)
 	{
 		DisappearMenuBG(0);
+		if (operationType == OPERATIONTYPE_2P)
+		{
+			DisappearMenuBG(1);
+		}
 	}
 
 	VERTEX_2D* pVtx;

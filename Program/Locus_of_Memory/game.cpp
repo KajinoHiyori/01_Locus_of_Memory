@@ -318,9 +318,9 @@ void DrawGame(void)
 
 	SetFogEnable(false);		// –¶‚ð–³Œø
 
-	DrawMenuBG();
-
 	DrawGameUI();
+
+	DrawMenuBG();
 
 	DrawSpellUI();
 

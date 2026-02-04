@@ -10,23 +10,40 @@
 #include "game.h"
 #include "input.h"
 #include "title.h"
-
+#include "fog.h"
 #include "player.h"
 #include "clock.h"
 #include "magicui.h"
 #include "spellui.h"
+#include "menubg.h"
 
 // マクロ定義
 #define MAX_GAMEUI		(2)					// UIの最大数
-#define NUM_GAMEUI		(GAMEUI_TYPE_MAX)	// ポーズメニューで使うテクスチャ数
 #define NUM_SELECT		(5)					// 選択数
+#define FRAME			(20)				// 出現/退出を管理するフレーム数
+#define NUM_GAMEUI		(GAMEUI_TYPE_MAX)	// ポーズメニューで使うテクスチャ数
 #define WIDTH			(135.0f)			// UIの基本幅
 #define LEFT_POSX		(1100.0f)			// 左のUIのX軸
 #define LEFTPHONE_POS	(D3DXVECTOR3(LEFT_POSX, 360.0f, 0.0f))	// 左のスマホの位置
 #define PHONE_HEIGHT	(285.0f)			// スマホの縦幅
 #define PAUSE_POS		(D3DXVECTOR3(LEFT_POSX, 100.0f, 0.0f))	// PAUSEタイトルの位置
-#define PAUSE_HEIGHT	(25.0f)				// PAUSEタイトルの縦幅
-
+#define PAUSE_HEIGHT	(25.0f)			// PAUSEタイトルの縦幅
+#define PHONE_WIDTH		(108.0f)		// スマホの幅
+#define PHONE_HEIGHT	(228.0f)		// スマホの高さ
+#define GAMEUI_POSY		(482.0f)		// 左のUIのY軸
+#define PAUSE_WIDTH		(PHONE_WIDTH)	// spellメニューの幅
+#define PAUSE_HEIGHT	(24.0f)			// spellメニューの高さ
+#define MENU_HEIGHT		(20.0f)			// メニューの高さ
+#define PAUSE_Y			(-170.0f)		// spellメニューの高度
+#define CLOCK_Y			(-100.0f)		// 時計の高度
+#define MAGICBOOK_Y		(-30.0f)		// 魔導書の高度
+#define CONTINUE_Y		(40.0f)			// CONTINUEの高度
+#define RETRY_Y			(110.0f)		// RETRYの高度
+#define QUIT_Y			(180.0f)		// QUITの高度
+#define LEFT_OUTPOS		(D3DXVECTOR3(-PHONE_WIDTH, GAMEUI_POSY, 0.0f))					// offscreenの左のUI座標
+#define RIGHT_OUTPOS	(D3DXVECTOR3(SCREEN_WIDTH + PHONE_WIDTH, GAMEUI_POSY, 0.0f))	// offscreenの右のUI座標
+#define LEFT_POS		(D3DXVECTOR3(120.0f, GAMEUI_POSY, 0.0f))						// onscreenの左のUI座標
+#define RIGHT_POS		(D3DXVECTOR3(1160.0f, GAMEUI_POSY, 0.0f))						// onscreenの右のUI座標
 
 #define COLOR_WHITE		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)	// 白
 #define COLOR_CYAN		D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)	// シアン
@@ -36,33 +53,42 @@ typedef struct
 {
 	GAMEUI_TYPE type;		// テクスチャの種類
 	D3DXVECTOR3 pos;		// 中心座標
-	D3DXVECTOR3 posDest;	// 目的の向き
 	D3DXCOLOR	col;		// 色
 	float fWidth;			// 幅
 	float fHeight;			// 高さ
-	bool bDisp;				// 表示状態
+}GAMEUI;
+
+// ゲームUIの表示位置を管理
+typedef struct
+{
+	GAMEUI gameUI[NUM_GAMEUI];	// テクスチャの種類
+	D3DXVECTOR3 pos;			// 現在の位置
+	D3DXVECTOR3 posDest;		// 目的値
+	GAMEUI_STATE state;			// 状態を管理
+	int nFrame;					// 現在のフレーム数
+	int nNumFrame;				// 移動にかかるフレーム数
+	int nSelect;				// 現在選択されているメニュー
+	bool bMenu;					// メニュー状態を管理
+	bool bDisp;					// 表示状態
+	bool bPause;				// ポーズ状態を管理[trueでポーズ中]
 }GameUI;
 
 // グローバル変数
 LPDIRECT3DTEXTURE9	g_apTextureGameUI[NUM_GAMEUI] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffGameUI = NULL;		// 頂点バッファへのポインタ
-GameUI g_GameUI[MAX_GAMEUI][NUM_GAMEUI];			// UIの表示処理
-int g_nOperationType;									// UI表示数の管理
-
-PAUSE_MENU g_apauseMenu[MAX_PLAYER] = {};						// ポーズメニューの状態
-PAUSE_STATE g_apauseState[MAX_PLAYER] = {};						// ポーズ状態
+GameUI g_aGameUI[MAX_GAMEUI];							// UIの管理
 bool g_aisPause[MAX_PLAYER];									// ポーズしているかどうか
 bool g_bPauseDisp = true;										// ポーズ画面表示状態
 
 const char* c_apFilenameGameUI[NUM_GAMEUI] =
 {
-	"data\\TEXTURE\\pause000.png",
-	"data\\TEXTURE\\pause001.png",
-	"data\\TEXTURE\\pause002.png",
-	"data\\TEXTURE\\pause100.png",
-	"data\\TEXTURE\\pause101.png",
-	"data\\TEXTURE\\pause101.png",
-	"data\\TEXTURE\\pause101.png",
+	"data\\TEXTURE\\Pause\\pause_100.png",
+	"data\\TEXTURE\\Pause\\pause_101.png",
+	"data\\TEXTURE\\Pause\\pause_000.png",
+	"data\\TEXTURE\\Pause\\pause_001.png",
+	"data\\TEXTURE\\Pause\\pause_002.png",
+	"data\\TEXTURE\\Pause\\pause_003.png",
+	"data\\TEXTURE\\Pause\\pause_004.png",
 };
 
 //======================================================================================
@@ -74,6 +100,28 @@ void InitGameUI(void)
 	// デバイスの取得
 	pDevice = GetDevice();
 
+	// UI情報の初期化
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++)
+		{
+			g_aGameUI[nCntPlayer].gameUI[nCntUI].type	= GAMEUI_TYPE_CLOCK;					// UIの種類の初期化
+			g_aGameUI[nCntPlayer].gameUI[nCntUI].pos	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
+			g_aGameUI[nCntPlayer].gameUI[nCntUI].col	= COLOR_WHITE;	// 色の初期化
+			g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth	= 0.0f;									// 幅の初期化
+			g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight = 0.0f;								// 高さの初期化
+		}
+		g_aGameUI[nCntPlayer].state		= GAMEUI_STATE_OFFSCREEN;			// 画面外にある
+		g_aGameUI[nCntPlayer].bDisp		= false;							// 全体の表示状態の初期化
+		g_aGameUI[nCntPlayer].posDest	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
+		g_aGameUI[nCntPlayer].pos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
+		g_aGameUI[nCntPlayer].nFrame	= 0;								// 現在のフレームを初期化
+		g_aGameUI[nCntPlayer].nNumFrame	= FRAME;							// 出現の管理を行うフレーム数
+		g_aGameUI[nCntPlayer].nSelect	= GAMEUI_TYPE_CLOCK;				// 選択状態の管理
+		g_aGameUI[nCntPlayer].bMenu		= false;							// メニュー状態の管理
+		g_aGameUI[nCntPlayer].bPause	= false;							// ポーズ状態の管理
+	}
+
 	// テクスチャの読み込み
 	for (int nCntGameUI = 0; nCntGameUI < NUM_GAMEUI; nCntGameUI++)
 	{
@@ -83,219 +131,124 @@ void InitGameUI(void)
 	// 操作方法の状態を取得
 	OPERATIONTYPE operationType = GetOperationType();
 
-	// 初期化
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_GAMEUI * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffGameUI, NULL);
+
+	VERTEX_2D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
+
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		g_apauseMenu[nCntPlayer] = PAUSE_MENU_CLOCK;
-		g_apauseState[nCntPlayer] = PAUSE_STATE_NEUTRAL;
-		g_aisPause[nCntPlayer] = false;
-	}
-	g_bPauseDisp = true;
-
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_GAMEUI * MAX_GAMEUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffGameUI, NULL);
-	VERTEX_2D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
-
-	// 左のUIを配置
-	for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++, pVtx += 4)
-	{
-		switch (nCntUI)
+		switch (operationType)	// 操作人数に応じてUIの位置を変更
 		{
-		case GAMEUI_TYPE_CLOCK:	// 時計
-			g_GameUI[0][nCntUI].type	= GAMEUI_TYPE_CLOCK;
-			g_GameUI[0][nCntUI].pos		= LEFTPHONE_POS;
-			g_GameUI[0][nCntUI].posDest = LEFTPHONE_POS;
-			g_GameUI[0][nCntUI].col		= COLOR_CYAN;
-			g_GameUI[0][nCntUI].fWidth	= WIDTH;
-			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
-			g_GameUI[0][nCntUI].bDisp	= true;
-			break;
-
-		case GAMEUI_TYPE_MAGICBOOK:	// 魔導書
-			g_GameUI[0][nCntUI].type = GAMEUI_TYPE_MAGICBOOK;
-			g_GameUI[0][nCntUI].pos = LEFTPHONE_POS;
-			g_GameUI[0][nCntUI].fWidth = WIDTH;
-			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
-			g_GameUI[0][nCntUI].bDisp = true;
-			break;
-
-		case GAMEUI_TYPE_CONTINUE:	// CONTINUE
-			g_GameUI[0][nCntUI].type = GAMEUI_TYPE_CONTINUE;
-			g_GameUI[0][nCntUI].pos = LEFTPHONE_POS;
-			g_GameUI[0][nCntUI].fWidth = WIDTH;
-			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
-			g_GameUI[0][nCntUI].bDisp = true;
-			break;
-
-		case GAMEUI_TYPE_RETRY:	// RETRY
-			g_GameUI[0][nCntUI].type = GAMEUI_TYPE_RETRY;
-			g_GameUI[0][nCntUI].pos = LEFTPHONE_POS;
-			g_GameUI[0][nCntUI].fWidth = WIDTH;
-			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
-			g_GameUI[0][nCntUI].bDisp = true;
-			break;
-
-		case GAMEUI_TYPE_QUIT:	// QUIT
-			g_GameUI[0][nCntUI].type = GAMEUI_TYPE_QUIT;
-			g_GameUI[0][nCntUI].pos = LEFTPHONE_POS;
-			g_GameUI[0][nCntUI].fWidth = WIDTH;
-			g_GameUI[0][nCntUI].fHeight = PHONE_HEIGHT;
-			g_GameUI[0][nCntUI].bDisp = true;
-			break;
-
-		case GAMEUI_TYPE_PAUSE:	// pauseタイトル
-			g_GameUI[0][nCntUI].type	= GAMEUI_TYPE_PAUSE;
-			g_GameUI[0][nCntUI].pos		= PAUSE_POS;
-			g_GameUI[0][nCntUI].posDest = PAUSE_POS;
-			g_GameUI[0][nCntUI].col		= COLOR_CYAN;
-			g_GameUI[0][nCntUI].fWidth	= WIDTH;
-			g_GameUI[0][nCntUI].fHeight = PAUSE_HEIGHT;
-			g_GameUI[0][nCntUI].bDisp	= true;
-			break;
-
-		case GAMEUI_TYPE_PHONE:	// スマホ
-			g_GameUI[0][nCntUI].type	= GAMEUI_TYPE_PHONE;
-			g_GameUI[0][nCntUI].pos		= LEFTPHONE_POS;
-			g_GameUI[0][nCntUI].posDest = PAUSE_POS;
-			g_GameUI[0][nCntUI].col		= COLOR_CYAN;
-			g_GameUI[0][nCntUI].fWidth	= WIDTH;
-			g_GameUI[0][nCntUI].fHeight	= PHONE_HEIGHT;
-			g_GameUI[0][nCntUI].bDisp	= true;
-			break;
-		}
-
-
-
-
-	}
-
-	// 頂点バッファをアンロック
-	g_pVtxBuffGameUI->Unlock();
-#if 0
-	
-
-	OPERATIONTYPE operationType = GetOperationType();	// 操作方法の取得
-	switch (operationType)
-	{
-	case OPERATIONTYPE_2P:	// 2Pプレイ
-		g_nOperationType = 1;
-		break;
-
-	default:	// 1P/LEYBOARDプレイ
-		g_nOperationType = 0;
-		break;
-	}
-
-	
-
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_GAMEUI * MAX_GAMEUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffGameUI, NULL);
-	VERTEX_2D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
-	switch (g_nOperationType)
-	{
-	case 1:	// 2PPLAY
-		for (int nCntOP = 0; nCntOP < MAX_GAMEUI; nCntOP++)
-		{
-			for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++, pVtx += 4)
+		case OPERATIONTYPE_2P:	// 2人操作
+			switch (nCntPlayer)
 			{
-				switch (nCntUI)
-				{
-				case GAMEUI_TYPE_PHONE:	// スマホ
-					g_GameUI[nCntOP][nCntUI].type = GAMEUI_TYPE_PHONE;
-					g_GameUI[nCntOP][nCntUI].pos = LEFTPHONE_POS;
-					g_GameUI[nCntOP][nCntUI].fWidth = PHONE_WIDTH;
-					g_GameUI[nCntOP][nCntUI].fHeight = PHONE_HEIGHT;
-					g_GameUI[nCntOP][nCntUI].bDisp = true;
-					break;
+			case 0:
+				g_aGameUI[nCntPlayer].pos = LEFT_OUTPOS;
+				g_aGameUI[nCntPlayer].posDest = LEFT_OUTPOS;
+				g_aGameUI[nCntPlayer].bDisp = false;
 
-				case GAMEUI_TYPE_1PALPHA:	// 背景暗転
+				break;
+			case 1:
+				g_aGameUI[nCntPlayer].pos = RIGHT_OUTPOS;
+				g_aGameUI[nCntPlayer].pos = RIGHT_OUTPOS;
+				g_aGameUI[nCntPlayer].bDisp = false;
 
-					break;
-				}
-
-				//GAMEUI_TYPE_CLOCK = 0,	// 時計
-				//GAMEUI_TYPE_MAGICBOOK,	// 魔導書
-				//GAMEUI_TYPE_CONTINUE,	// CONTINUE
-				//GAMEUI_TYPE_RETRY,		// RETRY
-				//GAMEUI_TYPE_QUIT,		// QUIT
-				//GAMEUI_TYPE_PAUSE,		// PAUSEタイトル
-				//GAMEUI_TYPE_PHONE,		// スマホ
-				//GAMEUI_TYPE_1PALPHA,		// ポーズ背景を暗くする[1P]
-				//GAMEUI_TYPE_2PALPHA,		// ポーズ背景を暗くする[2P]
-
-				// 頂点座標の設定
-				pVtx[0].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x - g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y - g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
-				pVtx[1].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x + g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y - g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
-				pVtx[2].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x - g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y + g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
-				pVtx[3].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x + g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y + g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
-
-				// rhwの設定
-				pVtx[0].rhw = 1.0f;
-				pVtx[1].rhw = 1.0f;
-				pVtx[2].rhw = 1.0f;
-				pVtx[3].rhw = 1.0f;
-
-				// 頂点カラーの設定
-				pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-				pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-				pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-				pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-
-				// テクスチャ座標の設定
-				pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-				pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-				pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-				pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+				break;
 			}
+			break;
+
+		default:	// 1人操作
+			if (nCntPlayer > 0)
+			{
+				pVtx += NUM_GAMEUI * 4;
+				continue;
+			}
+			g_aGameUI[nCntPlayer].bDisp = false;
+			g_aGameUI[nCntPlayer].pos = RIGHT_OUTPOS;
+			g_aGameUI[nCntPlayer].pos = RIGHT_OUTPOS;
+			break;
 		}
 
-	
-	}
-	// 頂点バッファをアンロック
-	g_pVtxBuffGameUI->Unlock();
-
-	VERTEX_2D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
-
-	for (int nCntOPTYPE = 0; nCntOPTYPE < MAX_GAMEUI; nCntOPTYPE++)
-	{
-		for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++, pVtx += 4)
+		for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++)
 		{
 			switch (nCntUI)
 			{
 			case GAMEUI_TYPE_PHONE:	// スマホ
-				g_gameUI[nCntOPTYPE][nCntUI].type = GAMEUI_TYPE_PHONE;
-				g_gameUI[nCntOPTYPE][nCntUI].pos = LEFTPHONE_POS;
-				g_gameUI[nCntOPTYPE][nCntUI].fWidth = PHONE_WIDTH;
-				g_gameUI[nCntOPTYPE][nCntUI].fHeight = PHONE_HEIGHT;
-				g_gameUI[nCntOPTYPE][nCntUI].bDisp = true;
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].type		= GAMEUI_TYPE_PHONE;				// UIの種類の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].pos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].col		= COLOR_WHITE;						// 色の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth		= PHONE_WIDTH;						// 幅の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight	= PHONE_HEIGHT;						// 高さの初期化
 				break;
 
-			case GAMEUI_TYPE_1PALPHA:	// 背景暗転
-				
+			case GAMEUI_TYPE_PAUSE:	// ポーズタイトル
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].type		= GAMEUI_TYPE_PAUSE;				// UIの種類の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].pos		= D3DXVECTOR3(0.0f, PAUSE_Y, 0.0f);	// 位置の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].col		= COLOR_WHITE;						// 色の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth		= PAUSE_WIDTH;						// 幅の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight	= PAUSE_HEIGHT;						// 高さの初期化
+				break;
+
+			case GAMEUI_TYPE_CLOCK:	// 時計
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].type		= GAMEUI_TYPE_CLOCK;				// UIの種類の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].pos		= D3DXVECTOR3(0.0f, CLOCK_Y, 0.0f);	// 位置の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].col		= COLOR_CYAN;						// 色の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth		= PAUSE_WIDTH;						// 幅の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight	= MENU_HEIGHT;						// 高さの初期化
+				break;
+
+			case GAMEUI_TYPE_MAGICBOOK:	// 魔導書
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].type		= GAMEUI_TYPE_MAGICBOOK;				// UIの種類の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].pos		= D3DXVECTOR3(0.0f, MAGICBOOK_Y, 0.0f);	// 位置の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].col		= COLOR_WHITE;						// 色の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth		= PAUSE_WIDTH;						// 幅の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight	= MENU_HEIGHT;						// 高さの初期化
+				break;
+
+			case GAMEUI_TYPE_CONTINUE:	// CONTINUE
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].type		= GAMEUI_TYPE_CONTINUE;				// UIの種類の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].pos		= D3DXVECTOR3(0.0f, CONTINUE_Y, 0.0f);	// 位置の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].col		= COLOR_WHITE;						// 色の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth		= PAUSE_WIDTH;						// 幅の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight	= MENU_HEIGHT;						// 高さの初期化
+				break;
+
+			case GAMEUI_TYPE_RETRY:	// RETRY
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].type		= GAMEUI_TYPE_RETRY;				// UIの種類の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].pos		= D3DXVECTOR3(0.0f, RETRY_Y, 0.0f);	// 位置の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].col		= COLOR_WHITE;						// 色の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth		= PAUSE_WIDTH;						// 幅の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight	= MENU_HEIGHT;						// 高さの初期化
+				break;
+
+			case GAMEUI_TYPE_QUIT:	// QUIT
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].type		= GAMEUI_TYPE_QUIT;					// UIの種類の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].pos		= D3DXVECTOR3(0.0f, QUIT_Y, 0.0f);	// 位置の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].col		= COLOR_WHITE;						// 色の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth		= PAUSE_WIDTH;						// 幅の初期化
+				g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight	= MENU_HEIGHT;						// 高さの初期化
 				break;
 			}
+		}
 
-			//GAMEUI_TYPE_CLOCK = 0,	// 時計
-			//GAMEUI_TYPE_MAGICBOOK,	// 魔導書
-			//GAMEUI_TYPE_CONTINUE,	// CONTINUE
-			//GAMEUI_TYPE_RETRY,		// RETRY
-			//GAMEUI_TYPE_QUIT,		// QUIT
-			//GAMEUI_TYPE_PAUSE,		// PAUSEタイトル
-			//GAMEUI_TYPE_PHONE,		// スマホ
-			//GAMEUI_TYPE_1PALPHA,		// ポーズ背景を暗くする[1P]
-			//GAMEUI_TYPE_2PALPHA,		// ポーズ背景を暗くする[2P]
-
+		for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
+		{
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x - g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y - g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
-			pVtx[1].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x + g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y - g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
-			pVtx[2].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x - g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y + g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
-			pVtx[3].pos = D3DXVECTOR3(g_gameUI[nCntOPTYPE][nCntUI].pos.x + g_gameUI[nCntOPTYPE][nCntUI].fWidth, g_gameUI[nCntOPTYPE][nCntUI].pos.y + g_gameUI[nCntOPTYPE][nCntUI].fHeight, g_gameUI[nCntOPTYPE][nCntUI].pos.z);
+			pVtx[0].pos.x = g_aGameUI[nCntPlayer].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.x - g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth;
+			pVtx[0].pos.y = g_aGameUI[nCntPlayer].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.y - g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight;
+			pVtx[0].pos.z = 0.0f;
+			pVtx[1].pos.x = g_aGameUI[nCntPlayer].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth;
+			pVtx[1].pos.y = g_aGameUI[nCntPlayer].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.y - g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight;
+			pVtx[1].pos.z = 0.0f;
+			pVtx[2].pos.x = g_aGameUI[nCntPlayer].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.x - g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth;
+			pVtx[2].pos.y = g_aGameUI[nCntPlayer].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight;
+			pVtx[2].pos.z = 0.0f;
+			pVtx[3].pos.x = g_aGameUI[nCntPlayer].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth;
+			pVtx[3].pos.y = g_aGameUI[nCntPlayer].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight;
+			pVtx[3].pos.z = 0.0f;
 
 			// rhwの設定
 			pVtx[0].rhw = 1.0f;
@@ -316,9 +269,9 @@ void InitGameUI(void)
 			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 		}
 	}
+
 	// 頂点バッファをアンロック
 	g_pVtxBuffGameUI->Unlock();
-#endif
 }
 
 //======================================================================================
@@ -326,7 +279,6 @@ void InitGameUI(void)
 //======================================================================================
 void UninitGameUI(void)
 {
-#if 1
 	// テクスチャの破棄
 	for (int nCntGameUI = 0; nCntGameUI < NUM_GAMEUI; nCntGameUI++)
 	{
@@ -343,7 +295,6 @@ void UninitGameUI(void)
 		g_pVtxBuffGameUI->Release();
 		g_pVtxBuffGameUI = NULL;
 	}
-#endif
 }
 
 //======================================================================================
@@ -351,223 +302,292 @@ void UninitGameUI(void)
 //======================================================================================
 void UpdateGameUI(void)
 {
+	// フェードの状態を取得
+	FADE* pFade = GetFade();
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
-	{
-		if (g_apauseState[nCntPlayer] != PAUSE_STATE_NEUTRAL)
-		{
-			if (GetJoypadTrigger(JOYKEY_B, 0) == true)
-			{
-				switch (g_apauseState[nCntPlayer])
-				{
-				case PAUSE_STATE_CLOCK:
-					DisappearClock(nCntPlayer);
-					break;
-
-				case PAUSE_STATE_MAGICBOOK:
-					DisappearMagicUI(0);
-					break;
-				}
-				g_apauseState[nCntPlayer] = PAUSE_STATE_NEUTRAL;
-			}
-
-			continue;
-		}
-
-		if (GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true)
-		{
-			g_aisPause[nCntPlayer] = g_aisPause[nCntPlayer] ? false : true;
-		}
-
-		if (g_aisPause[nCntPlayer] == false)
-		{
-			continue;
-		}
-
-		if (GetJoypadRepeat(JOYKEY_UP, 0) == true || GetKeyboardRepeat(DIK_W) == true || GetJoypadStickRepeatL(JOYSTICK_UP, 0) == true)
-		{ // 上方向キーが押されたら
-			// 現在のモードに合わせて変更
-			switch (g_apauseMenu[nCntPlayer])
-			{
-			case PAUSE_MENU_CLOCK:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_QUIT;
-				break;
-
-			case PAUSE_MENU_MAGICBOOK:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_CLOCK;
-				break;
-
-			case PAUSE_MENU_CONTINUE:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_MAGICBOOK;
-				break;
-
-			case PAUSE_MENU_RESTART:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_CONTINUE;
-				break;
-
-			case PAUSE_MENU_QUIT:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_RESTART;
-				break;
-			}
-		}
-
-		if (GetJoypadRepeat(JOYKEY_DOWN, 0) == true || GetKeyboardRepeat(DIK_S) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, 0) == true)
-		{ // 下方向キーが押されたら
-			// 現在のモードに合わせて変更
-			switch (g_apauseMenu[nCntPlayer])
-			{
-			case PAUSE_MENU_CLOCK:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_MAGICBOOK;
-				break;
-
-			case PAUSE_MENU_MAGICBOOK:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_CONTINUE;
-				break;
-
-			case PAUSE_MENU_CONTINUE:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_RESTART;
-				break;
-
-			case PAUSE_MENU_RESTART:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_QUIT;
-				break;
-
-			case PAUSE_MENU_QUIT:
-				g_apauseMenu[nCntPlayer] = PAUSE_MENU_CLOCK;
-				break;
-			}
-		}
-
-		if (GetJoypadTrigger(JOYKEY_A, 0) == true || GetKeyboardTrigger(DIK_RETURN) == true)
-		{ // 決定キーが押されたら
-			// 現在のモードに合わせて変更
-			switch (g_apauseMenu[nCntPlayer])
-			{
-			case PAUSE_MENU_CLOCK:
-				g_apauseState[nCntPlayer] = PAUSE_STATE_CLOCK;
-				SetClock(nCntPlayer, INIT_D3DXVEC3);
-				break;
-
-			case PAUSE_MENU_MAGICBOOK:
-				g_apauseState[nCntPlayer] = PAUSE_STATE_MAGICBOOK;
-				SetMagicUI(nCntPlayer);
-				break;
-
-			case PAUSE_MENU_CONTINUE:
-				g_aisPause[nCntPlayer] = false;
-				break;
-
-			case PAUSE_MENU_RESTART:
-				SetFade(MODE_GAME);
-				break;
-
-			case PAUSE_MENU_QUIT:
-				SetFade(MODE_TITLE);
-				break;
-}
-		}
-
-		if (GetKeyboardTrigger(DIK_F5) == true)
-		{
-			g_bPauseDisp = g_bPauseDisp ? false : true;
-		}
-	}
-#if 0
-	// 入力情報の保存
-	static int nCounterUp = 0;
-	static int nCounterDown = 0;
-
-	// 同時押しされた場合、処理を行わない
-	if ((GetKeyboardPress(DIK_W) == true && GetKeyboardPress(DIK_S) == true) ||
-		(GetJoypadPress(JOYKEY_UP, 0) == true && GetJoypadPress(JOYKEY_DOWN, 0) == true))
-	{
-		return;
-	}
-
-	// WSキーが押された場合、テクスチャの状態を変更する(リピート)
-	else if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true || GetJoypadStickRepeatL(JOYSTICK_UP, 0) == true)	// 上
-	{
-		g_nSelectGameUI[nCntOP]--;
-		if (g_selectGameUI < 0)
-		{
-			g_selectGameUI = GAMEUI_TYPE_QUIT;
-		}
-	}
-	else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, 0) == true)	// 下
-	{
-		g_selectGameUI++;
-		if (g_selectGameUI > GAMEUI_TYPE_QUIT)
-		{
-			g_selectGameUI = GAMEUI_TYPE_CLOCK;
-		}
-	}
-
-	// 何が選ばれているかの判定
-	switch (g_selectGameUI)
-	{
-	case GAMEUI_TYPE_CLOCK:	// 時計
-		g_pauseMenu = GAMEUI_TYPE_CONTINUE;
-		break;
-
-	case GAMEUI_TYPE_MAGICBOOK:	// 魔導書
-		g_pauseMenu = GAMEUI_TYPE_MAGICBOOK;
-		break;
-
-	case GAMEUI_TYPE_CONTINUE:	// CONTINUE
-		g_pauseMenu = GAMEUI_TYPE_CONTINUE;
-		break;
-
-	case GAMEUI_TYPE_RETRY:		// RETRY
-		g_pauseMenu = GAMEUI_TYPE_RETRY;
-		break;
-	
-	case GAMEUI_TYPE_QUIT:		// QUIT
-		g_pauseMenu = GAMEUI_TYPE_QUIT;
-		break;
-	}
-
-	// 頂点座標の更新
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffGameUI->Lock(0, 0, (void**)&pVtx, 0);
-	for (int nCntGameUI = 0; nCntGameUI < NUM_SELECT; nCntGameUI++)
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		if (nCntGameUI == g_pauseMenu)	// 選択部だけ明るく表示
+		OPERATIONTYPE operationType = GetOperationType();
+
+		switch (operationType)
 		{
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
+		case OPERATIONTYPE_2P:	// 2人操作
+			if (GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true)	// 2Pでのポーズ切り替え管理
+			{
+				if (g_aGameUI[nCntPlayer].bPause == false && g_aGameUI[nCntPlayer].state == GAMEUI_STATE_OFFSCREEN)
+				{
+					if (nCntPlayer == 0)
+					{
+						g_aGameUI[nCntPlayer].posDest = LEFT_POS;
+					}
+					else if (nCntPlayer == 1)
+					{
+						g_aGameUI[nCntPlayer].posDest = RIGHT_POS;
+					}
+					g_aGameUI[nCntPlayer].bDisp = true;
+					g_aGameUI[nCntPlayer].bPause = true;
+					g_aGameUI[nCntPlayer].state = GAMEUI_STATE_APPEAR;
+					g_aGameUI[nCntPlayer].nFrame = 0;
+				}
+				else if (g_aGameUI[nCntPlayer].bPause == true && g_aGameUI[nCntPlayer].state == GAMEUI_STATE_ONSCREEN)
+				{
+					if (nCntPlayer == 0)
+					{
+						g_aGameUI[nCntPlayer].posDest = LEFT_OUTPOS;
+					}
+					else if (nCntPlayer == 1)
+					{
+						g_aGameUI[nCntPlayer].posDest = RIGHT_OUTPOS;
+					}
+					g_aGameUI[nCntPlayer].bDisp = true;
+					g_aGameUI[nCntPlayer].bPause = false;
+					g_aGameUI[nCntPlayer].state = GAMEUI_STATE_DISAPPEAR;
+					g_aGameUI[nCntPlayer].nFrame = 0;
+				}
+			}
+			break;
+
+		default:	// 1人操作
+			if (nCntPlayer > 0)
+			{
+				continue;
+			}
+			if ((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true)
+			{
+				if (g_aGameUI[nCntPlayer].bPause == false && g_aGameUI[nCntPlayer].state == GAMEUI_STATE_OFFSCREEN)
+				{
+					g_aGameUI[nCntPlayer].posDest = RIGHT_POS;
+					g_aGameUI[nCntPlayer].bDisp = true;
+					g_aGameUI[nCntPlayer].bPause = true;
+					g_aGameUI[nCntPlayer].state = GAMEUI_STATE_APPEAR;
+					g_aGameUI[nCntPlayer].nFrame = 0;
+				}
+				else if (g_aGameUI[nCntPlayer].bPause == true && g_aGameUI[nCntPlayer].state == GAMEUI_STATE_ONSCREEN)
+				{
+					g_aGameUI[nCntPlayer].posDest = RIGHT_OUTPOS;
+					g_aGameUI[nCntPlayer].bDisp = true;
+					g_aGameUI[nCntPlayer].bPause = false;
+					g_aGameUI[nCntPlayer].state = GAMEUI_STATE_DISAPPEAR;
+					g_aGameUI[nCntPlayer].nFrame = 0;
+				}
+			}
+			break;
 		}
-		else
+
+		// 全体の移動を管理
+		float fDiffKeyX = 0.0f;	// 現在の位置と目的の位置の差分を計算
+		float fRateKey = (float)g_aGameUI[nCntPlayer].nFrame / (float)g_aGameUI[nCntPlayer].nNumFrame;
+		if (g_aGameUI[nCntPlayer].bDisp == true)
 		{
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
+			switch (g_aGameUI[nCntPlayer].state)
+			{
+			case GAMEUI_STATE_NONE:	// 何もしていない状態
+
+				break;
+
+			case GAMEUI_STATE_ONSCREEN:	// スクリーン上にある
+				g_aGameUI[nCntPlayer].bDisp = true;
+
+				// 選択状態
+				if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
+				{
+					g_aGameUI[nCntPlayer].nSelect--;
+					if (g_aGameUI[nCntPlayer].nSelect < GAMEUI_TYPE_CLOCK)
+					{
+						g_aGameUI[nCntPlayer].nSelect = GAMEUI_TYPE_QUIT;
+					}
+				}
+				else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
+				{
+					g_aGameUI[nCntPlayer].nSelect++;
+					if (g_aGameUI[nCntPlayer].nSelect > GAMEUI_TYPE_QUIT)
+					{
+						g_aGameUI[nCntPlayer].nSelect = GAMEUI_TYPE_CLOCK;
+					}
+				}
+
+				// 選択したメニューを呼び出す
+				if (*pFade == FADE_NONE && ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true))
+				{
+					switch (g_aGameUI[nCntPlayer].nSelect)
+					{
+					case GAMEUI_TYPE_CLOCK:	// 時計
+						if (g_aGameUI[nCntPlayer].bMenu == false)
+						{
+							if (operationType == OPERATIONTYPE_2P)	// 2P操作の場合
+							{
+								if (nCntPlayer == 0)
+								{
+									SetClock(nCntPlayer, D3DXVECTOR3(LEFT_POS.x - PHONE_WIDTH, LEFT_POS.y, LEFT_POS.z));
+									SetMenuBG(nCntPlayer, CLOCK_Y, MENUBG_TEX_CLOCK);
+								}
+								else if (nCntPlayer == 1)
+								{
+									SetClock(nCntPlayer, D3DXVECTOR3(RIGHT_POS.x - PHONE_WIDTH, RIGHT_POS.y, RIGHT_POS.z));
+									SetMenuBG(nCntPlayer, CLOCK_Y, MENUBG_TEX_CLOCK);
+								}
+							}
+							else
+							{
+								SetClock(nCntPlayer, D3DXVECTOR3(RIGHT_POS.x - PHONE_WIDTH, RIGHT_POS.y, RIGHT_POS.z));
+								SetMenuBG(nCntPlayer, CLOCK_Y, MENUBG_TEX_CLOCK);
+							}
+							g_aGameUI[nCntPlayer].bMenu = true;
+						}
+						else if (g_aGameUI[nCntPlayer].bMenu == true)
+						{
+							DisappearClock(nCntPlayer);
+							DisappearMenuBG(nCntPlayer);
+						}
+						break;
+
+					case GAMEUI_TYPE_MAGICBOOK:	// 魔導書
+						SetMagicUI(nCntPlayer);
+						SetMenuBG(nCntPlayer, MAGICBOOK_Y, MENUBG_TEX_MAGICBOOK);
+						g_aGameUI[nCntPlayer].bMenu = true;
+						break;
+
+					case GAMEUI_TYPE_CONTINUE:	// CONTINUE
+						g_aGameUI[nCntPlayer].state = GAMEUI_STATE_DISAPPEAR;
+						break;
+
+					case GAMEUI_TYPE_RETRY:	// RETRY
+						SetFade(MODE_GAME);
+						break;
+
+					case GAMEUI_TYPE_QUIT:	// QUIT
+						SetFade(MODE_TITLE);
+						break;
+					}
+				}
+				break;
+
+			case GAMEUI_STATE_APPEAR:	// 出現状態
+				fDiffKeyX = g_aGameUI[nCntPlayer].posDest.x - g_aGameUI[nCntPlayer].pos.x;
+				g_aGameUI[nCntPlayer].pos.x = g_aGameUI[nCntPlayer].pos.x + fDiffKeyX * fRateKey;
+				g_aGameUI[nCntPlayer].nFrame++;
+				if (g_aGameUI[nCntPlayer].nFrame == g_aGameUI[nCntPlayer].nNumFrame)
+				{
+					g_aGameUI[nCntPlayer].state = GAMEUI_STATE_ONSCREEN;
+					switch (operationType)
+					{
+					case OPERATIONTYPE_2P:	// 2人操作
+						if (nCntPlayer == 0)
+						{
+							g_aGameUI[nCntPlayer].pos = LEFT_POS;
+							g_aGameUI[nCntPlayer].posDest = LEFT_POS;
+						}
+						else if (nCntPlayer == 1)
+						{
+							g_aGameUI[nCntPlayer].pos = RIGHT_POS;
+							g_aGameUI[nCntPlayer].posDest = RIGHT_POS;
+						}
+						break;
+
+					default:	// 1人操作
+						if (nCntPlayer == 0)
+						{
+							g_aGameUI[nCntPlayer].pos = RIGHT_POS;
+							g_aGameUI[nCntPlayer].posDest = RIGHT_POS;
+						}
+						break;
+					}
+
+				}
+				break;
+
+			case GAMEUI_STATE_DISAPPEAR:	// 退出状態
+				fDiffKeyX = g_aGameUI[nCntPlayer].posDest.x - g_aGameUI[nCntPlayer].pos.x;
+				g_aGameUI[nCntPlayer].pos.x = g_aGameUI[nCntPlayer].pos.x + fDiffKeyX * fRateKey;
+				g_aGameUI[nCntPlayer].nFrame++;
+				if (g_aGameUI[nCntPlayer].nFrame == g_aGameUI[nCntPlayer].nNumFrame)
+				{
+					g_aGameUI[nCntPlayer].state = GAMEUI_STATE_OFFSCREEN;
+					g_aGameUI[nCntPlayer].bDisp = false;
+					switch (operationType)
+					{
+					case OPERATIONTYPE_2P:	// 2人操作
+						if (nCntPlayer == 0)
+						{
+							g_aGameUI[nCntPlayer].pos = LEFT_OUTPOS;
+							g_aGameUI[nCntPlayer].posDest = LEFT_OUTPOS;
+						}
+						else if (nCntPlayer == 1)
+						{
+							g_aGameUI[nCntPlayer].pos = RIGHT_OUTPOS;
+							g_aGameUI[nCntPlayer].posDest = RIGHT_OUTPOS;
+						}
+						break;
+
+					default:	// 1人操作
+						if (nCntPlayer == 0)
+						{
+							g_aGameUI[nCntPlayer].pos = RIGHT_OUTPOS;
+							g_aGameUI[nCntPlayer].posDest = RIGHT_OUTPOS;
+						}
+						break;
+					}
+				}
+				break;
+
+			case GAMEUI_STATE_OFFSCREEN:	// スクリーン外にある
+				g_aGameUI[nCntPlayer].bDisp = false;
+				break;
+			}
 		}
-		pVtx += 4;
+		for (int nCntUI = 0; nCntUI < NUM_GAMEUI; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
+		{
+			// 頂点座標の設定
+			pVtx[0].pos.x = g_aGameUI[nCntPlayer].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.x - g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth;
+			pVtx[0].pos.y = g_aGameUI[nCntPlayer].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.y - g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight;
+			pVtx[0].pos.z = g_aGameUI[nCntPlayer].pos.z + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.z;
+			pVtx[1].pos.x = g_aGameUI[nCntPlayer].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth;
+			pVtx[1].pos.y = g_aGameUI[nCntPlayer].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.y - g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight;
+			pVtx[1].pos.z = g_aGameUI[nCntPlayer].pos.z + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.z;
+			pVtx[2].pos.x = g_aGameUI[nCntPlayer].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.x - g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth;
+			pVtx[2].pos.y = g_aGameUI[nCntPlayer].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight;
+			pVtx[2].pos.z = g_aGameUI[nCntPlayer].pos.z + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.z;
+			pVtx[3].pos.x = g_aGameUI[nCntPlayer].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.x + g_aGameUI[nCntPlayer].gameUI[nCntUI].fWidth;
+			pVtx[3].pos.y = g_aGameUI[nCntPlayer].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.y + g_aGameUI[nCntPlayer].gameUI[nCntUI].fHeight;
+			pVtx[3].pos.z = g_aGameUI[nCntPlayer].pos.z + g_aGameUI[nCntPlayer].gameUI[nCntUI].pos.z;
+
+			// rhwの設定
+			pVtx[0].rhw = 1.0f;
+			pVtx[1].rhw = 1.0f;
+			pVtx[2].rhw = 1.0f;
+			pVtx[3].rhw = 1.0f;
+
+			if (g_aGameUI[nCntPlayer].nSelect == nCntUI)
+			{
+				// 頂点カラーの設定
+				pVtx[0].col = COLOR_CYAN;
+				pVtx[1].col = COLOR_CYAN;
+				pVtx[2].col = COLOR_CYAN;
+				pVtx[3].col = COLOR_CYAN;
+			}
+			else
+			{
+				// 頂点カラーの設定
+				pVtx[0].col = COLOR_WHITE;
+				pVtx[1].col = COLOR_WHITE;
+				pVtx[2].col = COLOR_WHITE;
+				pVtx[3].col = COLOR_WHITE;
+			}
+
+			// テクスチャ座標の設定
+			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+		}
 	}
-	// アンロック
+
+	// 頂点バッファをアンロック
 	g_pVtxBuffGameUI->Unlock();
-
-	// ENTERキーで確定した場合
-	if (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true)
-	{
-		switch (g_pauseMenu)
-		{
-		case GAMEUI_TYPE_CONTINUE:	// コンテニュー
-
-			break;
-		case GAMEUI_TYPE_RETRY:		// リトライ
-			SetFade(MODE_GAME);
-			break;
-		case GAMEUI_TYPE_QUIT:		// タイトルへ戻る
-			SetFade(MODE_TITLE);
-			break;
-		}
-	}
-#endif
 }
 
 //======================================================================================
@@ -585,24 +605,24 @@ void DrawGameUI(void)
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
-	// テクスチャの設定
-	pDevice->SetTexture(0, g_apTextureGameUI[GAMEUI_TYPE_PHONE]);
+	// 一時的にfogを切る
+	SetFogEnable(false);
 
-	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, GAMEUI_TYPE_PHONE * 4, 2);
-
-	// テクスチャの設定
-	pDevice->SetTexture(0, g_apTextureGameUI[GAMEUI_TYPE_PAUSE]);
-
-	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, GAMEUI_TYPE_PAUSE * 4, 2);
-
-	for (int nCntGameUI = 0; nCntGameUI < NUM_SELECT; nCntGameUI++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		// テクスチャの設定
-		pDevice->SetTexture(0, g_apTextureGameUI[nCntGameUI]);
+		if (g_aGameUI[nCntPlayer].bDisp == true)
+		{
+			for (int nCntGameUI = 0; nCntGameUI < NUM_GAMEUI; nCntGameUI++)
+			{
+				// テクスチャの設定
+				pDevice->SetTexture(0, g_apTextureGameUI[g_aGameUI[nCntPlayer].gameUI[nCntGameUI].type]);
 
-		// ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntGameUI * 4, 2);
+				// ポリゴンの描画
+				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntGameUI * 4 + (nCntPlayer * NUM_GAMEUI * 4), 2);
+			}
+		}
 	}
+
+	// fogの再設置
+	SetFogEnable(true);
 }

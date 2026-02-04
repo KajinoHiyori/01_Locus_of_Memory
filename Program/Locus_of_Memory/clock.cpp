@@ -141,7 +141,7 @@ void InitClock(void)
 	// 頂点バッファをアンロック
 	g_pVtxBuffClock->Unlock();
 
-	SetClock(0, D3DXVECTOR3(10.0f, 10.0f, 0.0f));
+	//SetClock(0, D3DXVECTOR3(10.0f, 10.0f, 0.0f));
 }
 
 //======================================================================================

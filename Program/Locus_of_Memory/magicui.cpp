@@ -98,7 +98,6 @@ const char* c_apFilenameMagicUI[MAX_MAGICUI_TEX] =
 	"data\\TEXTURE\\SpellUI\\23_Acceleration.png",
 	"data\\TEXTURE\\SpellUI\\24_TimeRevert.png",
 	"data\\TEXTURE\\SpellUI\\27_MagicBook.png",
-	"data\\TEXTURE\\SpellUI\\29_MagicBookBG.png",
 	"data\\TEXTURE\\SpellUI\\30_Plus.png",
 	"data\\TEXTURE\\SpellUI\\31_Equal.png",
 };
@@ -265,11 +264,21 @@ void UpdateMagicUI(void)
 	Player* pPlayer = GetPlayer();
 
 	if (GetKeyboardTrigger(DIK_8) == true)
+	{
 		SetMagicUI(0);
-
+		if (operationType == OPERATIONTYPE_2P)
+		{
+			SetMagicUI(1);
+		}
+	}
 	if (GetKeyboardTrigger(DIK_9) == true)
+	{
 		DisappearMagicUI(0);
-
+		if (operationType == OPERATIONTYPE_2P)
+		{
+			DisappearMagicUI(1);
+		}
+	}
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffMagicUI->Lock(0, 0, (void**)&pVtx, 0);
@@ -283,90 +292,21 @@ void UpdateMagicUI(void)
 		// プレイヤーの魔法を記録
 		SetPlayerMagic(nCntPlayer);
 
-		switch (g_aMagicUI[nCntPlayer].state)
-		{
-		case MAGICUISTATE_NONDISPLAY:	// 非表示
-			g_aMagicUI[nCntPlayer].bDisp = false;
-			break;
-
-		case MAGICUISTATE_APPEAR:	// 出現
-			// MAGICUIの出現処理
-			fDiffKeyUp = g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDestUp - g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightUp;
-			fDiffKeyDown = g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDestDown - g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDown;
-
-			g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightUp = g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightUp + fDiffKeyUp * fRateKey;
-			g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDown = g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDown + fDiffKeyDown * fRateKey;
-
-			g_aMagicUI[nCntPlayer].nFrame++;
-			if (g_aMagicUI[nCntPlayer].nFrame == g_aMagicUI[nCntPlayer].nNumFrame)
-			{
-				g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightUp = PHONE_HEIGHTUP;
-				g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDown = PHONE_HEIGHTDOWN;
-				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISPLAY;	// 表示状態に切り替え
-				for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++)
-				{
-					g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp = true;
-				}
-			}
-			break;
-
-		case MAGICUISTATE_DISPLAY:	// 非表示
-		
-			break;
-
-		case MAGICUISTATE_DISAPPERA:	// 収縮
-			// MAGICUIの収縮処理
-			fDiffKeyUp = g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDestUp - g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightUp;
-			fDiffKeyDown = g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDestDown - g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDown;
-
-			g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightUp = g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightUp + fDiffKeyUp * fRateKey;
-			g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDown = g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDown + fDiffKeyDown * fRateKey;
-
-			g_aMagicUI[nCntPlayer].nFrame++;
-			if (g_aMagicUI[nCntPlayer].nFrame == g_aMagicUI[nCntPlayer].nNumFrame)
-			{
-				g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightUp = 0.0f;
-				g_aMagicUI[nCntPlayer].aMagicUI[MAGICUI_TYPE_BG].fHeightDown = 0.0f;
-				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_NONDISPLAY;	// 非表示状態に切り替え
-			}
-
-			break;
-		}
-
 		for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
 		{
-			if (nCntUI == MAGICUI_TYPE_BG)
-			{
-				// 頂点座標の設定
-				pVtx[0].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-				pVtx[0].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightUp;
-				pVtx[0].pos.z = 0.0f;
-				pVtx[1].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-				pVtx[1].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightUp;
-				pVtx[1].pos.z = 0.0f;
-				pVtx[2].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-				pVtx[2].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDown;
-				pVtx[2].pos.z = 0.0f;
-				pVtx[3].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-				pVtx[3].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDown;
-				pVtx[3].pos.z = 0.0f;
-			}
-			else
-			{
-				// 頂点座標の設定
-				pVtx[0].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-				pVtx[0].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-				pVtx[0].pos.z = 0.0f;
-				pVtx[1].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-				pVtx[1].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-				pVtx[1].pos.z = 0.0f;
-				pVtx[2].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-				pVtx[2].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-				pVtx[2].pos.z = 0.0f;
-				pVtx[3].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-				pVtx[3].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-				pVtx[3].pos.z = 0.0f;
-			}
+			// 頂点座標の設定
+			pVtx[0].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
+			pVtx[0].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+			pVtx[0].pos.z = 0.0f;
+			pVtx[1].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
+			pVtx[1].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+			pVtx[1].pos.z = 0.0f;
+			pVtx[2].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
+			pVtx[2].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+			pVtx[2].pos.z = 0.0f;
+			pVtx[3].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
+			pVtx[3].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+			pVtx[3].pos.z = 0.0f;
 
 			// rhwの設定
 			pVtx[0].rhw = 1.0f;
@@ -447,19 +387,6 @@ void ResetMagicUI(int nIdx)
 	{
 		switch (nCntUI)
 		{
-		case MAGICUI_TYPE_BG:	// phone
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].tex		= MAGICUI_TEX_BG;				// bg
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].type	= MAGICUI_TYPE_BG;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].pos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fWidth	= PHONE_WIDTH;					// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeight = PHONE_HEIGHT;					// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].bDisp	= true;							// テクスチャの初期化
-			break;
-
 		case MAGICUI_TYPE_MAGICBOOK:	// 魔導書
 			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].tex		= MAGICUI_TEX_MAGICBOOK;				// 魔導書
 			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].type		= MAGICUI_TYPE_MAGICBOOK;				// UIの種類の初期化
@@ -853,13 +780,6 @@ void SetMagicUI(int nIdx)
 	g_aMagicUI[nIdx].bDisp = true;
 	g_aMagicUI[nIdx].nFrame = 0;
 	g_aMagicUI[nIdx].state = MAGICUISTATE_APPEAR;
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].bDisp = true;			// 幅の初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fWidth = PHONE_WIDTH;	// 幅の初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeight = 0.0f;			// 高さの初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightUp = 0.0f;		// 高さ[上]の初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightDown = 0.0f;		// 高さ[下]の初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightDestUp = PHONE_HEIGHTUP;		// 高さ[上]の目的地の初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightDestDown = PHONE_HEIGHTDOWN;	// 高さ[下]の目的地の初期化
 }
 
 //======================================================================================
@@ -873,10 +793,6 @@ void DisappearMagicUI(int nIdx)
 	}
 	g_aMagicUI[nIdx].nFrame = 0;
 	g_aMagicUI[nIdx].state = MAGICUISTATE_DISAPPERA;
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].bDisp = true;			// 幅の初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fWidth = PHONE_WIDTH;				// 幅の初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-	g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_BG].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
 }
 
 //======================================================================================

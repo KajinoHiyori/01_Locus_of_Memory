@@ -20,10 +20,10 @@
 #define INERTIA				(0.1f)				// UI出現の慣性
 #define FRAME				(20)				// 出現/退出を管理するフレーム数
 #define SPELLUI_POSY		(482.0f)			// 左のUIのX軸
-#define LEFT_OUTPOS			(D3DXVECTOR3(-PHONE_WIDTH, SPELLUI_POSY, 0.0f))		// offscreenの左のUI座標
+#define LEFT_OUTPOS			(D3DXVECTOR3(-PHONE_WIDTH, SPELLUI_POSY, 0.0f))					// offscreenの左のUI座標
 #define RIGHT_OUTPOS		(D3DXVECTOR3(SCREEN_WIDTH + PHONE_WIDTH, SPELLUI_POSY, 0.0f))	// offscreenの右のUI座標
-#define LEFT_POS			(D3DXVECTOR3(120.0f, SPELLUI_POSY, 0.0f))		// onscreenの左のUI座標
-#define RIGHT_POS			(D3DXVECTOR3(1160.0f, SPELLUI_POSY, 0.0f))					// onscreenの右のUI座標
+#define LEFT_POS			(D3DXVECTOR3(120.0f, SPELLUI_POSY, 0.0f))						// onscreenの左のUI座標
+#define RIGHT_POS			(D3DXVECTOR3(1160.0f, SPELLUI_POSY, 0.0f))						// onscreenの右のUI座標
 #define COMMMAND_Y			(-60.0f)		// コマンド結果の高度
 #define COMMMAND_SIZE		(25.0f)			// コマンドボタンの大きさ
 #define MAGIC_SIZE			(60.0f)			// 発動魔法の大きさ
