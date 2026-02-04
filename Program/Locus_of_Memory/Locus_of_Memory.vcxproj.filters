@@ -171,9 +171,6 @@
     <ClCompile Include="spellui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="pause.cpp">
-      <Filter>UI\cpp</Filter>
-    </ClCompile>
     <ClCompile Include="clock.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
@@ -279,9 +276,6 @@
       <Filter>UI\h</Filter>
     </ClInclude>
     <ClInclude Include="spellui.h">
-      <Filter>UI\h</Filter>
-    </ClInclude>
-    <ClInclude Include="pause.h">
       <Filter>UI\h</Filter>
     </ClInclude>
     <ClInclude Include="clock.h">
