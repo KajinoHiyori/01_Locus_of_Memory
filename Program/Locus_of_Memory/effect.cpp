@@ -270,6 +270,20 @@ void SetEffect(EFFECT_TYPE type, EFFECT_TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 mo
 			g_aEffect[nCntEffect].fRadius = EFFECT_RADIUS;
 			g_aEffect[nCntEffect].nLife = nLife;
 			g_aEffect[nCntEffect].bUse = true;
+
+			VERTEX_3D* pVtx;    //頂点情報の設定
+			//頂点バッファをロックし、頂点情報へのポインタを取得
+			g_pVtxBuffEffect->Lock(0, 0, (void**)&pVtx, 0);
+			
+			pVtx += nCntEffect * 4;
+
+			//頂点カラーの設定
+			pVtx[0].col = g_aEffect[nCntEffect].col;
+			pVtx[1].col = g_aEffect[nCntEffect].col;
+			pVtx[2].col = g_aEffect[nCntEffect].col;
+			pVtx[3].col = g_aEffect[nCntEffect].col;
+
+			g_pVtxBuffEffect->Unlock();
 			break;
 		}
 	}
