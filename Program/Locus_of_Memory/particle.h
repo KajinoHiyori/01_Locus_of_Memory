@@ -3,7 +3,7 @@
 
 typedef enum
 {
-	PARTICLETYPE_001 = 0,
+	PARTICLETYPE_NONE = -1,
 	//•‚—V
 	PARTICLETYPE_LEVITATION,
 	//”RÄ
