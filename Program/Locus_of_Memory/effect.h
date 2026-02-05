@@ -28,5 +28,5 @@ void InitEffect(void);
 void UninitEffect(void);
 void UpdateEffect(void);
 void DrawEffect(void);
-void SetEffect(EFFECT_TYPE type, EFFECT_TEX tex, D3DXVECTOR3 pos,D3DXVECTOR3 move, D3DXCOLOR col,int nLife);
+void SetEffect(EFFECT_TYPE type, EFFECT_TEX tex, D3DXVECTOR3 pos,D3DXVECTOR3 move, D3DXCOLOR col, int nLife, float fRadius);
 #endif

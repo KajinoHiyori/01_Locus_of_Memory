@@ -255,7 +255,7 @@ void DrawEffect(void)
 //======================================================================================
 // エフェクトの設定処理
 //======================================================================================
-void SetEffect(EFFECT_TYPE type, EFFECT_TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col,int nLife)
+void SetEffect(EFFECT_TYPE type, EFFECT_TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col,int nLife, float fRadius)
 {
 	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
 	{
@@ -267,7 +267,7 @@ void SetEffect(EFFECT_TYPE type, EFFECT_TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 mo
 			g_aEffect[nCntEffect].col = col;
 			g_aEffect[nCntEffect].type = type;
 			g_aEffect[nCntEffect].tex = tex;
-			g_aEffect[nCntEffect].fRadius = EFFECT_RADIUS;
+			g_aEffect[nCntEffect].fRadius = fRadius;
 			g_aEffect[nCntEffect].nLife = nLife;
 			g_aEffect[nCntEffect].bUse = true;
 
