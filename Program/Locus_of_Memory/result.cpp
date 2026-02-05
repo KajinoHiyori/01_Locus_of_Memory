@@ -8,6 +8,7 @@
 #include"result.h"
 #include"input.h"
 #include"fade.h"
+#include"vibration.h"
 //#include"sound.h"
 
 
@@ -27,6 +28,7 @@ void InitResult(void)
 {
     LPDIRECT3DDEVICE9 pDevice;        // デバイスへのポインタ
     VERTEX_2D* pVtx;                // 頂点情報へのポインタ
+    VIBRATION* pVibration = GetVibration();
 
     // デバイスの取得
     pDevice = GetDevice();
@@ -83,6 +85,9 @@ void InitResult(void)
 
     // 頂点バッファをアンロック
     g_pVtxBuffResult->Unlock();
+
+    pVibration->Vibration = false;
+
 }
 //=======================================================
 // リザルトの終了処理

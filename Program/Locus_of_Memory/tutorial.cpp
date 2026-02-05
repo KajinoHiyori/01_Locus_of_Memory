@@ -21,6 +21,7 @@
 //#include"wall.h"
 //#include"field.h"
 #include"meshfield.h"
+#include "vibration.h"
 //#include"mashwall.h"
 //#include"meshsky.h"
 //#include"block.h"
@@ -210,7 +211,7 @@ void UpdateTutorial(void)
 
 			g_TutorialState = TUTORIALSTATE_NONE;
 
-			// フェード設定(リザルト画面に移行)
+			// フェード設定(ゲーム画面に移行)
 			SetFade(MODE_GAME);
 
 			// サウンド停止
@@ -226,8 +227,13 @@ void UpdateTutorial(void)
 
 			g_TutorialState = TUTORIALSTATE_NONE;
 
-			// フェード設定(リザルト画面に移行)
+			// フェード設定(ゲーム画面に移行)
 			SetFade(MODE_GAME);
+
+			for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+			{
+				VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+			}
 
 			// サウンド停止
 			//StopSound(SOUND_LABEL_BGM000);

@@ -37,7 +37,7 @@
 #include"particle.h"
 #include "magic.h"
 #include "fog.h"
-
+#include "vibration.h"
 #include"meshfield.h"
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
@@ -49,6 +49,8 @@ bool g_bPause;								// ポーズ状態
 //=======================================================
 void InitGame(void)
 {
+	VIBRATION* pVibration = GetVibration();
+
 	g_bPause = false;		// ポーズ初期化
 
 	// プレイヤーの初期化設定
@@ -104,6 +106,8 @@ void InitGame(void)
 	InitParticle();
 	
 	//PlaySound(SOUND_LABEL_GAME);
+
+	pVibration->Vibration = false;
 
 }
 //=======================================================
@@ -258,6 +262,11 @@ void UpdateGame(void)
 
 		// フェード設定(リザルト画面に移行)
 		SetFade(MODE_RESULT);
+
+		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+		{
+			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+		}
 
 		// サウンド停止
 		//StopSound(SOUND_LABEL_BGM000);

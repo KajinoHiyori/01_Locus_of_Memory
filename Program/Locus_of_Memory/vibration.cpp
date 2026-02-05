@@ -3,12 +3,15 @@
 #include "input.h"
 #include "debugproc.h"
 
-VIBRATIONTYPE g_Vibration;
+VIBRATIONTYPE g_VibrationType;
+VIBRATION g_Vibration;
 int nVibration = 0;
+
 
 void InitVibration(void)
 {
 
+	g_Vibration.Vibration = false;
 }
 
 void UninitVibration(void)
@@ -66,30 +69,49 @@ void UpdateVibration(void)
 }
 void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 {
-	int nVibForce = 10000;
+	int nVibForce = 12000;
 
-	if (nDropMagic == 1)
+	if (Type == VIBRATIONTYPE_NOTHING)
 	{
-		nVibration++;
+		nVibForce = 10000;
+	}
 
-		if (nVibration % 60 < 15)
+	if (nDropMagic == -1)
+	{
+		SetJoypadVibration(0, 0, 1, nPlayertype);
+		g_Vibration.Vibration = true;
+	}
+
+	if (g_Vibration.Vibration == false)
+	{
+		if (nDropMagic == 1)
 		{
-			SetJoypadVibration(30000 - (nVibForce * Type), 0, 60, nPlayertype);
-		}
-		else if (nVibration % 60 >= 15 && nVibration % 60 < 30 || nVibration % 60 >= 45 && nVibration % 60 < 60)
-		{
-			SetJoypadVibration(0, 0, 1, nPlayertype);
-		}
-		else if (nVibration % 60 >= 30)
-		{
-			SetJoypadVibration(0, 30000 - (nVibForce * Type), 60, nPlayertype);
-		}
+			nVibration++;
+
+			if (nVibration % 60 < 15)
+			{
+				SetJoypadVibration(30000 - (nVibForce * Type), 0, 60, nPlayertype);
+			}
+			else if (nVibration % 60 >= 15 && nVibration % 60 < 30 || nVibration % 60 >= 45 && nVibration % 60 < 60)
+			{
+				SetJoypadVibration(0, 0, 1, nPlayertype);
+			}
+			else if (nVibration % 60 >= 30)
+			{
+				SetJoypadVibration(0, 30000 - (nVibForce * Type), 60, nPlayertype);
+			}
 		
 
-		if (nVibration >= 120)
-		{
-			nVibration = 0;
+			if (nVibration >= 120)
+			{
+				nVibration = 0;
+			}
 		}
 	}
 
+
+}
+VIBRATION* GetVibration(void)
+{
+	return &g_Vibration;
 }

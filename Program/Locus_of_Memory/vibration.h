@@ -3,6 +3,8 @@
 #ifndef _VIBRATION_H        // このマクロ定義がされなかったら
 #define _VIBRATION_H        // 2重インクルード防止のマクロを定義する
 
+#define VIBRATION_CLEAR	(-1)	// 振動を止める値
+
 //コマンドの種類
 typedef enum
 {
@@ -14,10 +16,18 @@ typedef enum
 	VIBRATIONTYPE_MAX
 }VIBRATIONTYPE;
 
+//コマンドの種類
+typedef struct
+{
+	bool Vibration;
+
+}VIBRATION;
+
 // プロトタイプ宣言
 void InitVibration(void);
 void UninitVibration(void);
 void UpdateVibration(void);
 void VibrationType(VIBRATIONTYPE Type,int nDropMagic,int nPlayertype);
+VIBRATION* GetVibration(void);
 
 #endif
