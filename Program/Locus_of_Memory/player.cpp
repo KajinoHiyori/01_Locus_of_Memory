@@ -148,7 +148,7 @@ void UpdatePlayer(void)
 			moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 			// —Ž‚¿‚Ä‚é–‚–@‚Æ‚Ì”»’è (•ÛŠÇ)
-			nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
+			nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius,nCntPlayer);
 
 			switch (g_aPlayer[nCntPlayer].state)
 			{

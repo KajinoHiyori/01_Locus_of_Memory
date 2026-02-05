@@ -18,6 +18,6 @@ typedef enum
 void InitVibration(void);
 void UninitVibration(void);
 void UpdateVibration(void);
-void VibrationType(VIBRATIONTYPE Type,int nDropMagic);
+void VibrationType(VIBRATIONTYPE Type,int nDropMagic,int nPlayertype);
 
 #endif
