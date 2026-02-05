@@ -110,7 +110,7 @@ void UpdateResult(void)
 {
     FADE* pFade = GetFade();
 
-    if (GetKeyboardTrigger(DIK_RETURN) == true && *pFade == FADE_NONE || GetKeyboardTrigger(JOYKEY_A) == true && *pFade == FADE_NONE)
+    if (GetKeyboardTrigger(DIK_RETURN) == true && *pFade == FADE_NONE || GetJoypadTrigger(JOYKEY_A, 0) == true && *pFade == FADE_NONE)
     {
         //StopSound();
 
