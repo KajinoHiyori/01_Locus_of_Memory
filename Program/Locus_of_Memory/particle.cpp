@@ -1,6 +1,6 @@
 //========================================================================
 // 
-// 3Dポリゴンの描画[particle.cpp]
+// パーティクル描画[particle.cpp]
 //
 //========================================================================
 
@@ -12,7 +12,7 @@
 #include "color.h"
 
 #define MAX_PARTICLE	(128)	//パーティクルの最大数
-#define MAX_APPEAR		(5)	//粒子の最大数
+#define MAX_APPEAR		(5)		//粒子の最大数
 #define MAX_ANGRE		(629)
 #define MAX_ANGRE2		(314)
 #define MAX_ONEHUNDRED	(100)
