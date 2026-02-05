@@ -67,6 +67,8 @@ void UpdateParticle(void)
 		}
 	}
 
+	rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
 	if (GetKeyboardTrigger(DIK_BACK) == true)
 	{//時間
 		SetParticle(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120, PARTICLETYPE_TIMEREVERT);
@@ -74,7 +76,7 @@ void UpdateParticle(void)
 
 	if (GetKeyboardTrigger(DIK_1) == true)
 	{//燃焼
-		SetParticle(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120, PARTICLETYPE_COMBUSTION);
+		SetParticle(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 200, PARTICLETYPE_COMBUSTION);
 	}
 
 	if (GetKeyboardTrigger(DIK_2) == true)
@@ -142,28 +144,45 @@ void UpdateParticle(void)
 
 				//燃焼
 			case PARTICLETYPE_COMBUSTION:
-				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 10; nCntAppear++)
 				{
 					//位置の設定
-					pos[0].x = g_aParticle[nCntAppear].pos.x + sinf((float)(rand() % 70));
-					pos[0].y = g_aParticle[nCntAppear].pos.y + 30;
-					pos[0].z = g_aParticle[nCntAppear].pos.z + sinf((float)(rand() % 70));
+					pos[0].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
+					pos[0].y = 0.0f;
+					pos[0].z = g_aParticle[nCntParticle].pos.z + (float)(rand() % 20 - 10);
 
-					pos[1].x = g_aParticle[nCntAppear].pos.x + sinf((float)(rand() % 40));
-					pos[1].y = g_aParticle[nCntAppear].pos.y + 30;
-					pos[1].z = g_aParticle[nCntAppear].pos.z + sinf((float)(rand() % 40));
+					fSpeed = (float)(rand() % 2 + 1);
 
-					//移動量
-					move[0][PARTICLETYPE_COMBUSTION].x = sinf((float)(rand() % 629 - 314)) * 2.0f;
-					move[0][PARTICLETYPE_COMBUSTION].y = cosf((float)(rand() % 629 - 314)) * 2.4f;
-					move[0][PARTICLETYPE_COMBUSTION].z = sinf((float)(rand() % 629 - 314)) * 2.0f;
+					//移動量						　　　
+					rot.z = ((float)(rand() % 629 - 314) / 100);
+					move[0][PARTICLETYPE_COMBUSTION].x = sinf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_COMBUSTION].z = cosf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_COMBUSTION].y = cosf(rot.z) * fSpeed;
 
-					move[1][PARTICLETYPE_COMBUSTION].x = sinf((float)(rand() % 629 - 314)) * 1.0f;
-					move[1][PARTICLETYPE_COMBUSTION].y = cosf((float)(rand() % 629 - 314)) * 1.0f;
-					move[1][PARTICLETYPE_COMBUSTION].z = sinf((float)(rand() % 629 - 314)) * 1.0f;
+					//半径の設定
+					fRadius = g_aParticle[nCntParticle].fRadius;
 
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_COMBUSTION], COLOR_RED, 10, 15);
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[1], move[1][PARTICLETYPE_COMBUSTION], COLOR_ORANGE, 10, 10);
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_COMBUSTION], COLOR_RED, 100, 15);
+				}
+				for (int nCntAppear = 0; nCntAppear < 7; nCntAppear++)
+				{
+					//位置の設定
+					pos[1].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
+					pos[1].z = g_aParticle[nCntParticle].pos.z + (float)(rand() % 20 - 10);
+
+					fSpeed = (float)(rand() % 2 + 1);
+
+					//移動量						　　　
+					rot.z = ((float)(rand() % 629 - 314) / 100);
+
+					move[1][PARTICLETYPE_COMBUSTION].x = sinf(rot.z) * fSpeed;
+					move[1][PARTICLETYPE_COMBUSTION].z = cosf(rot.z) * fSpeed;
+					move[1][PARTICLETYPE_COMBUSTION].y = cosf(rot.z) * fSpeed;
+
+					//半径の設定
+					fRadius = g_aParticle[nCntParticle].fRadius;
+
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[1], move[1][PARTICLETYPE_COMBUSTION], COLOR_ORANGE, 80, 10);
 				}
 				break;
 
@@ -187,7 +206,7 @@ void UpdateParticle(void)
 					move[0][PARTICLETYPE_FLASH].x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
 					move[0][PARTICLETYPE_FLASH].y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
 					move[0][PARTICLETYPE_FLASH].z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_RED,10, 25);
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_RED, 10, 25);
 				}
 				break;
 
@@ -238,7 +257,7 @@ void UpdateParticle(void)
 					move[0][PARTICLETYPE_RAINPRAY].x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
 					move[0][PARTICLETYPE_RAINPRAY].y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
 					move[0][PARTICLETYPE_RAINPRAY].z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_RAINPRAY], COLOR_RED, 10,25);
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_RAINPRAY], COLOR_RED, 10, 25);
 				}
 				break;
 
