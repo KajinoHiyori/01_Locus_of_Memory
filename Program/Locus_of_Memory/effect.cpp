@@ -10,6 +10,7 @@
 #include"input.h"
 #include"camera.h"
 #include "fog.h"
+#include "debugproc.h"
 
 // マクロ定義
 #define MAX_EFFECT		(16384)				// エフェクトの最大数
@@ -138,6 +139,7 @@ void UpdateEffect(void)
 	VERTEX_3D* pVtx;    //頂点情報の設定
 
 	Camera* pCamera = GetCamera();
+	int nCounterEffect = 0;
 
 	if (GetKeyboardTrigger(DIK_SPACE) == true)
 	{
@@ -175,8 +177,11 @@ void UpdateEffect(void)
 			{
 				g_aEffect[nCntEffect].bUse = false;
 			}
+			nCounterEffect++;
 		}
 	}
+	
+	PrintDebugProc("エフェクトの使用数 : %d", nCounterEffect);
 
 	g_pVtxBuffEffect->Unlock();
 }
@@ -276,6 +281,11 @@ void SetEffect(EFFECT_TYPE type, EFFECT_TEX tex, D3DXVECTOR3 pos, D3DXVECTOR3 mo
 			g_pVtxBuffEffect->Lock(0, 0, (void**)&pVtx, 0);
 			
 			pVtx += nCntEffect * 4;
+			//頂点座標の設定
+			pVtx[0].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, g_aEffect[nCntEffect].fRadius, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(-g_aEffect[nCntEffect].fRadius, -g_aEffect[nCntEffect].fRadius, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(g_aEffect[nCntEffect].fRadius, -g_aEffect[nCntEffect].fRadius, 0.0f);
 
 			//頂点カラーの設定
 			pVtx[0].col = g_aEffect[nCntEffect].col;
