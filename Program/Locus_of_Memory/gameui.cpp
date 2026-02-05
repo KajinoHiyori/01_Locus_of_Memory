@@ -398,20 +398,23 @@ void UpdateGameUI(void)
 				g_aGameUI[nCntPlayer].bDisp = true;
 
 				// ëIëèÛë‘
-				if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
+				if (g_aGameUI[nCntPlayer].bMenu == false)
 				{
-					g_aGameUI[nCntPlayer].nSelect--;
-					if (g_aGameUI[nCntPlayer].nSelect < GAMEUI_TYPE_CLOCK)
+					if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
 					{
-						g_aGameUI[nCntPlayer].nSelect = GAMEUI_TYPE_QUIT;
+						g_aGameUI[nCntPlayer].nSelect--;
+						if (g_aGameUI[nCntPlayer].nSelect < GAMEUI_TYPE_CLOCK)
+						{
+							g_aGameUI[nCntPlayer].nSelect = GAMEUI_TYPE_QUIT;
+						}
 					}
-				}
-				else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
-				{
-					g_aGameUI[nCntPlayer].nSelect++;
-					if (g_aGameUI[nCntPlayer].nSelect > GAMEUI_TYPE_QUIT)
+					else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
 					{
-						g_aGameUI[nCntPlayer].nSelect = GAMEUI_TYPE_CLOCK;
+						g_aGameUI[nCntPlayer].nSelect++;
+						if (g_aGameUI[nCntPlayer].nSelect > GAMEUI_TYPE_QUIT)
+						{
+							g_aGameUI[nCntPlayer].nSelect = GAMEUI_TYPE_CLOCK;
+						}
 					}
 				}
 
