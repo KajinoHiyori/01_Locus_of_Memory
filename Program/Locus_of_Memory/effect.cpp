@@ -47,11 +47,10 @@ Effect g_aEffect[MAX_EFFECT];
 //======================================================================================
 void InitEffect(void)
 {
-
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	//テクスチャ読み込み
-	for (int nCntEffect = 0; nCntEffect < MAX_EFFECTTEX; nCntEffect)
+	for (int nCntEffect = 0; nCntEffect < MAX_EFFECTTEX; nCntEffect++)
 	{
 		D3DXCreateTextureFromFile(pDevice, c_apFilenameEffect[nCntEffect], &g_pTextureBuffEffect[nCntEffect]);
 	}
