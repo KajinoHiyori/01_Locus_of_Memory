@@ -170,10 +170,16 @@ void DrawBattery(void)
 	// テクスチャの設定
 	pDevice->SetTexture(0, g_pTextureBattery);
 
-	for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		// ポリゴンの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntBattery * 4, 2);
+		if (g_aBattery[nCntPlayer].bDisp == true)
+		{
+			for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
+			{
+				// ポリゴンの描画
+				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntBattery * 4, 2);
+			}
+		}
 	}
 }
 
@@ -216,6 +222,9 @@ void SetBattery(int nIdx, int nBattery, D3DXVECTOR3 pos)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffBattery->Unlock();
+
+	g_aBattery[nIdx].bDisp = true;
+	g_aBattery[nIdx].Pos = pos;
 }
 
 //======================================================================================
@@ -254,4 +263,12 @@ void ChangeBattery(int nIdx, int nValue)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffBattery->Unlock();
+}
+
+//======================================================================================
+// バッテリーの非表示処理
+//======================================================================================
+void DissapearBattery(int nIdx)
+{
+	g_aBattery[nIdx].bDisp = false;
 }

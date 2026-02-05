@@ -14,5 +14,6 @@ void UpdateBattery(void);
 void DrawBattery(void);
 void SetBattery(int nIdx, int nBattery, D3DXVECTOR3 pos);
 void ChangeBattery(int nIdx, int nValue);
+void DissapearBattery(int nIdx);
 
 #endif

@@ -157,7 +157,7 @@ void UpdateParticle(void)
 					rot.z = ((float)(rand() % 629 - 314) / 100);
 					move[0][PARTICLETYPE_COMBUSTION].x = sinf(rot.z) * fSpeed;
 					move[0][PARTICLETYPE_COMBUSTION].z = cosf(rot.z) * fSpeed;
-					move[0][PARTICLETYPE_COMBUSTION].y = cosf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_COMBUSTION].y = (float)(rand() % 2 + 1) * 0.5f;
 
 					//îºåaÇÃê›íË
 					fRadius = g_aParticle[nCntParticle].fRadius;
@@ -177,7 +177,7 @@ void UpdateParticle(void)
 
 					move[1][PARTICLETYPE_COMBUSTION].x = sinf(rot.z) * fSpeed;
 					move[1][PARTICLETYPE_COMBUSTION].z = cosf(rot.z) * fSpeed;
-					move[1][PARTICLETYPE_COMBUSTION].y = cosf(rot.z) * fSpeed;
+					move[1][PARTICLETYPE_COMBUSTION].y = (float)(rand() % 2 + 1) * 0.5f;
 
 					//îºåaÇÃê›íË
 					fRadius = g_aParticle[nCntParticle].fRadius;
