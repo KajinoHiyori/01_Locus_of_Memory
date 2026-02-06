@@ -14,6 +14,10 @@
 #include "light.h"
 #include "input.h"
 #include "startui.h"
+#include "object.h"
+#include "skybox.h"
+#include "effect.h"
+#include "particle.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
@@ -108,6 +112,18 @@ void UpdateStart(void)
 //======================================================================================
 void DrawStart(void)
 {
+	// エフェクトの描画処理
+	DrawEffect();
+
+	// パーティクルの描画処理
+	DrawParticle();
+
+	// オブジェクトの描画処理（仮）
+	DrawObject();
+
+	// スカイボックスの描画処理
+	DrawSkyBox();
+
 	// タイトルUIの描画処理
 	DrawStartUI();
 }

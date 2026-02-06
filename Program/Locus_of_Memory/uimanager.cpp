@@ -149,14 +149,18 @@ void InitUIManager(void)
 		case OPERATIONTYPE_2P:	// 2人操作
 			if (nCntPlayer == 0)
 			{
-				g_aUIManager[nCntPlayer].pos = LEFT_POS;
+				g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, 200.0f, 0.0f);
 			}
 			break;
 		default:	// 1人操作
-			g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, 100.0f, 0.0f);
 			if (nCntPlayer == 0)
 			{
-
+				g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, 200.0f, 0.0f);
+			}
+			else
+			{
+				pVtx += MAXUI_TEX * 4;
+				continue;
 			}
 			break;
 		}
@@ -425,9 +429,9 @@ void DrawUIManager(void)
 	D3DXMATRIX mtxTrans;	// 計算用マトリックス
 	D3DXMATRIX mtxView;		// ビューマトリックスの取得
 
-	// Zテストを無効にする
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);	// Zテストの比較方法を変更(Zバッファの前後関係に関わらず描画する)
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+	//// Zテストを無効にする
+	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);	// Zテストの比較方法を変更(Zバッファの前後関係に関わらず描画する)
+	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
@@ -476,9 +480,9 @@ void DrawUIManager(void)
 		}
 	}
 
-	// Zテストを有効にする
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	//// Zテストを有効にする
+	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	// アルファテストを無効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする

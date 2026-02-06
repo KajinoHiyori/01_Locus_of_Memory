@@ -10,7 +10,10 @@
 #include "light.h"
 #include "input.h"
 #include "titleui.h"
-
+#include "object.h"
+#include "skybox.h"
+#include "effect.h"
+#include "particle.h"
 #include "fog.h"
 #include "debugproc.h"
 
@@ -128,6 +131,18 @@ void UpdateTitle(void)
 //======================================================================================
 void DrawTitle(void)
 {
+	// エフェクトの描画処理
+	DrawEffect();
+
+	// パーティクルの描画処理
+	DrawParticle();
+
+	// オブジェクトの描画処理（仮）
+	DrawObject();
+
+	// スカイボックスの描画処理
+	DrawSkyBox();
+
 	// タイトルUIの描画処理
 	DrawTitleUI();
 }

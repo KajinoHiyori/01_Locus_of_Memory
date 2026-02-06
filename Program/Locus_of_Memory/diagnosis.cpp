@@ -14,6 +14,10 @@
 #include "light.h"
 #include "input.h"
 #include "diagnosisui.h"
+#include "object.h"
+#include "skybox.h"
+#include "effect.h"
+#include "particle.h"
 
 // マクロ定義
 #define WIDTH			(650.0f)	// 幅
@@ -104,6 +108,18 @@ void UpdateDiagnosis(void)
 //======================================================================================
 void DrawDiagnosis(void)
 {
+	// エフェクトの描画処理
+	DrawEffect();
+
+	// パーティクルの描画処理
+	DrawParticle();
+
+	// オブジェクトの描画処理（仮）
+	DrawObject();
+
+	// スカイボックスの描画処理
+	DrawSkyBox();
+
 	// タイトルUIの描画処理
 	DrawDiagnosisUI();
 }

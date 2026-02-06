@@ -26,11 +26,11 @@
 
 #include "object.h"
 #include "skybox.h"
+#include "effect.h"
+#include "particle.h"
 #include "motion.h"
 #include "shadow.h"
 #include "meshfield.h"
-#include "effect.h"
-#include "particle.h"
 #include "vibration.h"
 
 //*****************************************************************************
@@ -624,20 +624,8 @@ void Draw(void)
 				break;
 			}
 
-			// オブジェクトの描画処理（仮）
-			DrawObject();
-
-			// スカイボックスの描画処理
-			DrawSkyBox();
-
 			// フェードの描画処理
 			DrawFade();
-
-			// エフェクトの描画処理
-			DrawEffect();
-
-			// パーティクルの描画処理
-			DrawParticle();
 
 			// ビューポートを元に戻す
 			g_pD3DDevice->SetViewport(&viewportDef);

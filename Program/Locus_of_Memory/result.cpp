@@ -8,10 +8,13 @@
 #include"result.h"
 #include"input.h"
 #include"fade.h"
+#include "object.h"
 #include"vibration.h"
+#include "object.h"
+#include "skybox.h"
+#include "effect.h"
+#include "particle.h"
 //#include"sound.h"
-
-
 
 // グローバル変数
 LPDIRECT3DTEXTURE9    g_pTextureResult = NULL;        // テクスチャへのポインタ
@@ -127,6 +130,18 @@ void UpdateResult(void)
 //=======================================================
 void DrawResult(void)
 {
+    // エフェクトの描画処理
+    DrawEffect();
+
+    // パーティクルの描画処理
+    DrawParticle();
+
+    // オブジェクトの描画処理（仮）
+    DrawObject();
+
+    // スカイボックスの描画処理
+    DrawSkyBox();
+
     LPDIRECT3DDEVICE9 pDevice;        // デバイスへのポインタ
 
     // デバイスの取得

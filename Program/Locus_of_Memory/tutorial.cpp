@@ -7,6 +7,10 @@
 #include"tutorial.h"
 #include"player.h"
 #include"input.h"
+#include "object.h"
+#include "skybox.h"
+#include "effect.h"
+#include "particle.h"
 //#include"sound.h"
 #include"fade.h"
 //#include"pause.h"
@@ -268,7 +272,19 @@ void DrawTutorial(void)
 
 	//DrawBillboard();
 
+	// エフェクトの描画処理
+	DrawEffect();
+
+	// パーティクルの描画処理
+	DrawParticle();
+
 	DrawPlayer();
+
+	// オブジェクトの描画処理（仮）
+	DrawObject();
+
+	// スカイボックスの描画処理
+	DrawSkyBox();
 
 	//DrawModel();
 

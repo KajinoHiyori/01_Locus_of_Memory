@@ -15,6 +15,10 @@
 #include "clock.h"
 #include "main.h"
 #include "uimanager.h"
+#include "object.h"
+#include "skybox.h"
+#include "effect.h"
+#include "particle.h"
 //#include"sound.h"
 #include"fade.h"
 //#include"pause.h"
@@ -318,8 +322,26 @@ void DrawGame(void)
 
 	//DrawBillboard();
 
-	// プレイヤーの描画処理
+	// スカイボックスの描画処理
+	DrawSkyBox();
+
+	// オブジェクトの描画処理（仮）
+	DrawObject();
+
+	// エフェクトの描画処理
+	DrawEffect();
+
+	// パーティクルの描画処理
+	DrawParticle();
+
+	SetFogEnable(false);		// 霧を無効
+
+	DrawUIManager();
+
+	SetFogEnable(false);		// 霧を無効
+
 	DrawPlayer();
+
 
 	// 魔法の描画処理
 	DrawMagic();
