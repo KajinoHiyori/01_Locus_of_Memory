@@ -90,8 +90,6 @@ void InitGame(void)
 	// ƒ|[ƒY‚Ì‰Šú‰»ˆ—
 	//InitPause();
 
-	InitGameUI();
-
 	InitSpellUI();
 
 	InitMagicUI();
@@ -111,6 +109,8 @@ void InitGame(void)
 	InitEffect();
 
 	InitParticle();
+
+	InitGameUI();
 	
 	//PlaySound(SOUND_LABEL_GAME);
 

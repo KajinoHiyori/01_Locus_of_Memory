@@ -22,7 +22,7 @@
 #define END_HOUR		(20)	// 終了時刻[時]
 #define END_MIN			(0)		// 終了時刻[分]
 #define MAX_MIN			(60)	// 分の最大値
-#define INTERVAL_TIME	(10)	// どのくらいの間隔で1分進むのか
+#define INTERVAL_TIME	(15)	// どのくらいの間隔で1分進むのか
 
 // 時計の構造体定義
 typedef struct
