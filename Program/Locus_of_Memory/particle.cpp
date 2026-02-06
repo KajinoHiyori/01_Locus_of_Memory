@@ -130,54 +130,68 @@ void UpdateParticle(void)
 		{
 			switch (g_aParticle[nCntParticle].Type)
 			{
-				//•‚—V
+				//•‚—V=============================================================================
 			case PARTICLETYPE_LEVITATION:
-				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
-				{
-					pos[0] = g_aParticle[nCntParticle].pos;
-					move[0][PARTICLETYPE_LEVITATION].x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_LEVITATION].y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_LEVITATION].z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_LEVITATION], COLOR_RED, 10, 25);
-				}
-				break;
-
-				//”RÄ
-			case PARTICLETYPE_COMBUSTION:
-				for (int nCntAppear = 0; nCntAppear < 10; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 2; nCntAppear++)
 				{
 					//ˆÊ’u‚ÌÝ’è
-					pos[0].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
-					pos[0].y = 0.0f;
-					pos[0].z = g_aParticle[nCntParticle].pos.z + (float)(rand() % 20 - 10);
+					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 40;
+					pos[0].y = g_aParticle[nCntParticle].pos.y + 150.0f;
+					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 40;
 
 					fSpeed = (float)(rand() % 2 + 1);
 
+					//ˆÚ“®—Ê	
+					rot.x = ((float)(rand() % 629 - 314) / 100);
+					rot.z = ((float)(rand() % 629 - 314) / 100);
+
+					move[0][PARTICLETYPE_LEVITATION].x = sinf(rot.x) * fSpeed;
+					move[0][PARTICLETYPE_LEVITATION].z = cosf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_LEVITATION].y = -1.5f;
+
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_LEVITATION], COLOR_LIMEGREEN, 100, 15);
+				}
+				break;
+
+				//”RÄ=============================================================================
+			case PARTICLETYPE_COMBUSTION:
+				for (int nCntAppear = 0; nCntAppear < 8; nCntAppear++)
+				{
+					//ˆÊ’u‚ÌÝ(
+					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 50;
+					pos[0].y = g_aParticle[nCntParticle].pos.y;
+					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 50;
+
+					fSpeed = (float)(rand() % 3 + 1);
+
 					//ˆÚ“®—Ê						@@@
 					rot.z = ((float)(rand() % 629 - 314) / 100);
+					rot.y = ((float)(rand() % 629 - 314) / 500);
+
 					move[0][PARTICLETYPE_COMBUSTION].x = sinf(rot.z) * fSpeed;
 					move[0][PARTICLETYPE_COMBUSTION].z = cosf(rot.z) * fSpeed;
-					move[0][PARTICLETYPE_COMBUSTION].y = (float)(rand() % 2 + 1) * 0.5f;
+					move[0][PARTICLETYPE_COMBUSTION].y = (float)(rand() % 2 + 1) * 1.8f;
+					//move[0][PARTICLETYPE_COMBUSTION].y = cosf(rot.y) * fSpeed;
 
 					//”¼Œa‚ÌÝ’è
 					fRadius = g_aParticle[nCntParticle].fRadius;
 
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_COMBUSTION], COLOR_RED, 100, 15);
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_COMBUSTION], COLOR_RED, 100, 20);
 				}
-				for (int nCntAppear = 0; nCntAppear < 7; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 5; nCntAppear++)
 				{
 					//ˆÊ’u‚ÌÝ’è
-					pos[1].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
-					pos[1].z = g_aParticle[nCntParticle].pos.z + (float)(rand() % 20 - 10);
+					pos[1].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 30;
+					pos[1].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 30;
 
 					fSpeed = (float)(rand() % 2 + 1);
 
 					//ˆÚ“®—Ê						@@@
 					rot.z = ((float)(rand() % 629 - 314) / 100);
 
-					move[1][PARTICLETYPE_COMBUSTION].x = sinf(rot.z) * fSpeed;
-					move[1][PARTICLETYPE_COMBUSTION].z = cosf(rot.z) * fSpeed;
-					move[1][PARTICLETYPE_COMBUSTION].y = (float)(rand() % 2 + 1) * 0.5f;
+					move[1][PARTICLETYPE_COMBUSTION].x = sinf(rot.z) * fSpeed * 0.5f;
+					move[1][PARTICLETYPE_COMBUSTION].z = cosf(rot.z) * fSpeed * 0.5f;
+					move[1][PARTICLETYPE_COMBUSTION].y = (float)(rand() % 2 + 1) * 0.9f;
 
 					//”¼Œa‚ÌÝ’è
 					fRadius = g_aParticle[nCntParticle].fRadius;
@@ -186,7 +200,7 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//^…A”Ã—”
+				//^…A”Ã—”=======================================================================
 			case PARTICLETYPE_FLOOD:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
@@ -198,7 +212,7 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//ƒtƒ‰ƒbƒVƒ…
+				//ƒtƒ‰ƒbƒVƒ…=======================================================================
 			case PARTICLETYPE_FLASH:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
@@ -210,7 +224,7 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//‰Î‹…
+				//‰Î‹…=============================================================================
 			case PARTICLETYPE_FIREBALL:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
@@ -237,7 +251,7 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//‘¾—z‚Ì“®‚«‚ð’x‰„‚·‚é
+				//‘¾—z‚Ì“®‚«‚ð’x‰„‚·‚é=============================================================
 			case PARTICLETYPE_SUNSETDELAY:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
@@ -249,7 +263,7 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//‰JŒî‚¢
+				//‰JŒî‚¢===========================================================================
 			case PARTICLETYPE_RAINPRAY:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
@@ -261,9 +275,9 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//“€Œ‹
+				//“€Œ‹=============================================================================
 			case PARTICLETYPE_FREEZE:
-				for (int nCntAppear = 0; nCntAppear < 10; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 7; nCntAppear++)
 				{
 					//ˆÊ’u‚ÌÝ’è
 					pos[0].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
@@ -302,7 +316,7 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//¬’·(A•¨‚È‚Ç)
+				//¬’·(A•¨‚È‚Ç)===================================================================
 			case PARTICLETYPE_GROWTH:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
@@ -314,7 +328,7 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//‰Á‘¬
+				//‰Á‘¬=============================================================================
 			case PARTICLETYPE_ACCELERATION:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
@@ -326,7 +340,7 @@ void UpdateParticle(void)
 				}
 				break;
 
-				//ŽžŠÔ‚ÌŠª‚«–ß‚µ(‰ñ‹A)
+				//ŽžŠÔ‚ÌŠª‚«–ß‚µ(‰ñ‹A)=============================================================
 			case PARTICLETYPE_TIMEREVERT:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
@@ -349,6 +363,7 @@ void UpdateParticle(void)
 	}
 	PrintDebugProc("Žg—p‚µ‚Ä‚¢‚éƒp[ƒeƒBƒNƒ‹ : %d\n", nCountParticle++);
 }
+
 void DrawParticle(void)
 {
 
