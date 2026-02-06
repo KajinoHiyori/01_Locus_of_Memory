@@ -272,6 +272,9 @@ void DrawTutorial(void)
 
 	//DrawBillboard();
 
+	// オブジェクトの描画処理（仮）
+	DrawObject();
+
 	// エフェクトの描画処理
 	DrawEffect();
 
@@ -279,9 +282,6 @@ void DrawTutorial(void)
 	DrawParticle();
 
 	DrawPlayer();
-
-	// オブジェクトの描画処理（仮）
-	DrawObject();
 
 	// スカイボックスの描画処理
 	DrawSkyBox();
