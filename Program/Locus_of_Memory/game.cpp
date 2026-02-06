@@ -14,6 +14,7 @@
 #include "menubg.h"
 #include "clock.h"
 #include "main.h"
+#include "uimanager.h"
 //#include"sound.h"
 #include"fade.h"
 //#include"pause.h"
@@ -101,6 +102,8 @@ void InitGame(void)
 
 	//InitTimer();
 
+	InitUIManager();
+
 	InitEffect();
 
 	InitParticle();
@@ -154,6 +157,8 @@ void UninitGame(void)
 	UninitMagicUI();
 
 	UninitClock();
+
+	UninitUIManager();
 
 	//UninitScore();
 
@@ -230,6 +235,8 @@ void UpdateGame(void)
 	UpdateMagicUI();
 
 	UpdateClock();
+
+	UpdateUIManager();
 
 	switch (g_gameState)
 	{
@@ -326,6 +333,8 @@ void DrawGame(void)
 	//DrawTimer();
 
 	SetFogEnable(false);		// –¶‚ð–³Œø
+
+	DrawUIManager();
 
 	DrawGameUI();
 

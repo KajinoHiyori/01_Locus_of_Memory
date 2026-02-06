@@ -47,7 +47,7 @@ typedef enum
 // プロトタイプ宣言
 void InitUIManager(void);
 void UninitUIManager(void);
-void UpdateUIManager(int nIdx);
+void UpdateUIManager(void);
 void DrawUIManager(void);
 void SetUIManager(int nIdx);
 UISTATE GetUIState(int nIdx);
