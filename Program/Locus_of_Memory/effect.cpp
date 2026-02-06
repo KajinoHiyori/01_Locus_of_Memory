@@ -34,8 +34,11 @@ typedef struct
 // テクスチャの読み込み
 const char* c_apFilenameEffect[MAX_EFFECTTEX] =
 {
-	"data\\TEXTURE\\effect000.jpg",
-	"data\\TEXTURE\\effect001.jpg",
+	"data\\TEXTURE\\effect\\effect000.jpg",
+	"data\\TEXTURE\\effect\\effect001.jpg",
+	"data\\TEXTURE\\effect\\effect002.jpg",
+	"data\\TEXTURE\\effect\\effect003.jpg",
+	"data\\TEXTURE\\effect\\effect004.jpg",
 };
 
 //グローバル変数

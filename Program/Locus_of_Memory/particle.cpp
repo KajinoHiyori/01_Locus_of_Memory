@@ -120,7 +120,7 @@ void UpdateParticle(void)
 	}
 
 	if (GetKeyboardTrigger(DIK_0) == true)
-	{//ŽžŠÔ‚ÌŠª‚«–ß‚µ(‰ñ‹A)
+	{//•‚—V
 		SetParticle(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120, PARTICLETYPE_LEVITATION);
 	}
 
@@ -132,7 +132,7 @@ void UpdateParticle(void)
 			{
 				//•‚—V=============================================================================
 			case PARTICLETYPE_LEVITATION:
-				for (int nCntAppear = 0; nCntAppear < 2; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 1; nCntAppear++)
 				{
 					//ˆÊ’u‚ÌÝ’è
 					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 40;
@@ -149,7 +149,45 @@ void UpdateParticle(void)
 					move[0][PARTICLETYPE_LEVITATION].z = cosf(rot.z) * fSpeed;
 					move[0][PARTICLETYPE_LEVITATION].y = -1.5f;
 
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_LEVITATION], COLOR_LIMEGREEN, 100, 15);
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_WING000, pos[0], move[0][PARTICLETYPE_LEVITATION], COLOR_WHITE, 100, 15);
+				}
+				for (int nCntAppear = 0; nCntAppear < 1; nCntAppear++)
+				{
+					//ˆÊ’u‚ÌÝ’è
+					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 40;
+					pos[0].y = g_aParticle[nCntParticle].pos.y + 150.0f;
+					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 40;
+
+					fSpeed = (float)(rand() % 2 + 1);
+
+					//ˆÚ“®—Ê	
+					rot.x = ((float)(rand() % 629 - 314) / 100);
+					rot.z = ((float)(rand() % 629 - 314) / 100);
+
+					move[0][PARTICLETYPE_LEVITATION].x = sinf(rot.x) * fSpeed;
+					move[0][PARTICLETYPE_LEVITATION].z = cosf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_LEVITATION].y = -1.5f;
+
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_WING001, pos[0], move[0][PARTICLETYPE_LEVITATION], COLOR_LIMEGREEN, 100, 15);
+				}
+				for (int nCntAppear = 0; nCntAppear < 1; nCntAppear++)
+				{
+					//ˆÊ’u‚ÌÝ’è
+					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 40;
+					pos[0].y = g_aParticle[nCntParticle].pos.y + 150.0f;
+					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 40;
+
+					fSpeed = (float)(rand() % 2 + 1);
+
+					//ˆÚ“®—Ê	
+					rot.x = ((float)(rand() % 629 - 314) / 100);
+					rot.z = ((float)(rand() % 629 - 314) / 100);
+
+					move[0][PARTICLETYPE_LEVITATION].x = sinf(rot.x) * fSpeed;
+					move[0][PARTICLETYPE_LEVITATION].z = cosf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_LEVITATION].y = -1.5f;
+
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_WING002, pos[0], move[0][PARTICLETYPE_LEVITATION], COLOR_LIMEGREEN, 100, 15);
 				}
 				break;
 
