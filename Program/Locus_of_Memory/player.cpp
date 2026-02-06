@@ -17,7 +17,7 @@
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
-#define MOVE			(0.25f)				// 移動量
+#define MOVE			(0.5f)				// 移動量
 #define ROTATE			(0.9f)				// 回転量
 #define GRAVITY			(0.75f)				// 重力
 #define JUMP			(17.0f)				// ジャンプ
