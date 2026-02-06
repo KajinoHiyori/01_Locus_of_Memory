@@ -14,7 +14,7 @@
 // ƒ}ƒNƒ’è‹`
 #define MAXUI_TEX		(UITEX_MAX)		// ƒeƒNƒXƒ`ƒƒ‚ÌÅ‘å”
 #define MAX_SELECT		(UITYPE_MAX)	// ‘I‘ğ‚Å‚«‚éÅ‘å”
-#define NORMAL_UI		(D3DXVECTOR3(0.0f, 0.0f, -1.0f))	// –@üƒxƒNƒgƒ‹
+#define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// –@üƒxƒNƒgƒ‹
 #define GAMEUI_POSY		(482.0f)		// ¶‚ÌUI‚ÌY²
 #define PHONE_WIDTH		(108.0f)		// ƒXƒ}ƒz‚Ì•
 #define PHONE_HEIGHT	(228.0f)		// ƒXƒ}ƒz‚Ì‚‚³
@@ -72,7 +72,6 @@ LPDIRECT3DTEXTURE9 g_apTextureUIManager[MAXUI_TEX] = {};		// ƒeƒNƒXƒ`ƒƒ‚Ö‚Ìƒ|ƒCƒ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffUIManager = NULL;	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^
 UIManager g_aUIManager[MAX_PLAYER];
 
-#if 0
 // // ƒ}ƒNƒ’è‹`
 #define WIDTH	(10.0f)								// •
 #define DEPTH	(10.0f)								// ‰œs
@@ -95,7 +94,6 @@ typedef struct
 LPDIRECT3DTEXTURE9 g_pTextureBillBoard = NULL;		// ƒeƒNƒXƒ`ƒƒ‚Ö‚Ìƒ|ƒCƒ“ƒ^
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBillBoard = NULL;	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^
 Billboard g_billboard;
-#endif
 
 //========================================================================
 // UI‚Ì‰Šú‰»ˆ—
@@ -132,7 +130,7 @@ void InitUIManager(void)
 
 		g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
 		g_aUIManager[nCntPlayer].type = UITYPE_CLOCK;					// ‘I‘ğ‚µ‚Ä‚¢‚éí—Ş(type)
-		g_aUIManager[nCntPlayer].state = UISTATE_SELECT;			// UI‚Ì•\¦ó‘Ô
+		g_aUIManager[nCntPlayer].state = UISTATE_NONDISPLAY;			// UI‚Ì•\¦ó‘Ô
 		g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;				// ‘I‘ğ‚µ‚Ä‚¢‚éí—Ş(int)
 		g_aUIManager[nCntPlayer].bPause = false;						// ƒ|[ƒYó‘Ô(true‚Åƒ|[ƒY’†)
 	}
@@ -153,21 +151,12 @@ void InitUIManager(void)
 			{
 				g_aUIManager[nCntPlayer].pos = LEFT_POS;
 			}
-			else if (nCntPlayer == 1)
-			{
-				g_aUIManager[nCntPlayer].pos = RIGHT_POS;
-			}
 			break;
 		default:	// 1l‘€ì
 			g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, 100.0f, 0.0f);
 			if (nCntPlayer == 0)
 			{
-				g_aUIManager[nCntPlayer].pos = RIGHT_POS;
-			}
-			else if (nCntPlayer == 1)
-			{
-				pVtx += MAXUI_TEX * 4;
-				continue;
+
 			}
 			break;
 		}
@@ -178,145 +167,136 @@ void InitUIManager(void)
 			switch (nCntUI)
 			{
 			case UITEX_BG:	// ”wŒi
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_BG;							// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = 100.0f;								// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = 100.0f;								// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BG;							// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 100.0f;								// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 100.0f;								// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;							// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// •\¦ó‘Ô
 				break;
 
 			case UITEX_PARCENT:	// ƒp[ƒZƒ“ƒg
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_PARCENT;					// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = 10.0f;							// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = 10.0f;							// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_PARCENT;					// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 10.0f;							// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 10.0f;							// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;								// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;								// •\¦ó‘Ô
 				break;
 
 			case UITEX_ANTENNA:	// ƒAƒ“ƒeƒi
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_ANTENNA;					// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = 10.0f;							// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = 10.0f;							// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_ANTENNA;					// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 10.0f;							// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 10.0f;							// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;								// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;								// •\¦ó‘Ô
 				break;
 
 			case UITEX_PAUSEMENU:	// ƒ|[ƒYƒƒjƒ…[
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, MENU_Y, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_PAUSEMENU;					// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;						// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = MENU_HEIGHT;						// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, MENU_Y, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_PAUSEMENU;					// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;								// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;								// •\¦ó‘Ô
 				break;
 
 			case UITEX_CLOCKMENU:	// Œvƒƒjƒ…[
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, MENU_Y, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_CLOCKMENU;					// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;						// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = MENU_HEIGHT;						// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, MENU_Y, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CLOCKMENU;					// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;							// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// •\¦ó‘Ô
 				break;
 
 			case UITEX_CLOCK:	// Œv[‘I‘ğó‘Ô]
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, CLOCK_Y, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_YELLOW;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_CLOCK;						// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;						// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = MENU_HEIGHT;						// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, CLOCK_Y, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_YELLOW;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CLOCK;						// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;							// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// •\¦ó‘Ô
 				break;
 
 			case UITEX_CONTINUE:	// continue
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, CONTINUE_Y, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;							// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_CONTINUE;						// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;							// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = MENU_HEIGHT;							// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;									// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, CONTINUE_Y, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;							// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CONTINUE;						// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;							// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;							// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;									// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;									// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;								// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;								// •\¦ó‘Ô
 				break;
 
 			case UITEX_RETRY:	// retry
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, RETRY_Y, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_RETRY;						// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;						// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = MENU_HEIGHT;						// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, RETRY_Y, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_RETRY;						// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;							// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// •\¦ó‘Ô
 				break;
 
 			case UITEX_QUIT:	// quit
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, QUIT_Y, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_QUIT;						// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;						// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = MENU_HEIGHT;						// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, QUIT_Y, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_QUIT;						// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;							// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// •\¦ó‘Ô
 				break;
 
 			case UITEX_FILTER:	// ƒtƒBƒ‹ƒ^[
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// F
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_FILTER;							// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;								// •
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = PHONE_HEIGHT;								// ‚‚³
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// •‚Ì–Ú“I’n
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// ’†SˆÊ’u
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// F
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_FILTER;							// ƒeƒNƒXƒ`ƒƒ‚Ìí—Ş
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;								// •
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= PHONE_HEIGHT;								// ‚‚³
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// •‚Ì–Ú“I’n
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// ‚‚³‚Ì–Ú“I’n
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = true;							// •\¦ó‘Ô
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;							// •\¦ó‘Ô
 				break;
 			}
 
 			// ’†SˆÊ’u‚©‚ç‚ÌˆÊ’u‚ğ‹‚ß‚é
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = g_aUIManager[nCntPlayer].pos + g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos;
-		}
-
-		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
-		{
-			//// ’¸“_À•W‚Ìİ’è
-			//pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
-			//pVtx[1].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
-			//pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth,  g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
-			//pVtx[3].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth,  g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos += g_aUIManager[nCntPlayer].pos;
 
 			// ’¸“_À•W‚Ìİ’è
-			pVtx[0].pos = D3DXVECTOR3(-20.0f, -30.0f, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3( 20.0f, -30.0f, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(-20.0f,  30.0f, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3( 20.0f,  30.0f, 0.0f);
+			pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
+			pVtx[1].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
+			pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
+			pVtx[3].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
 
 			// rhw‚Ìİ’è
-			pVtx[0].nor = NORMAL_UI;
-			pVtx[1].nor = NORMAL_UI;
-			pVtx[2].nor = NORMAL_UI;
-			pVtx[3].nor = NORMAL_UI;
+			pVtx[0].nor = NORMAL;
+			pVtx[1].nor = NORMAL;
+			pVtx[2].nor = NORMAL;
+			pVtx[3].nor = NORMAL;
 
 			// ’¸“_ƒJƒ‰[‚Ìİ’è
-			pVtx[0].col = COLOR_RED;
-			pVtx[1].col = COLOR_RED;
-			pVtx[2].col = COLOR_RED;
-			pVtx[3].col = COLOR_RED;
+			pVtx[0].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
+			pVtx[1].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
+			pVtx[2].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
+			pVtx[3].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
 
 			// ƒeƒNƒXƒ`ƒƒÀ•W‚Ìİ’è
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -456,11 +436,6 @@ void DrawUIManager(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		if (g_aUIManager[nCntPlayer].state == UISTATE_NONDISPLAY)
-		{
-			continue;
-		}
-
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 		{
 			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp == false)
