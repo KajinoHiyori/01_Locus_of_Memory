@@ -8,6 +8,8 @@
 #define	_OBJECT_H_
 #include "main.h"
 
+#include "motion.h"
+
 // マクロ定義
 #define MAX_OBJECTMAT	(32)	// マテリアルの最大数
 #define MAX_OBJECT		(1024)	// オブジェクトの最大数
