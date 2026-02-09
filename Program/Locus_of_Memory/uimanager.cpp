@@ -6,6 +6,7 @@
 //======================================================================================
 #include "uimanager.h"
 #include "player.h"
+#include "camera.h"
 #include "main.h"
 #include "input.h"
 #include "color.h"
@@ -15,17 +16,10 @@
 #define MAXUI_TEX		(UITEX_MAX)		// テクスチャの最大数
 #define MAX_SELECT		(UITYPE_MAX)	// 選択できる最大数
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
-#define GAMEUI_POSY		(482.0f)		// 左のUIのY軸
-#define PHONE_WIDTH		(108.0f)		// スマホの幅
-#define PHONE_HEIGHT	(228.0f)		// スマホの高さ
-#define MENU_HEIGHT		(24.0f)			// メニューの高さ
-#define MENU_Y			(-170.0f)		// メニューの高度
-#define CLOCK_Y			(-100.0f)		// 時計の高度
-#define CONTINUE_Y		(40.0f)			// CONTINUEの高度
-#define RETRY_Y			(110.0f)		// RETRYの高度
-#define QUIT_Y			(180.0f)		// QUITの高度
-#define LEFT_POS		(D3DXVECTOR3(120.0f, GAMEUI_POSY, 0.0f))						// onscreenの左のUI座標
-#define RIGHT_POS		(D3DXVECTOR3(1160.0f, GAMEUI_POSY, 0.0f))						// onscreenの右のUI座標
+#define GAMEUI_POSY		(110.0f)		// 左のUIのY軸
+#define PHONE_WIDTH		(28.125f)		// スマホの幅
+#define PHONE_HEIGHT	(50.0f)		// スマホの高さ
+#define FLICKER			(0.5f)			// UI画面のちらつきを軽減
 
 // UIのテクスチャの状態
 typedef struct
@@ -49,22 +43,24 @@ typedef struct
 	UITYPE		type;		// 表示中のUIの種類
 	UISTATE		state;		// UIの表示状態
 	int			nSelect;	// 選択しているメニュー
+	float		fAddX;		// X軸のちらつきを軽減
+	float		fAddZ;		// Z軸のちらつきを軽減
 	bool		bPause;		// ポーズ状態
 }UIManager;
 
 // テクスチャの読み込み
 const char* c_apFilenameUIManager[MAXUI_TEX] =
 {
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
-	"data\\TEXTURE\\tree000.png",
+	"data\\TEXTURE\\Pause\\pause_100.png",	// 背景
+	"data\\TEXTURE\\Pause\\pause_101.png",	// バッテリー[残量によって変化]
+	"data\\TEXTURE\\Pause\\pause_102.png",	// バッテリーのフレーム
+	"data\\TEXTURE\\Pause\\pause_103.png",	// ポーズメニュー
+	"data\\TEXTURE\\Pause\\pause_104.png",	// 時計[メニュー]
+	"data\\TEXTURE\\Pause\\pause_000.png",	// 時計[選択状態]
+	"data\\TEXTURE\\Pause\\pause_001.png",	// continue
+	"data\\TEXTURE\\Pause\\pause_002.png",	// retry
+	"data\\TEXTURE\\Pause\\pause_003.png",	// quit
+	"data\\TEXTURE\\Pause\\retrofilter.jpg",	// フィルター
 };
 
 // グローバル変数
@@ -84,6 +80,15 @@ void InitUIManager(void)
 	// 操作人数の取得
 	OPERATIONTYPE operationType = GetOperationType();
 
+	// カメラ状態の取得
+	Camera* pCamera = GetCamera();
+	float fRotXCamera[MAX_CAMERA] = { 0.0f, 0.0f };
+	float fRotYCamera[MAX_CAMERA] = { 0.0f, 0.0f };
+	for (int nCntCamera = 0; nCntCamera < MAX_CAMERA; nCntCamera++)
+	{
+		fRotXCamera[nCntCamera] = pCamera[nCntCamera].rot.x;
+		fRotYCamera[nCntCamera] = pCamera[nCntCamera].rot.y;
+	}
 	// テクスチャの読み込み
 	for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 	{
@@ -95,11 +100,11 @@ void InitUIManager(void)
 	{
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 		{
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, GAMEUI_POSY, 0.0f);	// 中心位置
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BG;							// テクスチャの種類
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 0.0f;								// 幅
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 0.0f;								// 高さ
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// 幅
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= PHONE_HEIGHT;						// 高さ
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// 表示状態
@@ -109,6 +114,8 @@ void InitUIManager(void)
 		g_aUIManager[nCntPlayer].type = UITYPE_CLOCK;					// 選択している種類(type)
 		g_aUIManager[nCntPlayer].state = UISTATE_NONDISPLAY;			// UIの表示状態
 		g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;				// 選択している種類(int)
+		g_aUIManager[nCntPlayer].fAddX = 0.0f;								// X軸のちらつきを軽減
+		g_aUIManager[nCntPlayer].fAddZ = 0.0f;								// Z軸のちらつきを軽減
 		g_aUIManager[nCntPlayer].bPause = false;						// ポーズ状態(trueでポーズ中)
 	}
 
@@ -126,13 +133,15 @@ void InitUIManager(void)
 		case OPERATIONTYPE_2P:	// 2人操作
 			if (nCntPlayer == 0)
 			{
-				g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, 200.0f, 0.0f);
 			}
 			break;
 		default:	// 1人操作
 			if (nCntPlayer == 0)
 			{
-				g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, 200.0f, 0.0f);
+				g_aUIManager[nCntPlayer].bPause = true;
+				
+				g_aUIManager[nCntPlayer].fAddX = sinf(fRotXCamera[nCntPlayer]);
+				g_aUIManager[nCntPlayer].fAddZ = cosf(fRotYCamera[nCntPlayer]);
 			}
 			else
 			{
@@ -148,113 +157,87 @@ void InitUIManager(void)
 			switch (nCntUI)
 			{
 			case UITEX_BG:	// 背景
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BG;							// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 100.0f;								// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 100.0f;								// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// 表示状態
+				g_aUIManager[nCntPlayer].pos.x = 0.0f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = 0.0f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BG;				// テクスチャの種類
+				//g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 0.0f;				// 幅
+				//g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 0.0f;				// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;					// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;					// 高さの目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 
-			case UITEX_PARCENT:	// パーセント
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_PARCENT;					// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 10.0f;							// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 10.0f;							// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;								// 表示状態
+			case UITEX_BATTERY:	// バッテリー
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BATTERY;		// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 
-			case UITEX_ANTENNA:	// アンテナ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_ANTENNA;					// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 10.0f;							// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 10.0f;							// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;								// 表示状態
+			case UITEX_BATTERYFRAME:	// バッテリーフレーム
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BATTERYFRAME;	// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 
 			case UITEX_PAUSEMENU:	// ポーズメニュー
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, MENU_Y, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_PAUSEMENU;					// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;								// 表示状態
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_PAUSEMENU;		// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 
 			case UITEX_CLOCKMENU:	// 時計メニュー
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, MENU_Y, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CLOCKMENU;					// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// 表示状態
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CLOCKMENU;		// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;					// 表示状態
 				break;
 
 			case UITEX_CLOCK:	// 時計[選択状態]
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, CLOCK_Y, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_YELLOW;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CLOCK;						// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// 表示状態
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_YELLOW;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CLOCK;			// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 
 			case UITEX_CONTINUE:	// continue
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, CONTINUE_Y, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;							// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CONTINUE;						// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;							// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;							// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;									// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;									// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;								// 表示状態
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CONTINUE;		// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 
 			case UITEX_RETRY:	// retry
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, RETRY_Y, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_RETRY;						// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// 表示状態
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_RETRY;			// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 
 			case UITEX_QUIT:	// quit
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, QUIT_Y, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_QUIT;						// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= MENU_HEIGHT;						// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// 表示状態
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_QUIT;			// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 
 			case UITEX_FILTER:	// フィルター
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_FILTER;							// テクスチャの種類
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;								// 幅
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= PHONE_HEIGHT;								// 高さ
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;							// 表示状態
+				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 2.0f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 2.0f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_RETROFILTER;	// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_FILTER;			// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
 				break;
 			}
 
@@ -262,10 +245,10 @@ void InitUIManager(void)
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos += g_aUIManager[nCntPlayer].pos;
 
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
-			pVtx[1].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
-			pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
-			pVtx[3].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, nCntUI * 0.1f + nCntPlayer * 2.0f);
+			pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, g_aUIManager[nCntPlayer].pos.z);
+			pVtx[1].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, g_aUIManager[nCntPlayer].pos.z);
+			pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, g_aUIManager[nCntPlayer].pos.z);
+			pVtx[3].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, g_aUIManager[nCntPlayer].pos.z);
 
 			// rhwの設定
 			pVtx[0].nor = NORMAL;
@@ -347,6 +330,11 @@ void DrawUIManager(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
+		if (g_aUIManager[nCntPlayer].bPause == false)
+		{
+			continue;
+		}
+
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 		{
 			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp == false)
@@ -354,6 +342,14 @@ void DrawUIManager(void)
 				continue;
 			}
 	
+			// フィルターのみ加算合成にする
+			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_FILTER)
+			{
+				pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+				pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+			}
+
 			// ワールドマトリックスの初期化(デフォルトの値にする)
 			D3DXMatrixIdentity(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld);
 
@@ -384,6 +380,15 @@ void DrawUIManager(void)
 
 			// UIの描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + (nCntPlayer * MAXUI_TEX * 4), 2);
+
+			// フィルターを加算合成から戻す
+			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_FILTER)
+			{
+				//αブレンディングを戻す
+				pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+				pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+			}
 		}
 	}
 

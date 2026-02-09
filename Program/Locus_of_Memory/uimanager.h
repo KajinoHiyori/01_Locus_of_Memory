@@ -32,8 +32,8 @@ typedef enum
 typedef enum
 {
 	UITEX_BG = 0,		// 背景
-	UITEX_PARCENT,		// %[充電の横に表示]
-	UITEX_ANTENNA,		// 3本線のアンテナ[通信状態がわかるもの]
+	UITEX_BATTERY,		// バッテリー[残量によって変化]
+	UITEX_BATTERYFRAME,	// バッテリーのフレーム
 	UITEX_PAUSEMENU,	// ポーズメニュー
 	UITEX_CLOCKMENU,	// 時計[メニュー]
 	UITEX_CLOCK,		// 時計[選択状態]
