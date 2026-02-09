@@ -4,8 +4,8 @@ Format Text Ver 1.0
 Scene {
 	pos 0.0000 0.0000 5860.8184
 	lookat 0.0000 0.0000 0.0000
-	head -6.8537
-	pich 1.2108
+	head -7.2437
+	pich 0.9392
 	bank 0.0000
 	ortho 0
 	zoom2 1.2797
@@ -18,7 +18,7 @@ Scene {
 	}
 }
 Material 2 {
-	"mat1" col(0.561 0.486 0.290 0.880) dif(0.440) amb(0.600) emi(0.000) spc(0.240) power(6.00)
+	"mat1" col(0.561 0.486 0.290 1.000) dif(0.440) amb(0.600) emi(0.000) spc(0.240) power(6.00)
 	"mat2" col(0.745 0.616 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00)
 }
 Object "äOï«ÇP" {
@@ -197,7 +197,7 @@ Object "è∞" {
 }
 Object "óë" {
 	visible 15
-	locking 0
+	locking 1
 	shading 1
 	facet 59.5
 	color 0.898 0.498 0.698
@@ -331,7 +331,7 @@ Object "óë" {
 }
 Object "óë1" {
 	visible 15
-	locking 0
+	locking 1
 	shading 1
 	facet 59.5
 	color 0.898 0.498 0.698
