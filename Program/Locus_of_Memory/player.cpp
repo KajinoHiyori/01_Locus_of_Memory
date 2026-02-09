@@ -523,13 +523,13 @@ void DrawPlayer(void)
 	posLight = D3DXVECTOR4(-light.Direction.x, -light.Direction.y, -light.Direction.z, 0.0f);
 
 	// 平面情報を生成
-	pos = INIT_D3DXVEC3;		// 高さが0ならなんでもいい
+	pos = D3DXVECTOR3(0.0f, 0.05f, 0.0f);		// 高さが0ならなんでもいい
 	normal = NORMAL_PLANE;
 	D3DXPlaneFromPointNormal(&plane, &pos, &normal);
 
-	// Zテストを無効にする
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+	//// Zテストを無効にする
+	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
@@ -584,9 +584,9 @@ void DrawPlayer(void)
 
 	}
 
-	// Zテストを有効にする
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	//// Zテストを有効にする
+	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	pPlayer = &g_aPlayer[0];
 
