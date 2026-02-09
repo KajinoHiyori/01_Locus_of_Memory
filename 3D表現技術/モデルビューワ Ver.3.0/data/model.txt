@@ -25,7 +25,7 @@ TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 29
+NUM_MODEL = 31
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -53,12 +53,14 @@ MODEL_FILENAME = data/MODEL/taimatsu/taimatsu.x	# [19]松明
 MODEL_FILENAME = data/MODEL/rock/rock000.x	# [20]岩
 MODEL_FILENAME = data/MODEL/rock/rock001.x	# [21]岩
 MODEL_FILENAME = data/MODEL/rabbit/rabbit.x	# [22]兎
-MODEL_FILENAME = data/MODEL/key/key.x	# [23]鍵
-MODEL_FILENAME = data/MODEL/key/key001.x	# [24]鍵
-MODEL_FILENAME = data/MODEL/key/key002.x	# [25]鍵
+MODEL_FILENAME = data/MODEL/key/key.x	# [23]鍵1
+MODEL_FILENAME = data/MODEL/key/key001.x	# [24]鍵2
+MODEL_FILENAME = data/MODEL/key/key002.x	# [25]鍵3
 MODEL_FILENAME = data/MODEL/chain/chain.x	# [26]鎖
 MODEL_FILENAME = data/MODEL/padlock/padlock.x	# [27]南京錠
 MODEL_FILENAME = data/MODEL/river/river000.x	# [28] 川
+MODEL_FILENAME = data/MODEL/streetlight/streetlight000.x	# [29]街灯2
+MODEL_FILENAME = data/MODEL/magicobj/bonfire000.x	# [30]焚火
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -253,7 +255,7 @@ END_WALLSET
 
 MODELSET
 	TYPE = 2
-	POS = 4200 0 -1050
+	POS = 4300 0 -1050
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -269,7 +271,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 2
-	POS = 4200 0 -1500
+	POS = 4250 0 -1500
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -296,7 +298,7 @@ END_MODELSET
 MODELSET
 	TYPE = 2
 	POS = -630 0 -1600
-	ROT = 0 90 0
+	ROT = 0 -90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
@@ -361,7 +363,7 @@ END_MODELSET
 #右奥店
 MODELSET
 	TYPE = 3
-	POS = 3600 0 -2800
+	POS = 3650 0 -2860
 	ROT = 0 135 0
 	SHADOW = 0
 	COLLISION = 1
@@ -835,7 +837,7 @@ END_MODELSET
 # 街灯
 #------------------------------------------------------------------------------
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = -980 0 -3220
 	ROT = 0 0 0
 	SHADOW = 0
@@ -843,7 +845,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = -1900 0 -2600
 	ROT = 0 90 0
 	SHADOW = 0
@@ -851,7 +853,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = 450 0 -3000
 	ROT = 0 90 0
 	SHADOW = 0
@@ -859,7 +861,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = 270 0 -2100
 	ROT = 0 90 0
 	SHADOW = 0
@@ -876,6 +878,14 @@ END_MODELSET
 
 MODELSET
 	TYPE = 13
+	POS = 1252 0 -1548
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 29
 	POS = 270 0 -950
 	ROT = 0 90 0
 	SHADOW = 0
@@ -883,7 +893,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = 1700 0 -3200
 	ROT = 0 0 0
 	SHADOW = 0
@@ -891,7 +901,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = 2460 0 -2030
 	ROT = 0 90 0
 	SHADOW = 0
@@ -899,7 +909,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = 4000 0 -1700
 	ROT = 0 90 0
 	SHADOW = 0
@@ -907,7 +917,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = 1500 0 -570
 	ROT = 0 0 0
 	SHADOW = 0
@@ -915,7 +925,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = 1300 0 -1900
 	ROT = 0 0 0
 	SHADOW = 0
@@ -923,7 +933,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = 2137 0 -623
 	ROT = 0 0 0
 	SHADOW = 0
@@ -931,8 +941,8 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
-	POS = 4000 0 -1184
+	TYPE = 29
+	POS = 4050 0 -1184
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -948,6 +958,22 @@ END_MODELSET
 
 MODELSET
 	TYPE = 13
+	POS = -870 0 625
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = -1336 0 -2900
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 29
 	POS = 400 0 170
 	ROT = 0 0 0
 	SHADOW = 0
@@ -955,7 +981,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = -1320 0 -950
 	ROT = 0 90 0
 	SHADOW = 0
@@ -963,7 +989,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = -1300 0 -1900
 	ROT = 0 90 0
 	SHADOW = 0
@@ -971,7 +997,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
+	TYPE = 29
 	POS = -3100 0 500
 	ROT = 0 0 0
 	SHADOW = 0
@@ -1342,7 +1368,7 @@ MODELSET
 	POS = 1111 0 -2300
 	ROT = 0 0 0
 	SHADOW = 0
-	COLLISION = 1
+	COLLISION = 0
 END_MODELSET
 
 MODELSET
@@ -1350,7 +1376,7 @@ MODELSET
 	POS = -4200 0 -1700
 	ROT = 0 0 0
 	SHADOW = 0
-	COLLISION = 1
+	COLLISION = 0
 END_MODELSET
 
 MODELSET
@@ -1358,7 +1384,7 @@ MODELSET
 	POS = -3253 0 2000
 	ROT = 0 0 0
 	SHADOW = 0
-	COLLISION = 1
+	COLLISION = 0
 END_MODELSET
 
 #------------------------------------------------------------------------------
@@ -1409,6 +1435,33 @@ MODELSET
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 0
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# 焚火
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 30
+	POS = -2677 0 -3398
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 30
+	POS = 4596 0 -1041
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 30
+	POS = 1836 0 -2225
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
 END_MODELSET
 
 #------------------------------------------------------------------------------
