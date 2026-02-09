@@ -398,6 +398,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	LoadScript(INFORMATION_SCRIPT);
 
+	LoadModel(MODEL_SCRIPT);
+
 	return S_OK;
 }
 //===============================================================================

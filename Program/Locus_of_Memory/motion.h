@@ -20,7 +20,7 @@ struct ModelData;		// 前方宣言 ポインタ型でのみ使用可能
 #define MAX_KEY				(16)	// キーの最大数
 #define MAX_MOTION			(16)	// モーションの最大数
 #define MAX_MOTIONDATA		(8)		// モーションデータの最大数
-#define MAX_MODELPART		(16)
+#define MAX_MODELPART		(32)
 
 //*****************************************************************************
 // モーションの種類

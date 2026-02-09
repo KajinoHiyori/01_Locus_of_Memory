@@ -12,6 +12,8 @@
 #include "player.h"
 #include "loadscript.h"
 
+#include "input.h"
+
 // マクロ定義
 #define NUM_OBJECT	(OBJECTTYPE_MAX)	// モデルの数
 #define BLANK		(0.001f)		// 空白
@@ -37,9 +39,11 @@ void InitObject(void)
 	g_nNumObjectModel = 0;
 
 	ModelData* pModelData = &g_aModelData[0];	// 先頭アドレス
+	ParentObject* pParentObject = &g_aParentObject[0];
 
 	// ModelDataの初期化
 	memset(pModelData, NULL, sizeof(ModelData) * MAX_PARENTMODEL);
+	memset(pParentObject, NULL, sizeof(ParentObject) * MAX_PARENTOBJECT);
 
 	// Object情報の初期化
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
@@ -61,8 +65,6 @@ void InitObject(void)
 		g_aObjectModel[nCntModel].vtxMax = VTX_MAX;
 		g_aObjectModel[nCntModel].vtxMin = VTX_MIN;
 	}
-
-	LoadModel(MODEL_SCRIPT);
 }
 
 //======================================================================================
@@ -150,6 +152,8 @@ void UpdateObject(void)
 {
 	Player* pPlayer = GetPlayer();
 
+	ParentObject* pParentObject = &g_aParentObject[0];
+
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
 		if (g_aObject[nCntObject].bUse == true)
@@ -164,6 +168,21 @@ void UpdateObject(void)
 			// 影の位置を更新
 			SetPositionShadow(g_aObject[nCntObject].nIdxShadow, g_aObject[nCntObject].pos);
 		}
+	}
+
+	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
+	{
+		if (pParentObject->bUse == false)
+		{
+			continue;
+		}
+
+		if (GetKeyboardTrigger(DIK_5) == true)
+		{
+			SetMotion(&pParentObject->motion, pParentObject->pModelData, MOTIONTYPE_MOVE, false, true, 10);
+		}
+
+		UpdateMotion(&pParentObject->motion, pParentObject->pModelData);
 	}
 }
 
@@ -349,6 +368,8 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		pParentObject->pos = pos;
 		pParentObject->rot = rot;
 		pParentObject->bUse = true;
+
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, MOTIONTYPE_NEUTRAL, true, false, 10);
 
 		break;
 	}
