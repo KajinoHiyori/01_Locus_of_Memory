@@ -73,6 +73,11 @@ void SetMotion(Motion* pMotion, ModelData* pModelData, MOTIONTYPE motiontype, bo
 //=============================================================================
 void UpdateMotion(Motion* pMotion, ModelData* pModelData)
 {
+	if (pMotion == NULL)
+	{
+		return;
+	}
+
 	float fPosX, fPosY, fPosZ, fRotX, fRotY, fRotZ;
 	float fDiffKey;
 

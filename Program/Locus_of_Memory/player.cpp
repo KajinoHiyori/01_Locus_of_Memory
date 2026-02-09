@@ -597,77 +597,80 @@ void DrawPlayer(void)
 			continue;
 		}
 
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&pPlayer->mtxWorld);
+		// 描画関数
+		DrawParentModel(&pPlayer->pos, &pPlayer->rot, &pPlayer->mtxWorld, pPlayer->pModelData);
 
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, pPlayer->rot.y, pPlayer->rot.x, pPlayer->rot.z);
-		D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxRot);
+		//// ワールドマトリックスの初期化
+		//D3DXMatrixIdentity(&pPlayer->mtxWorld);
 
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, pPlayer->pos.x, pPlayer->pos.y, pPlayer->pos.z);
-		D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxTrans);
+		//// 向きを反映
+		//D3DXMatrixRotationYawPitchRoll(&mtxRot, pPlayer->rot.y, pPlayer->rot.x, pPlayer->rot.z);
+		//D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxRot);
 
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &pPlayer->mtxWorld);
+		//// 位置を反映
+		//D3DXMatrixTranslation(&mtxTrans, pPlayer->pos.x, pPlayer->pos.y, pPlayer->pos.z);
+		//D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxTrans);
 
-		// 現在のマテリアルを取得
-		pDevice->GetMaterial(&matDef);
+		//// ワールドマトリックスの設定
+		//pDevice->SetTransform(D3DTS_WORLD, &pPlayer->mtxWorld);
 
-		// 全モデル(パーツ)の描画
-		for (int nCntOffSetModel = 0; nCntOffSetModel < pPlayer->pModelData->nNumModel; nCntOffSetModel++)
-		{
-			D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
-			D3DXMATRIX mtxParent;								// 親のマトリックス
+		//// 現在のマテリアルを取得
+		//pDevice->GetMaterial(&matDef);
 
-			// パーツのワールドマトリックスを初期化
-			D3DXMatrixIdentity(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
+		//// 全モデル(パーツ)の描画
+		//for (int nCntOffSetModel = 0; nCntOffSetModel < pPlayer->pModelData->nNumModel; nCntOffSetModel++)
+		//{
+		//	D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
+		//	D3DXMATRIX mtxParent;								// 親のマトリックス
 
-			// パーツの向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].rot.y, pPlayer->pModelData->aModel[nCntOffSetModel].rot.x, pPlayer->pModelData->aModel[nCntOffSetModel].rot.z);
-			D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxRotOffSetModel);
+		//	// パーツのワールドマトリックスを初期化
+		//	D3DXMatrixIdentity(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
 
-			// パーツの位置を反映(オフセット)
-			D3DXMatrixTranslation(&mtxTransOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].pos.x, pPlayer->pModelData->aModel[nCntOffSetModel].pos.y, pPlayer->pModelData->aModel[nCntOffSetModel].pos.z);
-			D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxTransOffSetModel);
+		//	// パーツの向きを反映
+		//	D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].rot.y, pPlayer->pModelData->aModel[nCntOffSetModel].rot.x, pPlayer->pModelData->aModel[nCntOffSetModel].rot.z);
+		//	D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxRotOffSetModel);
 
-			// パーツの「親のマトリックス」を設定
-			if (pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent != -1)
-			{// 親モデルがある場合
-				mtxParent = pPlayer->pModelData->aModel[pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent].mtxWorld;
-			}
-			else
-			{// 親モデルがない場合
-				mtxParent = pPlayer->mtxWorld;
-			}
+		//	// パーツの位置を反映(オフセット)
+		//	D3DXMatrixTranslation(&mtxTransOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].pos.x, pPlayer->pModelData->aModel[nCntOffSetModel].pos.y, pPlayer->pModelData->aModel[nCntOffSetModel].pos.z);
+		//	D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxTransOffSetModel);
 
-			// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
-			D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
-				&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
-				&mtxParent);
+		//	// パーツの「親のマトリックス」を設定
+		//	if (pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent != -1)
+		//	{// 親モデルがある場合
+		//		mtxParent = pPlayer->pModelData->aModel[pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent].mtxWorld;
+		//	}
+		//	else
+		//	{// 親モデルがない場合
+		//		mtxParent = pPlayer->mtxWorld;
+		//	}
 
-			// パーツのワールドマトリックスを設定
-			pDevice->SetTransform(D3DTS_WORLD, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
+		//	// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
+		//	D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
+		//		&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
+		//		&mtxParent);
 
-			// マテリアルデータへのポインタを取得
-			pMat = (D3DXMATERIAL*)pPlayer->pModelData->aModel[nCntOffSetModel].pBuffMat->GetBufferPointer();
+		//	// パーツのワールドマトリックスを設定
+		//	pDevice->SetTransform(D3DTS_WORLD, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
 
-			for (int nCntMat = 0; nCntMat < (int)pPlayer->pModelData->aModel[nCntOffSetModel].dwNumMat; nCntMat++)
-			{
-				// マテリアルの設定
-				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+		//	// マテリアルデータへのポインタを取得
+		//	pMat = (D3DXMATERIAL*)pPlayer->pModelData->aModel[nCntOffSetModel].pBuffMat->GetBufferPointer();
 
-				// テクスチャの設定
-				pDevice->SetTexture(0, pPlayer->pModelData->aModel[nCntOffSetModel].apTexture[nCntMat]);
+		//	for (int nCntMat = 0; nCntMat < (int)pPlayer->pModelData->aModel[nCntOffSetModel].dwNumMat; nCntMat++)
+		//	{
+		//		// マテリアルの設定
+		//		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
-				// プレイヤー(パーツ)の描画
-				pPlayer->pModelData->aModel[nCntOffSetModel].pMesh->DrawSubset(nCntMat);
-			}
-		}
+		//		// テクスチャの設定
+		//		pDevice->SetTexture(0, pPlayer->pModelData->aModel[nCntOffSetModel].apTexture[nCntMat]);
+
+		//		// プレイヤー(パーツ)の描画
+		//		pPlayer->pModelData->aModel[nCntOffSetModel].pMesh->DrawSubset(nCntMat);
+		//	}
+		//}
+
+		//// 保存していたマテリアルを戻す
+		//pDevice->SetMaterial(&matDef);
 	}
-
-	// 保存していたマテリアルを戻す
-	pDevice->SetMaterial(&matDef);
 }
 
 //========================================================================

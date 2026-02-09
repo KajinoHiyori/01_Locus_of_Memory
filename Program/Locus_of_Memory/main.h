@@ -8,6 +8,8 @@
 #ifndef _MAIN_H_			// このマクロ定義がされていなかったら
 #define _MAIN_H_			// 2重インクルード防止のマクロを定義する
 
+struct ModelData;
+
 //*****************************************************************************
 // モードの種類
 //*****************************************************************************
@@ -37,6 +39,7 @@ void SetMode(MODE mode);
 MODE GetMode(void);
 float AngleNormalize(float fAngle);
 bool CrossCollision(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3 posStart, D3DXVECTOR3 posEnd, bool bRetrun, bool bIn);
+void DrawParentModel(D3DXVECTOR3* pPos, D3DXVECTOR3* pRot, D3DXMATRIX* pMtxWorld, ModelData* pModelData);
 void ToggleFullscreen(HWND hWnd);
 
 #endif

@@ -11,10 +11,11 @@
 #include "motion.h"
 
 // マクロ定義
-#define MAX_OBJECTMAT	(32)	// マテリアルの最大数
-#define MAX_OBJECT		(1024)	// オブジェクトの最大数
-#define MAX_PARTS		(14)	// パーツの最大数
-#define MAX_PARENTMODEL	(8)		// 階層構造をもったモデルの最大数
+#define MAX_OBJECTMAT		(32)	// マテリアルの最大数
+#define MAX_OBJECT			(1024)	// オブジェクトの最大数
+#define MAX_PARENTOBJECT	(128)	// 階層構造オブジェクトの最大数
+#define MAX_PARTS			(32)	// パーツの最大数
+#define MAX_PARENTMODEL		(8)		// 階層構造をもったモデルの最大数
 
 // モデルの種類
 typedef struct
@@ -51,17 +52,16 @@ typedef enum
 	OBJECTTYPE_MAX
 }OBJECTTYPE;
 
-//*****************************************************************************
 // 階層構造モデルデータの種類
-//*****************************************************************************
 typedef enum PARENTMODELTYPE
 {
 	PARENTMODELTYPE_PLAYER1P = 0,	// 1P
 	PARENTMODELTYPE_PLAYER2P,		// 2P
+	PARENTMODELTYPE_HOUSE,			// 家
 	PARENTMODELTYPE_MAX
 }PARENTMODELTYPE;
 
-// モデルの構造体
+// オブジェクトの構造体
 typedef struct
 {
 	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
@@ -73,9 +73,18 @@ typedef struct
 	bool			bUse;		// 使用状態
 }Object;
 
-//*****************************************************************************
+// 階層構造オブジェクトの構造体定義
+typedef struct
+{
+	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
+	D3DXVECTOR3		pos;		// オブジェクトの位置
+	D3DXVECTOR3		rot;		// オブジェクトの向き
+	Motion			motion;		// モーション情報
+	ModelData*		pModelData;	// モデルの情報
+	bool			bUse;		// 使用状態
+}ParentObject;
+
 // モデルの構造体定義
-//*****************************************************************************
 typedef struct Model
 {
 	LPDIRECT3DTEXTURE9	apTexture[MAX_OBJECTMAT];	// テクスチャ
@@ -91,15 +100,14 @@ typedef struct Model
 	D3DXMATRIX			mtxWorld;					// ワールドマトリックス
 }Model;
 
-//*****************************************************************************
 // 階層構造モデルデータの構造体定義
-//*****************************************************************************
 typedef struct ModelData
 {
 	Model				aModel[MAX_PARTS];					// モデル (パーツ)
 	D3DXVECTOR3			aOffSet[MAX_PARTS];					// モデルのオフセット[位置]を保存
 	D3DXVECTOR3			aOffSetRot[MAX_PARTS];				// モデルのオフセット[角度]を保存
-	int					nNumModel;							// モデル (パーツ) の総数
+	int					nNumModel;							// モデルの総数
+	int					nNumParts;							// パーツの総数
 }ModelData;
 
 // プロトタイプ宣言
@@ -109,10 +117,11 @@ void UpdateObject(void);
 void DrawObject(void);
 void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius);
 void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision);
+void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype);
 void LoadObjectModel(const char* pModelPath);
 ModelData* SetModelData(PARENTMODELTYPE type);
 void LoadParentModel(const char* pModelPath, int nNumParentModel);
-void LoadParentModelOffSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nIdxModelParent, int nNumParentModel);
+void LoadParentModelOffSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nIdxModelParent, int nNumParentModel, int nCntParts);
 Object* GetObjectInfo(void);
 ObjectModel* GetObjectModel(void);
 #endif

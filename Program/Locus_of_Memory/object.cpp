@@ -21,9 +21,10 @@
 #define VTX_MAX		(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// オブジェクトの大きさの初期化値(最大)
 
 // グローバル変数
-ObjectModel g_aObjectModel[NUM_OBJECT];		// モデルの種類を管理
-Object g_aObject[MAX_OBJECT];				// オブジェクトの情報を格納
-ModelData g_aModelData[MAX_PARENTMODEL];	// 階層構造を持ったモデルデータ
+ObjectModel g_aObjectModel[NUM_OBJECT];			// モデルの種類を管理
+Object g_aObject[MAX_OBJECT];					// オブジェクトの情報を格納
+ParentObject g_aParentObject[MAX_PARENTOBJECT];	// 階層構造オブジェクトの情報を格納
+ModelData g_aModelData[MAX_PARENTMODEL];		// 階層構造を持ったモデルデータ
 
 int g_nNumObjectModel;	// モデル数を管理
 
@@ -33,13 +34,9 @@ int g_nNumObjectModel;	// モデル数を管理
 void InitObject(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	//D3DXMATERIAL* pMat;
-	//int nNumVtx = 0;	// 頂点数
-	//DWORD dwSizeFVF;			// 頂点フォーマットのサイズ
-	//BYTE* pVtxBuff;				// 頂点バッファへのポインタ
 	g_nNumObjectModel = 0;
 
-	ModelData* pModelData = &g_aModelData[0];
+	ModelData* pModelData = &g_aModelData[0];	// 先頭アドレス
 
 	// ModelDataの初期化
 	memset(pModelData, NULL, sizeof(ModelData) * MAX_PARENTMODEL);
@@ -66,9 +63,6 @@ void InitObject(void)
 	}
 
 	LoadModel(MODEL_SCRIPT);
-
-	//LoadParentModel(PARENTMODEL_1PSCRIPT);
-	//LoadParentModel(PARENTMODEL_2PSCRIPT);
 }
 
 //======================================================================================
@@ -185,6 +179,8 @@ void DrawObject(void)
 	Player* pPlayer = GetPlayer();
 	MODE mode = GetMode();
 
+	ParentObject* pParentObject = &g_aParentObject[0];
+
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
 		if (g_aObject[nCntObject].bUse == true)
@@ -223,6 +219,17 @@ void DrawObject(void)
 			// 保存していたマテリアルに戻す
 			pDevice->SetMaterial(&matDef);
 		}
+	}
+
+	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
+	{
+		if (pParentObject->bUse == false)
+		{
+			continue;
+		}
+
+		// 階層構造モデル描画関数呼び出し
+		DrawParentModel(&pParentObject->pos, &pParentObject->rot, &pParentObject->mtxWorld, pParentObject->pModelData);
 	}
 }
 
@@ -319,6 +326,31 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 
 			break;
 		}
+	}
+}
+
+//======================================================================================
+// 階層構造オブジェクトを配置
+//======================================================================================
+void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype)
+{
+	ParentObject* pParentObject = &g_aParentObject[0];
+
+	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
+	{
+		if (pParentObject->bUse == true)
+		{
+			continue;
+		}
+
+		pParentObject->pModelData = SetModelData(parentmodeltype);
+		pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_HOUSE);
+
+		pParentObject->pos = pos;
+		pParentObject->rot = rot;
+		pParentObject->bUse = true;
+
+		break;
 	}
 }
 
@@ -470,9 +502,10 @@ void LoadParentModel(const char* pModelPath, int nNumParentModel)
 //=============================================================================
 //	階層構造モデルのオフセット読み込み処理
 //=============================================================================
-void LoadParentModelOffSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nIdxModelParent, int nNumParentModel)
+void LoadParentModelOffSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nIdxModelParent, int nNumParentModel, int nCntParts)
 {
-	Model* pModel = &g_aModelData[nNumParentModel].aModel[nIdxModel];
+	g_aModelData[nNumParentModel].nNumParts++;
+	Model* pModel = &g_aModelData[nNumParentModel].aModel[nCntParts];
 
 	pModel->nIdxModel = nIdxModel;
 	pModel->nIdxModelParent = nIdxModelParent;

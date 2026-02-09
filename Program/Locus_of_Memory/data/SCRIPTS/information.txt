@@ -12,6 +12,7 @@ SCRIPT
 #------------------------------------------------------------------------------
 
 MOTIONSCRIPT = data/SCRIPTS/player_motion.txt
+MOTIONSCRIPT = data/SCRIPTS/house_motion.txt
 
 #------------------------------------------------------------------------------
 #	階層構造モデルファイル
@@ -19,11 +20,6 @@ MOTIONSCRIPT = data/SCRIPTS/player_motion.txt
 
 PARENTSCRIPT = data/SCRIPTS/1P_model.txt
 PARENTSCRIPT = data/SCRIPTS/2P_model.txt
-
-#------------------------------------------------------------------------------
-#	オブジェクトファイル
-#------------------------------------------------------------------------------
-
-OBJECTSCRIPT = data/SCRIPTS/gameobject.txt
+PARENTSCRIPT = data/SCRIPTS/house_model.txt
 
 END_SCRIPT

@@ -852,6 +852,89 @@ bool CrossCollision(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3 posStar
 	return bCollision;
 }
 
+//==================================================================================
+//	モデルの描画処理 (階層構造)
+//==================================================================================
+void DrawParentModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pRot, D3DXMATRIX *pMtxWorld, ModelData *pModelData)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
+	D3DMATERIAL9 matDef;						// 現在のマテリアル保存用
+	D3DXMATERIAL* pMat;							// マテリアルデータへのポインタ
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(pMtxWorld);
+
+	// 向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, pRot->y, pRot->x, pRot->z);
+	D3DXMatrixMultiply(pMtxWorld, pMtxWorld, &mtxRot);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, pPos->x, pPos->y, pPos->z);
+	D3DXMatrixMultiply(pMtxWorld, pMtxWorld, &mtxTrans);
+
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, pMtxWorld);
+
+	// 現在のマテリアルを取得
+	pDevice->GetMaterial(&matDef);
+
+	// 全モデル(パーツ)の描画
+	for (int nCntParentModel = 0; nCntParentModel < pModelData->nNumParts; nCntParentModel++)
+	{
+		D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
+		D3DXMATRIX mtxParent;								// 親のマトリックス
+
+		// パーツのワールドマトリックスを初期化
+		D3DXMatrixIdentity(&pModelData->aModel[nCntParentModel].mtxWorld);
+
+		// パーツの向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pModelData->aModel[nCntParentModel].rot.y, pModelData->aModel[nCntParentModel].rot.x, pModelData->aModel[nCntParentModel].rot.z);
+		D3DXMatrixMultiply(&pModelData->aModel[nCntParentModel].mtxWorld, &pModelData->aModel[nCntParentModel].mtxWorld, &mtxRotOffSetModel);
+
+		// パーツの位置を反映(オフセット)
+		D3DXMatrixTranslation(&mtxTransOffSetModel, pModelData->aModel[nCntParentModel].pos.x, pModelData->aModel[nCntParentModel].pos.y, pModelData->aModel[nCntParentModel].pos.z);
+		D3DXMatrixMultiply(&pModelData->aModel[nCntParentModel].mtxWorld, &pModelData->aModel[nCntParentModel].mtxWorld, &mtxTransOffSetModel);
+
+		// パーツの「親のマトリックス」を設定
+		if (pModelData->aModel[nCntParentModel].nIdxModelParent != -1)
+		{// 親モデルがある場合
+			mtxParent = pModelData->aModel[pModelData->aModel[nCntParentModel].nIdxModelParent].mtxWorld;
+		}
+		else
+		{// 親モデルがない場合
+			mtxParent = *pMtxWorld;
+		}
+
+		// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
+		D3DXMatrixMultiply(&pModelData->aModel[nCntParentModel].mtxWorld,
+			&pModelData->aModel[nCntParentModel].mtxWorld,
+			&mtxParent);
+
+		// パーツのワールドマトリックスを設定
+		pDevice->SetTransform(D3DTS_WORLD, &pModelData->aModel[nCntParentModel].mtxWorld);
+
+		// マテリアルデータへのポインタを取得
+		pMat = (D3DXMATERIAL*)pModelData->aModel[pModelData->aModel[nCntParentModel].nIdxModel].pBuffMat->GetBufferPointer();
+
+
+		for (int nCntMat = 0; nCntMat < (int)pModelData->aModel[pModelData->aModel[nCntParentModel].nIdxModel].dwNumMat; nCntMat++)
+		{
+			// マテリアルの設定
+			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+
+			// テクスチャの設定
+			pDevice->SetTexture(0, pModelData->aModel[pModelData->aModel[nCntParentModel].nIdxModel].apTexture[nCntMat]);
+
+			// パーツの描画
+			pModelData->aModel[pModelData->aModel[nCntParentModel].nIdxModel].pMesh->DrawSubset(nCntMat);
+		}
+	}
+
+	// 保存していたマテリアルを戻す
+	pDevice->SetMaterial(&matDef);
+}
+
 //================================================
 // ウィンドウフルスクリーン処理
 //================================================

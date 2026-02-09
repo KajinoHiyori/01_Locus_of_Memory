@@ -7,6 +7,232 @@
 SCRIPT			# この行は絶対消さないこと！
 
 #------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 25
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/house_parts/house_floor.x		# [0]床
+MODEL_FILENAME = data/MODEL/house_parts/house_wall000.x		# [1]壁0
+MODEL_FILENAME = data/MODEL/house_parts/house_wall001.x		# [2]壁1
+MODEL_FILENAME = data/MODEL/house_parts/house_wall002.x		# [3]壁2
+MODEL_FILENAME = data/MODEL/house_parts/house_wall003.x		# [4]壁3
+MODEL_FILENAME = data/MODEL/house_parts/house_wall004.x		# [5]壁4
+MODEL_FILENAME = data/MODEL/house_parts/house_wall005.x		# [6]壁5
+MODEL_FILENAME = data/MODEL/house_parts/house_wall006.x		# [7]壁6
+MODEL_FILENAME = data/MODEL/house_parts/house_roof000.x		# [8]屋根0
+MODEL_FILENAME = data/MODEL/house_parts/house_roof001.x		# [9]屋根1
+MODEL_FILENAME = data/MODEL/house_parts/house_roof002.x		# [10]屋根2
+MODEL_FILENAME = data/MODEL/house_parts/house_roof003.x		# [11]屋根3
+MODEL_FILENAME = data/MODEL/house_parts/house_roof004.x		# [12]屋根4
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar000.x		# [13]柱0
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar001.x		# [14]柱1
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar002.x		# [15]柱2
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar003.x		# [16]柱3
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar004.x		# [17]柱4
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar005.x		# [18]柱5
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar006.x		# [19]柱6
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar007.x		# [20]柱7
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar008.x		# [21]柱8
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar009.x		# [22]柱9
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar010.x		# [23]柱10
+MODEL_FILENAME = data/MODEL/house_parts/house_pillar011.x		# [24]柱11
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+	NUM_PARTS = 26					# パーツ数
+	MOVE = 3.0						# 移動量
+	JUMP = 0.0					# ジャンプ量
+
+	PARTSSET
+		INDEX = 0					# 床
+		PARENT = -1					# (親)NULL
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 1					# 壁0
+		PARENT = 0					# (親)床
+		POS = 138.0 37.0 80.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 2					# 壁1
+		PARENT = 0					# (親)床
+		POS = -138.0 37.0 80.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 3					# 壁2
+		PARENT = 0					# (親)床
+		POS = 0.0 37.0 160.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 4					# 壁3
+		PARENT = 0					# (親)床
+		POS = 98.5 37.0 1.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 4					# 壁3
+		PARENT = 0					# (親)床
+		POS = -98.5 37.0 1.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET
+		INDEX = 5					# 壁4
+		PARENT = 0					# (親)床
+		POS = -59.0 37.0 -78.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET
+		INDEX = 6					# 壁5
+		PARENT = 0					# (親)床
+		POS = 59.0 37.0 -78.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 7					# 壁6
+		PARENT = 0					# (親)床
+		POS = 0.0 37.0 -157.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 8					# 屋根0
+		PARENT = 0					# (親)床
+		POS = 0.0 180.0 129.7
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 9					# 屋根1
+		PARENT = 0					# (親)床
+		POS = -75.0 180.0 30.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 10					# 屋根2
+		PARENT = 0					# (親)床
+		POS = 75.0 180.0 30.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET
+		INDEX = 11					# 屋根3
+		PARENT = 0					# (親)床
+		POS = 39.0 180.0 -46.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET
+		INDEX = 12					# 屋根4
+		PARENT = 0					# (親)床
+		POS = -38.0 180.0 -46.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET
+		INDEX = 13					# 柱0
+		PARENT = 1					# (親)壁0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 14					# 柱1
+		PARENT = 2					# (親)壁1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 15					# 柱2
+		PARENT = 3					# (親)壁2
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 16					# 柱3
+		PARENT = 0					# (親)床
+		POS = 0.0 37.0 1.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 17					# 柱4
+		PARENT = 1					# (親)壁0
+		POS = 0.0 150.0 0.2
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 18					# 柱5
+		PARENT = 2					# (親)壁1
+		POS = 0.0 150.0 0.2
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 19					# 柱6
+		PARENT = 0					# (親)床
+		POS = 0.0 300.0 80.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 20					# 柱7
+		PARENT =0					# (親)床
+		POS = 0.0 310.0 -40.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 21					# 柱8
+		PARENT = 8					# (親)壁7
+		POS = 0.0 150.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 22					# 柱9
+		PARENT = 6					# (親)壁5
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 23					# 柱10
+		PARENT = 7					# (親)壁6
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET
+		INDEX = 24					# 柱11
+		PARENT = 8					# (親)壁7
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+END_CHARACTERSET
+
+#------------------------------------------------------------------------------
 # モーション情報
 #------------------------------------------------------------------------------
 #---------------------------------------

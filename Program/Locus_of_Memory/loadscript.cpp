@@ -40,6 +40,7 @@
 #define LOAD_POS			"POS"				// 位置読み込み
 #define LOAD_ROT			"ROT"				// 向き読み込み
 #define LOAD_TYPE			"TYPE"				// 種類読み込み
+#define LOAD_PARENTTYPE		"PARENTTYPE"		// 階層構造モデルの種類読み込み
 #define LOAD_MESHTYPE		"MESHTYPE"			// メッシュの種類読み込み
 #define LOAD_EVENT			"EVENT"				// イベント読み込み
 #define LOAD_RADIUS			"RADIUS"			// 半径読み込み
@@ -279,8 +280,9 @@ HRESULT LoadParentModel(const char* pParentModelFileName)
 
 						if (strcmp(aStrCpy, LOAD_ENDPARTS) == 0)
 						{// END_PARTSSETを読み込んだ
+							LoadParentModelOffSet(pos, rot, nIdx, nParent, g_nNumParentModel, nCntParts);
 
-							LoadParentModelOffSet(pos, rot, nIdx, nParent, g_nNumParentModel);
+							nCntParts++;
 
 							memset(&pos, NULL, sizeof(D3DXVECTOR3));
 							memset(&rot, NULL, sizeof(D3DXVECTOR3));
@@ -293,6 +295,7 @@ HRESULT LoadParentModel(const char* pParentModelFileName)
 
 				if (strcmp(aStrCpy, LOAD_ENDPLAYER) == 0)
 				{// END_CHARACTERSETを読み込んだ
+					nCntParts = 0;
 					break;
 				}
 			}
@@ -517,6 +520,7 @@ HRESULT LoadModel(const char* pModelFileName)
 	D3DXVECTOR3 pos = {};				   // 位置読み込み
 	D3DXVECTOR3 rot = {};				   // 向き読み込み
 	int type = -1;						   // 種類読み込み
+	int Parenttype = -1;				   // 階層構造モデルの種類読み込み
 	int nShadow = 0;					   // 影をつけるか
 	int  nCollision = true;				   // 当たり判定するか
 	int nNumModel = 0;					   // モデル数読み込み
@@ -599,7 +603,7 @@ HRESULT LoadModel(const char* pModelFileName)
 					continue;
 				}
 
-				if (strncmp(aStrCpy, LOAD_TYPE, 4) == 0)
+				if (strncmp(aStrCpy, LOAD_TYPE, sizeof(LOAD_TYPE + 1)) == 0)
 				{// TYPEを読み込んだ
 					if ((pStart = strchr(aStr, '=')) == NULL)
 					{
@@ -623,12 +627,32 @@ HRESULT LoadModel(const char* pModelFileName)
 					continue;
 				}
 
+				if (strncmp(aStrCpy, LOAD_PARENTTYPE, sizeof(LOAD_PARENTTYPE + 1)) == 0)
+				{
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &Parenttype);
+
+					continue;
+				}
+
 				if (strcmp(aStrCpy, LOAD_ENDMODELINFO) == 0)
 				{// END_MODELSETを読み込んだ
 
-					SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
+					if (Parenttype != -1)
+					{
+						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype);
+					}
+					else
+					{
+						SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
+					}
 					
 					memset(aMeshPath, NULL, sizeof(aMeshPath));				// 文字列クリア
+					Parenttype = -1;
 					bSetMesh = false;
 					break;
 				}
