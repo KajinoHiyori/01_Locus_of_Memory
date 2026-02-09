@@ -11,6 +11,7 @@
 #include "input.h"
 #include "color.h"
 #include "title.h"
+#include "debugproc.h"
 
 // マクロ定義
 #define MAXUI_TEX		(UITEX_MAX)		// テクスチャの最大数
@@ -18,8 +19,9 @@
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 #define GAMEUI_POSY		(110.0f)		// 左のUIのY軸
 #define PHONE_WIDTH		(28.125f)		// スマホの幅
-#define PHONE_HEIGHT	(50.0f)		// スマホの高さ
+#define PHONE_HEIGHT	(50.0f)			// スマホの高さ
 #define FLICKER			(0.5f)			// UI画面のちらつきを軽減
+#define PHONE_Y			(50.0f)			// スマホの高度
 
 // UIのテクスチャの状態
 typedef struct
@@ -32,6 +34,8 @@ typedef struct
 	float		fHeight;		// 高さ
 	float		fWidthDest;		// 幅の目的地
 	float		fHeightDest;	// 高さの目的地
+	float		fFlickerX;		// X軸のちらつきを管理
+	float		fFlickerZ;		// Z軸のちらつきを管理
 	bool		bDisp;			// 表示状態
 }UI_TEXTURE;
 
@@ -40,11 +44,10 @@ typedef struct
 {
 	UI_TEXTURE	aUITexture[MAXUI_TEX];
 	D3DXVECTOR3 pos;		// 位置
+	D3DXVECTOR3 rot;		// 向き
 	UITYPE		type;		// 表示中のUIの種類
 	UISTATE		state;		// UIの表示状態
 	int			nSelect;	// 選択しているメニュー
-	float		fAddX;		// X軸のちらつきを軽減
-	float		fAddZ;		// Z軸のちらつきを軽減
 	bool		bPause;		// ポーズ状態
 }UIManager;
 
@@ -106,16 +109,16 @@ void InitUIManager(void)
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// 幅
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= PHONE_HEIGHT;						// 高さ
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;								// 幅の目的地
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest	= 0.0f;								// 高さの目的地
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX	= 0.0f;								// ちらつきを管理[X]
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ	= 0.0f;								// ちらつきを管理[Z]
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;							// 表示状態
 		}
-
-		g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
+		g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, PHONE_Y, -300.0f);	// 中心位置
+		g_aUIManager[nCntPlayer].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
 		g_aUIManager[nCntPlayer].type = UITYPE_CLOCK;					// 選択している種類(type)
 		g_aUIManager[nCntPlayer].state = UISTATE_NONDISPLAY;			// UIの表示状態
 		g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;				// 選択している種類(int)
-		g_aUIManager[nCntPlayer].fAddX = 0.0f;								// X軸のちらつきを軽減
-		g_aUIManager[nCntPlayer].fAddZ = 0.0f;								// Z軸のちらつきを軽減
 		g_aUIManager[nCntPlayer].bPause = false;						// ポーズ状態(trueでポーズ中)
 	}
 
@@ -139,9 +142,6 @@ void InitUIManager(void)
 			if (nCntPlayer == 0)
 			{
 				g_aUIManager[nCntPlayer].bPause = true;
-				
-				g_aUIManager[nCntPlayer].fAddX = sinf(fRotXCamera[nCntPlayer]);
-				g_aUIManager[nCntPlayer].fAddZ = cosf(fRotYCamera[nCntPlayer]);
 			}
 			else
 			{
@@ -157,8 +157,6 @@ void InitUIManager(void)
 			switch (nCntUI)
 			{
 			case UITEX_BG:	// 背景
-				g_aUIManager[nCntPlayer].pos.x = 0.0f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = 0.0f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BG;				// テクスチャの種類
 				//g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 0.0f;				// 幅
@@ -166,78 +164,80 @@ void InitUIManager(void)
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest	= 0.0f;					// 幅の目的地
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;					// 高さの目的地
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX	= 0.0f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ	= 0.0f;	// ちらつきを軽減
 				break;
 
 			case UITEX_BATTERY:	// バッテリー
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BATTERY;		// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER;	// ちらつきを軽減
 				break;
 
 			case UITEX_BATTERYFRAME:	// バッテリーフレーム
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BATTERYFRAME;	// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
 				break;
 
 			case UITEX_PAUSEMENU:	// ポーズメニュー
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_PAUSEMENU;		// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
 				break;
 
 			case UITEX_CLOCKMENU:	// 時計メニュー
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CLOCKMENU;		// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= false;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
 				break;
 
 			case UITEX_CLOCK:	// 時計[選択状態]
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_YELLOW;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CLOCK;			// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
 				break;
 
 			case UITEX_CONTINUE:	// continue
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_CONTINUE;		// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
 				break;
 
 			case UITEX_RETRY:	// retry
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_RETRY;			// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
 				break;
 
 			case UITEX_QUIT:	// quit
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 1.5f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 1.5f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_QUIT;			// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER * 1.5f;	// ちらつきを軽減
 				break;
 
 			case UITEX_FILTER:	// フィルター
-				g_aUIManager[nCntPlayer].pos.x = g_aUIManager[nCntPlayer].fAddX * FLICKER * 2.0f;	// ちらつきを軽減
-				g_aUIManager[nCntPlayer].pos.z = g_aUIManager[nCntPlayer].fAddZ * FLICKER * 2.0f;	// ちらつきを軽減
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_RETROFILTER;	// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_FILTER;			// テクスチャの種類
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp		= true;					// 表示状態
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX = sinf(fRotXCamera[nCntPlayer]) * FLICKER * 2.0f;	// ちらつきを軽減
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ = cosf(fRotYCamera[nCntPlayer]) * FLICKER * 2.0f;	// ちらつきを軽減
 				break;
 			}
 
@@ -245,10 +245,10 @@ void InitUIManager(void)
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos += g_aUIManager[nCntPlayer].pos;
 
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, g_aUIManager[nCntPlayer].pos.z);
-			pVtx[1].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, g_aUIManager[nCntPlayer].pos.z);
-			pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, g_aUIManager[nCntPlayer].pos.z);
-			pVtx[3].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, g_aUIManager[nCntPlayer].pos.z);
+			pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth + g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight,		g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ);
+			pVtx[1].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth + g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight,		g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ);
+			pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth + g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight,	g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ);
+			pVtx[3].pos = D3DXVECTOR3( g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth + g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerX, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight,	g_aUIManager[nCntPlayer].aUITexture[nCntUI].fFlickerZ);
 
 			// rhwの設定
 			pVtx[0].nor = NORMAL;
@@ -263,10 +263,20 @@ void InitUIManager(void)
 			pVtx[3].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
 
 			// テクスチャ座標の設定
-			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_FILTER)
+			{
+				pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+				pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+				pVtx[2].tex = D3DXVECTOR2(0.0f, 1.5f);
+				pVtx[3].tex = D3DXVECTOR2(1.0f, 1.5f);
+			}
+			else
+			{
+				pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+				pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+				pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+				pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			}
 
 			pVtx += 4;
 		}
@@ -306,7 +316,26 @@ void UninitUIManager(void)
 //========================================================================
 void UpdateUIManager(void)
 {
-	
+	// プレイヤーの情報を取得
+	Player* pPlayer = GetPlayer();
+	D3DXVECTOR3 posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	{
+		g_aUIManager[nCntPlayer].rot.y = (pPlayer->rot.y);
+
+		g_aUIManager[nCntPlayer].pos.x = -sinf(g_aUIManager[nCntPlayer].rot.y - 0.25f) * 100.0f + pPlayer->pos.x;
+		g_aUIManager[nCntPlayer].pos.z = -cosf(g_aUIManager[nCntPlayer].rot.y - 0.25f) * 100.0f + pPlayer->pos.z;
+
+		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
+		{
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = posOffset;
+
+			// 中心位置からの位置を求める
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos += g_aUIManager[nCntPlayer].pos;
+		}
+		PrintDebugProc("UIの位置[%d] : (%f, %f, %f)", nCntPlayer, g_aUIManager[nCntPlayer].pos.x, g_aUIManager[nCntPlayer].pos.y, g_aUIManager[nCntPlayer].pos.z);
+	}
 }
 
 //========================================================================
@@ -327,6 +356,9 @@ void DrawUIManager(void)
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法を設定(基準値より大きい場合描画)
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
+
+	// ライトをオフにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
@@ -395,6 +427,9 @@ void DrawUIManager(void)
 	//// Zテストを有効にする
 	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+
+	// ライトをオンにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
 	// アルファテストを無効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
