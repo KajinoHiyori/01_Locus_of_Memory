@@ -40,10 +40,9 @@ void InitObject(void)
 
 	ModelData* pModelData = &g_aModelData[0];	// 先頭アドレス
 	ParentObject* pParentObject = &g_aParentObject[0];
-
-	// ModelDataの初期化
-	memset(pModelData, NULL, sizeof(ModelData) * MAX_PARENTMODEL);
-	memset(pParentObject, NULL, sizeof(ParentObject) * MAX_PARENTOBJECT);
+		
+	memset(pModelData, NULL, sizeof(ModelData) * MAX_PARENTMODEL);			// モデルデータの初期化
+	memset(pParentObject, NULL, sizeof(ParentObject) * MAX_PARENTOBJECT);	// 階層構造オブジェクト情報の初期化
 
 	// Object情報の初期化
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
@@ -152,7 +151,7 @@ void UpdateObject(void)
 {
 	Player* pPlayer = GetPlayer();
 
-	ParentObject* pParentObject = &g_aParentObject[0];
+	ParentObject* pParentObject = &g_aParentObject[0];		// 先頭アドレス
 
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
@@ -170,18 +169,23 @@ void UpdateObject(void)
 		}
 	}
 
+	// 階層構造オブジェクト
 	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
 	{
 		if (pParentObject->bUse == false)
-		{
+		{// 使っていなかったら弾く
 			continue;
 		}
 
+#ifdef _DEBUG
+		// モーションテスト
 		if (GetKeyboardTrigger(DIK_5) == true)
 		{
 			SetMotion(&pParentObject->motion, pParentObject->pModelData, MOTIONTYPE_MOVE, false, true, 10);
 		}
+#endif
 
+		// モーションの更新
 		UpdateMotion(&pParentObject->motion, pParentObject->pModelData);
 	}
 }
@@ -240,10 +244,11 @@ void DrawObject(void)
 		}
 	}
 
+	// 階層構造オブジェクト
 	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
 	{
 		if (pParentObject->bUse == false)
-		{
+		{// 使っていなかったら弾く
 			continue;
 		}
 
@@ -353,22 +358,24 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 //======================================================================================
 void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype)
 {
-	ParentObject* pParentObject = &g_aParentObject[0];
+	ParentObject* pParentObject = &g_aParentObject[0];		// 先頭アドレス
 
 	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
 	{
 		if (pParentObject->bUse == true)
-		{
+		{// 使っていたら弾く
 			continue;
 		}
 
-		pParentObject->pModelData = SetModelData(parentmodeltype);
-		pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_HOUSE);
+		pParentObject->pModelData = SetModelData(parentmodeltype);					// モデルデータ設定
+		pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_HOUSE);	// モーションデータ設定
 
+		// 各種設定
 		pParentObject->pos = pos;
 		pParentObject->rot = rot;
 		pParentObject->bUse = true;
 
+		// ニュートラルモーションで開始
 		SetMotion(&pParentObject->motion, pParentObject->pModelData, MOTIONTYPE_NEUTRAL, true, false, 10);
 
 		break;
