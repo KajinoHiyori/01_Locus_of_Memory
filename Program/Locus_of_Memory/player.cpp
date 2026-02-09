@@ -185,6 +185,32 @@ void UpdatePlayer(void)
 					OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
 				}
 
+				// モーションの確認
+				if (GetKeyboardTrigger(DIK_Z) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+				}
+				if (GetKeyboardTrigger(DIK_X) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
+				}
+				if (GetKeyboardTrigger(DIK_C) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, true, true, BLENDFRAME);
+				}
+				if (GetKeyboardTrigger(DIK_V) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, true, true, BLENDFRAME);
+				}
+				if (GetKeyboardTrigger(DIK_B) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, true, true, BLENDFRAME);
+				}
+				if (GetKeyboardTrigger(DIK_N) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, true, true, BLENDFRAME);
+				}
+
 				// 移動方向の正規化
 				D3DXVec3Normalize(&moveDir, &moveDir);
 

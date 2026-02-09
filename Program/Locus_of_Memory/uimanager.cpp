@@ -72,29 +72,6 @@ LPDIRECT3DTEXTURE9 g_apTextureUIManager[MAXUI_TEX] = {};		// ƒeƒNƒXƒ`ƒƒ‚Ö‚Ìƒ|ƒCƒ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffUIManager = NULL;	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^
 UIManager g_aUIManager[MAX_PLAYER];
 
-// // ƒ}ƒNƒ’è‹`
-#define WIDTH	(10.0f)								// •
-#define DEPTH	(10.0f)								// ‰œs
-#define HEIGHT	(10.0f)								// ‚‚³
-#define SHADOW	(10.0f)								// ‰e‚Ì‘å‚«‚³
-#define NORMAL	(D3DXVECTOR3(0.0f, 0.0f, -1.0f))	// Šî–{‚Ì–@ü
-#define POS		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// ˆÊ’u
-#define DEFAULT	(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// ƒfƒtƒHƒ‹ƒg
-#define MOVE	(0.05f)								// ˆÚ“®—Ê
-#define ROTATE	(0.05f)								// ‰ñ“]—Ê
-// ƒrƒ‹ƒ{[ƒh\‘¢‘Ì
-typedef struct
-{
-	D3DXMATRIX mtxWorld;	// ƒ[ƒ‹ƒhƒ}ƒgƒŠƒbƒNƒX
-	D3DXVECTOR3 pos;		// ƒrƒ‹ƒ{[ƒh‚ÌˆÊ’u
-	D3DXVECTOR3 move;		// ƒrƒ‹ƒ{[ƒh‚ÌˆÚ“®—Ê
-	int nIdxShadow;			// ‰e‚ÌƒCƒ“ƒfƒbƒNƒX
-}Billboard;
-// ƒOƒ[ƒoƒ‹•Ï”
-LPDIRECT3DTEXTURE9 g_pTextureBillBoard = NULL;		// ƒeƒNƒXƒ`ƒƒ‚Ö‚Ìƒ|ƒCƒ“ƒ^
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBillBoard = NULL;	// ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^
-Billboard g_billboard;
-
 //========================================================================
 // UI‚Ì‰Šú‰»ˆ—
 //========================================================================
@@ -314,58 +291,6 @@ void InitUIManager(void)
 	// ’¸“_ƒoƒbƒtƒ@‚ðƒAƒ“ƒƒbƒN
 	g_pVtxBuffUIManager->Unlock();
 //#endif
-
-#if 0
-	LPDIRECT3DDEVICE9 pDevice;	// ƒfƒoƒCƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^
-	// ƒfƒoƒCƒX‚ÌŽæ“¾
-	pDevice = GetDevice();
-
-	// ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚Ýž‚Ý
-	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\tree000.png", &g_pTextureBillBoard);
-
-	// ‰Šú‰»
-	g_billboard.pos = POS;
-	g_billboard.move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-	// ’¸“_ƒoƒbƒtƒ@‚Ì¶¬
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,	// Šm•Û‚·‚éƒoƒbƒtƒ@‚ÌƒTƒCƒY
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,									// ’¸“_ƒtƒH[ƒ}ƒbƒg
-		D3DPOOL_MANAGED,
-		&g_pVtxBuffBillBoard,
-		NULL);
-
-	VERTEX_3D* pVtx;
-	// ’¸“_ƒoƒbƒtƒ@‚ðƒƒbƒN‚µA’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ðŽæ“¾
-	g_pVtxBuffBillBoard->Lock(0, 0, (void**)&pVtx, 0);
-
-	// ’¸“_À•W‚ÌÝ’è
-	pVtx[0].pos = D3DXVECTOR3(-WIDTH, 0.0f + HEIGHT, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(WIDTH, 0.0f + HEIGHT, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(-WIDTH, 0.0f - HEIGHT, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(WIDTH, 0.0f - HEIGHT, 0.0f);
-
-	// rhw‚ÌÝ’è
-	pVtx[0].nor = NORMAL;
-	pVtx[1].nor = NORMAL;
-	pVtx[2].nor = NORMAL;
-	pVtx[3].nor = NORMAL;
-
-	// ’¸“_ƒJƒ‰[‚ÌÝ’è
-	pVtx[0].col = COLOR_WHITE;
-	pVtx[1].col = COLOR_WHITE;
-	pVtx[2].col = COLOR_WHITE;
-	pVtx[3].col = COLOR_WHITE;
-
-	// ƒeƒNƒXƒ`ƒƒÀ•W‚ÌÝ’è
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
-	// ’¸“_ƒoƒbƒtƒ@‚ðƒAƒ“ƒƒbƒN
-	g_pVtxBuffBillBoard->Unlock();
-#endif
 }
 
 //========================================================================
@@ -391,24 +316,6 @@ void UninitUIManager(void)
 		g_pVtxBuffUIManager = NULL;
 	}
 //#endif
-
-#if 0
-	// ƒeƒNƒXƒ`ƒƒ‚Ì”jŠü
-	if (g_pTextureBillBoard != NULL)
-	{
-		g_pTextureBillBoard->Release();
-		g_pTextureBillBoard = NULL;
-	}
-
-
-	// ’¸“_ƒoƒbƒtƒ@‚Ì”jŠü
-	if (g_pVtxBuffBillBoard != NULL)
-	{
-		g_pVtxBuffBillBoard->Release();
-		g_pVtxBuffBillBoard = NULL;
-	}
-#endif
-
 }
 
 //========================================================================
