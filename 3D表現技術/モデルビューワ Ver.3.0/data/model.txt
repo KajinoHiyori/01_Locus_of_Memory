@@ -25,7 +25,7 @@ TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 33
+NUM_MODEL = 35
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -63,6 +63,8 @@ MODEL_FILENAME = data/MODEL/streetlight/streetlight000.x	# [29]街灯2
 MODEL_FILENAME = data/MODEL/magicobj/bonfire000.x	# [30]焚火1
 MODEL_FILENAME = data/MODEL/magicobj/bonfire001.x	# [31]焚火2
 MODEL_FILENAME = data/MODEL/animal/nest000.x	# [32]鳥の巣2
+MODEL_FILENAME = data/MODEL/magicobj/bucket000.x	# [33]バケツ1
+MODEL_FILENAME = data/MODEL/magicobj/bucket001.x	# [34]バケツ2
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -488,7 +490,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 9
-	POS = -1100 0 2500
+	POS = 2800 0 3350
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
@@ -1148,7 +1150,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 17
-	POS = -549 420 -2539
+	POS = -3174 0 -2119
 	ROT = 0 30 0
 	SHADOW = 0
 	COLLISION = 1
@@ -1254,7 +1256,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 18
-	POS = -549 420 -2539
+	POS = -3174 0 -2119
 	ROT = 0 30 0
 	SHADOW = 0
 	COLLISION = 1
@@ -1531,6 +1533,65 @@ END_MODELSET
 MODELSET
 	TYPE = 31
 	POS = 1019 0 -1160
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# バケツ
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 33
+	POS = 2081 0 -2772
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 33
+	POS = -1638 0 -4227
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 33
+	POS = -2017 0 -1520
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 33
+	POS = 4105 0 214
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 34
+	POS = 2611 0 -1642
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 34
+	POS = -71 0 -2524
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 34
+	POS = 795 0 113
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
