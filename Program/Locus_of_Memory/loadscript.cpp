@@ -309,6 +309,8 @@ HRESULT LoadParentModel(const char* pParentModelFileName)
 			break;
 		}
 	}
+
+	return S_OK;
 }
 
 //=============================================================================

@@ -89,6 +89,22 @@ typedef enum
 	COMMANDTYPE_MAX
 }COMMANDTYPE;
 
+//*****************************************************************************
+// 魔法イベントの種類
+//*****************************************************************************
+typedef enum MAGICEVENT
+{
+	MAGICEVENT_NONE = 0,		// なにもない
+	MAGICEVENT_001,				// 名称未定
+	MAGICEVENT_002,				// 名称未定
+	MAGICEVENT_003,				// 名称未定
+	MAGICEVENT_004,				// 名称未定
+	MAGICEVENT_005,				// 名称未定
+	MAGICEVENT_006,				// 名称未定
+	MAGICEVENT_007,				// 名称未定
+	MAGICEVENT_MAX,
+}MAGICEVENT;
+
 typedef struct
 {
 	D3DXMATRIX mtxWorld;
@@ -119,6 +135,15 @@ typedef struct
 	int nMagicTypeCounter[MAGICTYPE_MAX];		//魔法の種類のカウント
 }MagicCounter;
 
+//魔法使用可能場所の構造体定義
+typedef struct MagicLocus
+{
+	MAGICEVENT MagicEvent;	// イベントの種類
+	D3DXVECTOR3 pos;		// 原点
+	float fRadius;			// 半径
+	bool bUse;				// 使用状態
+}MagicLocus;
+
 void InitMagic(void);
 void UninitMagic(void);
 void UpdateMagic(void);
@@ -138,8 +163,14 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 //フィールド内に魔法を設置
 void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
+//魔法使用場所設定処理==============================
+void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius);
+
 // フィールド内の魔法との当たり判定
 int CollisionMagic(D3DXVECTOR3 pos, float fRadius,int nIdx);
+
+//魔法使用可能場所との当たり判定==============
+bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nIdx);
 
 // フィールド内の魔法を取得する
 COMMANDOREDER GetFieldMagic(int nIdx);

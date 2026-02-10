@@ -12,11 +12,13 @@
 #include "shadow.h"
 #include "particle.h"
 #include "vibration.h"
+#include "event.h"
 
 //マクロ定義
 #define MAX_MAGIC				(128)		//魔法の最大数
 #define MAX_DROPMAGIC			(32)		//落ちてる魔法の最大数
 #define MAX_COMMAND				(3)			//コマンドの最大数
+#define MAX_MAGICLOCUS			(64)		//魔法使用場所最大数
 #define DROPMAGIC_RADIUS		(50.0f)		//落ちてる魔法の半径
 #define DROPMAGIC_MEDIUMRADIUS	(100.0f)	//落ちてる魔法の半径
 #define DROPMAGIC_FARRADIUS		(150.0f)	//落ちてる魔法の半径
@@ -26,16 +28,19 @@
 Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
 DropMagic g_aDropMagic[MAX_DROPMAGIC];					//落ちてる魔法の情報
 COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
-MagicCounter g_aCounter[MAX_PLAYER];
-int g_aCntCommand[MAX_PLAYER] = {};
+MagicCounter g_aCounter[MAX_PLAYER];					//リザルト用魔法回数カウント
+MagicLocus g_aMagicLocus[MAX_MAGICLOCUS];				//魔法使用場所の情報
+int g_aCntCommand[MAX_PLAYER] = {};						//
 
 //魔法の初期化処理=============================
 void InitMagic(void)
 {
 	MagicCounter* pCounter = &g_aCounter[0];
+	MagicLocus* pMagicLocus = &g_aMagicLocus[0];
 
 	memset(pCounter, NULL, sizeof(MagicCounter) * MAX_PLAYER);
 	memset(&g_aCntCommand[0], NULL, sizeof(int) * MAX_PLAYER);
+	memset(pMagicLocus, NULL, sizeof(MagicLocus) * MAX_MAGICLOCUS);
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
@@ -74,6 +79,8 @@ void InitMagic(void)
 
 	SetMagicPosition(COMMANDOREDER_YYY, D3DXVECTOR3(0.0f, 0.0f, 300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	SetMagicPosition(COMMANDOREDER_RGB, D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	SetMagicLocus(MAGICEVENT_001, INIT_D3DXVEC3, 300.0f);
 }
 
 //魔法の終了処理==============================
@@ -345,6 +352,9 @@ COMMANDOREDER PressCommand(int nIdx)
 	{
 		return COMMANDOREDER_NONE;
 	}
+
+	return COMMANDOREDER_NONE;
+
 }
 
 //魔法の変換=============================
@@ -431,13 +441,15 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			g_aMagic[nIdx][nCntMagic].bUse = true;
 			SetSpellUI(g_aMagic[nIdx][nCntMagic].mType, nIdx, DISP_MAGIC);
 
+			CollisionMagicLocus(type, pos, 100.0f, nIdx);
+
 			switch (type)
 			{
 				//浮遊
 			case MAGICTYPE_LEVITATION:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_LEVITATION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 3;
-					break;
+				break;
 
 				//燃焼
 			case MAGICTYPE_COMBUSTION:
@@ -534,10 +546,65 @@ void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	}
 }
 
+//魔法使用場所設定処理==============================
+void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius)
+{
+	MagicLocus* pMagicLocus = &g_aMagicLocus[0];		// 先頭アドレス
+
+	for (int nCntMagicLocus = 0; nCntMagicLocus < MAX_MAGICLOCUS; nCntMagicLocus++, pMagicLocus++)
+	{
+		if (pMagicLocus->bUse == true)
+		{// 使ってたら弾く
+			continue;
+		}
+
+		// 各引数の値を代入
+		pMagicLocus->MagicEvent = event;		// イベントの種類
+		pMagicLocus->pos = pos;					// 原点
+		pMagicLocus->fRadius = fRadius;			// 半径
+		pMagicLocus->bUse = true;				// 使用状態
+
+		break;
+	}
+}
+
+
 //魔法情報の取得==============================
 Magic* GetMagic(void)
 {
 	return &g_aMagic[0][0];
+}
+
+//魔法使用可能場所との当たり判定==============
+bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nIdx)
+{
+	MagicLocus* pMagicLocus = &g_aMagicLocus[0];	// 先頭アドレス
+	float fDiff = 0.0f;								// 判定用変数
+
+	for (int nCntMagicLocus = 0; nCntMagicLocus < MAX_MAGICLOCUS; nCntMagicLocus++, pMagicLocus++)
+	{
+		if (pMagicLocus->bUse == false)
+		{// 使っていなければ弾く
+			continue;
+		}
+
+		// 各距離を二乗したものをすべて足す
+		fDiff = powf(pMagicLocus->pos.x - pos.x, 2) + powf(pMagicLocus->pos.y - pos.y, 2) + powf(pMagicLocus->pos.z - pos.z, 2);
+
+		if (fDiff <= powf(fRadius + pMagicLocus->fRadius, 2))
+		{// 当たっていたら
+			if (SetMagicEvent(pMagicLocus->MagicEvent, type) == true)
+			{
+				return true;
+			}
+			else
+			{
+				continue;
+			}
+		}
+	}
+
+	return false;
 }
 
 //フィールドの魔法との当たり判定==============
