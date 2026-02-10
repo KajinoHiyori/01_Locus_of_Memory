@@ -998,7 +998,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\old_copper.png";
+    "data\\TEXTURE\\old_copper.png";
    }
   }
   Material {
@@ -1007,7 +1007,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\old_copper.png";
+    "data\\TEXTURE\\old_copper.png";
    }
   }
   Material {
@@ -1016,7 +1016,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\old_copper000.png";
+    "data\\TEXTURE\\old_copper000.png";
    }
   }
   Material {
@@ -1031,7 +1031,7 @@ Mesh {
    0.110000;0.110000;0.110000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\old_copper.png";
+    "data\\TEXTURE\\old_copper.png";
    }
   }
  }

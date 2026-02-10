@@ -158,11 +158,11 @@ void UpdatePlayer(void)
 			switch (g_aPlayer[nCntPlayer].state)
 			{
 			case PLAYERSTATE_NORMAL:	// 通常時
-				//if (bPause == false)	// ポーズ状態の場合、各種処理を行わない[]
-				//{
-				//
-				//}
-				//else
+				if (bPause == true)	// ポーズ状態の場合、各種処理を行わない[]
+				{
+				
+				}
+				else
 				{
 					// キー入力を受け付ける====================================
 						// 移動方向を管理

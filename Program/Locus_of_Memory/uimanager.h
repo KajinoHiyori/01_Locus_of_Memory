@@ -21,10 +21,12 @@ typedef enum
 typedef enum
 {
 	UISTATE_NONDISPLAY = 0,	// 非表示
-	UISTATE_APPEAR,			// 出現
-	UISTATE_SELECT,			// 選択状態
+	UISTATE_APPEAR,			// 出現[通常]
+	UISTATE_SELECT,			// 選択状態[通常]
+	UISTATE_DISAPPEAR,		// 収縮[通常]
+	UISTATE_CLOCKAPPEAR,	// 出現[時計]
 	UISTATE_CLOCK,			// 時計
-	UISTATE_DISAPPEAR,		// 収縮
+	UISTATE_CLOCKDISAPPEAR,	// 収縮[時計]
 	UISTATE_MAX
 }UISTATE;
 
@@ -41,6 +43,7 @@ typedef enum
 	UITEX_RETRY,		// retry
 	UITEX_QUIT,			// quit
 	UITEX_FILTER,		// フィルター
+	UITEX_BGFILTER,		// 背景フィルター
 	UITEX_MAX
 }UITEX;
 
@@ -50,7 +53,18 @@ void UninitUIManager(void);
 void UpdateUIManager(void);
 void DrawUIManager(void);
 bool GetPause(int nIdx);
-void SetUIManager(int nIdx);
+void UpdateUIBG(int nIdx);		// 背景の更新処理
+void SetUIAppear(int nIdx);		// UIを出現状態にする
+void SetUIDissapear(int nIdx);	// UIを消滅状態にする
+void SetUISelect(int nIdx);		// UIを選択状態にする
+void SetUINonDisp(int nIdx);	// UIを非表示状態にする
+
+void SetClockAppear(int nIdx);		// 時計を出現状態にする
+void SetClockMenu(int nIdx);		// 時計を表示状態にする
+void SetClockDissapear(int nIdx);	// 時計を消滅状態にする
+void SetClockNonDisp(int nIdx);		// 時計を非表示状態にする
+
+void SetUIManager(int nIdx);	
 UISTATE GetUIState(int nIdx);
 
 #endif
