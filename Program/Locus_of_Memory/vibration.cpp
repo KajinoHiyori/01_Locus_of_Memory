@@ -6,6 +6,7 @@
 VIBRATIONTYPE g_VibrationType;
 VIBRATION g_Vibration;
 int nVibration = 0;
+int nVibDel = 0;
 
 
 void InitVibration(void)
@@ -71,6 +72,8 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 {
 	int nVibForce = 12000;
 
+
+
 	if (Type == VIBRATIONTYPE_NOTHING)
 	{
 		nVibForce = 10000;
@@ -85,7 +88,8 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 	if (g_Vibration.Vibration == false)
 	{
 		if (nDropMagic == 1)
-		{
+		{ // îRèƒ
+
 			nVibration++;
 
 			if (nVibration % 60 < 15)
@@ -101,6 +105,46 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				SetJoypadVibration(0, 30000 - (nVibForce * Type), 60, nPlayertype);
 			}
 		
+
+			if (nVibration >= 120)
+			{
+				nVibration = 0;
+			}
+		}
+		else if (nDropMagic == 2)
+		{ // ç^êÖ
+
+			nVibration = nVibration + 100;
+
+			if (nVibration >= 30000)
+			{
+				nVibDel++;
+			}
+
+			if (nVibDel >= 100)
+			{
+				nVibration = 0;
+				nVibDel = 0;
+			}
+			else if (nVibDel == 0)
+			{
+				SetJoypadVibration(0 + nVibration, 30000 - nVibration, 60, nPlayertype);
+			}
+
+		}
+		else if (nDropMagic == 3)
+		{ // ÉtÉâÉbÉVÉÖ
+
+			nVibration++;
+
+			if (nVibration % 60 < 30)
+			{
+				SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
+			}
+			else if (nVibration % 60 >= 30)
+			{
+				SetJoypadVibration(0, 0, 1, nPlayertype);
+			}
 
 			if (nVibration >= 120)
 			{
