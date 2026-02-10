@@ -186,6 +186,9 @@
     <ClCompile Include="uimanager.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="event.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -298,6 +301,9 @@
     </ClInclude>
     <ClInclude Include="uimanager.h">
       <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="event.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
