@@ -12,6 +12,7 @@
 #include "color.h"
 #include "title.h"
 #include "debugproc.h"
+#include "fade.h"
 
 // マクロ定義
 #define MAXUI_TEX		(UITEX_MAX)		// テクスチャの最大数
@@ -157,7 +158,7 @@ void InitUIManager(void)
 			switch (nCntUI)
 			{
 			case UITEX_BG:	// 背景
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;			// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_DISALPHA;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BG;				// テクスチャの種類
 				//g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= 0.0f;				// 幅
 				//g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight		= 0.0f;				// 高さ
@@ -316,14 +317,54 @@ void UninitUIManager(void)
 //========================================================================
 void UpdateUIManager(void)
 {
-	// プレイヤーの情報を取得
-	Player* pPlayer = GetPlayer();
-	D3DXVECTOR3 posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	Player* pPlayer = GetPlayer();	// プレイヤーの情報を取得
+	FADE*	pFade	= GetFade();	// フェードの状態を取得
+	D3DXVECTOR3 posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// オフセットの情報を初期化
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		g_aUIManager[nCntPlayer].rot.y = (pPlayer->rot.y);
+		if (g_aUIManager[nCntPlayer].state == UISTATE_SELECT)	// 選択メニューの場合
+		{
+			// 選択に合わせてメニューを切り替え
+			if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
+			{
+				g_aUIManager[nCntPlayer].nSelect--;
+				if (g_aUIManager[nCntPlayer].nSelect < UITYPE_CLOCK)
+				{
+					g_aUIManager[nCntPlayer].nSelect = UITYPE_QUIT;
+				}
+			}
+			else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
+			{
+				g_aUIManager[nCntPlayer].nSelect++;
+				if (g_aUIManager[nCntPlayer].nSelect > UITYPE_QUIT)
+				{
+					g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;
+				}
+			}
 
+			switch (g_aUIManager[nCntPlayer].type)
+			{
+			case UITYPE_CLOCK:	// 時計状態を選択
+
+				break;
+
+			case UITYPE_CONTINUE:	// CONTINUEを選択
+
+				break;
+
+			case UITYPE_RETRY:	// RETRYを選択
+
+				break;
+
+			case UITYPE_QUIT:	// QUITを選択
+
+				break;
+			}
+		}
+
+
+		// プレイヤーの位置や向きに合わせてUIの表示位置を更新
 		g_aUIManager[nCntPlayer].pos.x = -sinf(g_aUIManager[nCntPlayer].rot.y - 0.25f) * 100.0f + pPlayer->pos.x;
 		g_aUIManager[nCntPlayer].pos.z = -cosf(g_aUIManager[nCntPlayer].rot.y - 0.25f) * 100.0f + pPlayer->pos.z;
 
@@ -334,7 +375,6 @@ void UpdateUIManager(void)
 			// 中心位置からの位置を求める
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos += g_aUIManager[nCntPlayer].pos;
 		}
-		PrintDebugProc("UIの位置[%d] : (%f, %f, %f)", nCntPlayer, g_aUIManager[nCntPlayer].pos.x, g_aUIManager[nCntPlayer].pos.y, g_aUIManager[nCntPlayer].pos.z);
 	}
 }
 
