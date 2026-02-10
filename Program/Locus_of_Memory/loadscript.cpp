@@ -9,50 +9,53 @@
 #include "object.h"
 #include "player.h"
 #include "motion.h"
+#include "magic.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_STRING			(256)				// 読み込める文字列の最大
-#define LOAD_START			"SCRIPT"			// 読み込み
-#define LOAD_END			"END_SCRIPT"		// 終了
-#define LOAD_OBJECT			"OBJECTSCRIPT"		// オブジェクトスクリプト読み込み
-#define LOAD_PARENTMODEL	"PARENTSCRIPT"		// 階層構造モデルスクリプト読み込み
-#define LOAD_PLAYER			"CHARACTERSET"		// プレイヤー情報読み込み
-#define LOAD_ENDPLAYER		"END_CHARACTERSET"	// プレイヤー情報読み込み終了
-#define LOAD_PARTS			"PARTSSET"			// パーツ情報読み込み
-#define LOAD_ENDPARTS		"END_PARTSSET"		// パーツ情報読み込み終了
-#define LOAD_MOTION			"MOTIONSCRIPT"		// モーションスクリプト読み込み
-#define LOAD_MOTIONINFO		"MOTIONSET"			// モーション情報読み込み
-#define LOAD_ENDMOTIONINFO	"END_MOTIONSET"		// モーション情報読み込み終了
-#define LOAD_NUMMODEL		"NUM_MODEL"			// モデル数読み込み
-#define LOAD_MODEL			"MODEL_FILENAME"	// モデルファイル名読み込み
-#define LOAD_MESH			"MESH_FILENAME"		// メッシュファイル名読み込み
-#define LOAD_ITEM			"ITEM_FILENAME"		// アイテムファイル名読み込み
-#define LOAD_MOTIONLOOP		"LOOP"				// ループモーションか読み込み
-#define LOAD_NUMKEY			"NUM_KEY"			// キー数読み込み
-#define LOAD_KEYSET			"KEYSET"			// キー情報読み込み
-#define LOAD_ENDKEYSET		"END_KEYSET"		// キー情報読み込み終了
-#define LOAD_FRAME			"FRAME"				// フレーム数読み込み
-#define LOAD_KEY			"KEY"				// キー読み込み
-#define LOAD_ENDKEY			"END_KEY"			// キー読み込み終了
-#define LOAD_MODE			"MODE"				// モード読み込み
-#define LOAD_POS			"POS"				// 位置読み込み
-#define LOAD_ROT			"ROT"				// 向き読み込み
-#define LOAD_TYPE			"TYPE"				// 種類読み込み
-#define LOAD_PARENTTYPE		"PARENTTYPE"		// 階層構造モデルの種類読み込み
-#define LOAD_MESHTYPE		"MESHTYPE"			// メッシュの種類読み込み
-#define LOAD_EVENT			"EVENT"				// イベント読み込み
-#define LOAD_RADIUS			"RADIUS"			// 半径読み込み
-#define LOAD_COLLISION		"COLLISION"			// 当たり判定有無読み込み
-#define LOAD_INDEX			"INDEX"				// インデックス読み込み
-#define LOAD_PARENT			"PARENT"			// 親インデックス読み込み
-#define LOAD_MODELINFO		"MODELSET"			// モデル情報読み込み
-#define LOAD_ENDMODELINFO	"END_MODELSET"		// モデル情報読み込み終了
-#define LOAD_ITEMINFO		"MAGICEVENTSET"		// 魔法使用可能範囲とイベント情報読み込み
-#define LOAD_ENDITEMINFO	"END_MAGICEVENTSET"	// 魔法使用可能範囲とイベント情報読み込み終了
-#define LOAD_FRIENDS		"DROPMAGICSET"		// フィールド上魔法の情報読み込み
-#define LOAD_ENDFRIENDS		"END_DROPMAGICSET"	// フィールド上魔法の情報読み込み終了
+#define MAX_STRING			(256)						// 読み込める文字列の最大
+#define MAX_MAGICOBJECTFILE	(10)						// 魔法オブジェクトファイルの最大
+#define LOAD_START			"SCRIPT"					// 読み込み
+#define LOAD_END			"END_SCRIPT"				// 終了
+#define LOAD_OBJECT			"OBJECTSCRIPT"				// オブジェクトスクリプト読み込み
+#define LOAD_MAGICOBJECT	"MAGICOBJECTSCRIPT"			// 魔法オブジェクトスクリプト読み込み
+#define LOAD_PARENTMODEL	"PARENTSCRIPT"				// 階層構造モデルスクリプト読み込み
+#define LOAD_PLAYER			"CHARACTERSET"				// プレイヤー情報読み込み
+#define LOAD_ENDPLAYER		"END_CHARACTERSET"			// プレイヤー情報読み込み終了
+#define LOAD_PARTS			"PARTSSET"					// パーツ情報読み込み
+#define LOAD_ENDPARTS		"END_PARTSSET"				// パーツ情報読み込み終了
+#define LOAD_MOTION			"MOTIONSCRIPT"				// モーションスクリプト読み込み
+#define LOAD_MOTIONINFO		"MOTIONSET"					// モーション情報読み込み
+#define LOAD_ENDMOTIONINFO	"END_MOTIONSET"				// モーション情報読み込み終了
+#define LOAD_NUMMODEL		"NUM_MODEL"					// モデル数読み込み
+#define LOAD_MODEL			"MODEL_FILENAME"			// モデルファイル名読み込み
+#define LOAD_MESH			"MESH_FILENAME"				// メッシュファイル名読み込み
+#define LOAD_ITEM			"ITEM_FILENAME"				// アイテムファイル名読み込み
+#define LOAD_MOTIONLOOP		"LOOP"						// ループモーションか読み込み
+#define LOAD_NUMKEY			"NUM_KEY"					// キー数読み込み
+#define LOAD_KEYSET			"KEYSET"					// キー情報読み込み
+#define LOAD_ENDKEYSET		"END_KEYSET"				// キー情報読み込み終了
+#define LOAD_FRAME			"FRAME"						// フレーム数読み込み
+#define LOAD_KEY			"KEY"						// キー読み込み
+#define LOAD_ENDKEY			"END_KEY"					// キー読み込み終了
+#define LOAD_MODE			"MODE"						// モード読み込み
+#define LOAD_POS			"POS"						// 位置読み込み
+#define LOAD_ROT			"ROT"						// 向き読み込み
+#define LOAD_TYPE			"TYPE"						// 種類読み込み
+#define LOAD_PARENTTYPE		"PARENTTYPE"				// 階層構造モデルの種類読み込み
+#define LOAD_MESHTYPE		"MESHTYPE"					// メッシュの種類読み込み
+#define LOAD_EVENT			"EVENT"						// イベント読み込み
+#define LOAD_RADIUS			"RADIUS"					// 半径読み込み
+#define LOAD_COLLISION		"COLLISION"					// 当たり判定有無読み込み
+#define LOAD_INDEX			"INDEX"						// インデックス読み込み
+#define LOAD_PARENT			"PARENT"					// 親インデックス読み込み
+#define LOAD_MODELINFO		"MODELSET"					// モデル情報読み込み
+#define LOAD_ENDMODELINFO	"END_MODELSET"				// モデル情報読み込み終了
+#define LOAD_ITEMINFO		"MAGICEVENTSET"				// 魔法使用可能範囲とイベント情報読み込み
+#define LOAD_ENDITEMINFO	"END_MAGICEVENTSET"			// 魔法使用可能範囲とイベント情報読み込み終了
+#define LOAD_DROPMAGIC		"DROPMAGICSET"				// フィールド上魔法の情報読み込み
+#define LOAD_ENDDROPMAGIC	"END_DROPMAGICSET"			// フィールド上魔法の情報読み込み終了
 
 //*****************************************************************************
 // グローバル変数
@@ -666,7 +669,6 @@ HRESULT LoadModel(const char* pModelFileName)
 //=============================================================================
 HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 {
-#if 0
 	FILE* pMagicInfoFile = fopen(pMagicObjectFileName, "r");
 
 	if (pMagicInfoFile == NULL)
@@ -674,25 +676,21 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 		return E_FAIL;
 	}
 
-	char aStr[MAX_STRING] = {};			   // 文字列読み込み
-	char aStrCpy[MAX_STRING] = {};		   // 文字列複製(整理)
-	char* pStart = NULL;				   // 文字列開始位置
-	char aModelPath[FILENAME_MAX] = {};	   // モデルのファイル名読み込み
-	char aMeshPath[FILENAME_MAX] = {};	   // メッシュのファイル名読み込み
-	bool bSetMesh = false;				   // メッシュを作るかどうか
-	int nIdx = 0;						   // モデルのインデックス読み込み
-	int nParent = 0;					   // モデルの親インデックス読み込み
-	D3DXVECTOR3 pos = {};				   // 位置読み込み
-	D3DXVECTOR3 rot = {};				   // 向き読み込み
-	int type = -1;						   // 種類読み込み
-	int Parenttype = -1;				   // 階層構造モデルの種類読み込み
-	int nShadow = 0;					   // 影をつけるか
-	int  nCollision = true;				   // 当たり判定するか
-	int nNumModel = 0;					   // モデル数読み込み
+	char aStr[MAX_STRING] = {};									   // 文字列読み込み
+	char aStrCpy[MAX_STRING] = {};								   // 文字列複製(整理)
+	char* pStart = NULL;										   // 文字列開始位置
+	char aMagicObjPath[MAX_MAGICOBJECTFILE][FILENAME_MAX] = {};	   // 魔法オブジェクトのファイル名読み込み
+	D3DXVECTOR3 pos = {};										   // 位置読み込み
+	D3DXVECTOR3 rot = {};										   // 向き読み込み
+	float fRadius = 0.0f;										   // 半径読み込み
+	int type = -1;												   // 種類読み込み
+	int nShadow = 0;											   // 影をつけるか
+	int nCollision = true;										   // 当たり判定するか
+	int nCntMagicObjectPath = 0;								   // 読み込んだパスのカウント
 
 	while (true)
 	{
-		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		memset(aStr, NULL, sizeof(aStr));					// 文字列クリア
 		(void)fgets(aStr, sizeof(aStr), pMagicInfoFile);	// 一列読み込み
 
 		if (strstr(aStr, LOAD_START) != NULL)
@@ -708,31 +706,122 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 
 	while (true)
 	{
-		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-		memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+		memset(aStr, NULL, sizeof(aStr));					// 文字列クリア
+		memset(aStrCpy, NULL, sizeof(aStrCpy));				// コピーもクリア
 		(void)fgets(aStr, sizeof(aStr), pMagicInfoFile);	// 一列読み込み
-		LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+		LoadEnableString(&aStrCpy[0], &aStr[0]);			// 有効文字だけ抜き取って複製
 
-		if (strstr(aStr, LOAD_NUMMODEL))
-		{// NUM_MODELを読み込んだ
+		if (strstr(aStr, LOAD_MAGICOBJECT))
+		{// MAGICOBJECTSCRIPTを読み込んだ
 			if ((pStart = strchr(aStr, '=')) == NULL)
 			{
 				continue;
 			}
 
-			(void)sscanf(pStart + 1, "%d", &nNumModel);
+			(void)sscanf(pStart + 1, "%s", &aMagicObjPath[nCntMagicObjectPath][0]);
+
+			nCntMagicObjectPath++;
 		}
 
-		if (strstr(aStr, LOAD_MODEL))
-		{// MODEL_FILENAMEを読み込んだ
-			if ((pStart = strchr(aStr, '=')) == NULL)
+		if (strcmp(aStrCpy, LOAD_END) == 0)
+		{// END_SCRIPTを読み込んだ
+			fclose(pMagicInfoFile);
+			break;
+		}
+	}
+
+	int nRandIdx = rand() % nCntMagicObjectPath;
+
+	FILE* pMagicObjectFile = fopen(&aMagicObjPath[nRandIdx][0], "r");
+
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));					// 文字列クリア
+		(void)fgets(aStr, sizeof(aStr), pMagicObjectFile);	// 一列読み込み
+
+		if (strstr(aStr, LOAD_START) != NULL)
+		{// LOAD_STARTを読み込めば読み込み開始
+			break;
+		}
+
+		if (feof(pMagicObjectFile) != NULL)
+		{// 読み込み失敗
+			return E_FAIL;
+		}
+	}
+
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));					// 文字列クリア
+		memset(aStrCpy, NULL, sizeof(aStrCpy));				// コピーもクリア
+		(void)fgets(aStr, sizeof(aStr), pMagicObjectFile);	// 一列読み込み
+		LoadEnableString(&aStrCpy[0], &aStr[0]);			// 有効文字だけ抜き取って複製
+
+		if (strcmp(aStrCpy, LOAD_DROPMAGIC) == 0)
+		{// DROPMAGICSETを読み込んだ
+			while (true)
 			{
-				continue;
+				memset(aStr, NULL, sizeof(aStr));					// 文字列クリア
+				memset(aStrCpy, NULL, sizeof(aStrCpy));				// コピーもクリア
+				(void)fgets(aStr, sizeof(aStr), pMagicObjectFile);	// 一列読み込み
+				LoadEnableString(&aStrCpy[0], &aStr[0]);			// 有効文字だけ抜き取って複製
+
+				if (strstr(aStr, LOAD_POS))
+				{// POSを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+
+					continue;
+				}
+
+				if (strstr(aStr, LOAD_ROT))
+				{// ROTを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
+
+					continue;
+				}
+
+				if (strstr(aStr, LOAD_RADIUS) == 0)
+				{// TYPEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f", &fRadius);
+
+					continue;
+				}
+
+				if (strncmp(aStrCpy, LOAD_TYPE, sizeof(LOAD_TYPE + 1)) == 0)
+				{// TYPEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &type);
+
+					continue;
+				}
+
+				if (strcmp(aStrCpy, LOAD_ENDDROPMAGIC) == 0)
+				{// END_DROPMAGICSETを読み込んだ
+
+					SetMagicPosition((COMMANDOREDER)type, pos, rot, fRadius);
+
+					break;
+				}
 			}
-
-			(void)sscanf(pStart + 1, "%s", &aModelPath);
-
-			LoadObjectModel(aModelPath);
 		}
 
 		if (strcmp(aStrCpy, LOAD_MODELINFO) == 0)
@@ -741,7 +830,7 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 			{
 				memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
 				memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
-				(void)fgets(aStr, sizeof(aStr), pMagicInfoFile);	// 一列読み込み
+				(void)fgets(aStr, sizeof(aStr), pMagicObjectFile);	// 一列読み込み
 				LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
 
 				if (strstr(aStr, LOAD_POS))
@@ -792,33 +881,9 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 					continue;
 				}
 
-				if (strncmp(aStrCpy, LOAD_PARENTTYPE, sizeof(LOAD_PARENTTYPE + 1)) == 0)
-				{
-					if ((pStart = strchr(aStr, '=')) == NULL)
-					{
-						continue;
-					}
-
-					(void)sscanf(pStart + 1, "%d", &Parenttype);
-
-					continue;
-				}
-
 				if (strcmp(aStrCpy, LOAD_ENDMODELINFO) == 0)
 				{// END_MODELSETを読み込んだ
-
-					if (Parenttype != -1)
-					{
-						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype);
-					}
-					else
-					{
-						SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
-					}
-
-					memset(aMeshPath, NULL, sizeof(aMeshPath));				// 文字列クリア
-					Parenttype = -1;
-					bSetMesh = false;
+					SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
 					break;
 				}
 			}
@@ -826,12 +891,11 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 
 		if (strcmp(aStrCpy, LOAD_END) == 0)
 		{// END_SCRIPTを読み込んだ
-			fclose(pMagicInfoFile);
-
+			fclose(pMagicObjectFile);
 			break;
 		}
 	}
-#endif
+
 	return S_OK;
 }
 
