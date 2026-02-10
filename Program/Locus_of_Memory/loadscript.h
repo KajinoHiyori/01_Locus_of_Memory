@@ -13,8 +13,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define INFORMATION_SCRIPT		"data/SCRIPTS/information.txt"	// スクリプト情報スクリプト
-#define MODEL_SCRIPT			"data/SCRIPTS/model.txt"		// モデル情報スクリプト
+#define INFORMATION_SCRIPT		"data/SCRIPTS/information.txt"		// スクリプト情報スクリプト
+#define MODEL_SCRIPT			"data/SCRIPTS/model.txt"			// モデル情報スクリプト
+#define MAGICOBJECTINFO_SCRIPT	"data/SCRIPTS/Magicobjectinfo.txt"	// 魔法オブジェクト情報スクリプト
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -23,6 +24,7 @@ HRESULT LoadScript(const char* pScriptFileName);
 HRESULT LoadParentModel(const char* pParentModelFileName);
 HRESULT LoadMotionInfo(const char* pMotionFileName);
 HRESULT LoadModel(const char* pModelFileName);
+HRESULT LoadMagicObject(const char* pMagicObjectFileName);
 HRESULT LoadMagicObject(const char* pMagicObjectFileName);
 void LoadEnableString(char* aStrCpy, char* pStart);
 

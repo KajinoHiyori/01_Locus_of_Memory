@@ -44,6 +44,7 @@
 #include "fog.h"
 #include "vibration.h"
 #include"meshfield.h"
+#include "loadscript.h"
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 int g_nCounterGameState = 0;				// 状態管理カウンター
@@ -115,6 +116,8 @@ void InitGame(void)
 	//PlaySound(SOUND_LABEL_GAME);
 
 	pVibration->Vibration = false;
+
+	LoadMagicObject(MAGICOBJECTINFO_SCRIPT);
 
 }
 //=======================================================
