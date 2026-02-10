@@ -304,6 +304,7 @@ void UninitGameUI(void)
 //======================================================================================
 void UpdateGameUI(void)
 {
+#if 0
 	// フェードの状態を取得
 	FADE* pFade = GetFade();
 
@@ -628,6 +629,7 @@ void UpdateGameUI(void)
 
 	// 頂点バッファをアンロック
 	g_pVtxBuffGameUI->Unlock();
+#endif
 }
 
 //======================================================================================
@@ -635,6 +637,7 @@ void UpdateGameUI(void)
 //======================================================================================
 void DrawGameUI(void)
 {
+#if 0
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
 	pDevice = GetDevice();
@@ -665,4 +668,6 @@ void DrawGameUI(void)
 
 	// fogの再設置
 	SetFogEnable(true);
+
+#endif
 }
