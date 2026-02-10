@@ -25,7 +25,7 @@ TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 31
+NUM_MODEL = 33
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -60,7 +60,9 @@ MODEL_FILENAME = data/MODEL/chain/chain.x	# [26]鎖
 MODEL_FILENAME = data/MODEL/padlock/padlock.x	# [27]南京錠
 MODEL_FILENAME = data/MODEL/river/river000.x	# [28] 川
 MODEL_FILENAME = data/MODEL/streetlight/streetlight000.x	# [29]街灯2
-MODEL_FILENAME = data/MODEL/magicobj/bonfire000.x	# [30]焚火
+MODEL_FILENAME = data/MODEL/magicobj/bonfire000.x	# [30]焚火1
+MODEL_FILENAME = data/MODEL/magicobj/bonfire001.x	# [31]焚火2
+MODEL_FILENAME = data/MODEL/animal/nest000.x	# [32]鳥の巣2
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -1184,11 +1186,26 @@ MODELSET
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 17
+	POS = 730 0 -2742
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 17
+	POS = 4100 0 1469
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
 #------------------------------------------------------------------------------
 # 鳥の巣
 #------------------------------------------------------------------------------
 MODELSET
-	TYPE = 18
+	TYPE = 32
 	POS = -790 556 -3000
 	ROT = 0 180 0
 	SHADOW = 0
@@ -1196,7 +1213,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 18
+	TYPE = 32
 	POS = -1778 556 -1585
 	ROT = 0 180 0
 	SHADOW = 0
@@ -1204,7 +1221,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 18
+	TYPE = 32
 	POS = 442 556 -1112
 	ROT = 0 180 0
 	SHADOW = 0
@@ -1212,13 +1229,36 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 18
+	TYPE = 32
 	POS = 2407 556 -1482
 	ROT = 0 180 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 18
+	POS = 730 0 -2742
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 18
+	POS = 4100 0 1469
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 18
+	POS = -549 420 -2539
+	ROT = 0 30 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
 #------------------------------------------------------------------------------
 # 岩
 #------------------------------------------------------------------------------
@@ -1459,6 +1499,38 @@ END_MODELSET
 MODELSET
 	TYPE = 30
 	POS = 1836 0 -2225
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 31
+	POS = -835 0 -2765
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 31
+	POS = 3003 0 -3682
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 31
+	POS = 2454 0 2037
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 31
+	POS = 1019 0 -1160
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
