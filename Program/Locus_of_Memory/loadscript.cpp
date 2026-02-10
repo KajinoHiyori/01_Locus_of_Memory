@@ -49,12 +49,10 @@
 #define LOAD_PARENT			"PARENT"			// 親インデックス読み込み
 #define LOAD_MODELINFO		"MODELSET"			// モデル情報読み込み
 #define LOAD_ENDMODELINFO	"END_MODELSET"		// モデル情報読み込み終了
-#define LOAD_ITEMINFO		"ITEMSET"			// アイテム情報読み込み
-#define LOAD_ENDITEMINFO	"END_ITEMSET"		// アイテム情報読み込み終了
-#define LOAD_FRIENDS		"FRIENDSET"			// 仲間の情報読み込み
-#define LOAD_ENDFRIENDS		"END_FRIENDSET"		// 仲間の情報読み込み終了
-#define LOAD_RESULTINFO		"RESULTINFO"		// リザルトの仲間の情報読み込み
-#define LOAD_ENDRESULTINFO	"END_RESULTINFO"	// リザルトの仲間の情報読み込み終了
+#define LOAD_ITEMINFO		"MAGICEVENTSET"		// 魔法使用可能範囲とイベント情報読み込み
+#define LOAD_ENDITEMINFO	"END_MAGICEVENTSET"	// 魔法使用可能範囲とイベント情報読み込み終了
+#define LOAD_FRIENDS		"DROPMAGICSET"		// フィールド上魔法の情報読み込み
+#define LOAD_ENDFRIENDS		"END_DROPMAGICSET"	// フィールド上魔法の情報読み込み終了
 
 //*****************************************************************************
 // グローバル変数
@@ -113,15 +111,6 @@ HRESULT LoadScript(const char* pScriptFileName)
 			(void)sscanf(pStart + 1, "%s %d", &aScriptPath, &type);
 
 			LoadMotionInfo(aScriptPath);
-		}
-
-		if (strstr(aStr, LOAD_OBJECT) != NULL)
-		{// OBJECTSCRIPTを読み込んだ
-			pStart = strchr(aStr, '=');
-
-			(void)sscanf(pStart + 1, "%s %d", &aScriptPath, &type);
-
-			LoadObject(aScriptPath);
 		}
 
 		if (strstr(aStr, LOAD_PARENTMODEL) != NULL)
@@ -673,272 +662,176 @@ HRESULT LoadModel(const char* pModelFileName)
 }
 
 //=============================================================================
-//	オブジェクト情報読み込み処理
+//	魔法関連オブジェクト情報読み込み処理
 //=============================================================================
-HRESULT LoadObject(const char* pObjectFileName)
+HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 {
-	//FILE* pObjectFile = fopen(pObjectFileName, "r");
+#if 0
+	FILE* pMagicInfoFile = fopen(pMagicObjectFileName, "r");
 
-	//if (pObjectFile == NULL)
-	//{// 読み込み失敗
-	//	return E_FAIL;
-	//}
+	if (pMagicInfoFile == NULL)
+	{// 読み込み失敗
+		return E_FAIL;
+	}
 
-	//char aStr[MAX_STRING] = {};			   // 文字列読み込み
-	//char aStrCpy[MAX_STRING] = {};		   // 文字列複製(整理)
-	//char* pStart = NULL;				   // 文字列開始位置
-	//char aScriptPath[FILENAME_MAX] = {};   // スクリプトファイルパス
-	//char aModelPath[FILENAME_MAX] = {};	   // モデルのファイル名読み込み
-	//char aItemPath[FILENAME_MAX] = {};	   // アイテムのファイル名読み込み
-	//int nIdx = 0;						   // モデルのインデックス読み込み
-	//int nParent = 0;					   // モデルの親インデックス読み込み
-	//D3DXVECTOR3 pos = {};				   // 位置読み込み
-	//D3DXVECTOR3 rot = {};				   // 向き読み込み
-	//int type = NULL;					   // 種類
-	//int nCollision = NULL;				   // 当たり判定
-	//int event = NULL;					   // イベント
-	//int Objecttype = NULL;				   // オブジェクトの種類
-	//int nNumModel = 0;					   // モデル数読み込み
+	char aStr[MAX_STRING] = {};			   // 文字列読み込み
+	char aStrCpy[MAX_STRING] = {};		   // 文字列複製(整理)
+	char* pStart = NULL;				   // 文字列開始位置
+	char aModelPath[FILENAME_MAX] = {};	   // モデルのファイル名読み込み
+	char aMeshPath[FILENAME_MAX] = {};	   // メッシュのファイル名読み込み
+	bool bSetMesh = false;				   // メッシュを作るかどうか
+	int nIdx = 0;						   // モデルのインデックス読み込み
+	int nParent = 0;					   // モデルの親インデックス読み込み
+	D3DXVECTOR3 pos = {};				   // 位置読み込み
+	D3DXVECTOR3 rot = {};				   // 向き読み込み
+	int type = -1;						   // 種類読み込み
+	int Parenttype = -1;				   // 階層構造モデルの種類読み込み
+	int nShadow = 0;					   // 影をつけるか
+	int  nCollision = true;				   // 当たり判定するか
+	int nNumModel = 0;					   // モデル数読み込み
 
-	//while (true)
-	//{
-	//	memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-	//	(void)fgets(aStr, sizeof(aStr), pObjectFile);	// 一列読み込み
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		(void)fgets(aStr, sizeof(aStr), pMagicInfoFile);	// 一列読み込み
 
-	//	if (strstr(aStr, LOAD_START) != NULL)
-	//	{// LOAD_STARTを読み込めば読み込み開始
-	//		break;
-	//	}
+		if (strstr(aStr, LOAD_START) != NULL)
+		{// LOAD_STARTを読み込めば読み込み開始
+			break;
+		}
 
-	//	if (feof(pObjectFile) != NULL)
-	//	{// 読み込み失敗
-	//		return E_FAIL;
-	//	}
-	//}
+		if (feof(pMagicInfoFile) != NULL)
+		{// 読み込み失敗
+			return E_FAIL;
+		}
+	}
 
-	//while (true)
-	//{
-	//	memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-	//	memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
-	//	(void)fgets(aStr, sizeof(aStr), pObjectFile);	// 一列読み込み
-	//	LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+		(void)fgets(aStr, sizeof(aStr), pMagicInfoFile);	// 一列読み込み
+		LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
 
-	//	if (strstr(aStr, LOAD_MODEL))
-	//	{
-	//		if ((pStart = strchr(aStr, '=')) == NULL)
-	//		{
-	//			continue;
-	//		}
+		if (strstr(aStr, LOAD_NUMMODEL))
+		{// NUM_MODELを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
 
-	//		(void)sscanf(pStart + 1, "%s", &aModelPath);
+			(void)sscanf(pStart + 1, "%d", &nNumModel);
+		}
 
-	//		LoadModelData(aModelPath);
-	//	}
+		if (strstr(aStr, LOAD_MODEL))
+		{// MODEL_FILENAMEを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
 
-	//	if (strstr(aStr, LOAD_MOTION) != NULL)
-	//	{
-	//		pStart = strchr(aStr, '=');
+			(void)sscanf(pStart + 1, "%s", &aModelPath);
 
-	//		(void)sscanf(pStart + 1, "%s %d", &aScriptPath, &Objecttype);
+			LoadObjectModel(aModelPath);
+		}
 
-	//		LoadMotionInfo(aScriptPath, (OBJECTTYPE)Objecttype);
+		if (strcmp(aStrCpy, LOAD_MODELINFO) == 0)
+		{
+			while (true)
+			{
+				memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+				memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+				(void)fgets(aStr, sizeof(aStr), pMagicInfoFile);	// 一列読み込み
+				LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
 
-	//		memset(aScriptPath, NULL, sizeof(aScriptPath));
+				if (strstr(aStr, LOAD_POS))
+				{// POSを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
 
-	//		NumFriendsAdd();
-	//	}
+					(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
 
-	//	if (strcmp(aStrCpy, LOAD_FRIENDS) == 0)
-	//	{
-	//		while (true)
-	//		{
-	//			memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-	//			memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
-	//			(void)fgets(aStr, sizeof(aStr), pObjectFile);	// 一列読み込み
-	//			LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+					continue;
+				}
 
-	//			if (strstr(aStr, LOAD_POS))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
+				if (strstr(aStr, LOAD_ROT))
+				{// ROTを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
 
-	//				(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+					(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
 
-	//				continue;
-	//			}
+					continue;
+				}
 
-	//			if (strstr(aStr, LOAD_ROT))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
+				if (strncmp(aStrCpy, LOAD_TYPE, sizeof(LOAD_TYPE + 1)) == 0)
+				{// TYPEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
 
-	//				(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
+					(void)sscanf(pStart + 1, "%d", &type);
 
-	//				continue;
-	//			}
+					continue;
+				}
 
-	//			if (strstr(aStr, LOAD_TYPE))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
+				if (strstr(aStr, LOAD_COLLISION))
+				{// COLLISIONを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
 
-	//				(void)sscanf(pStart + 1, "%d", &type);
+					(void)sscanf(pStart + 1, "%d", &nCollision);
 
-	//				continue;
-	//			}
+					continue;
+				}
 
-	//			if (strstr(aStr, LOAD_EVENT))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
+				if (strncmp(aStrCpy, LOAD_PARENTTYPE, sizeof(LOAD_PARENTTYPE + 1)) == 0)
+				{
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
 
-	//				(void)sscanf(pStart + 1, "%d", &event);
+					(void)sscanf(pStart + 1, "%d", &Parenttype);
 
-	//				continue;
-	//			}
+					continue;
+				}
 
-	//			if (strcmp(aStrCpy, LOAD_ENDFRIENDS) == 0)
-	//			{
-	//				SetFriends(pos, rot, (FRIENDSTYPE)type, (FRIENDEVENT)event);
-	//				break;
-	//			}
-	//		}
-	//	}
+				if (strcmp(aStrCpy, LOAD_ENDMODELINFO) == 0)
+				{// END_MODELSETを読み込んだ
 
-	//	if (strstr(aStr, LOAD_ITEM))
-	//	{
-	//		if ((pStart = strchr(aStr, '=')) == NULL)
-	//		{
-	//			continue;
-	//		}
+					if (Parenttype != -1)
+					{
+						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype);
+					}
+					else
+					{
+						SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
+					}
 
-	//		(void)sscanf(pStart + 1, "%s", &aItemPath);
+					memset(aMeshPath, NULL, sizeof(aMeshPath));				// 文字列クリア
+					Parenttype = -1;
+					bSetMesh = false;
+					break;
+				}
+			}
+		}
 
-	//		LoadItemData(aItemPath);
-	//	}
+		if (strcmp(aStrCpy, LOAD_END) == 0)
+		{// END_SCRIPTを読み込んだ
+			fclose(pMagicInfoFile);
 
-	//	if (strncmp(aStrCpy, LOAD_ITEMINFO, sizeof(LOAD_ITEMINFO) - 1) == 0)
-	//	{
-	//		while (true)
-	//		{
-	//			memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-	//			memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
-	//			(void)fgets(aStr, sizeof(aStr), pObjectFile);	// 一列読み込み
-	//			LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
-
-	//			if (strstr(aStr, LOAD_POS))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
-
-	//				(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
-
-	//				continue;
-	//			}
-
-	//			if (strstr(aStr, LOAD_ROT))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
-
-	//				(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
-
-	//				continue;
-	//			}
-
-	//			if (strstr(aStr, LOAD_TYPE))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
-
-	//				(void)sscanf(pStart + 1, "%d", &type);
-
-	//				continue;
-	//			}
-
-	//			if (strstr(aStr, LOAD_COLLISION))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
-
-	//				(void)sscanf(pStart + 1, "%d", &nCollision);
-
-	//				continue;
-	//			}
-
-	//			if (strcmp(aStrCpy, LOAD_ENDITEMINFO) == 0)
-	//			{
-	//				SetItem(pos, rot, (ITEMTYPE)type, (bool)nCollision);
-	//				break;
-	//			}
-	//		}
-	//	}
-
-	//	if (strcmp(aStrCpy, LOAD_RESULTINFO) == 0)
-	//	{
-	//		while (true)
-	//		{
-	//			memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
-	//			memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
-	//			(void)fgets(aStr, sizeof(aStr), pObjectFile);	// 一列読み込み
-	//			LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
-
-	//			if (strstr(aStr, LOAD_POS))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
-
-	//				(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
-
-	//				continue;
-	//			}
-
-	//			if (strstr(aStr, LOAD_ROT))
-	//			{
-	//				if ((pStart = strchr(aStr, '=')) == NULL)
-	//				{
-	//					continue;
-	//				}
-
-	//				(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
-
-	//				continue;
-	//			}
-
-	//			if (strcmp(aStrCpy, LOAD_ENDRESULTINFO) == 0)
-	//			{
-	//				SetResultFriendsInfo(pos, rot);
-	//				break;
-	//			}
-	//		}
-	//	}
-
-	//	if (strcmp(aStrCpy, LOAD_END) == 0)
-	//	{
-	//		fclose(pObjectFile);
-
-	//		break;
-	//	}
-	//}
-
+			break;
+		}
+	}
+#endif
 	return S_OK;
 }
 
