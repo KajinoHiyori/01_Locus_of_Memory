@@ -49,6 +49,7 @@ void InitUIManager(void);
 void UninitUIManager(void);
 void UpdateUIManager(void);
 void DrawUIManager(void);
+bool GetPause(int nIdx);
 void SetUIManager(int nIdx);
 UISTATE GetUIState(int nIdx);
 

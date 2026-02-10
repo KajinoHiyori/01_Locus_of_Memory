@@ -118,7 +118,7 @@ void InitUIManager(void)
 		g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, PHONE_Y, -300.0f);	// 中心位置
 		g_aUIManager[nCntPlayer].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
 		g_aUIManager[nCntPlayer].type = UITYPE_CLOCK;					// 選択している種類(type)
-		g_aUIManager[nCntPlayer].state = UISTATE_NONDISPLAY;			// UIの表示状態
+		g_aUIManager[nCntPlayer].state = UISTATE_SELECT;			// UIの表示状態
 		g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;				// 選択している種類(int)
 		g_aUIManager[nCntPlayer].bPause = false;						// ポーズ状態(trueでポーズ中)
 	}
@@ -321,6 +321,10 @@ void UpdateUIManager(void)
 	FADE*	pFade	= GetFade();	// フェードの状態を取得
 	D3DXVECTOR3 posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// オフセットの情報を初期化
 
+	VERTEX_3D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffUIManager->Lock(0, 0, (void**)&pVtx, 0);
+
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
 		if (g_aUIManager[nCntPlayer].state == UISTATE_SELECT)	// 選択メニューの場合
@@ -341,6 +345,19 @@ void UpdateUIManager(void)
 				{
 					g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;
 				}
+			}
+
+			for (int nCntSelect = UITEX_CLOCKMENU; nCntSelect < UITEX_FILTER; nCntSelect++)
+			{
+				if (g_aUIManager[nCntPlayer].nSelect +5 == nCntSelect)
+				{
+					g_aUIManager[nCntPlayer].aUITexture[nCntSelect].col = COLOR_YELLOW;
+				}
+				else
+				{
+					g_aUIManager[nCntPlayer].aUITexture[nCntSelect].col = COLOR_WHITE;
+				}
+
 			}
 
 			switch (g_aUIManager[nCntPlayer].type)
@@ -368,14 +385,24 @@ void UpdateUIManager(void)
 		g_aUIManager[nCntPlayer].pos.x = -sinf(g_aUIManager[nCntPlayer].rot.y - 0.25f) * 100.0f + pPlayer->pos.x;
 		g_aUIManager[nCntPlayer].pos.z = -cosf(g_aUIManager[nCntPlayer].rot.y - 0.25f) * 100.0f + pPlayer->pos.z;
 
-		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
+		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pVtx += 4)
 		{
+			// オフセット情報の初期化
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = posOffset;
 
 			// 中心位置からの位置を求める
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos += g_aUIManager[nCntPlayer].pos;
+
+			// 頂点カラーの設定
+			pVtx[0].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
+			pVtx[1].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
+			pVtx[2].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
+			pVtx[3].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;
 		}
 	}
+
+	// 頂点バッファをアンロック
+	g_pVtxBuffUIManager->Unlock();
 }
 
 //========================================================================
@@ -532,4 +559,12 @@ void DrawUIManager(void)
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 #endif
 
+}
+
+//========================================================================
+// ポーズ状態を管理
+//========================================================================
+bool GetPause(int nIdx)
+{
+	return g_aUIManager[nIdx].bPause;
 }

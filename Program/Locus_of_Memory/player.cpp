@@ -14,6 +14,7 @@
 #include "input.h"
 #include "loadscript.h"
 #include "magic.h"
+#include "uimanager.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -129,6 +130,8 @@ void UpdatePlayer(void)
 	int nDropMagicIdx;									// 落ちてる魔法保管用
 	COMMANDOREDER InputCommand = COMMANDOREDER_NONE;	// 入力したコマンド
 
+	bool bPause = false;	// ポーズ状態の確認
+
 	// 過去の位置を保存
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
@@ -146,6 +149,8 @@ void UpdatePlayer(void)
 			// 過去の位置を保存
 			g_aPlayer[nCntPlayer].posOld = g_aPlayer[nCntPlayer].pos;
 			moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			// ポーズ状態の取得
+			bPause = GetPause(nCntPlayer);
 
 			// 落ちてる魔法との判定 (保管)
 			nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius,nCntPlayer);
@@ -153,74 +158,80 @@ void UpdatePlayer(void)
 			switch (g_aPlayer[nCntPlayer].state)
 			{
 			case PLAYERSTATE_NORMAL:	// 通常時
-			// キー入力を受け付ける====================================
-				// 移動方向を管理
-				if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+				//if (bPause == false)	// ポーズ状態の場合、各種処理を行わない[]
+				//{
+				//
+				//}
+				//else
 				{
-					moveDir.x -= 1.0f;
-				}
-				else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
-				{
-					moveDir.x += 1.0f;
-				}
-				if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
-				{
-					moveDir.z += 1.0f;
-				}
-				else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
-				{
-					moveDir.z -= 1.0f;
-				}
+					// キー入力を受け付ける====================================
+						// 移動方向を管理
+					if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+					{
+						moveDir.x -= 1.0f;
+					}
+					else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+					{
+						moveDir.x += 1.0f;
+					}
+					if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+					{
+						moveDir.z += 1.0f;
+					}
+					else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+					{
+						moveDir.z -= 1.0f;
+					}
 
-				// ジャンプ処理
-				if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
-				{
-					g_aPlayer[nCntPlayer].move.y = JUMP;
-					g_aPlayer[nCntPlayer].bJump = true;
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
-				}
+					// ジャンプ処理
+					if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
+					{
+						g_aPlayer[nCntPlayer].move.y = JUMP;
+						g_aPlayer[nCntPlayer].bJump = true;
+						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
+					}
 
-				if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
-				{// Xボタンを押したかつ何かしらのコマンドが近くにある
-					OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
-				}
+					if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
+					{// Xボタンを押したかつ何かしらのコマンドが近くにある
+						OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
+					}
 
-				// モーションの確認
-				if (GetKeyboardTrigger(DIK_Z) == true)
-				{
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-				}
-				if (GetKeyboardTrigger(DIK_X) == true)
-				{
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
-				}
-				if (GetKeyboardTrigger(DIK_C) == true)
-				{
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, true, true, BLENDFRAME);
-				}
-				if (GetKeyboardTrigger(DIK_V) == true)
-				{
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, true, true, BLENDFRAME);
-				}
-				if (GetKeyboardTrigger(DIK_B) == true)
-				{
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, true, true, BLENDFRAME);
-				}
-				if (GetKeyboardTrigger(DIK_N) == true)
-				{
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, true, true, BLENDFRAME);
-				}
+					// モーションの確認
+					if (GetKeyboardTrigger(DIK_Z) == true)
+					{
+						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+					}
+					if (GetKeyboardTrigger(DIK_X) == true)
+					{
+						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
+					}
+					if (GetKeyboardTrigger(DIK_C) == true)
+					{
+						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, true, true, BLENDFRAME);
+					}
+					if (GetKeyboardTrigger(DIK_V) == true)
+					{
+						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, true, true, BLENDFRAME);
+					}
+					if (GetKeyboardTrigger(DIK_B) == true)
+					{
+						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, true, true, BLENDFRAME);
+					}
+					if (GetKeyboardTrigger(DIK_N) == true)
+					{
+						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, true, true, BLENDFRAME);
+					}
 
-				// 移動方向の正規化
-				D3DXVec3Normalize(&moveDir, &moveDir);
+					// 移動方向の正規化
+					D3DXVec3Normalize(&moveDir, &moveDir);
 
-				// スティックの入力方向を利用
-				GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer);
+					// スティックの入力方向を利用
+					GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer);
 
-				// 移動状態を求める(fMoveDir == 0は移動していない)
-				fMoveDir = SQRTF(moveDir.x, moveDir.z);
+					// 移動状態を求める(fMoveDir == 0は移動していない)
+					fMoveDir = SQRTF(moveDir.x, moveDir.z);
 
-				
+				}
 				break;
 
 			case PLAYERSTATE_PAUSE:
