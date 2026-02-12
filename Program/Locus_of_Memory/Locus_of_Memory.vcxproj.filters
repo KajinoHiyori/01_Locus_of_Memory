@@ -159,9 +159,6 @@
     <ClCompile Include="startui.cpp">
       <Filter>title\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="vibration.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="gameui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
@@ -186,8 +183,14 @@
     <ClCompile Include="uimanager.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="magiccircle.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="vibration.cpp">
+      <Filter>main\cpp</Filter>
+    </ClCompile>
     <ClCompile Include="event.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>game\cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -272,12 +275,6 @@
     <ClInclude Include="startui.h">
       <Filter>title\h</Filter>
     </ClInclude>
-    <ClInclude Include="color.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="vibration.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="magicui.h">
       <Filter>UI\h</Filter>
     </ClInclude>
@@ -302,8 +299,17 @@
     <ClInclude Include="uimanager.h">
       <Filter>UI\h</Filter>
     </ClInclude>
+    <ClInclude Include="magiccircle.h">
+      <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>main\h</Filter>
+    </ClInclude>
+    <ClInclude Include="vibration.h">
+      <Filter>main\h</Filter>
+    </ClInclude>
     <ClInclude Include="event.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>game\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -68,4 +68,5 @@ void UpdateSpellUI(void);
 void DrawSpellUI(void);
 void ResetSpellUI(int nIdx);
 void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime);
+LPDIRECT3DTEXTURE9 GetSpellTexture(SPELLUI_TEX SpellTex);
 #endif

@@ -785,3 +785,11 @@ void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime)
 	}
 	g_aSpellUI[nIdx].nCounterUI = nDispTime;
 }
+
+//======================================================================================
+// spellのテクスチャ取得処理
+//======================================================================================
+LPDIRECT3DTEXTURE9 GetSpellTexture(SPELLUI_TEX SpellTex)
+{
+	return g_apTextureSpellUI[SpellTex + SPELLUI_TEX_NONE];
+}
