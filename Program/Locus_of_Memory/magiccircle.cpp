@@ -115,11 +115,11 @@ void DrawMagicCircle(void)
 		D3DXMatrixMultiply(&pMagicCircle->mtxWorld, &pMagicCircle->mtxWorld, &mtxRot);
 
 		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, g_amagiccircle[nCntMagicCircle].pos.x, g_amagiccircle[nCntMagicCircle].pos.y, g_amagiccircle[nCntMagicCircle].pos.z);
-		D3DXMatrixMultiply(&g_amagiccircle[nCntMagicCircle].mtxWorld, &g_amagiccircle[nCntMagicCircle].mtxWorld, &mtxTrans);
+		D3DXMatrixTranslation(&mtxTrans, pMagicCircle->pos.x, pMagicCircle->pos.y, pMagicCircle->pos.z);
+		D3DXMatrixMultiply(&pMagicCircle->mtxWorld, &pMagicCircle->mtxWorld, &mtxTrans);
 
 		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &g_amagiccircle[nCntMagicCircle].mtxWorld);
+		pDevice->SetTransform(D3DTS_WORLD, &pMagicCircle->mtxWorld);
 
 		// 頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, g_pVtxBuffMagicCircle, 0, sizeof(VERTEX_3D));
@@ -128,9 +128,9 @@ void DrawMagicCircle(void)
 		pDevice->SetFVF(FVF_VERTEX_3D);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, GetSpellTexture();
+		pDevice->SetTexture(0, GetSpellTexture((SPELLUI_TEX)pMagicCircle->MagicType));
 
-		if (g_amagiccircle[nCntMagicCircle].bUse == true)
+		if (pMagicCircle->bUse == true)
 		{
 			// 魔法陣の描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntMagicCircle * 4, 2);
