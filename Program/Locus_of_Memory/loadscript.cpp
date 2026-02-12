@@ -730,6 +730,7 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 		}
 	}
 
+	// ランダムなファイルを開く
 	int nRandIdx = rand() % nCntMagicObjectPath;
 
 	FILE* pMagicObjectFile = fopen(&aMagicObjPath[nRandIdx][0], "r");
