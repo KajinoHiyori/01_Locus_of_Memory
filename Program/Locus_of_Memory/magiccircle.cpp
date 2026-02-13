@@ -14,6 +14,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
+#define MAGICCIRCLE_ROTATION			(0.01f)			// 魔法陣の回転量
+#define MAGICCIRCLEOPEN_COEFFICIENT		(0.025f)		// 魔法陣の展開の速度係数
+#define MAGICCIRCLECLAUSE_COEFFICIENT	(0.075f)		// 魔法陣の収束の速度係数
 
 //*****************************************************************************
 // グローバル変数
@@ -29,11 +32,17 @@ void InitMagicCircle(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	for (int nCntMagicCircle = 0; nCntMagicCircle < MAX_MAGICCIRCLE; nCntMagicCircle++)
+	MagicCircle* pMagicCircle = &g_amagiccircle[0];
+
+	// 初期化
+	for (int nCntMagicCircle = 0; nCntMagicCircle < MAX_MAGICCIRCLE; nCntMagicCircle++, pMagicCircle++)
 	{
-		g_amagiccircle[nCntMagicCircle].pos = D3DXVECTOR3(0.0f, 10.0f, 500.0f);
-		g_amagiccircle[nCntMagicCircle].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_amagiccircle[nCntMagicCircle].bUse = false;
+		pMagicCircle->pos = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pMagicCircle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		pMagicCircle->fRadius = 0.0f;
+		pMagicCircle->fRadiusDest = MAGICCIRCLE_RADIUS;
+		pMagicCircle->PosParent = nullptr;
+		pMagicCircle->bUse = false;
 	}
 
 	// 頂点バッファの生成
@@ -53,10 +62,10 @@ void InitMagicCircle(void)
 	for (int nCntMagicCircle = 0; nCntMagicCircle < MAX_MAGICCIRCLE; nCntMagicCircle++)
 	{
 		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-MAGICCIRCLE_RADIUS, 0.0f, MAGICCIRCLE_RADIUS);
-		pVtx[1].pos = D3DXVECTOR3(MAGICCIRCLE_RADIUS, 0.0f, MAGICCIRCLE_RADIUS);
-		pVtx[2].pos = D3DXVECTOR3(-MAGICCIRCLE_RADIUS, 0.0f, -MAGICCIRCLE_RADIUS);
-		pVtx[3].pos = D3DXVECTOR3(MAGICCIRCLE_RADIUS, 0.0f, -MAGICCIRCLE_RADIUS);
+		pVtx[0].pos = INIT_D3DXVEC3;
+		pVtx[1].pos = INIT_D3DXVEC3;
+		pVtx[2].pos = INIT_D3DXVEC3;
+		pVtx[3].pos = INIT_D3DXVEC3;
 
 		// 法線ベクトルの設定
 		pVtx[0].nor = NORMAL_PLANE;
@@ -105,6 +114,9 @@ void DrawMagicCircle(void)
 	MagicCircle* pMagicCircle = &g_amagiccircle[0];		// 先頭アドレス
 	D3DXMATRIX mtxRot, mtxTrans;						// 計算用マトリックス
 
+	// ライトをオフにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
 	for (int nCntMagicCircle = 0; nCntMagicCircle < MAX_MAGICCIRCLE; nCntMagicCircle++, pMagicCircle++)
 	{
 		if (pMagicCircle->bUse == false)
@@ -123,8 +135,6 @@ void DrawMagicCircle(void)
 		D3DXMatrixTranslation(&mtxTrans, pMagicCircle->pos.x, pMagicCircle->pos.y, pMagicCircle->pos.z);
 		D3DXMatrixMultiply(&pMagicCircle->mtxWorld, &pMagicCircle->mtxWorld, &mtxTrans);
 
-		D3DXMatrixMultiply(&pMagicCircle->mtxWorld, &pMagicCircle->mtxWorld, pMagicCircle->mtxParent);
-
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &pMagicCircle->mtxWorld);
 
@@ -140,6 +150,9 @@ void DrawMagicCircle(void)
 		// 魔法陣の描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntMagicCircle * 4, 2);
 	}
+
+	// ライトをオンにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 }
 
 //=============================================================================
@@ -147,13 +160,60 @@ void DrawMagicCircle(void)
 //=============================================================================
 void UpdateMagicCircle(void)
 {
+	MagicCircle* pMagicCircle = &g_amagiccircle[0];
 
+	// 初期化
+	VERTEX_3D* pVtx;			// 頂点情報へのポインタ
+
+	// 頂点バッファをロックし,頂点情報へのポインタを取得
+	g_pVtxBuffMagicCircle->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntMagicCircle = 0; nCntMagicCircle < MAX_MAGICCIRCLE; nCntMagicCircle++, pMagicCircle++, pVtx += 4)
+	{
+		if (pMagicCircle->bUse == false)
+		{// 使っていなければ弾く
+			continue;
+		}
+
+		// 位置をプレイヤーと同期
+		pMagicCircle->pos.x = pMagicCircle->PosParent->x;
+		pMagicCircle->pos.z = pMagicCircle->PosParent->z;
+
+		pMagicCircle->rot.y += MAGICCIRCLE_ROTATION;				// 魔法陣を回す
+
+		pMagicCircle->rot.y = AngleNormalize(pMagicCircle->rot.y);	// 範囲内に
+
+		pMagicCircle->nLife--;										// 寿命を減らす
+
+		if (pMagicCircle->nLife > 0)
+		{// 寿命があれば展開
+			pMagicCircle->fRadius += (pMagicCircle->fRadiusDest - pMagicCircle->fRadius) * MAGICCIRCLEOPEN_COEFFICIENT;
+		}
+		else
+		{// なければ収束
+			pMagicCircle->fRadius += (0.0f - pMagicCircle->fRadius) * MAGICCIRCLECLAUSE_COEFFICIENT;
+		}
+
+		// 頂点座標の設定
+		pVtx[0].pos = D3DXVECTOR3(-pMagicCircle->fRadius, 0.0f, pMagicCircle->fRadius);
+		pVtx[1].pos = D3DXVECTOR3(pMagicCircle->fRadius, 0.0f, pMagicCircle->fRadius);
+		pVtx[2].pos = D3DXVECTOR3(-pMagicCircle->fRadius, 0.0f, -pMagicCircle->fRadius);
+		pVtx[3].pos = D3DXVECTOR3(pMagicCircle->fRadius, 0.0f, -pMagicCircle->fRadius);
+
+		if (pMagicCircle->fRadius <= 0.1f && pMagicCircle->nLife < 0)
+		{// 寿命がなくなっているかつ半径が0に近ければ終了する
+			pMagicCircle->bUse = false;
+		}
+	}
+
+	// 頂点バッファをアンロックする
+	g_pVtxBuffMagicCircle->Unlock();
 }
 
 //=============================================================================
 //	魔法陣の設定処理
 //=============================================================================
-void SetMagicCircle(MAGICTYPE MagicType, D3DXMATRIX* mtxParent)
+void SetMagicCircle(MAGICTYPE MagicType, D3DXVECTOR3* PosParent)
 {
 	MagicCircle* pMagicCircle = &g_amagiccircle[0];
 
@@ -166,7 +226,8 @@ void SetMagicCircle(MAGICTYPE MagicType, D3DXMATRIX* mtxParent)
 
 		// 魔法陣の設定
 		pMagicCircle->MagicType = MagicType;
-		pMagicCircle->mtxParent = mtxParent;
+		pMagicCircle->PosParent = PosParent;
+		pMagicCircle->nLife = 600;
 		pMagicCircle->bUse = true;
 		break;
 	}

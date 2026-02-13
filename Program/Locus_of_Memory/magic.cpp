@@ -447,7 +447,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			SetSpellUI(g_aMagic[nIdx][nCntMagic].mType, nIdx, DISP_MAGIC);
 
 			CollisionMagicLocus(type, pos, 100.0f, nIdx);
-			SetMagicCircle(type, &pPlayer->mtxWorld);
+			SetMagicCircle(type, &pPlayer->pos);
 
 			switch (type)
 			{
