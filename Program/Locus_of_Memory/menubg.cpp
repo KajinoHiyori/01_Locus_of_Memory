@@ -196,6 +196,7 @@ void UninitMenuBG(void)
 //======================================================================================
 void UpdateMenuBG(void)
 {
+#if 0
 	// 操作方法の状態を取得
 	OPERATIONTYPE operationType = GetOperationType();
 
@@ -298,6 +299,7 @@ void UpdateMenuBG(void)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffMenuBG->Unlock();
+#endif
 }
 
 //======================================================================================
@@ -305,6 +307,7 @@ void UpdateMenuBG(void)
 //======================================================================================
 void DrawMenuBG(void)
 {
+#if 0
 	// 一時的にfogを切る
 	SetFogEnable(false);
 
@@ -333,6 +336,7 @@ void DrawMenuBG(void)
 
 	// fogを戻す
 	SetFogEnable(true);
+#endif
 }
 
 //======================================================================================

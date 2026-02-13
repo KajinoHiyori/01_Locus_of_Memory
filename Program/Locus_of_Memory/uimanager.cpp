@@ -5,6 +5,7 @@
 //
 //======================================================================================
 #include "uimanager.h"
+#include "clock.h"
 #include "player.h"
 #include "camera.h"
 #include "main.h"
@@ -112,7 +113,7 @@ void InitUIManager(void)
 	{
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 		{
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, GAMEUI_POSY, 0.0f);	// 中心位置
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos			= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].col			= COLOR_WHITE;						// 色
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex			= UITEX_BG;							// テクスチャの種類
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth		= PHONE_WIDTH;						// 幅
@@ -141,6 +142,7 @@ void InitUIManager(void)
 	
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
+#if 0
 		switch (operationType)
 		{
 		case OPERATIONTYPE_2P:	// 2人操作
@@ -160,7 +162,7 @@ void InitUIManager(void)
 			}
 			break;
 		}
-
+#endif
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pVtx += 4)
 		{
 			// 各種情報の設定
@@ -466,6 +468,8 @@ void UpdateUIManager(void)
 		g_aUIManager[nCntPlayer].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.y - 0.875f) * UI_DISTANCEX;
 		g_aUIManager[nCntPlayer].pos.z = pPlayer->pos.z + cosf(pPlayer->rot.y - 0.875f) * UI_DISTANCEZ;
 
+		PrintDebugProc("UI %d : (%f, %f, %f)", nCntPlayer, g_aUIManager[nCntPlayer].pos.x, g_aUIManager[nCntPlayer].pos.y, g_aUIManager[nCntPlayer].pos.z);
+
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pVtx += 4)
 		{
 			// オフセット情報の初期化
@@ -502,10 +506,6 @@ void DrawUIManager(void)
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 	D3DXMATRIX mtxView;		// ビューマトリックスの取得
 
-	//// Zテストを無効にする
-	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);	// Zテストの比較方法を変更(Zバッファの前後関係に関わらず描画する)
-	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-
 	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法を設定(基準値より大きい場合描画)
@@ -537,12 +537,6 @@ void DrawUIManager(void)
 				pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 				pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-			}
-
-			// 背景と背景フィルターのカリングをオフにする
-			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_BGFILTER || g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_BG)
-			{
-				//pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 			}
 
 			// ワールドマトリックスの初期化(デフォルトの値にする)
@@ -582,18 +576,8 @@ void DrawUIManager(void)
 				pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 			}
-
-			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_BGFILTER || g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_BG)
-			{
-				// カリングを元に戻す
-				//pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-			}
 		}
 	}
-
-	//// Zテストを有効にする
-	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	// ライトをオンにする
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
@@ -605,7 +589,6 @@ void DrawUIManager(void)
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
-//#endif
 }
 
 //========================================================================
@@ -614,6 +597,22 @@ void DrawUIManager(void)
 bool GetPause(int nIdx)
 {
 	return g_aUIManager[nIdx].bPause;
+}
+
+//========================================================================
+// UIの位置を取得
+//========================================================================
+D3DXVECTOR3 GetUIPos(int nIdx)
+{
+	return g_aUIManager[nIdx].pos;
+}
+
+//========================================================================
+// UIの角度を取得
+//========================================================================
+D3DXVECTOR3 GetUIRot(int nIdx)
+{
+	return g_aUIManager[nIdx].rot;
 }
 
 //========================================================================
@@ -743,6 +742,7 @@ void SetClockAppear(int nIdx)
 //========================================================================
 void SetClockMenu(int nIdx)
 {
+	SetClock(nIdx);
 	g_aUIManager[nIdx].nKey = 0;
 	g_aUIManager[nIdx].state = UISTATE_CLOCK;
 	g_aUIManager[nIdx].aUITexture[UITEX_CLOCKMENU].bDisp = true;
@@ -756,6 +756,7 @@ void SetClockMenu(int nIdx)
 //========================================================================
 void SetClockDissapear(int nIdx)
 {
+	DisappearClock(nIdx);
 	g_aUIManager[nIdx].aUITexture[UITEX_CLOCKMENU].bDisp = false;
 	g_aUIManager[nIdx].state = UISTATE_CLOCKDISAPPEAR;
 	g_aUIManager[nIdx].nKey = 0;

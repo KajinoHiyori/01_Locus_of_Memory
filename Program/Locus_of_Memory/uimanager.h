@@ -53,6 +53,8 @@ void UninitUIManager(void);
 void UpdateUIManager(void);
 void DrawUIManager(void);
 bool GetPause(int nIdx);
+D3DXVECTOR3 GetUIPos(int nIdx);	// UIの位置を取得
+D3DXVECTOR3 GetUIRot(int nIdx);	// UIの角度を取得
 void UpdateUIBG(int nIdx);		// 背景の更新処理
 void SetUIAppear(int nIdx);		// UIを出現状態にする
 void SetUIDissapear(int nIdx);	// UIを消滅状態にする
@@ -63,8 +65,4 @@ void SetClockAppear(int nIdx);		// 時計を出現状態にする
 void SetClockMenu(int nIdx);		// 時計を表示状態にする
 void SetClockDissapear(int nIdx);	// 時計を消滅状態にする
 void SetClockNonDisp(int nIdx);		// 時計を非表示状態にする
-
-void SetUIManager(int nIdx);	
-UISTATE GetUIState(int nIdx);
-
 #endif

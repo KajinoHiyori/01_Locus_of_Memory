@@ -21,8 +21,9 @@ void InitClock(void);
 void UninitClock(void);
 void UpdateClock(void);
 void DrawClock(void);
-void SetClock(int nIdx, D3DXVECTOR3 pos);
-void SetClockState(CLOCKSTATE clockState);
+void SetClock(int nIdx);
 void DisappearClock(int nIdx);
 CLOCKSTATE GetClockState(void);
+void SetClockState(CLOCKSTATE clockState);
+
 #endif
