@@ -38,6 +38,8 @@ LPDIRECT3DDEVICE9 GetDevice(void);
 void SetMode(MODE mode);
 MODE GetMode(void);
 float AngleNormalize(float fAngle);
+float DegreeToRadian(float fDegree);
+int RadianToDegree(float fRadian);
 bool CrossCollision(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3 posStart, D3DXVECTOR3 posEnd, bool bRetrun, bool bIn);
 void DrawParentModel(D3DXVECTOR3* pPos, D3DXVECTOR3* pRot, D3DXMATRIX* pMtxWorld, ModelData* pModelData);
 void ToggleFullscreen(HWND hWnd);
