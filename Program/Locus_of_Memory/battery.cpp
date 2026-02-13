@@ -75,7 +75,7 @@ void InitBattery(void)
 		g_aBattery[nCntPlayer].rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
 		g_aBattery[nCntPlayer].col		= COLOR_WHITE;	// 色
 		g_aBattery[nCntPlayer].nBattery = MAX_BATTERY;	// バッテリー残量
-		g_aBattery[nCntPlayer].bDisp	= true;		// 表示状態
+		g_aBattery[nCntPlayer].bDisp	= false;		// 表示状態
 	}
 
 	// 頂点バッファの生成
@@ -196,30 +196,72 @@ void UpdateBattery(void)
 //======================================================================================
 void DrawBattery(void)
 {
-	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
-	// デバイスの取得
-	pDevice = GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+	D3DXMATRIX mtxView;		// ビューマトリックスの取得
 
-	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffBattery, 0, sizeof(VERTEX_3D));
+	// アルファテストを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法を設定(基準値より大きい場合描画)
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);
+	// ライトをオフにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	// カリングをオフにする
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		if (g_aBattery[nCntPlayer].bDisp == true)
+		if (g_aBattery[nCntPlayer].bDisp == false)
 		{
-			for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
-			{
-				// テクスチャの設定
-				pDevice->SetTexture(0, g_apTextureBattery[nCntBattery]);
-				// ポリゴンの描画
-				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntBattery * 4 + (nCntPlayer * 4 * NUM_PLACE), 2);
-			}
+			continue;
+		}
+
+		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
+		{
+			// ワールドマトリックスの初期化(デフォルトの値にする)
+			D3DXMatrixIdentity(&g_aBattery[nCntPlayer].mtxWorld);
+
+			// ビューマトリックスを取得する
+			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aBattery[nCntPlayer].rot.y, g_aBattery[nCntPlayer].rot.x, g_aBattery[nCntPlayer].rot.z);
+			D3DXMatrixMultiply(&g_aBattery[nCntPlayer].mtxWorld, &g_aBattery[nCntPlayer].mtxWorld, &mtxRot);
+
+			// 位置を反映
+			D3DXMatrixTranslation(&mtxTrans, g_aBattery[nCntPlayer].pos[nCntClock].x, g_aBattery[nCntPlayer].pos[nCntClock].y, g_aBattery[nCntPlayer].pos[nCntClock].z);
+			D3DXMatrixMultiply(&g_aBattery[nCntPlayer].mtxWorld, &g_aBattery[nCntPlayer].mtxWorld, &mtxTrans);
+
+			// ワールドマトリックスの設定
+			pDevice->SetTransform(D3DTS_WORLD, &g_aBattery[nCntPlayer].mtxWorld);
+
+			// 頂点バッファをデータストリームに設定
+			pDevice->SetStreamSource(0, g_pVtxBuffBattery, 0, sizeof(VERTEX_3D));
+
+			// 頂点フォーマットの設定
+			pDevice->SetFVF(FVF_VERTEX_3D);
+
+			// テクスチャの設定
+			pDevice->SetTexture(0, g_apTextureBattery[nCntClock]);
+
+			// 時計の描画
+			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntClock * 4 + (nCntPlayer * NUM_PLACE * 4), 2);
+
 		}
 	}
 
+	// ライトをオンにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	// カリングを元に戻す
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	// アルファテストを無効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 }
 
 //======================================================================================
