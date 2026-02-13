@@ -128,7 +128,6 @@ HRESULT LoadScript(const char* pScriptFileName)
 		if (strstr(aStr, LOAD_END))
 		{// END_SCRIPTÇì«Ç›çûÇÒÇæ
 			fclose(pScriptFile);
-
 			break;
 		}
 	}
@@ -472,7 +471,6 @@ HRESULT LoadMotionInfo(const char* pMotionFileName)
 					bLoop = false;
 					nNumKey = 0;
 					nCntKey = 0;
-
 					break;
 				}
 
@@ -842,20 +840,8 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 					continue;
 				}
 
-				if (strstr(aStr, LOAD_ROT))
-				{// ROTÇì«Ç›çûÇÒÇæ
-					if ((pStart = strchr(aStr, '=')) == NULL)
-					{
-						continue;
-					}
-
-					(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
-
-					continue;
-				}
-
-				if (strstr(aStr, LOAD_RADIUS) == 0)
-				{// TYPEÇì«Ç›çûÇÒÇæ
+				if (strstr(aStr, LOAD_RADIUS))
+				{// RADIUSÇì«Ç›çûÇÒÇæ
 					if ((pStart = strchr(aStr, '=')) == NULL)
 					{
 						continue;
@@ -881,7 +867,7 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 				if (strcmp(aStrCpy, LOAD_ENDDROPMAGIC) == 0)
 				{// END_DROPMAGICSETÇì«Ç›çûÇÒÇæ
 
-					SetMagicPosition((COMMANDOREDER)type, pos, rot, fRadius);
+					SetMagicPosition((COMMANDOREDER)type, pos, fRadius);
 
 					break;
 				}
