@@ -13,6 +13,7 @@
 #include "particle.h"
 #include "vibration.h"
 #include "event.h"
+#include "magiccircle.h"
 
 //マクロ定義
 #define MAX_MAGIC				(128)		//魔法の最大数
@@ -80,7 +81,7 @@ void InitMagic(void)
 	SetMagicPosition(COMMANDOREDER_YYY, D3DXVECTOR3(0.0f, 0.0f, 300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
 	SetMagicPosition(COMMANDOREDER_RGB, D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
 
-	SetMagicLocus(MAGICEVENT_001, INIT_D3DXVEC3, 300.0f);
+	SetMagicLocus(MAGICEVENT_001, INIT_D3DXVEC3, 300.0f, 0);
 }
 
 //魔法の終了処理==============================
@@ -430,6 +431,10 @@ MAGICTYPE ChangeMagic(COMMANDOREDER commandorder)
 //魔法の設定処理==============================
 void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nIdx)
 {
+	Player* pPlayer = GetPlayer();
+
+	pPlayer += nIdx;
+
 	for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
 	{
 		if (g_aMagic[nIdx][nCntMagic].bUse == false)
@@ -442,6 +447,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			SetSpellUI(g_aMagic[nIdx][nCntMagic].mType, nIdx, DISP_MAGIC);
 
 			CollisionMagicLocus(type, pos, 100.0f, nIdx);
+			SetMagicCircle(type, &pPlayer->mtxWorld);
 
 			switch (type)
 			{
@@ -547,7 +553,7 @@ void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, floa
 }
 
 //魔法使用場所設定処理==============================
-void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius)
+void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx)
 {
 	MagicLocus* pMagicLocus = &g_aMagicLocus[0];		// 先頭アドレス
 
@@ -562,6 +568,7 @@ void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius)
 		pMagicLocus->MagicEvent = event;		// イベントの種類
 		pMagicLocus->pos = pos;					// 原点
 		pMagicLocus->fRadius = fRadius;			// 半径
+		pMagicLocus->nIdxObject = nIdx;			// 対応するオブジェクトの番号
 		pMagicLocus->bUse = true;				// 使用状態
 
 		break;
@@ -593,12 +600,12 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 
 		if (fDiff <= powf(fRadius + pMagicLocus->fRadius, 2))
 		{// 当たっていたら
-			if (SetMagicEvent(pMagicLocus->MagicEvent, type) == true)
-			{
+			if (SetMagicEvent(pMagicLocus->MagicEvent, type, pMagicLocus->nIdxObject) == true)
+			{// 魔法と対応するイベントかどうかチェック
 				return true;
 			}
 			else
-			{
+			{// 対応していなければやり直し
 				continue;
 			}
 		}

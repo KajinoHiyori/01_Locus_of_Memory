@@ -141,6 +141,7 @@ typedef struct MagicLocus
 	MAGICEVENT MagicEvent;	// イベントの種類
 	D3DXVECTOR3 pos;		// 原点
 	float fRadius;			// 半径
+	int nIdxObject;			// 対応するオブジェクトの番号
 	bool bUse;				// 使用状態
 }MagicLocus;
 
@@ -164,7 +165,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius);
 
 //魔法使用場所設定処理==============================
-void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius);
+void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx);
 
 // フィールド内の魔法との当たり判定
 int CollisionMagic(D3DXVECTOR3 pos, float fRadius,int nIdx);

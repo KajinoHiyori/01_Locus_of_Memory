@@ -936,7 +936,7 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 		if (strcmp(aStrCpy, LOAD_END) == 0)
 		{// END_SCRIPTÇì«Ç›çûÇÒÇæ
 			fclose(pMagicObjectFile);
-			memset(&aMagicObjPath[0][0], NULL, sizeof(char)* MAX_MAGICOBJECTFILE* FILENAME_MAX);
+			memset(&aMagicObjPath[0][0], NULL, sizeof(char) * MAX_MAGICOBJECTFILE * FILENAME_MAX);
 			break;
 		}
 	}
