@@ -107,7 +107,7 @@ void UpdateCamera(MODE mode)
 		isEdit = isEdit ? false : true;
 	}
 
-	PrintDebugProc("isEdit : %d\n", isEdit);
+	//PrintDebugProc("isEdit : %d\n", isEdit);
 
 	if (isEdit == true)
 	{// エディットモード起動中
@@ -183,9 +183,9 @@ void UpdateCamera(MODE mode)
 		pCamera->posV.y += (pCamera->posVDest.y - pCamera->posV.y) * CAMERA_INERTIA;
 		pCamera->posV.z += (pCamera->posVDest.z - pCamera->posV.z) * CAMERA_INERTIA;
 
-		PrintDebugProc("視点 = { %.2f %.2f %.2f }\n", pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
-		PrintDebugProc("注視点 = { %.2f %.2f %.2f }\n", pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
-		PrintDebugProc("カメラの向き = { %.2f %.2f %.2f }\n", pCamera->rot.x, pCamera->rot.y, pCamera->rot.z);
+		//PrintDebugProc("視点 = { %.2f %.2f %.2f }\n", pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
+		//PrintDebugProc("注視点 = { %.2f %.2f %.2f }\n", pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
+		//PrintDebugProc("カメラの向き = { %.2f %.2f %.2f }\n", pCamera->rot.x, pCamera->rot.y, pCamera->rot.z);
 
 		return;		// 早期リターン
 	}
@@ -263,14 +263,14 @@ void UpdateGameCamera(void)
 			pCamera->rot.y += -CAMERA_MOVE;
 		}
 
-		PrintDebugProc("[%d] 視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
-		PrintDebugProc("[%d] 注視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
+		//PrintDebugProc("[%d] 視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
+		//PrintDebugProc("[%d] 注視点 = { %.2f %.2f %.2f }\n", nCntCamera, pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
 
 		D3DXVECTOR3 move = {};		// 移動量格納用
 		
 		if (GetJoypadStickRight(&move.x, &move.y, nCntCamera) == true)
 		{// 右スティックが動いていたら
-			PrintDebugProc("move = { %.2f, %.2f }\n", move.x, move.y);
+			//PrintDebugProc("move = { %.2f, %.2f }\n", move.x, move.y);
 
 			// 直接入れる
 			pCamera->rot.x += move.y * pCamera->fSpeed;
@@ -316,8 +316,8 @@ void UpdateGameCamera(void)
 		}
 #endif
 
-		PrintDebugProc("[%d]カメラの向きX : %.2f\n", nCntCamera, pCamera->rot.x);
-		PrintDebugProc("[%d]カメラの向きY : %.2f\n", nCntCamera, pCamera->rot.y);
+		//PrintDebugProc("[%d]カメラの向きX : %.2f\n", nCntCamera, pCamera->rot.x);
+		//PrintDebugProc("[%d]カメラの向きY : %.2f\n", nCntCamera, pCamera->rot.y);
 
 		// 角度を補正
 		pCamera->rot.x = AngleNormalize(pCamera->rot.x);

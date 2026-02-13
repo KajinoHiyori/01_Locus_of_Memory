@@ -177,8 +177,6 @@ void UpdateJoypad(void)
 			pJoykeyStateRepeat->Gamepad.wButtons = (pJoykeyState->Gamepad.wButtons & joykeyState.Gamepad.wButtons);
 			*pJoykeyState = joykeyState;		// ジョイパッドのプレス情報を保存
 
-			PrintDebugProc("入力キー : %d\n", pJoykeyState->Gamepad.wButtons);
-
 			//-----スティックの情報-----//
 
 			// 左スティック

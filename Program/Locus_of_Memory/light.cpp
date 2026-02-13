@@ -156,8 +156,8 @@ void UpdateLight(void)
 		pDevice->LightEnable(nCntLight, TRUE);
 
 
-		PrintDebugProc("ライト[%d]の位置 : (%.3f, %.3f, %.3f)\n", 0, vecDir.x, vecDir.y, vecDir.z);
-		PrintDebugProc("ライト[%d]の位置 : (%.3f)\n", 0, g_fAngle);
+		//PrintDebugProc("ライト[%d]の位置 : (%.3f, %.3f, %.3f)\n", 0, vecDir.x, vecDir.y, vecDir.z);
+		//PrintDebugProc("ライト[%d]の位置 : (%.3f)\n", 0, g_fAngle);
 
 	}
 
