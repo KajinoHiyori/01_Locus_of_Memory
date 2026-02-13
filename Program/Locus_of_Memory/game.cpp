@@ -13,6 +13,7 @@
 #include "spellui.h"
 #include "menubg.h"
 #include "clock.h"
+#include "battery.h"
 #include "main.h"
 #include "uimanager.h"
 #include "object.h"
@@ -101,6 +102,8 @@ void InitGame(void)
 
 	InitClock();
 
+	InitBattery();
+
 	//InitModel();
 
 	//InitBlock();
@@ -171,6 +174,8 @@ void UninitGame(void)
 	UninitMagicUI();
 
 	UninitClock();
+
+	UninitBattery();
 
 	UninitUIManager();
 
@@ -253,9 +258,11 @@ void UpdateGame(void)
 
 	UpdateMagicUI();
 
+	UpdateUIManager();
+
 	UpdateClock();
 
-	UpdateUIManager();
+	UpdateBattery();
 
 	switch (g_gameState)
 	{
@@ -384,6 +391,8 @@ void DrawGame(void)
 	DrawMagicUI();
 
 	DrawClock();
+
+	DrawBattery();
 
 	if (g_bPause == true)
 	{

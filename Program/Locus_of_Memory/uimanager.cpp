@@ -25,7 +25,7 @@
 #define FLICKER			(0.5f)			// UI画面のちらつきを軽減
 #define PHONE_Y			(50.0f)			// スマホの高度
 #define UI_DISTANCEX	(-40.0f)		// UIとplayerの距離X
-#define UI_DISTANCEZ	(-60.0f)		// UIとplayerの距離Z
+#define UI_DISTANCEZ	(-100.0f)		// UIとplayerの距離Z
 #define NUM_KEY			(30)			// 処理を行うキー数
 
 // UIのテクスチャの状態
@@ -746,9 +746,11 @@ void SetClockMenu(int nIdx)
 	g_aUIManager[nIdx].nKey = 0;
 	g_aUIManager[nIdx].state = UISTATE_CLOCK;
 	g_aUIManager[nIdx].aUITexture[UITEX_CLOCKMENU].bDisp = true;
-	g_aUIManager[nIdx].aUITexture[UITEX_BG].bDisp = true;			// 表示状態の管理
+	g_aUIManager[nIdx].aUITexture[UITEX_BG].bDisp = true;				// 表示状態の管理
 	g_aUIManager[nIdx].aUITexture[UITEX_FILTER].bDisp = true;			// 表示状態の管理
 	g_aUIManager[nIdx].aUITexture[UITEX_BGFILTER].bDisp = true;			// 表示状態の管理
+	g_aUIManager[nIdx].aUITexture[UITEX_BATTERY].bDisp = true;			// 表示状態の管理
+	g_aUIManager[nIdx].aUITexture[UITEX_BATTERYFRAME].bDisp = true;			// 表示状態の管理
 }
 
 //========================================================================
@@ -757,6 +759,8 @@ void SetClockMenu(int nIdx)
 void SetClockDissapear(int nIdx)
 {
 	DisappearClock(nIdx);
+	g_aUIManager[nIdx].aUITexture[UITEX_BATTERY].bDisp = false;			// 表示状態の管理
+	g_aUIManager[nIdx].aUITexture[UITEX_BATTERYFRAME].bDisp = false;			// 表示状態の管理
 	g_aUIManager[nIdx].aUITexture[UITEX_CLOCKMENU].bDisp = false;
 	g_aUIManager[nIdx].state = UISTATE_CLOCKDISAPPEAR;
 	g_aUIManager[nIdx].nKey = 0;

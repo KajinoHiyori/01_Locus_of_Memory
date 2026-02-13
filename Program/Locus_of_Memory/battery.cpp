@@ -5,6 +5,7 @@
 //
 //========================================================================
 #include "battery.h"
+#include "uimanager.h"
 #include "title.h"
 #include "player.h"
 #include "main.h"
@@ -20,19 +21,31 @@
 #define PHONE_HEIGHT	(228.0f)		// スマホの高さ
 #define MAX_BATTERY		(100)			// 最大バッテリー
 #define MIN_BATTERY		(0)				// 最小バッテリー
+#define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 
 // バッテリーの構造体定義
 typedef struct
 {
-	D3DXVECTOR3 Pos;	// 位置
+	D3DXMATRIX	mtxWorld;				// ワールドマトリックス
+	D3DXVECTOR3 mainPos;				// 中心位置
+	D3DXVECTOR3 rot;					// 向き
+	D3DXVECTOR3 pos[NUM_PLACE];			// 位置
+	D3DXCOLOR	col;					// 色
 	int nBattery;		// バッテリー残量
 	bool bDisp;			// 表示状態
 }Battery;
 
 // グローバル変数
-LPDIRECT3DTEXTURE9 g_pTextureBattery = NULL;
+LPDIRECT3DTEXTURE9 g_apTextureBattery[NUM_PLACE] = {};
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBattery = NULL;
 Battery g_aBattery[MAX_PLAYER];
+
+const char* c_apFilenameBattery[NUM_PLACE] =
+{
+	"data\\TEXTURE\\Pause\\clock_000.png",
+	"data\\TEXTURE\\Pause\\clock_001.png",
+	"data\\TEXTURE\\Pause\\clock_002.png",
+};
 
 //======================================================================================
 // バッテリーの初期化処理
@@ -47,72 +60,53 @@ void InitBattery(void)
 	OPERATIONTYPE operationType = GetOperationType();
 
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\number.png", &g_pTextureBattery);
+	for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
+	{
+		D3DXCreateTextureFromFile(pDevice, c_apFilenameBattery[nCntBattery], &g_apTextureBattery[nCntBattery]);
+	}
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		switch (operationType)
+		for (int nCntBattety = 0; nCntBattety < NUM_PLACE; nCntBattety++)
 		{
-		case OPERATIONTYPE_2P:	// 2人操作
-			if (nCntPlayer == 0)
-			{
-				g_aBattery[nCntPlayer].Pos = LEFT_POS;
-			}
-			else if (nCntPlayer == 1)
-			{
-				g_aBattery[nCntPlayer].Pos = RIGHT_POS;
-			}
-			break;
-
-		default:
-			if (nCntPlayer > 0)
-			{
-				continue;
-			}
-			g_aBattery[nCntPlayer].Pos = RIGHT_POS;
-			break;
+			g_aBattery[nCntPlayer].pos[nCntBattety] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置
 		}
-		g_aBattery[nCntPlayer].nBattery = MAX_BATTERY;
-		g_aBattery[nCntPlayer].bDisp = false;
+		g_aBattery[nCntPlayer].mainPos	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
+		g_aBattery[nCntPlayer].rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
+		g_aBattery[nCntPlayer].col		= COLOR_WHITE;	// 色
+		g_aBattery[nCntPlayer].nBattery = MAX_BATTERY;	// バッテリー残量
+		g_aBattery[nCntPlayer].bDisp	= true;		// 表示状態
 	}
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_PLACE * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffBattery, NULL);
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * NUM_PLACE * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffBattery, NULL);
 
-	VERTEX_2D* pVtx;
+	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffBattery->Lock(0, 0, (void**)&pVtx, 0);
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
 		{
-			// 位置の設定
-			pVtx[0].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
-			pVtx[0].pos.y = g_aBattery[nCntBattery].Pos.y;
-			pVtx[0].pos.z = g_aBattery[nCntBattery].Pos.z;
-			pVtx[1].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
-			pVtx[1].pos.y = g_aBattery[nCntBattery].Pos.y;
-			pVtx[1].pos.z = g_aBattery[nCntBattery].Pos.z;
-			pVtx[2].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
-			pVtx[2].pos.y = g_aBattery[nCntBattery].Pos.y + NUM_SIZE;
-			pVtx[2].pos.z = g_aBattery[nCntBattery].Pos.z;
-			pVtx[3].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
-			pVtx[3].pos.y = g_aBattery[nCntBattery].Pos.y + NUM_SIZE;
-			pVtx[3].pos.z = g_aBattery[nCntBattery].Pos.z;
+			// 頂点座標の設定
+			pVtx[0].pos = D3DXVECTOR3(-PHONE_WIDTH, PHONE_HEIGHT, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(PHONE_WIDTH, PHONE_HEIGHT, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(-PHONE_WIDTH, -PHONE_HEIGHT, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(PHONE_WIDTH, -PHONE_HEIGHT, 0.0f);
 
 			// rhwの設定
-			pVtx[0].rhw = 1.0f;
-			pVtx[1].rhw = 1.0f;
-			pVtx[2].rhw = 1.0f;
-			pVtx[3].rhw = 1.0f;
+			pVtx[0].nor = NORMAL;
+			pVtx[1].nor = NORMAL;
+			pVtx[2].nor = NORMAL;
+			pVtx[3].nor = NORMAL;
 
-			// 色の設定
-			pVtx[0].col = COLOR_WHITE;
-			pVtx[1].col = COLOR_WHITE;
-			pVtx[2].col = COLOR_WHITE;
-			pVtx[3].col = COLOR_WHITE;
+			// 頂点カラーの設定
+			pVtx[0].col = g_aBattery[nCntPlayer].col;
+			pVtx[1].col = g_aBattery[nCntPlayer].col;
+			pVtx[2].col = g_aBattery[nCntPlayer].col;
+			pVtx[3].col = g_aBattery[nCntPlayer].col;
 
-			// テクスチャ座標の設定
+
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(0.1f, 0.0f);
 			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
@@ -131,18 +125,21 @@ void InitBattery(void)
 void UninitBattery(void)
 {
 	// テクスチャの破棄
-	if (g_pTextureBattery != NULL)
+	for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
 	{
-		g_pTextureBattery->Release();
-		g_pTextureBattery = NULL;
+		if (g_apTextureBattery[nCntBattery] != NULL)
+		{
+			g_apTextureBattery[nCntBattery]->Release();
+			g_apTextureBattery[nCntBattery] = NULL;
+		}
 	}
-
 	// 頂点バッファの破棄
 	if (g_pVtxBuffBattery != NULL)
 	{
 		g_pVtxBuffBattery->Release();
 		g_pVtxBuffBattery = NULL;
 	}
+
 }
 
 //======================================================================================
@@ -150,7 +147,48 @@ void UninitBattery(void)
 //======================================================================================
 void UpdateBattery(void)
 {
+	int aTexU[NUM_PLACE];	// 各桁の数値を格納
 
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		// バッテリーのテクスチャ位置を更新
+		aTexU[0] = g_aBattery[nCntPlayer].nBattery % 1000 / 100;
+		aTexU[1] = g_aBattery[nCntPlayer].nBattery % 100 / 10;
+		aTexU[2] = g_aBattery[nCntPlayer].nBattery % 10 / 1;
+
+		// UIの位置や向きに合わせて時計の表示位置を更新
+		g_aBattery[nCntPlayer].mainPos = GetUIPos(nCntPlayer);
+		g_aBattery[nCntPlayer].rot = GetUIRot(nCntPlayer);
+
+		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
+		{
+			// 中心位置からの位置を求める
+			g_aBattery[nCntPlayer].pos[nCntClock] = g_aBattery[nCntPlayer].mainPos;
+		}
+	}
+
+	VERTEX_3D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffBattery->Lock(0, 0, (void**)&pVtx, 0);
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++, pVtx += 4)
+		{
+			// 頂点カラーの設定
+			pVtx[0].col = g_aBattery[nCntPlayer].col;
+			pVtx[1].col = g_aBattery[nCntPlayer].col;
+			pVtx[2].col = g_aBattery[nCntPlayer].col;
+			pVtx[3].col = g_aBattery[nCntPlayer].col;
+
+			// テクスチャ座標の設定
+			pVtx[0].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f + 0.1f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(aTexU[nCntClock] * 0.1f + 0.1f, 1.0f);
+		}
+	}
+	// 頂点バッファをアンロック
+	g_pVtxBuffBattery->Unlock();
 }
 
 //======================================================================================
@@ -163,12 +201,10 @@ void DrawBattery(void)
 	pDevice = GetDevice();
 
 	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffBattery, 0, sizeof(VERTEX_2D));
+	pDevice->SetStreamSource(0, g_pVtxBuffBattery, 0, sizeof(VERTEX_3D));
 
 	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-	// テクスチャの設定
-	pDevice->SetTexture(0, g_pTextureBattery);
+	pDevice->SetFVF(FVF_VERTEX_3D);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
@@ -176,55 +212,22 @@ void DrawBattery(void)
 		{
 			for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
 			{
+				// テクスチャの設定
+				pDevice->SetTexture(0, g_apTextureBattery[nCntBattery]);
 				// ポリゴンの描画
-				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntBattery * 4, 2);
+				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntBattery * 4 + (nCntPlayer * 4 * NUM_PLACE), 2);
 			}
 		}
 	}
+
 }
 
 //======================================================================================
 // バッテリーの設置処理
 //======================================================================================
-void SetBattery(int nIdx, int nBattery, D3DXVECTOR3 pos)
+void SetBattery(int nIdx)
 {
-	int aTexU[NUM_PLACE];	// 各桁の数値を格納
-
-	g_aBattery[nIdx].nBattery = nBattery;
-	aTexU[0] = g_aBattery[nIdx].nBattery % 1000 / 100;
-	aTexU[1] = g_aBattery[nIdx].nBattery % 100 / 10;
-	aTexU[2] = g_aBattery[nIdx].nBattery % 10 / 1;
-
-	VERTEX_2D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffBattery->Lock(0, 0, (void**)&pVtx, 0);
-	for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++, pVtx += 4)
-	{
-		// 位置の設定
-		pVtx[0].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
-		pVtx[0].pos.y = g_aBattery[nCntBattery].Pos.y;
-		pVtx[0].pos.z = g_aBattery[nCntBattery].Pos.z;
-		pVtx[1].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
-		pVtx[1].pos.y = g_aBattery[nCntBattery].Pos.y;
-		pVtx[1].pos.z = g_aBattery[nCntBattery].Pos.z;
-		pVtx[2].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE;
-		pVtx[2].pos.y = g_aBattery[nCntBattery].Pos.y + NUM_SIZE;
-		pVtx[2].pos.z = g_aBattery[nCntBattery].Pos.z;
-		pVtx[3].pos.x = g_aBattery[nCntBattery].Pos.x + nCntBattery * NUM_SIZE + NUM_SIZE;
-		pVtx[3].pos.y = g_aBattery[nCntBattery].Pos.y + NUM_SIZE;
-		pVtx[3].pos.z = g_aBattery[nCntBattery].Pos.z;
-
-		// テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f + 0.1f, 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f + 0.1f, 1.0f);
-	}
-	// 頂点バッファをアンロック
-	g_pVtxBuffBattery->Unlock();
-
 	g_aBattery[nIdx].bDisp = true;
-	g_aBattery[nIdx].Pos = pos;
 }
 
 //======================================================================================
@@ -250,7 +253,7 @@ void ChangeBattery(int nIdx, int nValue)
 	aTexU[1] = g_aBattery[nIdx].nBattery % 100 / 10;
 	aTexU[2] = g_aBattery[nIdx].nBattery % 10 / 1;
 
-	VERTEX_2D* pVtx;
+	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffBattery->Lock(0, 0, (void**)&pVtx, 0);
 	for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++, pVtx += 4)
@@ -271,4 +274,12 @@ void ChangeBattery(int nIdx, int nValue)
 void DissapearBattery(int nIdx)
 {
 	g_aBattery[nIdx].bDisp = false;
+}
+
+//======================================================================================
+// バッテリーの残量を渡す
+//======================================================================================
+int GetBattery(int nIdx)
+{
+	return g_aBattery[nIdx].nBattery;
 }

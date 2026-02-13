@@ -18,11 +18,9 @@
 #define PHONE_HEIGHT	(50.0f)				// スマホの高さ
 #define PHONE_Y			(50.0f)				// スマホの高度
 #define NUM_WIDTH		(PHONE_WIDTH / 2)	// 数字のサイズ
-#define SPELLUI_POSY	(482.0f)			// 左のUIのX軸
-#define UI_DISTANCEX	(-40.0f)		// UIとplayerの距離X
-#define UI_DISTANCEZ	(-60.0f)		// UIとplayerの距離Z
-#define LEFT_POS		(D3DXVECTOR3(120.0f, SPELLUI_POSY, 0.0f))		// onscreenの左のUI座標
-#define RIGHT_POS		(D3DXVECTOR3(1160.0f, SPELLUI_POSY, 0.0f))		// onscreenの右のUI座標
+#define SPELLCLOCK_POSY	(482.0f)			// 左の時計のX軸
+#define LEFT_POS		(D3DXVECTOR3(120.0f, SPELLCLOCK_POSY, 0.0f))		// onscreenの左の時計座標
+#define RIGHT_POS		(D3DXVECTOR3(1160.0f, SPELLCLOCK_POSY, 0.0f))		// onscreenの右の時計座標
 #define START_HOUR		(8)		// 開始時刻[時]
 #define START_MIN		(0)		// 開始時刻[分]
 #define END_HOUR		(20)	// 終了時刻[時]
@@ -36,7 +34,6 @@ typedef struct
 	D3DXMATRIX	mtxWorld;				// ワールドマトリックス
 	D3DXVECTOR3 mainPos;				// 中心位置
 	D3DXVECTOR3 pos[NUM_PLACE];			// 位置
-	D3DXVECTOR3 posOffset[NUM_PLACE];	// オフセット情報
 	D3DXVECTOR3 rot;					// 向き
 	D3DXCOLOR	col;					// 色
 	bool bDisp;							// 表示状態
@@ -90,7 +87,6 @@ void InitClock(void)
 		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
 		{
 			g_aClock[nCntPlayer].pos[nCntClock] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			g_aClock[nCntPlayer].posOffset[nCntClock] = g_aClock[nCntPlayer].pos[nCntClock];
 		}
 
 		g_aClock[nCntPlayer].mainPos = D3DXVECTOR3(0.0f, PHONE_Y, 0.0f);	// 中心位置
@@ -140,9 +136,9 @@ void InitClock(void)
 
 			
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(0.1f, 0.0f);
 			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(0.1f, 1.0f);
 		}
 	}
 	// 頂点バッファをアンロック
@@ -178,9 +174,6 @@ void UninitClock(void)
 //======================================================================================
 void UpdateClock(void)
 {
-//#if 0
-	Player* pPlayer = GetPlayer();
-
 	// 時間管理
 	if (g_time.state == CLOCKSTATE_OPERATION)	// タイマーが稼働中の場合
 	{
@@ -206,26 +199,21 @@ void UpdateClock(void)
 	PrintDebugProc("現在時刻 : %d\n", g_time.nTime);
 
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
-	aTexU[2] = g_time.nTime % 10000 / 1000;
-	aTexU[3] = g_time.nTime % 1000 / 100;
-	aTexU[1] = g_time.nTime % 100 / 10;
-	aTexU[0] = g_time.nTime % 10 / 1;
+	aTexU[0] = g_time.nTime % 10000 / 1000;
+	aTexU[1] = g_time.nTime % 1000 / 100;
+	aTexU[2] = g_time.nTime % 100 / 10;
+	aTexU[3] = g_time.nTime % 10 / 1;
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		// UIの位置や向きに合わせてUIの表示位置を更新
+		// UIの位置や向きに合わせて時計の表示位置を更新
 		g_aClock[nCntPlayer].mainPos = GetUIPos(nCntPlayer);
 		g_aClock[nCntPlayer].rot = GetUIRot(nCntPlayer);
 
-		PrintDebugProc("CLOCK %d : (%f, %f, %f)\n", nCntPlayer, g_aClock[nCntPlayer].mainPos.x, g_aClock[nCntPlayer].mainPos.y, g_aClock[nCntPlayer].mainPos.z);
-
 		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
 		{
-
 			// 中心位置からの位置を求める
-			g_aClock[nCntPlayer].pos[nCntClock] = g_aClock[nCntPlayer].mainPos + g_aClock[nCntPlayer].posOffset[nCntClock];
-			PrintDebugProc("CLOCK %d : (%f, %f, %f)", nCntPlayer, g_aClock[nCntPlayer].pos[nCntClock].x, g_aClock[nCntPlayer].pos[nCntClock].y, g_aClock[nCntPlayer].pos[nCntClock].z);
-
+			g_aClock[nCntPlayer].pos[nCntClock] = g_aClock[nCntPlayer].mainPos;
 		}
 	}
 
@@ -251,7 +239,6 @@ void UpdateClock(void)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffClock->Unlock();
-//#endif	
 }
 
 //======================================================================================
@@ -309,7 +296,7 @@ void DrawClock(void)
 			// テクスチャの設定
 			pDevice->SetTexture(0, g_apTextureClock[nCntClock]);
 
-			// UIの描画
+			// 時計の描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntClock * 4 + (nCntPlayer * NUM_PLACE * 4), 2);
 
 		}
