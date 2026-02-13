@@ -52,8 +52,8 @@
 #define LOAD_PARENT			"PARENT"					// 親インデックス読み込み
 #define LOAD_MODELINFO		"MODELSET"					// モデル情報読み込み
 #define LOAD_ENDMODELINFO	"END_MODELSET"				// モデル情報読み込み終了
-#define LOAD_ITEMINFO		"MAGICEVENTSET"				// 魔法使用可能範囲とイベント情報読み込み
-#define LOAD_ENDITEMINFO	"END_MAGICEVENTSET"			// 魔法使用可能範囲とイベント情報読み込み終了
+#define LOAD_MAGICEVENT		"MAGICEVENTSET"				// 魔法使用可能範囲とイベント情報読み込み
+#define LOAD_ENDMAGICEVENT	"END_MAGICEVENTSET"			// 魔法使用可能範囲とイベント情報読み込み終了
 #define LOAD_DROPMAGIC		"DROPMAGICSET"				// フィールド上魔法の情報読み込み
 #define LOAD_ENDDROPMAGIC	"END_DROPMAGICSET"			// フィールド上魔法の情報読み込み終了
 
@@ -513,11 +513,14 @@ HRESULT LoadModel(const char* pModelFileName)
 	int nParent = 0;					   // モデルの親インデックス読み込み
 	D3DXVECTOR3 pos = {};				   // 位置読み込み
 	D3DXVECTOR3 rot = {};				   // 向き読み込み
+	float fRadius = 0.0f;				   // 半径読み込み
 	int type = -1;						   // 種類読み込み
+	int nEvent = -1;					   // イベント読み込み
 	int Parenttype = -1;				   // 階層構造モデルの種類読み込み
 	int nShadow = 0;					   // 影をつけるか
 	int  nCollision = true;				   // 当たり判定するか
 	int nNumModel = 0;					   // モデル数読み込み
+	int nCntModel = -1;					   // 直前に読み込んだモデル
 
 	while (true)
 	{
@@ -565,7 +568,7 @@ HRESULT LoadModel(const char* pModelFileName)
 		}
 
 		if (strcmp(aStrCpy, LOAD_MODELINFO) == 0)
-		{
+		{// MODELSETを読み込んだ
 			while (true)
 			{
 				memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
@@ -639,15 +642,55 @@ HRESULT LoadModel(const char* pModelFileName)
 					if (Parenttype != -1)
 					{
 						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype);
+						nCntModel++;
 					}
 					else
 					{
 						SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
 					}
 					
-					memset(aMeshPath, NULL, sizeof(aMeshPath));				// 文字列クリア
 					Parenttype = -1;
-					bSetMesh = false;
+					break;
+				}
+			}
+		}
+
+		if (strcmp(aStrCpy, LOAD_MAGICEVENT) == 0)
+		{// MAGICEVENTSETを読み込んだ
+			while (true)
+			{
+				memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+				memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+				(void)fgets(aStr, sizeof(aStr), pStageFile);	// 一列読み込み
+				LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+
+				if (strstr(aStr, LOAD_POS))
+				{// POSを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+
+					continue;
+				}
+
+				if (strstr(aStr, LOAD_EVENT))
+				{// EVENTを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &nEvent);
+
+					continue;
+				}
+
+				if (strcmp(aStrCpy, LOAD_ENDMAGICEVENT) == 0)
+				{// END_MAGICEVENTSETを読み込んだ
+					SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
 					break;
 				}
 			}
@@ -884,7 +927,7 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 
 				if (strcmp(aStrCpy, LOAD_ENDMODELINFO) == 0)
 				{// END_MODELSETを読み込んだ
-					SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
+					SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision, true);
 					break;
 				}
 			}
@@ -893,6 +936,7 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 		if (strcmp(aStrCpy, LOAD_END) == 0)
 		{// END_SCRIPTを読み込んだ
 			fclose(pMagicObjectFile);
+			memset(&aMagicObjPath[0][0], NULL, sizeof(char)* MAX_MAGICOBJECTFILE* FILENAME_MAX);
 			break;
 		}
 	}

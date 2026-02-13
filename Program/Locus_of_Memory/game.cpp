@@ -45,6 +45,7 @@
 #include "vibration.h"
 #include"meshfield.h"
 #include "loadscript.h"
+#include "magiccircle.h"
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 int g_nCounterGameState = 0;				// 状態管理カウンター
@@ -92,6 +93,9 @@ void InitGame(void)
 	//InitPause();
 
 	InitSpellUI();
+
+	// 魔法陣の初期化処理
+	InitMagicCircle();
 
 	InitMagicUI();
 
@@ -161,6 +165,9 @@ void UninitGame(void)
 
 	UninitSpellUI();
 
+	// 魔法陣の終了処理
+	UninitMagicCircle();
+
 	UninitMagicUI();
 
 	UninitClock();
@@ -172,6 +179,8 @@ void UninitGame(void)
 	//UninitTimer();
 
 	//StopSound();
+
+	UninitRandomObject();
 
 }
 //=======================================================
@@ -226,6 +235,9 @@ void UpdateGame(void)
 
 	// 魔法の更新処理
 	UpdateMagic();
+
+	// 魔法陣の更新処理
+	UpdateMagicCircle();
 
 	UpdateMenuBG();
 
@@ -345,9 +357,11 @@ void DrawGame(void)
 
 	DrawPlayer();
 
-
 	// 魔法の描画処理
 	DrawMagic();
+
+	// 魔法陣の描画処理
+	DrawMagicCircle();
 
 	//DrawModel();
 

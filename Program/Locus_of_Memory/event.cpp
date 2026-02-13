@@ -15,7 +15,7 @@
 // グローバル変数
 //*****************************************************************************
 
-bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type) =
+bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type, int nIdx) =
 {
 	NULL,
 	SetMagicEvent001,
@@ -30,13 +30,13 @@ bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type) =
 //========================================================================
 // 魔法イベントを発生させる
 //========================================================================
-bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type)
+bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type, int nIdx)
 {
 	bool isEvent = false;
 
 	if (SetMagicEventSelecter[event] != NULL)
 	{
-		isEvent = SetMagicEventSelecter[event](type);
+		isEvent = SetMagicEventSelecter[event](type, nIdx);
 	}
 
 	return isEvent;
@@ -45,7 +45,7 @@ bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type)
 //========================================================================
 // 各魔法イベント処理
 //========================================================================
-bool SetMagicEvent001(MAGICTYPE type)
+bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 {
 	switch (type)
 	{
@@ -62,7 +62,7 @@ bool SetMagicEvent001(MAGICTYPE type)
 	}
 }
 
-bool SetMagicEvent002(MAGICTYPE type)
+bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 {
 	switch (type)
 	{
@@ -83,7 +83,7 @@ bool SetMagicEvent002(MAGICTYPE type)
 	}
 }
 
-bool SetMagicEvent003(MAGICTYPE type)
+bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 {
 	switch (type)
 	{
@@ -108,7 +108,7 @@ bool SetMagicEvent003(MAGICTYPE type)
 	}
 }
 
-bool SetMagicEvent004(MAGICTYPE type)
+bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 {
 	switch (type)
 	{
@@ -129,7 +129,7 @@ bool SetMagicEvent004(MAGICTYPE type)
 	}
 }
 
-bool SetMagicEvent005(MAGICTYPE type)
+bool SetMagicEvent005(MAGICTYPE type, int nIdx)
 {
 	switch (type)
 	{
@@ -150,7 +150,7 @@ bool SetMagicEvent005(MAGICTYPE type)
 	}
 }
 
-bool SetMagicEvent006(MAGICTYPE type)
+bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 {
 	switch (type)
 	{
@@ -167,7 +167,7 @@ bool SetMagicEvent006(MAGICTYPE type)
 	}
 }
 
-bool SetMagicEvent007(MAGICTYPE type)
+bool SetMagicEvent007(MAGICTYPE type, int nIdx)
 {
 	switch (type)
 	{

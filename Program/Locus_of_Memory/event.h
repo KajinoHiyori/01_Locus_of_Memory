@@ -18,18 +18,18 @@
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type);
+bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type, int nIdx);
 
 //*****************************************************************************
 // 魔法イベント関連の処理用関数
 //*****************************************************************************
-bool SetMagicEvent001(MAGICTYPE type);
-bool SetMagicEvent002(MAGICTYPE type);
-bool SetMagicEvent003(MAGICTYPE type);
-bool SetMagicEvent004(MAGICTYPE type);
-bool SetMagicEvent005(MAGICTYPE type);
-bool SetMagicEvent006(MAGICTYPE type);
-bool SetMagicEvent007(MAGICTYPE type);
+bool SetMagicEvent001(MAGICTYPE type, int nIdx);
+bool SetMagicEvent002(MAGICTYPE type, int nIdx);
+bool SetMagicEvent003(MAGICTYPE type, int nIdx);
+bool SetMagicEvent004(MAGICTYPE type, int nIdx);
+bool SetMagicEvent005(MAGICTYPE type, int nIdx);
+bool SetMagicEvent006(MAGICTYPE type, int nIdx);
+bool SetMagicEvent007(MAGICTYPE type, int nIdx);
 
 
 #endif // _EVENT_H_

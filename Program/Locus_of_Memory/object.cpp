@@ -28,7 +28,9 @@ Object g_aObject[MAX_OBJECT];					// オブジェクトの情報を格納
 ParentObject g_aParentObject[MAX_PARENTOBJECT];	// 階層構造オブジェクトの情報を格納
 ModelData g_aModelData[MAX_PARENTMODEL];		// 階層構造を持ったモデルデータ
 
-int g_nNumObjectModel;	// モデル数を管理
+int g_nNumObjectModel;				// モデル数を管理
+int g_nNumRandObj;					// ランダムオブジェクトの数
+int g_nIdxRandObj[MAX_OBJECT];		// ランダムオブジェクトの番号
 
 //======================================================================================
 // オブジェクトの初期化処理
@@ -37,12 +39,14 @@ void InitObject(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	g_nNumObjectModel = 0;
+	g_nNumRandObj = 0;
 
 	ModelData* pModelData = &g_aModelData[0];	// 先頭アドレス
 	ParentObject* pParentObject = &g_aParentObject[0];
 		
 	memset(pModelData, NULL, sizeof(ModelData) * MAX_PARENTMODEL);			// モデルデータの初期化
 	memset(pParentObject, NULL, sizeof(ParentObject) * MAX_PARENTOBJECT);	// 階層構造オブジェクト情報の初期化
+	memset(&g_nIdxRandObj, -1, sizeof(int) * MAX_OBJECT);					// ランダムオブジェクトの番号初期化
 
 	// Object情報の初期化
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
@@ -334,7 +338,7 @@ void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 //======================================================================================
 // オブジェクトを配置
 //======================================================================================
-void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision)
+void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, bool isRandObj)
 {
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
@@ -344,6 +348,12 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 			g_aObject[nCntObject].rot = rot;
 			g_aObject[nCntObject].type = type;
 			g_aObject[nCntObject].bUse = true;
+
+			if (isRandObj == true)
+			{// ランダムオブジェクトだったら番号を記録
+				g_nIdxRandObj[g_nNumRandObj] = nCntObject;
+				g_nNumRandObj++;
+			}
 
 			// 影のIDを設定
 			g_aObject[nCntObject].nIdxShadow = SetShadow(SHADOWTYPE_SQUARE, 180.0f, 180.0f);
@@ -539,4 +549,24 @@ void LoadParentModelOffSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int 
 	pModel->nIdxModelParent = nIdxModelParent;
 	pModel->pos = pModel->posLocal = pos;
 	pModel->rot = pModel->rotLocal = rot;
+}
+
+//=============================================================================
+//	ランダムオブジェクトの終了処理
+//=============================================================================
+void UninitRandomObject(void)
+{
+	// Object情報の初期化
+	for (int nCntObject = 0; nCntObject < g_nNumRandObj; nCntObject++)
+	{
+		g_aObject[g_nIdxRandObj[nCntObject]].pos = DEFALT;
+		g_aObject[g_nIdxRandObj[nCntObject]].rot = DEFALT;
+		g_aObject[g_nIdxRandObj[nCntObject]].type = OBJECTTYPE_HOUSE000;
+		g_aObject[g_nIdxRandObj[nCntObject]].nIdxShadow = -1;
+		g_aObject[g_nIdxRandObj[nCntObject]].fSize = g_aObjectModel[g_aObject[nCntObject].type].vtxMax.x;
+		g_aObject[g_nIdxRandObj[nCntObject]].bUse = false;
+	}
+
+	memset(&g_nIdxRandObj, -1, sizeof(int) * MAX_OBJECT);					// ランダムオブジェクトの番号初期化
+	g_nNumRandObj = 0;
 }
