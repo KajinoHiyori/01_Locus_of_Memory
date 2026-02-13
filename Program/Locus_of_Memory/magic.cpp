@@ -74,12 +74,12 @@ void InitMagic(void)
 		g_aDropMagic[nCntMagic].bUse = false;
 	}
 
-	SetMagicPosition(COMMANDOREDER_BBB, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
-	SetMagicPosition(COMMANDOREDER_RRR, D3DXVECTOR3(150.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
-	SetMagicPosition(COMMANDOREDER_GGG, D3DXVECTOR3(-150.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
+	SetMagicPosition(COMMANDOREDER_BBB, D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
+	SetMagicPosition(COMMANDOREDER_RRR, D3DXVECTOR3(150.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
+	SetMagicPosition(COMMANDOREDER_GGG, D3DXVECTOR3(-150.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
 
-	SetMagicPosition(COMMANDOREDER_YYY, D3DXVECTOR3(0.0f, 0.0f, 300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
-	SetMagicPosition(COMMANDOREDER_RGB, D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
+	SetMagicPosition(COMMANDOREDER_YYY, D3DXVECTOR3(0.0f, 0.0f, 300.0f), DROPMAGIC_RADIUS);
+	SetMagicPosition(COMMANDOREDER_RGB, D3DXVECTOR3(0.0f, 0.0f, -300.0f), DROPMAGIC_RADIUS);
 
 }
 
@@ -531,7 +531,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 }
 
 //魔法の設定処理==============================
-void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius)
+void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, float fRadius)
 {
 	DropMagic* pDropMagic = &g_aDropMagic[0];		// 先頭アドレス	
 
@@ -543,7 +543,6 @@ void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, floa
 		}
 
 		pDropMagic->pos = pos;
-		pDropMagic->rot = rot;
 		pDropMagic->oType = type;
 		pDropMagic->bUse = true;
 

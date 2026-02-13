@@ -162,7 +162,7 @@ MAGICTYPE ChangeMagic(COMMANDOREDER commandorder);
 void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nIdx);
 
 //フィールド内に魔法を設置
-void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius);
+void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, float fRadius);
 
 //魔法使用場所設定処理==============================
 void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx);
