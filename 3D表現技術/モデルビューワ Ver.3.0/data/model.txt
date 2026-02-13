@@ -25,7 +25,7 @@ TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 38
+NUM_MODEL = 43
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -65,9 +65,14 @@ MODEL_FILENAME = data/MODEL/magicobj/bonfire001.x	# [31]焚火2
 MODEL_FILENAME = data/MODEL/animal/nest000.x	# [32]鳥の巣2
 MODEL_FILENAME = data/MODEL/magicobj/bucket000.x	# [33]バケツ1
 MODEL_FILENAME = data/MODEL/magicobj/bucket001.x	# [34]バケツ2
-MODEL_FILENAME = data/MODEL/watch/clock000.x	# [35]時計
-MODEL_FILENAME = data/MODEL/watch/clock001.x	# [36]時計
-MODEL_FILENAME = data/MODEL/wateringcan/wateringcan000.x	# [37]時計
+MODEL_FILENAME = data/MODEL/watch/clock000.x	# [35]時計1
+MODEL_FILENAME = data/MODEL/watch/clock001.x	# [36]時計2
+MODEL_FILENAME = data/MODEL/wateringcan/wateringcan000.x	# [37]じょうろ1
+MODEL_FILENAME = data/MODEL/wateringcan/wateringcan001.x	# [38]じょうろ2
+MODEL_FILENAME = data/MODEL/magicobj/flower_bed000.x	# [39]花壇1
+MODEL_FILENAME = data/MODEL/magicobj/flower_bed001.x	# [40]花壇2
+MODEL_FILENAME = data/MODEL/Shrine/Shrine000.x	# [41]祠
+MODEL_FILENAME = data/MODEL/magicobj/shovel000.x	# [42]シャベル
 
 #------------------------------------------------------------------------------
 # カメラ情報
@@ -1132,6 +1137,86 @@ MODELSET
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 16
+	POS = -1796 0 1172
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -1796 0 1342
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -1796 0 1717
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -1796 0 1906
+	ROT = 0 -90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -2668 0 904
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -2858 0 904
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -3425 0 904
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -3614 0 904
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -3986 0 904
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 16
+	POS = -4174 0 904
+	ROT = 0 180 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 #------------------------------------------------------------------------------
 # 鳥
 #------------------------------------------------------------------------------
@@ -1605,8 +1690,56 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 35
-	POS = 0 0 -4500
+	POS = -1798 34 1149
 	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 35
+	POS = 4089 34 1177
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 35
+	POS = 3897 13 -2107
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 35
+	POS = -1193 40 -3340
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 36
+	POS = -2659 34 908
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 36
+	POS = -4161 34 908
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 36
+	POS = 1512 34 -2745
+	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
@@ -1616,8 +1749,152 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 37
-	POS = 100 0 -4500
+	POS = -2276 0 1861
 	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 37
+	POS = 2223 0 1893
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 37
+	POS = -1814 0 -2297
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 37
+	POS = -336 0 644
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 38
+	POS = 1266 0 -2752
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 38
+	POS = 1022 0 -3238
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 38
+	POS = 281 0 -624
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# 花壇
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 39
+	POS = -3350 0 1414
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 40
+	POS = -3500 0 1414
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+#------------------------------------------------------------------------------
+# 花壇
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 41
+	POS = -4265 0 -2442
+	ROT = 0 -115 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# バケツとシャベル
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 34
+	POS = -2951 0 890
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 42
+	POS = -2970 70 890
+	ROT = -110 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 34
+	POS = 4482 0 -1121
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 42
+	POS = 4485 70 -1126
+	ROT = -110 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 34
+	POS = -4752 0 -331
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 42
+	POS = -4756 70 -333
+	ROT = -110 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 42
+	POS = -613 70 -938
+	ROT = -98 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 42
+	POS = 2420 70 -1790
+	ROT = -98 0 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
