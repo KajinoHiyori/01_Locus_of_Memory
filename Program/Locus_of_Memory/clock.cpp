@@ -86,7 +86,7 @@ void InitClock(void)
 	{
 		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
 		{
-			g_aClock[nCntPlayer].pos[nCntClock] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			g_aClock[nCntPlayer].pos[nCntClock] = D3DXVECTOR3(nCntClock * NUM_WIDTH - NUM_WIDTH * 2, 0.0f, 0.0f);
 		}
 
 		g_aClock[nCntPlayer].mainPos = D3DXVECTOR3(0.0f, PHONE_Y, 0.0f);	// 中心位置
@@ -113,14 +113,11 @@ void InitClock(void)
 	{
 		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++, pVtx += 4)
 		{
-			// 中心位置からの位置を求める
-			g_aClock[nCntPlayer].pos[nCntClock] += g_aClock[nCntPlayer].mainPos;
-
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(-PHONE_WIDTH,	PHONE_HEIGHT, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(PHONE_WIDTH,	PHONE_HEIGHT, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(-PHONE_WIDTH,	-PHONE_HEIGHT, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(PHONE_WIDTH,	-PHONE_HEIGHT, 0.0f);
+			pVtx[0].pos = D3DXVECTOR3(0.0f,	PHONE_HEIGHT, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(NUM_WIDTH,	PHONE_HEIGHT, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(0.0f,	-PHONE_HEIGHT, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(NUM_WIDTH,	-PHONE_HEIGHT, 0.0f);
 
 			// rhwの設定
 			pVtx[0].nor = NORMAL;
@@ -205,15 +202,15 @@ void UpdateClock(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		// UIの位置や向きに合わせて時計の表示位置を更新
-		g_aClock[nCntPlayer].mainPos = GetUIPos(nCntPlayer);
-		g_aClock[nCntPlayer].rot = GetUIRot(nCntPlayer);
-
-		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
-		{
-			// 中心位置からの位置を求める
-			g_aClock[nCntPlayer].pos[nCntClock] = g_aClock[nCntPlayer].mainPos;
-		}
+		//// UIの位置や向きに合わせて時計の表示位置を更新
+		//g_aClock[nCntPlayer].mainPos = GetUIPos(nCntPlayer);
+		//g_aClock[nCntPlayer].rot = GetUIRot(nCntPlayer);
+		//
+		//for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
+		//{
+		//	// 中心位置からの位置を求める
+		//	g_aClock[nCntPlayer].pos[nCntClock] = g_aClock[nCntPlayer].mainPos;
+		//}
 	}
 
 	VERTEX_3D* pVtx;
@@ -343,4 +340,12 @@ CLOCKSTATE GetClockState(void)
 void DisappearClock(int nIdx)
 {
 	g_aClock[nIdx].bDisp = false;
+}
+
+//======================================================================================
+// 時間を返す
+//======================================================================================
+int GetTime(void)
+{
+	return g_time.nTime;
 }
