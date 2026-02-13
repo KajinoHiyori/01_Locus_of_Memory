@@ -518,9 +518,10 @@ HRESULT LoadModel(const char* pModelFileName)
 	int nEvent = -1;					   // イベント読み込み
 	int Parenttype = -1;				   // 階層構造モデルの種類読み込み
 	int nShadow = 0;					   // 影をつけるか
-	int  nCollision = true;				   // 当たり判定するか
+	int nCollision = true;				   // 当たり判定するか
 	int nNumModel = 0;					   // モデル数読み込み
 	int nCntModel = -1;					   // 直前に読み込んだモデル
+	int nCntParentModel = -1;			   // 直前に読み込んだ階層構造モデル
 
 	while (true)
 	{
@@ -642,6 +643,7 @@ HRESULT LoadModel(const char* pModelFileName)
 					if (Parenttype != -1)
 					{
 						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype);
+						nCntParentModel++;
 					}
 					else
 					{
@@ -702,7 +704,14 @@ HRESULT LoadModel(const char* pModelFileName)
 
 				if (strcmp(aStrCpy, LOAD_ENDMAGICEVENT) == 0)
 				{// END_MAGICEVENTSETを読み込んだ
-					SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
+					if (nEvent == 1)
+					{
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+					}
+					else
+					{
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
+					}
 					break;
 				}
 			}

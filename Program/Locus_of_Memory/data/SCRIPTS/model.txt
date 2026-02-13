@@ -950,17 +950,9 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	PARENTTYPE = 2
-	POS = 0.0 0.0 0.0
+	POS = 0.0 -10.0 -1000.0
 	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 5
-	POS = 0 0 -1000
-	ROT = 0 0 0
-	SHADOW = 0
+	SHADOW = 1
 	COLLISION = 1
 END_MODELSET
 

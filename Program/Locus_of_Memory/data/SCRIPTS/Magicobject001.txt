@@ -1,13 +1,19 @@
 #==============================================================================
 #
-# 魔法関連オブジェクト情報スクリプト [Magicobjectinfo.txt]
+# 魔法関連オブジェクトのパターン1 [Magicobject001.txt]
 # Author : SHUMA AIZU
 #
 #==============================================================================
 
 SCRIPT
 
-MAGICOBJECTSCRIPT = data/SCRIPTS/Magicobject000.txt
-MAGICOBJECTSCRIPT = data/SCRIPTS/Magicobject001.txt
+MODELSET
+	TYPE = 0
+	POS = 0.0 0.0 -5000.0
+	ROT = 0.0 0.0 0.0
+	SHADOW = 1
+	COLLISION = 0
+END_MODELSET
 
 END_SCRIPT
+

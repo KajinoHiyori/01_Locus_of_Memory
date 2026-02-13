@@ -8,6 +8,7 @@
 #include "event.h"
 #include "object.h"
 #include "particle.h"
+#include "motion.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -49,6 +50,8 @@ bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type, int nIdx)
 //========================================================================
 bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 {
+	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+
 	switch (type)
 	{
 	case MAGICTYPE_TIMEREVERT:
@@ -56,7 +59,8 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 		return true;
 
 	case MAGICTYPE_COMBUSTION:
-		SetParticle(GetObjectInfo(nIdx)->pos, 300, PARTICLETYPE_COMBUSTION);
+		SetParticle(pParentObject->pos, 300, PARTICLETYPE_COMBUSTION);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, MOTIONTYPE_MOVE, false, true, 10);
 		return true;
 
 	default:
