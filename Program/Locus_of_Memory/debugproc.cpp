@@ -65,6 +65,7 @@ void UpdateDebugProc(void)
 //=============================================================================
 void DrawDebugProc(void)
 {
+	char aStr[2048];
 	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
 	// テキストを描画
@@ -72,6 +73,11 @@ void DrawDebugProc(void)
 
 	// デバッグ情報バッファのクリア
 	memset(&g_aStrDebug[0], 0, sizeof g_aStrDebug);
+
+	sprintf(&aStr[0],
+		"====================\n操作方法\n====================\n\n魔法を拾う X\nRT+BBB 水の魔法\nRT+YYY 光の魔法\nRT+AAA 炎の魔法\n画面遷移(チュートリアルとゲーム) O\nチュートリアルでは魔法を撃てません\nデバッグ表示で魔法が当たっている、という表記になっていれば拾えます\n");
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[0], -1, &rect, DT_RIGHT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
 
 //=============================================================================
