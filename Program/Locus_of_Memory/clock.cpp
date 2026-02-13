@@ -32,9 +32,7 @@
 typedef struct
 {
 	D3DXMATRIX	mtxWorld;				// ワールドマトリックス
-	D3DXVECTOR3 mainPos;				// 中心位置
 	D3DXVECTOR3 pos[NUM_PLACE];			// 位置
-	D3DXVECTOR3 rot;					// 向き
 	D3DXCOLOR	col;					// 色
 	bool bDisp;							// 表示状態
 }Clock;
@@ -48,12 +46,9 @@ typedef struct
 	CLOCKSTATE state;	// 稼働状態
 }Time;
 
-const char* c_apFilenameclock[NUM_PLACE] =
+const char* c_pFilenameclock[1] =
 {
-	"data\\TEXTURE\\Pause\\clock_000.png",
-	"data\\TEXTURE\\Pause\\clock_001.png",
-	"data\\TEXTURE\\Pause\\clock_002.png",
-	"data\\TEXTURE\\Pause\\clock_003.png",
+	"data\\TEXTURE\\number.png",
 };
 
 // グローバル変数
@@ -79,7 +74,7 @@ void InitClock(void)
 	// テクスチャの読み込み
 	for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
 	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameclock[nCntClock], &g_apTextureClock[nCntClock]);
+		D3DXCreateTextureFromFile(pDevice, c_pFilenameclock[nCntClock], &g_apTextureClock[nCntClock]);
 	}
 	// 初期化
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -89,8 +84,6 @@ void InitClock(void)
 			g_aClock[nCntPlayer].pos[nCntClock] = D3DXVECTOR3(nCntClock * NUM_WIDTH - NUM_WIDTH * 2, 0.0f, 0.0f);
 		}
 
-		g_aClock[nCntPlayer].mainPos = D3DXVECTOR3(0.0f, PHONE_Y, 0.0f);	// 中心位置
-		g_aClock[nCntPlayer].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 中心向き
 		g_aClock[nCntPlayer].col = COLOR_WHITE;								// 色
 		g_aClock[nCntPlayer].bDisp = false;									// 表示状態
 	}
@@ -114,10 +107,10 @@ void InitClock(void)
 		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++, pVtx += 4)
 		{
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(0.0f,	PHONE_HEIGHT, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(NUM_WIDTH,	PHONE_HEIGHT, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(0.0f,	-PHONE_HEIGHT, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(NUM_WIDTH,	-PHONE_HEIGHT, 0.0f);
+			pVtx[0].pos = D3DXVECTOR3(0.0f, NUM_WIDTH, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(NUM_WIDTH, NUM_WIDTH, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(0.0f, -NUM_WIDTH, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(NUM_WIDTH, -NUM_WIDTH, 0.0f);
 
 			// rhwの設定
 			pVtx[0].nor = NORMAL;
@@ -131,7 +124,7 @@ void InitClock(void)
 			pVtx[2].col = g_aClock[nCntPlayer].col;
 			pVtx[3].col = g_aClock[nCntPlayer].col;
 
-			
+
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(0.1f, 0.0f);
 			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
@@ -200,19 +193,6 @@ void UpdateClock(void)
 	aTexU[2] = g_time.nTime % 100 / 10;
 	aTexU[3] = g_time.nTime % 10 / 1;
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
-	{
-		//// UIの位置や向きに合わせて時計の表示位置を更新
-		//g_aClock[nCntPlayer].mainPos = GetUIPos(nCntPlayer);
-		//g_aClock[nCntPlayer].rot = GetUIRot(nCntPlayer);
-		//
-		//for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
-		//{
-		//	// 中心位置からの位置を求める
-		//	g_aClock[nCntPlayer].pos[nCntClock] = g_aClock[nCntPlayer].mainPos;
-		//}
-	}
-
 	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffClock->Lock(0, 0, (void**)&pVtx, 0);
@@ -243,8 +223,11 @@ void UpdateClock(void)
 void DrawClock(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
-	D3DXMATRIX mtxView;		// ビューマトリックスの取得
+	// UIのマトリックス情報を取得
+	D3DXMATRIX UIMatrix;
+
+	// ワールドマトリックスの初期化(デフォルトの値にする)
+	D3DXMatrixIdentity(&UIMatrix);
 
 	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
@@ -263,24 +246,31 @@ void DrawClock(void)
 		{
 			continue;
 		}
+		// UIのマトリックス情報を取得
+		UIMatrix = GetUIMatrix(nCntPlayer);
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &UIMatrix);
 
 		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
 		{
-			// ワールドマトリックスの初期化(デフォルトの値にする)
+			D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
+			D3DXMATRIX	mtxParent;					// 親のマトリックス
+
+			// ポリゴンのワールドマトリックスを初期化
 			D3DXMatrixIdentity(&g_aClock[nCntPlayer].mtxWorld);
 
-			// ビューマトリックスを取得する
-			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+			// パーツの位置を反映
+			D3DXMatrixTranslation(&mtxTransModel, g_aClock[nCntPlayer].pos[nCntClock].x, g_aClock[nCntPlayer].pos[nCntClock].y, g_aClock[nCntPlayer].pos[nCntClock].z);
+			D3DXMatrixMultiply(&g_aClock[nCntPlayer].mtxWorld, &g_aClock[nCntPlayer].mtxWorld, &mtxTransModel);
 
-			// 向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aClock[nCntPlayer].rot.y, g_aClock[nCntPlayer].rot.x, g_aClock[nCntPlayer].rot.z);
-			D3DXMatrixMultiply(&g_aClock[nCntPlayer].mtxWorld, &g_aClock[nCntPlayer].mtxWorld, &mtxRot);
+			// 親マトリックスを設定
+			mtxParent = UIMatrix;
 
-			// 位置を反映
-			D3DXMatrixTranslation(&mtxTrans, g_aClock[nCntPlayer].pos[nCntClock].x, g_aClock[nCntPlayer].pos[nCntClock].y, g_aClock[nCntPlayer].pos[nCntClock].z);
-			D3DXMatrixMultiply(&g_aClock[nCntPlayer].mtxWorld, &g_aClock[nCntPlayer].mtxWorld, &mtxTrans);
+			// 算出したパーツのワールドマトリックスと親モデルのマトリックスを掛け合わせる
+			D3DXMatrixMultiply(&g_aClock[nCntPlayer].mtxWorld, &g_aClock[nCntPlayer].mtxWorld, &mtxParent);
 
-			// ワールドマトリックスの設定
+			// パーツのワールドマトリックスを設定
 			pDevice->SetTransform(D3DTS_WORLD, &g_aClock[nCntPlayer].mtxWorld);
 
 			// 頂点バッファをデータストリームに設定
@@ -290,11 +280,10 @@ void DrawClock(void)
 			pDevice->SetFVF(FVF_VERTEX_3D);
 
 			// テクスチャの設定
-			pDevice->SetTexture(0, g_apTextureClock[nCntClock]);
+			pDevice->SetTexture(0, g_apTextureClock[0]);
 
-			// 時計の描画
+			// UIの描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntClock * 4 + (nCntPlayer * NUM_PLACE * 4), 2);
-
 		}
 	}
 

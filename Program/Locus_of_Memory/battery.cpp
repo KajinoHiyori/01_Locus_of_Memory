@@ -10,10 +10,11 @@
 #include "player.h"
 #include "main.h"
 #include "color.h"
+#include "input.h"
 
 // マクロ定義
 #define NUM_PLACE		(3)				// バッテリーの最大数
-#define NUM_SIZE		(40)			// 数字のサイズ
+#define NUM_SIZE		(7)				// 数字のサイズ
 #define SPELLUI_POSY	(482.0f)		// 左のUIのX軸
 #define LEFT_POS		(D3DXVECTOR3(120.0f, SPELLUI_POSY, 0.0f))		// onscreenの左のUI座標
 #define RIGHT_POS		(D3DXVECTOR3(1160.0f, SPELLUI_POSY, 0.0f))		// onscreenの右のUI座標
@@ -40,11 +41,9 @@ LPDIRECT3DTEXTURE9 g_apTextureBattery[NUM_PLACE] = {};
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffBattery = NULL;
 Battery g_aBattery[MAX_PLAYER];
 
-const char* c_apFilenameBattery[NUM_PLACE] =
+const char* c_apFilenameBattery[1] =
 {
-	"data\\TEXTURE\\Pause\\clock_000.png",
-	"data\\TEXTURE\\Pause\\clock_001.png",
-	"data\\TEXTURE\\Pause\\clock_002.png",
+	"data\\TEXTURE\\number.png",
 };
 
 //======================================================================================
@@ -69,13 +68,11 @@ void InitBattery(void)
 	{
 		for (int nCntBattety = 0; nCntBattety < NUM_PLACE; nCntBattety++)
 		{
-			g_aBattery[nCntPlayer].pos[nCntBattety] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置
+			g_aBattery[nCntPlayer].pos[nCntBattety] = D3DXVECTOR3(nCntBattety * NUM_SIZE - 20.0f, 49.0f, 0.0f);	// 位置
 		}
-		g_aBattery[nCntPlayer].mainPos	= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
-		g_aBattery[nCntPlayer].rot		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
-		g_aBattery[nCntPlayer].col		= COLOR_WHITE;	// 色
+		g_aBattery[nCntPlayer].col = COLOR_WHITE;	// 色
 		g_aBattery[nCntPlayer].nBattery = MAX_BATTERY;	// バッテリー残量
-		g_aBattery[nCntPlayer].bDisp	= false;		// 表示状態
+		g_aBattery[nCntPlayer].bDisp = false;		// 表示状態
 	}
 
 	// 頂点バッファの生成
@@ -89,10 +86,10 @@ void InitBattery(void)
 		for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
 		{
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(-PHONE_WIDTH, PHONE_HEIGHT, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(PHONE_WIDTH, PHONE_HEIGHT, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(-PHONE_WIDTH, -PHONE_HEIGHT, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(PHONE_WIDTH, -PHONE_HEIGHT, 0.0f);
+			pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(NUM_SIZE, 0.0f, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(0.0f, -NUM_SIZE, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(NUM_SIZE, -NUM_SIZE, 0.0f);
 
 			// rhwの設定
 			pVtx[0].nor = NORMAL;
@@ -149,6 +146,9 @@ void UpdateBattery(void)
 {
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
 
+	VERTEX_3D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffBattery->Lock(0, 0, (void**)&pVtx, 0);
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		// バッテリーのテクスチャ位置を更新
@@ -156,22 +156,6 @@ void UpdateBattery(void)
 		aTexU[1] = g_aBattery[nCntPlayer].nBattery % 100 / 10;
 		aTexU[2] = g_aBattery[nCntPlayer].nBattery % 10 / 1;
 
-		// UIの位置や向きに合わせて時計の表示位置を更新
-		g_aBattery[nCntPlayer].mainPos = GetUIPos(nCntPlayer);
-		g_aBattery[nCntPlayer].rot = GetUIRot(nCntPlayer);
-
-		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
-		{
-			// 中心位置からの位置を求める
-			g_aBattery[nCntPlayer].pos[nCntClock] = g_aBattery[nCntPlayer].mainPos;
-		}
-	}
-
-	VERTEX_3D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffBattery->Lock(0, 0, (void**)&pVtx, 0);
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
-	{
 		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++, pVtx += 4)
 		{
 			// 頂点カラーの設定
@@ -197,8 +181,11 @@ void UpdateBattery(void)
 void DrawBattery(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
-	D3DXMATRIX mtxView;		// ビューマトリックスの取得
+	// UIのマトリックス情報を取得
+	D3DXMATRIX UIMatrix;
+
+	// ワールドマトリックスの初期化(デフォルトの値にする)
+	D3DXMatrixIdentity(&UIMatrix);
 
 	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
@@ -217,24 +204,31 @@ void DrawBattery(void)
 		{
 			continue;
 		}
+		// UIのマトリックス情報を取得
+		UIMatrix = GetUIMatrix(nCntPlayer);
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &UIMatrix);
 
 		for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
 		{
-			// ワールドマトリックスの初期化(デフォルトの値にする)
+			D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
+			D3DXMATRIX	mtxParent;					// 親のマトリックス
+
+			// ポリゴンのワールドマトリックスを初期化
 			D3DXMatrixIdentity(&g_aBattery[nCntPlayer].mtxWorld);
 
-			// ビューマトリックスを取得する
-			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+			// パーツの位置を反映
+			D3DXMatrixTranslation(&mtxTransModel, g_aBattery[nCntPlayer].pos[nCntClock].x, g_aBattery[nCntPlayer].pos[nCntClock].y, g_aBattery[nCntPlayer].pos[nCntClock].z);
+			D3DXMatrixMultiply(&g_aBattery[nCntPlayer].mtxWorld, &g_aBattery[nCntPlayer].mtxWorld, &mtxTransModel);
 
-			// 向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aBattery[nCntPlayer].rot.y, g_aBattery[nCntPlayer].rot.x, g_aBattery[nCntPlayer].rot.z);
-			D3DXMatrixMultiply(&g_aBattery[nCntPlayer].mtxWorld, &g_aBattery[nCntPlayer].mtxWorld, &mtxRot);
+			// 親マトリックスを設定
+			mtxParent = UIMatrix;
 
-			// 位置を反映
-			D3DXMatrixTranslation(&mtxTrans, g_aBattery[nCntPlayer].pos[nCntClock].x, g_aBattery[nCntPlayer].pos[nCntClock].y, g_aBattery[nCntPlayer].pos[nCntClock].z);
-			D3DXMatrixMultiply(&g_aBattery[nCntPlayer].mtxWorld, &g_aBattery[nCntPlayer].mtxWorld, &mtxTrans);
+			// 算出したパーツのワールドマトリックスと親モデルのマトリックスを掛け合わせる
+			D3DXMatrixMultiply(&g_aBattery[nCntPlayer].mtxWorld, &g_aBattery[nCntPlayer].mtxWorld, &mtxParent);
 
-			// ワールドマトリックスの設定
+			// パーツのワールドマトリックスを設定
 			pDevice->SetTransform(D3DTS_WORLD, &g_aBattery[nCntPlayer].mtxWorld);
 
 			// 頂点バッファをデータストリームに設定
@@ -244,11 +238,10 @@ void DrawBattery(void)
 			pDevice->SetFVF(FVF_VERTEX_3D);
 
 			// テクスチャの設定
-			pDevice->SetTexture(0, g_apTextureBattery[nCntClock]);
+			pDevice->SetTexture(0, g_apTextureBattery[0]);
 
-			// 時計の描画
+			// UIの描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntClock * 4 + (nCntPlayer * NUM_PLACE * 4), 2);
-
 		}
 	}
 
@@ -265,17 +258,9 @@ void DrawBattery(void)
 }
 
 //======================================================================================
-// バッテリーの設置処理
+// バッテリーの増加処理
 //======================================================================================
-void SetBattery(int nIdx)
-{
-	g_aBattery[nIdx].bDisp = true;
-}
-
-//======================================================================================
-// バッテリーの増減処理
-//======================================================================================
-void ChangeBattery(int nIdx, int nValue)
+void AddBattery(int nIdx, int nValue)
 {
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
 
@@ -285,8 +270,36 @@ void ChangeBattery(int nIdx, int nValue)
 	{
 		g_aBattery[nIdx].nBattery = MAX_BATTERY;
 	}
+
+	aTexU[0] = g_aBattery[nIdx].nBattery % 1000 / 100;
+	aTexU[1] = g_aBattery[nIdx].nBattery % 100 / 10;
+	aTexU[2] = g_aBattery[nIdx].nBattery % 10 / 1;
+
+	VERTEX_3D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffBattery->Lock(0, 0, (void**)&pVtx, 0);
+	for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++, pVtx += 4)
+	{
+		// テクスチャ座標の設定
+		pVtx[0].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f + 0.1f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f, 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(aTexU[nCntBattery] * 0.1f + 0.1f, 1.0f);
+	}
+	// 頂点バッファをアンロック
+	g_pVtxBuffBattery->Unlock();
+}
+
+//======================================================================================
+// バッテリーの減少処理
+//======================================================================================
+void DisBattery(int nIdx, int nValue)
+{
+	int aTexU[NUM_PLACE];	// 各桁の数値を格納
+
+	g_aBattery[nIdx].nBattery -= nValue;
 	// 最低値になったら0に戻る
-	if (g_aBattery[nIdx].nBattery >= MIN_BATTERY)
+	if (g_aBattery[nIdx].nBattery <= MIN_BATTERY)
 	{
 		g_aBattery[nIdx].nBattery = MIN_BATTERY;
 	}
@@ -308,6 +321,14 @@ void ChangeBattery(int nIdx, int nValue)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffBattery->Unlock();
+}
+
+//======================================================================================
+// バッテリーの設置処理
+//======================================================================================
+void SetBattery(int nIdx)
+{
+	g_aBattery[nIdx].bDisp = true;
 }
 
 //======================================================================================
