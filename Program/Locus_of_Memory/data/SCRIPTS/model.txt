@@ -956,6 +956,20 @@ MODELSET
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 5
+	POS = 0 0 -1000
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MAGICEVENTSET
+	POS = 0.0 0.0 -1000.0
+	RADIUS = 500.0
+	EVENT = 1
+END_MAGICEVENTSET
+
 #------------------------------------------------------------------------------
 # ビルボード配置情報
 #------------------------------------------------------------------------------

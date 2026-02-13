@@ -122,7 +122,7 @@ void LoadObjectModel(const char* pModelPath);
 ModelData* SetModelData(PARENTMODELTYPE type);
 void LoadParentModel(const char* pModelPath, int nNumParentModel);
 void LoadParentModelOffSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nIdxModelParent, int nNumParentModel, int nCntParts);
-Object* GetObjectInfo(void);
+Object* GetObjectInfo(int nIdx);
 ObjectModel* GetObjectModel(void);
 void UninitRandomObject(void);
 #endif

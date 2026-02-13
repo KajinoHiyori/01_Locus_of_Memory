@@ -227,7 +227,7 @@ void SetMagicCircle(MAGICTYPE MagicType, D3DXVECTOR3* PosParent)
 		// –‚–@w‚ÌÝ’è
 		pMagicCircle->MagicType = MagicType;
 		pMagicCircle->PosParent = PosParent;
-		pMagicCircle->nLife = 600;
+		pMagicCircle->nLife = 300;
 		pMagicCircle->bUse = true;
 		break;
 	}

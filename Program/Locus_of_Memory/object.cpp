@@ -395,9 +395,9 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 //======================================================================================
 // オブジェクトの情報を渡す
 //======================================================================================
-Object* GetObjectInfo(void)
+Object* GetObjectInfo(int nIdx)
 {
-	return &g_aObject[0];
+	return &g_aObject[nIdx];
 }
 
 //======================================================================================

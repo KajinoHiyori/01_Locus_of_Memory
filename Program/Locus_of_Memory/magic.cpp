@@ -41,7 +41,7 @@ void InitMagic(void)
 
 	memset(pCounter, NULL, sizeof(MagicCounter) * MAX_PLAYER);
 	memset(&g_aCntCommand[0], NULL, sizeof(int) * MAX_PLAYER);
-	memset(pMagicLocus, NULL, sizeof(MagicLocus) * MAX_MAGICLOCUS);
+	//memset(pMagicLocus, NULL, sizeof(MagicLocus) * MAX_MAGICLOCUS);
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
@@ -81,7 +81,6 @@ void InitMagic(void)
 	SetMagicPosition(COMMANDOREDER_YYY, D3DXVECTOR3(0.0f, 0.0f, 300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
 	SetMagicPosition(COMMANDOREDER_RGB, D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
 
-	SetMagicLocus(MAGICEVENT_001, INIT_D3DXVEC3, 300.0f, 0);
 }
 
 //–‚–@‚ÌI—¹ˆ—==============================
@@ -446,7 +445,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			g_aMagic[nIdx][nCntMagic].bUse = true;
 			SetSpellUI(g_aMagic[nIdx][nCntMagic].mType, nIdx, DISP_MAGIC);
 
-			CollisionMagicLocus(type, pos, 100.0f, nIdx);
+			CollisionMagicLocus(type, pos, 25.0f, nIdx);
 			SetMagicCircle(type, &pPlayer->pos);
 
 			switch (type)

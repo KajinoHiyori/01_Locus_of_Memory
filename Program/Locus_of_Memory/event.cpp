@@ -6,6 +6,8 @@
 //=============================================================================
 
 #include "event.h"
+#include "object.h"
+#include "particle.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -54,7 +56,7 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 		return true;
 
 	case MAGICTYPE_COMBUSTION:
-
+		SetParticle(GetObjectInfo(nIdx)->pos, 300, PARTICLETYPE_COMBUSTION);
 		return true;
 
 	default:

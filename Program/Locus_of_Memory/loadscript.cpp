@@ -642,11 +642,11 @@ HRESULT LoadModel(const char* pModelFileName)
 					if (Parenttype != -1)
 					{
 						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype);
-						nCntModel++;
 					}
 					else
 					{
 						SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
+						nCntModel++;
 					}
 					
 					Parenttype = -1;
@@ -676,7 +676,19 @@ HRESULT LoadModel(const char* pModelFileName)
 					continue;
 				}
 
-				if (strstr(aStr, LOAD_EVENT))
+				if (strstr(aStr, LOAD_RADIUS))
+				{// RADIUSÇì«Ç›çûÇÒÇæ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f", &fRadius);
+
+					continue;
+				}
+
+				if (strncmp(aStrCpy, LOAD_EVENT, sizeof(LOAD_EVENT + 1)) == 0)
 				{// EVENTÇì«Ç›çûÇÒÇæ
 					if ((pStart = strchr(aStr, '=')) == NULL)
 					{
@@ -699,7 +711,6 @@ HRESULT LoadModel(const char* pModelFileName)
 		if (strcmp(aStrCpy, LOAD_END) == 0)
 		{// END_SCRIPTÇì«Ç›çûÇÒÇæ
 			fclose(pStageFile);
-
 			break;
 		}
 	}
