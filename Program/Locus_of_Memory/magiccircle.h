@@ -26,6 +26,7 @@ typedef struct
 	D3DXVECTOR3 rot;							// 向き
 	MAGICTYPE MagicType;						// 魔法の種類
 	D3DXMATRIX mtxWorld;						// ワールドマトリックス
+	D3DXMATRIX *mtxParent;						// 親のマトリックス
 	bool bUse;									// 使用状態
 }MagicCircle;
 
@@ -36,7 +37,7 @@ void InitMagicCircle(void);
 void UninitMagicCircle(void);
 void UpdateMagicCircle(void);
 void DrawMagicCircle(void);
-void SetMagicCircle(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MAGICTYPE MagicType);
+void SetMagicCircle(MAGICTYPE MagicType, D3DXMATRIX *mtxParent);
 void SetPositionMagicCircle(int IdxMagicCircle, D3DXVECTOR3 pos);
 
 #endif

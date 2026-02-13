@@ -31,7 +31,7 @@ void InitMagicCircle(void)
 
 	for (int nCntMagicCircle = 0; nCntMagicCircle < MAX_MAGICCIRCLE; nCntMagicCircle++)
 	{
-		g_amagiccircle[nCntMagicCircle].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_amagiccircle[nCntMagicCircle].pos = D3DXVECTOR3(0.0f, 10.0f, 500.0f);
 		g_amagiccircle[nCntMagicCircle].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		g_amagiccircle[nCntMagicCircle].bUse = false;
 	}
@@ -53,10 +53,10 @@ void InitMagicCircle(void)
 	for (int nCntMagicCircle = 0; nCntMagicCircle < MAX_MAGICCIRCLE; nCntMagicCircle++)
 	{
 		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(MAGICCIRCLE_RADIUS, MAGICCIRCLE_RADIUS, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(-MAGICCIRCLE_RADIUS, MAGICCIRCLE_RADIUS, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(MAGICCIRCLE_RADIUS, -MAGICCIRCLE_RADIUS, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(-MAGICCIRCLE_RADIUS, -MAGICCIRCLE_RADIUS, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-MAGICCIRCLE_RADIUS, 0.0f, MAGICCIRCLE_RADIUS);
+		pVtx[1].pos = D3DXVECTOR3(MAGICCIRCLE_RADIUS, 0.0f, MAGICCIRCLE_RADIUS);
+		pVtx[2].pos = D3DXVECTOR3(-MAGICCIRCLE_RADIUS, 0.0f, -MAGICCIRCLE_RADIUS);
+		pVtx[3].pos = D3DXVECTOR3(MAGICCIRCLE_RADIUS, 0.0f, -MAGICCIRCLE_RADIUS);
 
 		// 法線ベクトルの設定
 		pVtx[0].nor = NORMAL_PLANE;
@@ -107,6 +107,11 @@ void DrawMagicCircle(void)
 
 	for (int nCntMagicCircle = 0; nCntMagicCircle < MAX_MAGICCIRCLE; nCntMagicCircle++, pMagicCircle++)
 	{
+		if (pMagicCircle->bUse == false)
+		{
+			continue;
+		}
+
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&pMagicCircle->mtxWorld);
 
@@ -117,6 +122,8 @@ void DrawMagicCircle(void)
 		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, pMagicCircle->pos.x, pMagicCircle->pos.y, pMagicCircle->pos.z);
 		D3DXMatrixMultiply(&pMagicCircle->mtxWorld, &pMagicCircle->mtxWorld, &mtxTrans);
+
+		D3DXMatrixMultiply(&pMagicCircle->mtxWorld, &pMagicCircle->mtxWorld, pMagicCircle->mtxParent);
 
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &pMagicCircle->mtxWorld);
@@ -130,11 +137,8 @@ void DrawMagicCircle(void)
 		// テクスチャの設定
 		pDevice->SetTexture(0, GetSpellTexture((SPELLUI_TEX)pMagicCircle->MagicType));
 
-		if (pMagicCircle->bUse == true)
-		{
-			// 魔法陣の描画
-			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntMagicCircle * 4, 2);
-		}
+		// 魔法陣の描画
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntMagicCircle * 4, 2);
 	}
 }
 
@@ -149,7 +153,7 @@ void UpdateMagicCircle(void)
 //=============================================================================
 //	魔法陣の設定処理
 //=============================================================================
-void SetMagicCircle(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MAGICTYPE MagicType)
+void SetMagicCircle(MAGICTYPE MagicType, D3DXMATRIX* mtxParent)
 {
 	MagicCircle* pMagicCircle = &g_amagiccircle[0];
 
@@ -161,9 +165,8 @@ void SetMagicCircle(D3DXVECTOR3 pos, D3DXVECTOR3 rot, MAGICTYPE MagicType)
 		}
 
 		// 魔法陣の設定
-		pMagicCircle->pos = pos;
-		pMagicCircle->rot = rot;
 		pMagicCircle->MagicType = MagicType;
+		pMagicCircle->mtxParent = mtxParent;
 		pMagicCircle->bUse = true;
 		break;
 	}
