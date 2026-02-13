@@ -468,8 +468,6 @@ void UpdateUIManager(void)
 		g_aUIManager[nCntPlayer].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.y - 0.875f) * UI_DISTANCEX;
 		g_aUIManager[nCntPlayer].pos.z = pPlayer->pos.z + cosf(pPlayer->rot.y - 0.875f) * UI_DISTANCEZ;
 
-		PrintDebugProc("UI %d : (%f, %f, %f)", nCntPlayer, g_aUIManager[nCntPlayer].pos.x, g_aUIManager[nCntPlayer].pos.y, g_aUIManager[nCntPlayer].pos.z);
-
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pVtx += 4)
 		{
 			// オフセット情報の初期化

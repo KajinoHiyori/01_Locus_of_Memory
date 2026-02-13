@@ -196,7 +196,6 @@ void UpdateClock(void)
 		}
 	}
 	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
-	PrintDebugProc("Œ»İ : %d\n", g_time.nTime);
 
 	int aTexU[NUM_PLACE];	// ŠeŒ…‚Ì”’l‚ğŠi”[
 	aTexU[0] = g_time.nTime % 10000 / 1000;
