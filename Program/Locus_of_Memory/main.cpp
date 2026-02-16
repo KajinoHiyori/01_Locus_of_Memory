@@ -988,3 +988,61 @@ void ToggleFullscreen(HWND hWnd)
 
 	g_isFullscreen = !g_isFullscreen;
 }
+
+//==================================================================================
+//	テクスチャステージステートのアルファの設定
+//==================================================================================
+void SetTextureStageStateAlpha(int nIdx, DWORD Stage, D3DTEXTURESTAGESTATETYPE Type, DWORD Value)
+{
+	// テクスチャステージステートの設定
+	g_pD3DDevice->SetTextureStageState(nIdx, D3DTSS_ALPHAARG1, Stage);
+	g_pD3DDevice->SetTextureStageState(nIdx, D3DTSS_ALPHAOP, Type);
+	g_pD3DDevice->SetTextureStageState(nIdx, D3DTSS_ALPHAARG2, Value);
+}
+
+//==================================================================================
+//	テクスチャステージステートのアルファのリセット
+//==================================================================================
+void ResetTextureStageStateAlpha(int nNumIdx)
+{
+	// テクスチャステージステートの設定
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+
+	for (int nCntIdx = 1; nCntIdx < nNumIdx; nCntIdx++)
+	{
+		g_pD3DDevice->SetTextureStageState(nCntIdx, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+		g_pD3DDevice->SetTextureStageState(nCntIdx, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+		g_pD3DDevice->SetTextureStageState(nCntIdx, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+	}
+}
+
+//==================================================================================
+//	テクスチャステージステートのカラーの設定
+//==================================================================================
+void SetTextureStageStateColor(int nIdx, DWORD Stage, D3DTEXTURESTAGESTATETYPE Type, DWORD Value)
+{
+	// テクスチャステージステートの設定
+	g_pD3DDevice->SetTextureStageState(nIdx, D3DTSS_COLORARG1, Stage);
+	g_pD3DDevice->SetTextureStageState(nIdx, D3DTSS_COLOROP, Type);
+	g_pD3DDevice->SetTextureStageState(nIdx, D3DTSS_COLORARG2, Value);
+}
+
+//==================================================================================
+//	テクスチャステージステートのカラーのリセット
+//==================================================================================
+void ResetTextureStageStateColor(int nNumIdx)
+{
+	// テクスチャステージステートの設定
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+	g_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
+
+	for (int nCntIdx = 1; nCntIdx < nNumIdx; nCntIdx++)
+	{
+		g_pD3DDevice->SetTextureStageState(nCntIdx, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		g_pD3DDevice->SetTextureStageState(nCntIdx, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		g_pD3DDevice->SetTextureStageState(nCntIdx, D3DTSS_COLORARG2, D3DTA_CURRENT);
+	}
+}
