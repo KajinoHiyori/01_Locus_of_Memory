@@ -10,6 +10,7 @@
 #include "player.h"
 #include "motion.h"
 #include "magic.h"
+#include "custommesh.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -30,7 +31,7 @@
 #define LOAD_ENDMOTIONINFO	"END_MOTIONSET"				// モーション情報読み込み終了
 #define LOAD_NUMMODEL		"NUM_MODEL"					// モデル数読み込み
 #define LOAD_MODEL			"MODEL_FILENAME"			// モデルファイル名読み込み
-#define LOAD_MESH			"MESH_FILENAME"				// メッシュファイル名読み込み
+#define LOAD_CUSTOMMESHFILE	"CUSTOMMESH_FILENAME"		// カスタムメッシュファイル名読み込み
 #define LOAD_ITEM			"ITEM_FILENAME"				// アイテムファイル名読み込み
 #define LOAD_MOTIONLOOP		"LOOP"						// ループモーションか読み込み
 #define LOAD_NUMKEY			"NUM_KEY"					// キー数読み込み
@@ -56,6 +57,8 @@
 #define LOAD_ENDMAGICEVENT	"END_MAGICEVENTSET"			// 魔法使用可能範囲とイベント情報読み込み終了
 #define LOAD_DROPMAGIC		"DROPMAGICSET"				// フィールド上魔法の情報読み込み
 #define LOAD_ENDDROPMAGIC	"END_DROPMAGICSET"			// フィールド上魔法の情報読み込み終了
+#define LOAD_CUSTOMMESH		"CUSTOMMESHSET"				// カスタムメッシュの情報読み込み
+#define LOAD_ENDCUSTOMMESH	"END_CUSTOMMESHSET"			// カスタムメッシュの情報読み込み終了
 
 //*****************************************************************************
 // グローバル変数
@@ -650,6 +653,72 @@ HRESULT LoadModel(const char* pModelFileName)
 					}
 					
 					Parenttype = -1;
+					break;
+				}
+			}
+		}
+
+		if (strcmp(aStrCpy, LOAD_CUSTOMMESH) == 0)
+		{// CUSTOMMESHSETを読み込んだ
+			while (true)
+			{
+				memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+				memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+				(void)fgets(aStr, sizeof(aStr), pStageFile);	// 一列読み込み
+				LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+
+				if (strstr(aStr, LOAD_CUSTOMMESHFILE))
+				{// CUSTOMMESH_FILENAMEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%s", &aMeshPath);
+
+				}
+
+				if (strstr(aStr, LOAD_POS))
+				{// POSを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+
+					continue;
+				}
+
+				if (strstr(aStr, LOAD_ROT))
+				{// ROTを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
+
+					continue;
+				}
+
+				if (strncmp(aStrCpy, LOAD_TYPE, sizeof(LOAD_TYPE + 1)) == 0)
+				{// TYPEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &type);
+
+					continue;
+				}
+
+				if (strcmp(aStrCpy, LOAD_ENDCUSTOMMESH) == 0)
+				{// END_CUSTOMMESHSETを読み込んだ
+					LoadCustomMesh(aMeshPath, pos, rot);
+
+					memset(aMeshPath, NULL, sizeof(aMeshPath));		// 文字列クリア
 					break;
 				}
 			}

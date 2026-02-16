@@ -25,6 +25,7 @@
 //#include"wall.h"
 //#include"field.h"
 #include"meshfield.h"
+#include "custommesh.h"
 #include "vibration.h"
 //#include"mashwall.h"
 //#include"meshsky.h"
@@ -171,6 +172,8 @@ void UpdateTutorial(void)
 
 		UpdateMeshField();
 
+		UpdateCustomMesh();
+
 		//UpdateMashwall();
 
 		//UpdateBullet();
@@ -260,6 +263,8 @@ void DrawTutorial(void)
 	//DrawMeshsky();
 
 	DrawMeshField();
+
+	DrawCustomMesh();
 
 	// –‚–@‚Ì•`‰æˆ—
 	DrawMagic();

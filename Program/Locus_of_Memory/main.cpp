@@ -31,6 +31,7 @@
 #include "motion.h"
 #include "shadow.h"
 #include "meshfield.h"
+#include "custommesh.h"
 #include "vibration.h"
 
 //*****************************************************************************
@@ -367,6 +368,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メッシュフィールドの初期化処理
 	InitMeshField();
 
+	// カスタムメッシュの初期化処理
+	InitCustomMesh();
+
 	// 影の初期化処理
 	InitShadow();
 
@@ -424,6 +428,9 @@ void Uninit(void)
 
 	// メッシュフィールドの終了処理
 	UninitMeshField();
+
+	// カスタムメッシュの終了処理
+	UninitCustomMesh();
 
 	// 影の終了処理
 	UninitShadow();
