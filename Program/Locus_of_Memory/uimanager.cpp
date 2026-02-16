@@ -84,8 +84,7 @@ UIManager g_aUIManager[MAX_PLAYER];
 //========================================================================
 void InitUIManager(void)
 {
-	//#if 0
-		// デバイスの取得
+	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// 操作人数の取得
@@ -143,27 +142,6 @@ void InitUIManager(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-#if 0
-		switch (operationType)
-		{
-		case OPERATIONTYPE_2P:	// 2人操作
-			if (nCntPlayer == 0)
-			{
-			}
-			break;
-		default:	// 1人操作
-			if (nCntPlayer == 0)
-			{
-				g_aUIManager[nCntPlayer].bPause = true;
-			}
-			else
-			{
-				pVtx += MAXUI_TEX * 4;
-				continue;
-			}
-			break;
-		}
-#endif
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pVtx += 4)
 		{
 			// 各種情報の設定
@@ -277,7 +255,6 @@ void InitUIManager(void)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffUIManager->Unlock();
-	//#endif
 }
 
 //========================================================================
@@ -285,8 +262,7 @@ void InitUIManager(void)
 //========================================================================
 void UninitUIManager(void)
 {
-	//#if 0
-		// テクスチャの破棄
+	// テクスチャの破棄
 	for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 	{
 		if (g_apTextureUIManager[nCntUI] != NULL)

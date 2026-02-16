@@ -12,78 +12,81 @@
 #include "title.h"
 #include "fog.h"
 #include "debugproc.h"
+#include "camera.h"
 
 // マクロ定義
 #define MAX_COMMAND			(3)					// 受け付けるコマンドの最大数
-#define MAX_SPELLTEX		(SPELLUI_TEX_MAX)	// テクスチャの最大数
-#define MAX_SPELLTYPE		(SPELLUI_TYPE_MAX)	// 表示されるUIの種類
-#define INERTIA				(0.1f)				// UI出現の慣性
-#define FRAME				(20)				// 出現/退出を管理するフレーム数
-#define SPELLUI_POSY		(482.0f)			// 左のUIのX軸
-#define LEFT_OUTPOS			(D3DXVECTOR3(-PHONE_WIDTH, SPELLUI_POSY, 0.0f))					// offscreenの左のUI座標
-#define RIGHT_OUTPOS		(D3DXVECTOR3(SCREEN_WIDTH + PHONE_WIDTH, SPELLUI_POSY, 0.0f))	// offscreenの右のUI座標
-#define LEFT_POS			(D3DXVECTOR3(120.0f, SPELLUI_POSY, 0.0f))						// onscreenの左のUI座標
-#define RIGHT_POS			(D3DXVECTOR3(1160.0f, SPELLUI_POSY, 0.0f))						// onscreenの右のUI座標
-#define COMMMAND_Y			(-60.0f)		// コマンド結果の高度
-#define COMMMAND_SIZE		(25.0f)			// コマンドボタンの大きさ
-#define MAGIC_SIZE			(60.0f)			// 発動魔法の大きさ
-#define BUTTON_SIZE			(15.0f)			// 操作キー表示の大きさ
-#define SPELL_WIDTH			(PHONE_WIDTH)	// spellメニューの幅
-#define SPELL_HEIGHT		(24.0f)			// spellメニューの高さ
-#define SPELL_Y				(-170.0f)		// spellメニューの高度
-#define MAGIC_Y				(-65.0f)		// magicの種類の高度
-#define PHONE_WIDTH			(108.0f)		// スマホの幅
-#define PHONE_HEIGHT		(228.0f)		// スマホの高さ
-#define COMMMAND_DIGIT		(75.0f)			// コマンドの表示幅
-#define COMMMAND_OPDIGIT	(85.0f)			// コマンドの表示幅
-#define RBCOMMAND_Y			(110.0f)		// RBコマンドの高度
-#define YCOMMAND_Y			(RBCOMMAND_Y - COMMMAND_OPDIGIT)	// Yコマンドの高度
-#define GCOMMAND_Y			(RBCOMMAND_Y + COMMMAND_OPDIGIT)	// Gコマンドの高度
-#define RB_OPTYPE_X			(COMMMAND_OPDIGIT - 55.0f)		// RB操作コマンドの高度
-#define Y_OPTYPE_Y			(YCOMMAND_Y + 55.0f)			// Y操作コマンドの高度
-#define G_OPTYPE_Y			(GCOMMAND_Y - 55.0f)			// G操作コマンドの高度
+#define NUM_KEY				(30)				// 処理を行うキー数
+#define DISP_MAGIC			(30)				// 魔法を表示している時間
+#define COMMAND_SIZE		(8.0f)				// コマンドのサイズ
+#define COMMAND_X			(15.0f)				// コマンドのX軸
+#define COMMAND_Y			(55.0f)				// コマンドの高度
+#define MAXSPELL_TEX		(SPELLUI_TEX_MAX)	// テクスチャの最大数
+#define MAXSPELL_TYPE		(SPELLUI_TYPE_MAX)	// 配置の最大数
+#define MAGIC_SIZE			(6.0f)				// 魔法の大きさ
+#define MAGICY_Y			(40.0f)			// 黄魔法の高度
+#define MAGICG_Y			(20.0f)			// 緑魔法の高度
+#define MAGICRB_Y			(20.0f)			// 赤青魔法の高度
+#define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 
-// SPELLUIの構造体
-typedef struct
-{
-	SPELLUI_TYPE	type;		// 表示されるUIの場所を管理
-	SPELLUI_TEX		tex;		// 使用されるテクスチャの種類を管理
-	D3DXVECTOR3		pos;		// 位置
-	float			fWidth;		// 幅
-	float			fHeight;	// 高さ
-	bool			bDisp;		// 表示状態
-}SPELLUI;
 
 // SPELLUIの出現状態を管理
 typedef enum
 {
-	SPELLUISTATE_NONE = -1,	// 何もしていない状態
-	SPELLUISTATE_ONSCREEN,	// 画面内
-	SPELLUISTATE_APPEAR,	// 出現状態
-	SPELLUISTATE_DISAPPEAR,	// はける状態
-	SPELLUISTATE_OFFSCREEN,	// 画面外
+	SPELLUISTATE_NONDISPLAY = 0,	// 非表示
+	SPELLUISTATE_APPEAR,			// 出現
+	SPELLUISTATE_DISPLAY,			// 表示
+	SPELLUISTATE_SETMAGIC,			// 魔法発動状態
+	SPELLUISTATE_DISAPPEAR,			// 収縮
 }SPELLUISTATE;
+
+// SPELLUIの浮遊感を演出
+typedef enum
+{ 
+	SPELLUI_MOVE_STOP = 0,	// 静止
+	SPELLUI_MOVE_UP,		// 上昇
+	SPELLUI_MOVE_DOWN,		// 下降
+	SPELLUI_MOVE_MAX
+}SPELLUI_MOVE;
+
+// SPELLUIの構造体
+typedef struct
+{
+	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
+	D3DXVECTOR3		pos;		// 位置
+	SPELLUI_TEX		tex;		// 使用されるテクスチャの種類を管理
+	SPELLUI_TYPE	type;		// 表示されるUIの場所を管理
+	SPELLUI_MOVE	move;		// 浮遊感
+	float	fWidth;			// 幅
+	float	fWidthDest;		// 幅の目的値
+	float	fHeight;		// 高さ
+	float	fHeightDest;	// 高さの目的値
+	int		nNumKey;		// 浮遊感をカウントするキー数
+	int		nKey;			// 現在のキー数
+	bool	bDisp;			// 表示状態
+}SPELLUI;
 
 // SPELLUIの全体管理
 typedef struct
 {
-	SPELLUISTATE state;					// 出現状態
-	SPELLUI g_SpellUI[MAX_SPELLTEX];	// UIの種類ごとの表示管理
-	D3DXVECTOR3 pos;					// 中心位置
-	D3DXVECTOR3 posDest;				// 目的の向き
-	int nFrame;							// 現在のフレーム数
-	int nNumFrame;						// 移動にかかるフレーム数
-	int nCounterUI;						// magicの種類を表示する時間
-	bool bDisp;							// 全体の表示管理
+	SPELLUI aSpellUI[MAXSPELL_TYPE];	// UIの種類ごとの表示管理
+	D3DXVECTOR3		pos;		// 中心位置
+	D3DXVECTOR3		rot;		// 向き
+	SPELLUISTATE	state;		// 出現状態
+	SPELLUI_TEX		magicType;	// 魔法の種類
+	int		nNumKey;			// 移動にかかるフレーム数
+	int		nKey;				// 現在のフレーム数
+	int		nCounterUI;			// magicの種類を表示する時間
+	bool	bSpell;				// 全体の表示管理
 }SpellUI;
 
 // グローバル変数
-LPDIRECT3DTEXTURE9	g_apTextureSpellUI[MAX_SPELLTEX] = {};	// テクスチャへのポインタ
+LPDIRECT3DTEXTURE9	g_apTextureSpellUI[MAXSPELL_TEX] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffSpellUI = NULL;			// 頂点バッファへのポインタ
 SpellUI g_aSpellUI[MAX_PLAYER];		// SPELLUIの全体管理
 
 // テクスチャの読み込み
-const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
+const char* c_apFilenameSpellUI[MAXSPELL_TEX] =
 {
 	"data\\TEXTURE\\SpellUI\\00_MagicNull.png",
 	"data\\TEXTURE\\SpellUI\\01_Red.png",
@@ -110,8 +113,6 @@ const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
 	"data\\TEXTURE\\SpellUI\\22_Grouth.png",
 	"data\\TEXTURE\\SpellUI\\23_Acceleration.png",
 	"data\\TEXTURE\\SpellUI\\24_TimeRevert.png",
-	"data\\TEXTURE\\SpellUI\\25_Spell.png",
-	"data\\TEXTURE\\SpellUI\\26_Phone.png",
 };
 
 //======================================================================================
@@ -119,117 +120,226 @@ const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
 //======================================================================================
 void InitSpellUI(void)
 {
-	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
-	pDevice = GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// UI情報の初期化
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
-	{
-		for (int nCntUI = 0; nCntUI < MAX_SPELLTEX; nCntUI++)
-		{
-			g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].tex		= SPELLUI_TEX_MAGICNULL;			// テクスチャの初期化
-			g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].type		= SPELLUI_TYPE_COMMAND0;			// UIの種類の初期化
-			g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
-			g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fWidth	= 0.0f;									// 幅の初期化
-			g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fHeight	= 0.0f;								// 高さの初期化
-			g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].bDisp		= false;							// 表示状態の初期化
-		}
-		g_aSpellUI[nCntPlayer].state = SPELLUISTATE_OFFSCREEN;		// 画面外にある
-		g_aSpellUI[nCntPlayer].bDisp = false;						// 全体の表示状態の初期化
-		g_aSpellUI[nCntPlayer].nCounterUI = 0;						// 発動魔法の初期化
-		g_aSpellUI[nCntPlayer].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
-		g_aSpellUI[nCntPlayer].nFrame = 0;							// 現在のフレームを初期化
-		g_aSpellUI[nCntPlayer].nNumFrame = FRAME;					// 出現の管理を行うフレーム数
-	}
-
-	// テクスチャの読み込み
-	for (int nCntSpellUI = 0; nCntSpellUI < MAX_SPELLTEX; nCntSpellUI++)
-	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameSpellUI[nCntSpellUI], &g_apTextureSpellUI[nCntSpellUI]);
-	}
-
-	// 操作方法の状態を取得
+	// 操作人数の取得
 	OPERATIONTYPE operationType = GetOperationType();
 
+	// プレイヤーの情報を取得
+	Player* pPlayer = GetPlayer();
+
+	// カメラ状態の取得
+	Camera* pCamera = GetCamera();
+	float fRotXCamera[MAX_CAMERA] = { 0.0f, 0.0f };
+	float fRotYCamera[MAX_CAMERA] = { 0.0f, 0.0f };
+	for (int nCntCamera = 0; nCntCamera < MAX_CAMERA; nCntCamera++)
+	{
+		fRotXCamera[nCntCamera] = pCamera[nCntCamera].rot.x;
+		fRotYCamera[nCntCamera] = pCamera[nCntCamera].rot.y;
+	}
+	// テクスチャの読み込み
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TEX; nCntUI++)
+	{
+		D3DXCreateTextureFromFile(pDevice, c_apFilenameSpellUI[nCntUI], &g_apTextureSpellUI[nCntUI]);
+	}
+
+	// 初期化
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+		{
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos		= D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex		= SPELLUI_TEX_MAGICNULL;			// テクスチャの種類
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].type	= SPELLUI_TYPE_COMMAND0;			// テクスチャの配置
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move	= SPELLUI_MOVE_STOP;				// UIの浮遊感
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth		= 0.0f;		// 幅
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight		= 0.0f;		// 高さ
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidthDest	= 0.0f;		// 幅の目的地
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest = 0.0f;		// 高さの目的地
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].nNumKey		= NUM_KEY;	// 浮遊感を演出
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp		= true;		// 表示状態
+		}
+		g_aSpellUI[nCntPlayer].pos = D3DXVECTOR3(0.0f, 0.0f, -40.0f);	// 中心位置
+		g_aSpellUI[nCntPlayer].rot = D3DXVECTOR3(0.0f, 3.14f, 0.0f);	// 中心位置
+		g_aSpellUI[nCntPlayer].magicType = SPELLUI_TEX_NONE;		// 発動中の魔法を格納
+		g_aSpellUI[nCntPlayer].state = SPELLUISTATE_DISPLAY;	// UIの表示状態
+		g_aSpellUI[nCntPlayer].nNumKey		= NUM_KEY;			// 処理を行うキー数
+		g_aSpellUI[nCntPlayer].nKey			= 0;				// 現在のキー
+		g_aSpellUI[nCntPlayer].nCounterUI	= DISP_MAGIC;		// 魔法の表示時間
+		g_aSpellUI[nCntPlayer].bSpell		= false;			// UI表示状態(trueでポーズ中)
+	}
+
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * MAX_SPELLTYPE * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffSpellUI, NULL);
-	VERTEX_2D* pVtx;
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * MAXSPELL_TYPE * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffSpellUI, NULL);
+
+	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffSpellUI->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		switch (operationType)	// 操作人数に応じてUIの位置を変更
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++, pVtx += 4)
 		{
-		case OPERATIONTYPE_2P:	// 2人操作
-			switch (nCntPlayer)
+			// 各種情報の設定
+			switch (nCntUI)
 			{
-			case 0:
-				g_aSpellUI[nCntPlayer].pos		= LEFT_OUTPOS;
-				g_aSpellUI[nCntPlayer].posDest	= LEFT_OUTPOS;
-				g_aSpellUI[nCntPlayer].bDisp	= true;
-
+			case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos		= D3DXVECTOR3(-COMMAND_X, COMMAND_Y, 0.0f);	// 中心位置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex		= SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].type	= SPELLUI_TYPE_COMMAND0;	// テクスチャの配置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move	= SPELLUI_MOVE_STOP;		// UIの浮遊感
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth	= COMMAND_SIZE;				// 幅
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight = COMMAND_SIZE;				// 高さ
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidthDest	= 0.0f;					// 幅の目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest = 0.0f;					// 高さの目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].nNumKey = NUM_KEY;					// 浮遊感を演出
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp	= true;						// 表示状態
 				break;
-			case 1:
-				g_aSpellUI[nCntPlayer].pos		= RIGHT_OUTPOS;
-				g_aSpellUI[nCntPlayer].pos		= RIGHT_OUTPOS;
-				g_aSpellUI[nCntPlayer].bDisp	= true;
 
+			case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos		= D3DXVECTOR3(0.0f, COMMAND_Y, 0.0f);	// 中心位置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex		= SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].type	= SPELLUI_TYPE_COMMAND1;	// テクスチャの配置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move	= SPELLUI_MOVE_STOP;		// UIの浮遊感
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth	= COMMAND_SIZE;				// 幅
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight = COMMAND_SIZE;				// 高さ
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidthDest	= 0.0f;					// 幅の目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest = 0.0f;					// 高さの目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].nNumKey = NUM_KEY;					// 浮遊感を演出
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp	= true;						// 表示状態
 				break;
-			}	
-			break;
 
-		default:	// 1人操作
-			if (nCntPlayer > 0)
-			{
-				pVtx += MAX_SPELLTYPE * 4;
-				continue;
+			case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos		= D3DXVECTOR3(COMMAND_X, COMMAND_Y, 0.0f);	// 中心位置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex		= SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].type	= SPELLUI_TYPE_COMMAND2;	// テクスチャの配置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move	= SPELLUI_MOVE_STOP;		// UIの浮遊感
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth	= COMMAND_SIZE;				// 幅
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight = COMMAND_SIZE;				// 高さ
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidthDest	= 0.0f;					// 幅の目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest = 0.0f;					// 高さの目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].nNumKey = NUM_KEY;					// 浮遊感を演出
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp	= true;						// 表示状態
+				break;
+
+			case SPELLUI_TYPE_RED:	// 赤魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos = D3DXVECTOR3(COMMAND_X, MAGICRB_Y, 0.0f);	// 中心位置
+				// テクスチャの種類
+				if (operationType == OPERATIONTYPE_KEYBOARD)
+				{ // キーボード操作
+					g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_L;
+				}
+				else
+				{ // ジョイパッド操作
+					g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_B;
+				}
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].type	= SPELLUI_TYPE_RED;	// テクスチャの配置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move	= SPELLUI_MOVE_STOP;		// UIの浮遊感
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth	= MAGIC_SIZE;				// 幅
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight = MAGIC_SIZE;				// 高さ
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidthDest = 0.0f;					// 幅の目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest = 0.0f;					// 高さの目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].nNumKey = NUM_KEY;					// 浮遊感を演出
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp = true;						// 表示状態
+				break;
+
+			case SPELLUI_TYPE_GREEN:	// 緑魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos = D3DXVECTOR3(0.0f, MAGICG_Y, 0.0f);	// 中心位置
+				// テクスチャの種類
+				if (operationType == OPERATIONTYPE_KEYBOARD)
+				{ // キーボード操作
+					g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_K;
+				}
+				else
+				{ // ジョイパッド操作
+					g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_A;
+				}
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].type	= SPELLUI_TYPE_GREEN;	// テクスチャの配置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move	= SPELLUI_MOVE_STOP;		// UIの浮遊感
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth	= MAGIC_SIZE;				// 幅
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight = MAGIC_SIZE;				// 高さ
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidthDest	= 0.0f;					// 幅の目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest = 0.0f;					// 高さの目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].nNumKey = NUM_KEY;					// 浮遊感を演出
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp	= true;						// 表示状態
+				break;
+
+			case SPELLUI_TYPE_BLUE:	// 青魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos = D3DXVECTOR3(-COMMAND_X, MAGICRB_Y, 0.0f);	// 中心位置
+				// テクスチャの種類
+				if (operationType == OPERATIONTYPE_KEYBOARD)
+				{ // キーボード操作
+					g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_J;
+				}
+				else
+				{ // ジョイパッド操作
+					g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_X;
+				}
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].type = SPELLUI_TYPE_BLUE;	// テクスチャの配置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;	// UIの浮遊感
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth	= MAGIC_SIZE;				// 幅
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight = MAGIC_SIZE;				// 高さ
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidthDest	= 0.0f;					// 幅の目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest = 0.0f;					// 高さの目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].nNumKey = NUM_KEY;					// 浮遊感を演出
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp	= true;						// 表示状態
+				break;
+
+			case SPELLUI_TYPE_YELLOW:	// 黄魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos = D3DXVECTOR3(0.0f, MAGICY_Y, 0.0f);	// 中心位置
+				// テクスチャの種類
+				if (operationType == OPERATIONTYPE_KEYBOARD)
+				{ // キーボード操作
+					g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_I;
+				}
+				else
+				{ // ジョイパッド操作
+					g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_Y;
+				}
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].type = SPELLUI_TYPE_YELLOW;	// テクスチャの配置
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;	// UIの浮遊感
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;		// 幅
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight = MAGIC_SIZE;		// 高さ
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidthDest = 0.0f;			// 幅の目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest = 0.0f;			// 高さの目的地
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].nNumKey = NUM_KEY;			// 浮遊感を演出
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp = true;				// 表示状態
+				break;
 			}
-			g_aSpellUI[nCntPlayer].bDisp	= true;
-			g_aSpellUI[nCntPlayer].pos		= RIGHT_OUTPOS;
-			g_aSpellUI[nCntPlayer].pos		= RIGHT_OUTPOS;
-			break;
-		}
-			
-		ResetSpellUI(nCntPlayer);
 
-		for (int nCntUI = 0; nCntUI < MAX_SPELLTYPE; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
-		{
+			// 中心位置からの位置を求める
+			g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos += g_aSpellUI[nCntPlayer].pos;
+
 			// 頂点座標の設定
-			pVtx[0].pos.x = g_aSpellUI[nCntPlayer].pos.x + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.x - g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fWidth;
-			pVtx[0].pos.y = g_aSpellUI[nCntPlayer].pos.y + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.y - g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fHeight;
-			pVtx[0].pos.z = g_aSpellUI[nCntPlayer].pos.z + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.z;
-			pVtx[1].pos.x = g_aSpellUI[nCntPlayer].pos.x + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.x + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fWidth;
-			pVtx[1].pos.y = g_aSpellUI[nCntPlayer].pos.y + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.y - g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fHeight;
-			pVtx[1].pos.z = g_aSpellUI[nCntPlayer].pos.z + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.z;
-			pVtx[2].pos.x = g_aSpellUI[nCntPlayer].pos.x + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.x - g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fWidth;
-			pVtx[2].pos.y = g_aSpellUI[nCntPlayer].pos.y + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.y + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fHeight;
-			pVtx[2].pos.z = g_aSpellUI[nCntPlayer].pos.z + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.z;
-			pVtx[3].pos.x = g_aSpellUI[nCntPlayer].pos.x + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.x + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fWidth;
-			pVtx[3].pos.y = g_aSpellUI[nCntPlayer].pos.y + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.y + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fHeight;
-			pVtx[3].pos.z = g_aSpellUI[nCntPlayer].pos.z + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.z;
+			pVtx[0].pos = D3DXVECTOR3(-g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth,  g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(-g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, -g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth,  -g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, 0.0f);
 
 			// rhwの設定
-			pVtx[0].rhw = 1.0f;
-			pVtx[1].rhw = 1.0f;
-			pVtx[2].rhw = 1.0f;
-			pVtx[3].rhw = 1.0f;
+			pVtx[0].nor = NORMAL;
+			pVtx[1].nor = NORMAL;
+			pVtx[2].nor = NORMAL;
+			pVtx[3].nor = NORMAL;
 
 			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[0].col = COLOR_WHITE;
+			pVtx[1].col = COLOR_WHITE;
+			pVtx[2].col = COLOR_WHITE;
+			pVtx[3].col = COLOR_WHITE;
 
 			// テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			
 		}
-	}
 
+		g_aSpellUI[0].bSpell = true;
+		g_aSpellUI[1].bSpell = true;
+	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffSpellUI->Unlock();
 }
@@ -239,14 +349,13 @@ void InitSpellUI(void)
 //======================================================================================
 void UninitSpellUI(void)
 {
-
 	// テクスチャの破棄
-	for (int nCntSpellUI = 0; nCntSpellUI < MAX_SPELLTEX; nCntSpellUI++)
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TEX; nCntUI++)
 	{
-		if (g_apTextureSpellUI[nCntSpellUI] != NULL)
+		if (g_apTextureSpellUI[nCntUI] != NULL)
 		{
-			g_apTextureSpellUI[nCntSpellUI]->Release();
-			g_apTextureSpellUI[nCntSpellUI] = NULL;
+			g_apTextureSpellUI[nCntUI]->Release();
+			g_apTextureSpellUI[nCntUI] = NULL;
 		}
 	}
 
@@ -264,6 +373,53 @@ void UninitSpellUI(void)
 //======================================================================================
 void UpdateSpellUI(void)
 {
+	Player* pPlayer = GetPlayer();
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	{
+		if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+		{
+			g_aSpellUI[nCntPlayer].bSpell = true;
+			pPlayer->state = PLAYERSTATE_SPELL;
+		}
+		else
+		{
+			ResetCommand(nCntPlayer);
+			g_aSpellUI[nCntPlayer].bSpell = false;
+			pPlayer->state = PLAYERSTATE_NORMAL;
+		}
+
+		if (g_aSpellUI[nCntPlayer].bSpell == false)
+		{
+			continue;
+		}
+
+		// コマンドの入力情報を取得
+		COMMANDTYPE* commandType = GetCommandType(nCntPlayer);
+		COMMANDTYPE CommandUI[MAX_COMMAND];
+		for (int nCntUI = 0; nCntUI < MAX_COMMAND; nCntUI++)
+		{
+			CommandUI[nCntUI] = commandType[nCntUI];
+			switch (CommandUI[nCntUI])
+			{
+			case COMMANDTYPE_NONE:	// 入力なし
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_NONE;
+				break;
+			case COMMANDTYPE_R:	// 赤魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_RED;
+				break;
+			case COMMANDTYPE_G:	// 緑魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_GREEN;
+				break;
+			case COMMANDTYPE_B:	// 青魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_BLUE;
+				break;
+			case COMMANDTYPE_Y:	// 黄魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_YELLOW;
+				break;
+			}
+		}
+	}
+#if 0
 	// 操作方法の状態を取得
 	OPERATIONTYPE operationType = GetOperationType();
 	// プレイヤーの情報を取得
@@ -474,7 +630,7 @@ void UpdateSpellUI(void)
 			break;
 		}
 		
-		for (int nCntUI = 0; nCntUI < MAX_SPELLTYPE; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
 		{
 			// 頂点座標の設定
 			pVtx[0].pos.x = g_aSpellUI[nCntPlayer].pos.x + g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].pos.x - g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].fWidth;
@@ -511,6 +667,7 @@ void UpdateSpellUI(void)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffSpellUI->Unlock();
+#endif
 }
 
 //======================================================================================
@@ -518,45 +675,87 @@ void UpdateSpellUI(void)
 //======================================================================================
 void DrawSpellUI(void)
 {
-#if 0
-	// 一時的にfogを切る
-	SetFogEnable(false);
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+	D3DXMATRIX UIMatrix, mtxRot;	// UIのマトリックス情報を取得
+	Player* pPlayer = GetPlayer();
 
-	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
-	// デバイスの取得
-	pDevice = GetDevice();
+	// ワールドマトリックスの初期化(デフォルトの値にする)
+	D3DXMatrixIdentity(&UIMatrix);
 
-	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffSpellUI, 0, sizeof(VERTEX_2D));
+	// アルファテストを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法を設定(基準値より大きい場合描画)
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+	// ライトをオフにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	// カリングをオフにする
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		if (g_aSpellUI[nCntPlayer].bDisp == false)
+		if (g_aSpellUI[nCntPlayer].bSpell == false)
 		{
 			continue;
 		}
+		// UIのマトリックス情報を取得
+		UIMatrix = pPlayer->mtxWorld;
 
-		for (int nCntUI = 0; nCntUI < MAX_SPELLTYPE; nCntUI++)
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &UIMatrix);
+
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 		{
-			if (g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].bDisp == true)
-			{
-				// テクスチャの設定
-				pDevice->SetTexture(0, g_apTextureSpellUI[g_aSpellUI[nCntPlayer].g_SpellUI[nCntUI].tex]);
+			D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
+			D3DXMATRIX	mtxParent;					// 親のマトリックス
 
-				// ポリゴンの描画
-				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + (nCntPlayer * MAX_SPELLTYPE * 4), 2);
-			}
+			// ポリゴンのワールドマトリックスを初期化
+			D3DXMatrixIdentity(&g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld);
+
+			// パーツの位置を反映
+			D3DXMatrixTranslation(&mtxTransModel, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos.x, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos.y, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos.z);
+			D3DXMatrixMultiply(&g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld, &g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld, &mtxTransModel);
+
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aSpellUI[nCntPlayer].rot.y, g_aSpellUI[nCntPlayer].rot.x, g_aSpellUI[nCntPlayer].rot.z);
+			D3DXMatrixMultiply(&g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld, &g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld, &mtxRot);
+
+			// 親マトリックスを設定
+			mtxParent = UIMatrix;
+
+			// 算出したパーツのワールドマトリックスと親モデルのマトリックスを掛け合わせる
+			D3DXMatrixMultiply(&g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld, &g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld, &mtxParent);
+
+			// パーツのワールドマトリックスを設定
+			pDevice->SetTransform(D3DTS_WORLD, &g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld);
+
+			// 頂点バッファをデータストリームに設定
+			pDevice->SetStreamSource(0, g_pVtxBuffSpellUI, 0, sizeof(VERTEX_3D));
+
+			// 頂点フォーマットの設定
+			pDevice->SetFVF(FVF_VERTEX_3D);
+
+			// テクスチャの設定
+			pDevice->SetTexture(0, g_apTextureSpellUI[g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex]);
+
+			// UIの描画
+			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + (nCntPlayer * MAXSPELL_TYPE * 4), 2);
 		}
 	}
+	// ライトをオンにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	// fogを戻す
-	SetFogEnable(true);
-#endif
+	// カリングを元に戻す
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	// アルファテストを無効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 }
 
+#if 0
 //======================================================================================
 // spellの中身の初期化処理
 //======================================================================================
@@ -565,9 +764,9 @@ void ResetSpellUI(int nIdx)
 	// 操作方法の状態を取得
 	OPERATIONTYPE operationType = GetOperationType();
 
-	for (int nCntUI = 0; nCntUI < MAX_SPELLTEX; nCntUI++)
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TEX; nCntUI++)
 	{
-		for (int nCntUI = 0; nCntUI < MAX_SPELLTYPE; nCntUI++)
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 		{
 			switch (nCntUI)
 			{
@@ -617,7 +816,7 @@ void ResetSpellUI(int nIdx)
 				break;
 
 			case SPELLUI_TYPE_MAGIC:	// 発動された魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_NONE;					// どの魔法も入力されていない
+				g_aSpellUI[nIdx].magicType = SPELLUI_TEX_NONE;					// どの魔法も入力されていない
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].type = SPELLUI_TYPE_MAGIC;				// UIの種類の初期化
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].pos = D3DXVECTOR3(0.0f, MAGIC_Y, 0.0f);	// 位置の初期化
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].fWidth = MAGIC_SIZE;						// 幅の初期化
@@ -729,6 +928,7 @@ void ResetSpellUI(int nIdx)
 
 	}
 }
+#endif
 
 //======================================================================================
 // UIを発動中の魔法に変更
@@ -738,56 +938,55 @@ void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime)
 	switch (magicType)
 	{
 	case MAGICTYPE_NONE:	// 何もない場合
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_NONE;			// 詠唱失敗のテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_NONE;			// 詠唱失敗のテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_LEVITATION:	// 浮遊
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_LEVITATION;	// 浮遊のテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_LEVITATION;	// 浮遊のテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_COMBUSTION:	// 燃焼
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_COMBUSTION;	// 燃焼のテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_COMBUSTION;	// 燃焼のテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_FLOOD:	// 洪水、氾濫
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_FLOOD;	// 洪水、氾濫のテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_FLOOD;	// 洪水、氾濫のテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_FLASH:	// フラッシュ
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_FLASH;	// フラッシュのテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_FLASH;	// フラッシュのテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_FIREBALL:	// 火球
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_FIREBALL;	// 火球のテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_FIREBALL;	// 火球のテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_SUNSETDELAY:	// 太陽の動きを止める
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_SUNSETDELAY;	// 太陽の動きを止めるテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_SUNSETDELAY;	// 太陽の動きを止めるテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_RAINPRAY:	// 雨乞い
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_RAINPRAY;	// 雨乞いのテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_RAINPRAY;	// 雨乞いのテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_FREEZE:	// 凍結
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_FREEZE;	// 凍結のテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_FREEZE;	// 凍結のテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_GROWTH:	// 成長
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_GROWTH;	// 成長のテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_GROWTH;	// 成長のテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_ACCELERATION:	// 加速
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_ACCELERATION;	// 加速のテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_ACCELERATION;	// 加速のテクスチャに切り替え
 		break;
 
 	case MAGICTYPE_TIMEREVERT:	// 巻き戻し
-		g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].tex = SPELLUI_TEX_TIMEREVERT;	// 巻き戻しのテクスチャに切り替え
+		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_TIMEREVERT;	// 巻き戻しのテクスチャに切り替え
 		break;
 	}
 	g_aSpellUI[nIdx].nCounterUI = nDispTime;
 }
-
 //======================================================================================
 // spellのテクスチャ取得処理
 //======================================================================================

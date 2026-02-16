@@ -239,15 +239,7 @@ void UpdatePlayer(void)
 				break;
 
 			case PLAYERSTATE_SPELL:
-				if (GetJoypadPress(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true || (GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0))
-				{
-					InputCommand = PressCommand(nCntPlayer);
-				}
-
-				if (GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true || (GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0))
-				{
-					ResetCommand(nCntPlayer);
-				}
+				InputCommand = PressCommand(nCntPlayer);	// Žô•¶‚Ì“ü—Í‚ðŽó‚¯•t‚¯‚é
 				break;
 
 			case PLAYERSTATE_MAGIC:
