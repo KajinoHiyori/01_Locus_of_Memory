@@ -90,10 +90,10 @@ const char* c_apFilenameSpellUI[MAX_SPELLTEX] =
 	"data\\TEXTURE\\SpellUI\\02_Green.png",
 	"data\\TEXTURE\\SpellUI\\03_Blue.png",
 	"data\\TEXTURE\\SpellUI\\04_Yellow.png",
-	"data\\TEXTURE\\SpellUI\\05_1.png",
-	"data\\TEXTURE\\SpellUI\\06_2.png",
-	"data\\TEXTURE\\SpellUI\\07_3.png",
-	"data\\TEXTURE\\SpellUI\\08_4.png",
+	"data\\TEXTURE\\SpellUI\\05_K.png",
+	"data\\TEXTURE\\SpellUI\\06_L.png",
+	"data\\TEXTURE\\SpellUI\\07_J.png",
+	"data\\TEXTURE\\SpellUI\\08_I.png",
 	"data\\TEXTURE\\SpellUI\\09_A.png",
 	"data\\TEXTURE\\SpellUI\\10_B.png",
 	"data\\TEXTURE\\SpellUI\\11_X.png",
@@ -668,7 +668,7 @@ void ResetSpellUI(int nIdx)
 				}
 				else if (OPERATIONTYPE_KEYBOARD)	// キーボード1P操作
 				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].tex = SPELLUI_TEX_1;				// 1キー
+					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].tex = SPELLUI_TEX_L;				// Lキー
 				}
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].type = SPELLUI_TYPE_OP_R;					// UIの種類の初期化
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].pos = D3DXVECTOR3(RB_OPTYPE_X, RBCOMMAND_Y, 0.0f);	// 位置の初期化
@@ -684,7 +684,7 @@ void ResetSpellUI(int nIdx)
 				}
 				else if (OPERATIONTYPE_KEYBOARD)	// キーボード1P操作
 				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].tex = SPELLUI_TEX_2;				// 2キー
+					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].tex = SPELLUI_TEX_K;				// Kキー
 				}
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].type = SPELLUI_TYPE_OP_G;				// UIの種類の初期化
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].pos = D3DXVECTOR3(0.0f, G_OPTYPE_Y, 0.0f);	// 位置の初期化
@@ -700,7 +700,7 @@ void ResetSpellUI(int nIdx)
 				}
 				else if (OPERATIONTYPE_KEYBOARD)	// キーボード1P操作
 				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].tex = SPELLUI_TEX_3;				// 3キー
+					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].tex = SPELLUI_TEX_J;				// Jキー
 				}
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].type = SPELLUI_TYPE_OP_B;				// UIの種類の初期化
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].pos = D3DXVECTOR3(-RB_OPTYPE_X, RBCOMMAND_Y, 0.0f);	// 位置の初期化
@@ -716,7 +716,7 @@ void ResetSpellUI(int nIdx)
 				}
 				else if (OPERATIONTYPE_KEYBOARD)	// キーボード1P操作
 				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].tex = SPELLUI_TEX_4;				// 4キー
+					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].tex = SPELLUI_TEX_I;				// 4キー
 				}
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].type = SPELLUI_TYPE_OP_Y;				// UIの種類の初期化
 				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].pos = D3DXVECTOR3(0.0f, Y_OPTYPE_Y, 0.0f);	// 位置の初期化

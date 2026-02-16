@@ -16,10 +16,10 @@ typedef enum
 	SPELLUI_TEX_GREEN,			// 緑魔法
 	SPELLUI_TEX_BLUE,			// 青魔法
 	SPELLUI_TEX_YELLOW,			// 黄魔法
-	SPELLUI_TEX_1,				// キーボード操作[1]
-	SPELLUI_TEX_2,				// キーボード操作[2]
-	SPELLUI_TEX_3,				// キーボード操作[3]
-	SPELLUI_TEX_4,				// キーボード操作[4]
+	SPELLUI_TEX_K,				// キーボード操作[K]
+	SPELLUI_TEX_L,				// キーボード操作[L]
+	SPELLUI_TEX_J,				// キーボード操作[J]
+	SPELLUI_TEX_I,				// キーボード操作[I]
 	SPELLUI_TEX_A,				// ジョイパッド操作[A]
 	SPELLUI_TEX_B,				// ジョイパッド操作[B]
 	SPELLUI_TEX_X,				// ジョイパッド操作[X]
