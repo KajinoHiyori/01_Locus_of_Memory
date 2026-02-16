@@ -183,7 +183,7 @@ COMMANDTYPE* GetCommandType(int nIdx);
 COMMANDTYPE* GetCommandSaveType(int nIdx);
 
 // セーブされた魔法の種類を初期化
-void resetCommdSave(int nIdx);
+void ResetCommdSave(int nIdx);
 
 // 入力情報リセット処理==========================
 void ResetCommand(int nIdx);

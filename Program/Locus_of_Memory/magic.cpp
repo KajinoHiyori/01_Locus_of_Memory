@@ -127,21 +127,25 @@ COMMANDOREDER PressCommand(int nIdx)
 	{//コマンドが何も入力されていないとき
 		if (GetJoypadTrigger(JOYKEY_B, nIdx) == true || (GetKeyboardTrigger(DIK_L) == true && nIdx == 0))
 		{//B(赤)が入力された
+			SetCommandTex(nIdx, g_aCntCommand[nIdx]);
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_R;
 			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_R;
 		}
 		else if (GetJoypadTrigger(JOYKEY_A, nIdx) == true || (GetKeyboardTrigger(DIK_K) == true && nIdx == 0))
 		{//A(緑)が入力された
+			SetCommandTex(nIdx, g_aCntCommand[nIdx]);
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_G;
 			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_G;
 		}
 		else if (GetJoypadTrigger(JOYKEY_X, nIdx) == true || (GetKeyboardTrigger(DIK_J) == true && nIdx == 0))
 		{//X(青)が入力された
+			SetCommandTex(nIdx, g_aCntCommand[nIdx]);
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_B;
 			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_B;
 		}
 		else if (GetJoypadTrigger(JOYKEY_Y, nIdx) == true || (GetKeyboardTrigger(DIK_I) == true && nIdx == 0))
 		{//Y(黄)が入力された
+			SetCommandTex(nIdx, g_aCntCommand[nIdx]);
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_Y;
 			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_Y;
 		}
@@ -709,7 +713,7 @@ COMMANDTYPE* GetCommandSaveType(int nIdx)
 }
 
 // セーブされた魔法の種類を初期化
-void resetCommdSave(int nIdx)
+void ResetCommdSave(int nIdx)
 {
 	g_aCommandSave[nIdx][0] = COMMANDTYPE_NONE;
 	g_aCommandSave[nIdx][1] = COMMANDTYPE_NONE;

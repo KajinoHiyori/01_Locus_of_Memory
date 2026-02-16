@@ -70,6 +70,13 @@ void DrawSpellUI(void);
 void ResetSpellUI(int nIdx);
 void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime);
 void SetSpellUIState(int nIdx, SPELLUISTATE state);
+void SetSpellUIAppear(int nIdx);
+void SetSpellUIDisplay(int nIdx);
+void SetSpellUIDisappear(int nIdx);
+void SetSpellUINonDisplay(int nIdx);
+void SetCommandTex(int nIdx, int nNumCommand);
+void SetCommandDisplay(int nIdx, int nNumCommand);
+void SetCommandDisappear(int nIdx, int nNumCommand);
 SPELLUISTATE GetSpellUIState(int nIdx);
 LPDIRECT3DTEXTURE9 GetSpellTexture(SPELLUI_TEX SpellTex);
 #endif
