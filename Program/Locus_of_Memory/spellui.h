@@ -52,6 +52,16 @@ typedef enum
 	SPELLUI_TYPE_MAX
 }SPELLUI_TYPE;
 
+// SPELLUIの出現状態を管理
+typedef enum
+{
+	SPELLUISTATE_NONDISPLAY = 0,	// 非表示
+	SPELLUISTATE_APPEAR,			// 出現
+	SPELLUISTATE_DISPLAY,			// 表示
+	SPELLUISTATE_SETMAGIC,			// 魔法発動状態
+	SPELLUISTATE_DISAPPEAR,			// 収縮
+}SPELLUISTATE;
+
 // プロトタイプ宣言
 void InitSpellUI(void);
 void UninitSpellUI(void);
@@ -59,5 +69,7 @@ void UpdateSpellUI(void);
 void DrawSpellUI(void);
 void ResetSpellUI(int nIdx);
 void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime);
+void SetSpellUIState(int nIdx, SPELLUISTATE state);
+SPELLUISTATE GetSpellUIState(int nIdx);
 LPDIRECT3DTEXTURE9 GetSpellTexture(SPELLUI_TEX SpellTex);
 #endif

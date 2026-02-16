@@ -29,17 +29,6 @@
 #define MAGICRB_Y			(20.0f)			// 赤青魔法の高度
 #define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 
-
-// SPELLUIの出現状態を管理
-typedef enum
-{
-	SPELLUISTATE_NONDISPLAY = 0,	// 非表示
-	SPELLUISTATE_APPEAR,			// 出現
-	SPELLUISTATE_DISPLAY,			// 表示
-	SPELLUISTATE_SETMAGIC,			// 魔法発動状態
-	SPELLUISTATE_DISAPPEAR,			// 収縮
-}SPELLUISTATE;
-
 // SPELLUIの浮遊感を演出
 typedef enum
 { 
@@ -384,6 +373,7 @@ void UpdateSpellUI(void)
 		else
 		{
 			ResetCommand(nCntPlayer);
+			resetCommdSave(nCntPlayer);
 			g_aSpellUI[nCntPlayer].bSpell = false;
 			pPlayer->state = PLAYERSTATE_NORMAL;
 		}
@@ -394,7 +384,7 @@ void UpdateSpellUI(void)
 		}
 
 		// コマンドの入力情報を取得
-		COMMANDTYPE* commandType = GetCommandType(nCntPlayer);
+		COMMANDTYPE* commandType = GetCommandSaveType(nCntPlayer);
 		COMMANDTYPE CommandUI[MAX_COMMAND];
 		for (int nCntUI = 0; nCntUI < MAX_COMMAND; nCntUI++)
 		{
@@ -417,6 +407,35 @@ void UpdateSpellUI(void)
 				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_YELLOW;
 				break;
 			}
+		}
+
+		switch (g_aSpellUI[nCntPlayer].state)
+		{
+		case SPELLUISTATE_NONDISPLAY:	// 非表示状態
+
+			break;
+
+		case SPELLUISTATE_APPEAR:	// 出現状態
+
+			break;
+
+		case SPELLUISTATE_DISPLAY:	// 表示状態
+
+			break;
+
+		case SPELLUISTATE_SETMAGIC:	// 魔法発動状態
+			g_aSpellUI[nCntPlayer].nCounterUI--;
+			if (g_aSpellUI[nCntPlayer].nCounterUI < 0)
+			{
+				g_aSpellUI[nCntPlayer].nCounterUI = DISP_MAGIC;
+				resetCommdSave(nCntPlayer);
+				g_aSpellUI[nCntPlayer].state = SPELLUISTATE_DISPLAY;
+			}
+			break;
+
+		case SPELLUISTATE_DISAPPEAR:	// 収縮状態
+
+			break;
 		}
 	}
 #if 0
@@ -710,6 +729,11 @@ void DrawSpellUI(void)
 			D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
 			D3DXMATRIX	mtxParent;					// 親のマトリックス
 
+			if (g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp == false)
+			{
+				continue;
+			}
+
 			// ポリゴンのワールドマトリックスを初期化
 			D3DXMatrixIdentity(&g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld);
 
@@ -987,6 +1011,23 @@ void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime)
 	}
 	g_aSpellUI[nIdx].nCounterUI = nDispTime;
 }
+
+//======================================================================================
+// UIのステータスを変更
+//======================================================================================
+void SetSpellUIState(int nIdx, SPELLUISTATE state)
+{
+	g_aSpellUI[nIdx].state = state;
+}
+
+//======================================================================================
+// UIのステータスを変更
+//======================================================================================
+SPELLUISTATE GetSpellUIState(int nIdx)
+{
+	return g_aSpellUI[nIdx].state;
+}
+
 //======================================================================================
 // spellのテクスチャ取得処理
 //======================================================================================
