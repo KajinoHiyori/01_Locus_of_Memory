@@ -179,6 +179,12 @@ COMMANDOREDER GetFieldMagic(int nIdx);
 // 入力された魔法の種類を取得
 COMMANDTYPE* GetCommandType(int nIdx);
 
+// セーブされた魔法の種類を取得
+COMMANDTYPE* GetCommandSaveType(int nIdx);
+
+// セーブされた魔法の種類を初期化
+void resetCommdSave(int nIdx);
+
 // 入力情報リセット処理==========================
 void ResetCommand(int nIdx);
 

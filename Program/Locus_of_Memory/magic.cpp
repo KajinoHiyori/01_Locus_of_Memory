@@ -29,6 +29,7 @@
 Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
 DropMagic g_aDropMagic[MAX_DROPMAGIC];					//落ちてる魔法の情報
 COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
+COMMANDTYPE g_aCommandSave[MAX_PLAYER][MAX_COMMAND];		//コマンドの過去の情報
 MagicCounter g_aCounter[MAX_PLAYER];					//リザルト用魔法回数カウント
 MagicLocus g_aMagicLocus[MAX_MAGICLOCUS];				//魔法使用場所の情報
 int g_aCntCommand[MAX_PLAYER] = {};						//
@@ -62,6 +63,7 @@ void InitMagic(void)
 		for (int nCntCommand = 0; nCntCommand < MAX_COMMAND; nCntCommand++)
 		{
 			g_aCommand[nCntPlayerType][nCntCommand] = COMMANDTYPE_NONE;
+			g_aCommandSave[nCntPlayerType][nCntCommand] = COMMANDTYPE_NONE;
 		}
 	}
 
@@ -115,23 +117,33 @@ void DrawMagic(void)
 //コマンド入力情報=============================
 COMMANDOREDER PressCommand(int nIdx)
 {
+	if (GetSpellUIState(nIdx) == SPELLUISTATE_SETMAGIC)
+	{
+		// 魔法発動状態のときは処理を行わない
+		return COMMANDOREDER_NONE;
+	}
+
 	if (g_aCommand[nIdx][g_aCntCommand[nIdx]] == COMMANDTYPE_NONE)
 	{//コマンドが何も入力されていないとき
 		if (GetJoypadTrigger(JOYKEY_B, nIdx) == true || (GetKeyboardTrigger(DIK_L) == true && nIdx == 0))
 		{//B(赤)が入力された
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_R;
+			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_R;
 		}
 		else if (GetJoypadTrigger(JOYKEY_A, nIdx) == true || (GetKeyboardTrigger(DIK_K) == true && nIdx == 0))
 		{//A(緑)が入力された
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_G;
+			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_G;
 		}
 		else if (GetJoypadTrigger(JOYKEY_X, nIdx) == true || (GetKeyboardTrigger(DIK_J) == true && nIdx == 0))
 		{//X(青)が入力された
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_B;
+			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_B;
 		}
 		else if (GetJoypadTrigger(JOYKEY_Y, nIdx) == true || (GetKeyboardTrigger(DIK_I) == true && nIdx == 0))
 		{//Y(黄)が入力された
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_Y;
+			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_Y;
 		}
 	}
 	if (g_aCommand[nIdx][g_aCntCommand[nIdx]] != COMMANDTYPE_NONE)
@@ -141,6 +153,10 @@ COMMANDOREDER PressCommand(int nIdx)
 
 	if (g_aCntCommand[nIdx] == MAX_COMMAND)
 	{//コマンドが三つ入力されたとき
+		
+		// SPELLUIの状態を魔法発動状態に変化
+		SetSpellUIState(nIdx, SPELLUISTATE_SETMAGIC);
+
 		//浮遊-------------------------------------------------------------------------------------------------
 		//緑緑緑
 		if (g_aCommand[nIdx][0] == COMMANDTYPE_G && g_aCommand[nIdx][1] == COMMANDTYPE_G && g_aCommand[nIdx][2] == COMMANDTYPE_G)
@@ -685,6 +701,21 @@ COMMANDTYPE* GetCommandType(int nIdx)
 {
 	return &g_aCommand[nIdx][0];
 }
+
+// 入力された魔法の種類を取得==========================
+COMMANDTYPE* GetCommandSaveType(int nIdx)
+{
+	return &g_aCommandSave[nIdx][0];
+}
+
+// セーブされた魔法の種類を初期化
+void resetCommdSave(int nIdx)
+{
+	g_aCommandSave[nIdx][0] = COMMANDTYPE_NONE;
+	g_aCommandSave[nIdx][1] = COMMANDTYPE_NONE;
+	g_aCommandSave[nIdx][2] = COMMANDTYPE_NONE;
+}
+
 
 // 入力情報リセット処理==========================
 void ResetCommand(int nIdx)
