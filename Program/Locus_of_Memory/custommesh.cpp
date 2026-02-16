@@ -16,8 +16,11 @@
 //*****************************************************************************
 #define MESHFIELD_SPLIT_WIDHT		(30 + 1)		// 横の分割数
 #define MESHFIELD_SPLIT_DEPTH		(30 + 1)		// 縦の分割数
-#define MAX_MESHFIELD				(32)			// メッシュフィールドの最大数
 #define MAX_CUSTOMMESH				(5)				// カスタムメッシュの最大数
+#define TEX_SPLIT					(10)			// テクスチャの分割数
+
+#define VTX_MIN		(D3DXVECTOR3(10000.0f, 10000.0f, 10000.0f))		// オブジェクトの大きさの初期化値(最小)
+#define VTX_MAX		(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// オブジェクトの大きさの初期化値(最大)
 
 //*****************************************************************************
 // グローバル変数
@@ -28,7 +31,7 @@ CustomMesh g_aCustomMesh[MAX_CUSTOMMESH];							// カスタムメッシュの情報
 const char* c_pCustomMeshTextureName[MESHFIELDTYPE_MAX] =
 {
 	"data\\TEXTURE\\river000.jpg",
-	"data\\TEXTURE\\road000.jpg",
+	"data\\TEXTURE\\river000.png",
 	"data\\TEXTURE\\road000.jpg",
 };
 
@@ -155,7 +158,30 @@ void DrawCustomMesh(void)
 //=============================================================================
 void UpdateCustomMesh(void)
 {
+	LPCUSTOMMESH pCustomMesh = &g_aCustomMesh[0];
 
+	// 初期化
+	VERTEX_3D* pVtx;			// 頂点情報へのポインタ
+
+	// 頂点バッファをロックし,頂点情報へのポインタを取得
+	pCustomMesh->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntCustomMesh = 0; nCntCustomMesh < MAX_CUSTOMMESH; nCntCustomMesh++)
+	{
+		for (int nCntVtx = 0; nCntVtx < pCustomMesh->nNumVtx; nCntVtx++)
+		{
+			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+			pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+			float fDestX = pVtx[nCntVtx].pos.x / (pCustomMesh->fWidth);
+			float fDestZ = pVtx[nCntVtx].pos.z / (pCustomMesh->fDepth);
+
+			pVtx[nCntVtx].tex = D3DXVECTOR2(fDestX * TEX_SPLIT, -fDestZ * TEX_SPLIT);
+		}
+	}
+
+	// 頂点バッファをアンロックする
+	pCustomMesh->pVtxBuff->Unlock();
 }
 
 //=============================================================================
@@ -174,6 +200,9 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 		{
 			continue;
 		}
+
+		D3DXVECTOR3 vtxMin = VTX_MIN;	// 最大値
+		D3DXVECTOR3 vtxMax = VTX_MAX;	// 最小値
 
 		// カスタムメッシュの設定
 		pCustomMesh->pos = pos;
@@ -203,8 +232,45 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 			pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			pVtx[nCntVtx].tex = D3DXVECTOR2(1.0f * nCntVtx, 1.0f * nCntVtx);
 
+			D3DXVECTOR3 vtx = *pVtxPos;
+
+			// X座標の比較
+			if (vtxMin.x >= vtx.x)		// 保存されている最小のX座標より小さい場合
+			{
+				vtxMin.x = vtx.x;
+			}
+			else if (vtxMax.x <= vtx.x)	// 保存されている最大のX座標より大きい場合
+			{
+				vtxMax.x = vtx.x;
+			}
+
+			// Y座標の比較
+			if (vtxMin.y >= vtx.y)		// 保存されている最小のY座標より小さい場合
+			{
+				vtxMin.y = vtx.y;
+			}
+			else if (vtxMax.y <= vtx.y)	// 保存されている最大のY座標より大きい場合
+			{
+				vtxMax.y = vtx.y;
+			}
+
+			// Z座標の比較
+			if (vtxMin.z >= vtx.z)		// 保存されている最小のZ座標より小さい場合
+			{
+				vtxMin.z = vtx.z;
+			}
+			else if (vtxMax.z <= vtx.z)	// 保存されている最大のZ座標より大きい場合
+			{
+				vtxMax.z = vtx.z;
+			}
+
 			pVtxPos++;
 		}
+
+		// 全体の大きさを出す
+		pCustomMesh->fWidth = vtxMax.x - vtxMin.x;
+		pCustomMesh->fHeigth = vtxMax.y - vtxMin.y;
+		pCustomMesh->fDepth = vtxMax.z - vtxMin.z;
 
 		// 頂点バッファをアンロックする
 		pCustomMesh->pVtxBuff->Unlock();
@@ -265,5 +331,6 @@ void LoadCustomMesh(const char* pFileName, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	fclose(pFile);
 
+	// メッシュを設定
 	SetCustomMesh(pos, rot, &VtxPos[0], nNumVtx, &aIdx[0], nNumIdx);
 }

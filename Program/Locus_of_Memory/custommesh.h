@@ -27,6 +27,9 @@ typedef struct CustomMesh
 	D3DXVECTOR3 pos;							// 位置
 	D3DXVECTOR3 rot;							// 向き
 	MESHFIELDTYPE type;							// 種類
+	float fWidth;								// 幅
+	float fHeigth;								// 高さ
+	float fDepth;								// 奥行き
 	WORD nIdx[MAX_IDX];							// インデックス
 	int nNumVtx;								// 頂点数
 	int nNumIdx;								// インデックス数
