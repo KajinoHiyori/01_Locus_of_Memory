@@ -171,6 +171,7 @@
     <ClCompile Include="event.cpp" />
     <ClCompile Include="gameui.cpp" />
     <ClCompile Include="loadscript.cpp" />
+    <ClCompile Include="magicbubble.cpp" />
     <ClCompile Include="magiccircle.cpp" />
     <ClCompile Include="magicui.cpp" />
     <ClCompile Include="menubg.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="event.h" />
     <ClInclude Include="gameui.h" />
     <ClInclude Include="loadscript.h" />
+    <ClInclude Include="magicbubble.h" />
     <ClInclude Include="magiccircle.h" />
     <ClInclude Include="magicui.h" />
     <ClInclude Include="menubg.h" />

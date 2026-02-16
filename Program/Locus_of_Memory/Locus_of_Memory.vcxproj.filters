@@ -195,6 +195,9 @@
     <ClCompile Include="custommesh.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="magicbubble.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="custommesh.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="magicbubble.h">
+      <Filter>UI\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
