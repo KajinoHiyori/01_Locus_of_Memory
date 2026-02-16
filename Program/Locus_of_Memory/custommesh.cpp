@@ -132,16 +132,17 @@ void DrawCustomMesh(void)
 		pDevice->SetTransform(D3DTS_WORLD, &pCustomMesh->mtxWorld);
 
 		// 頂点バッファをデータストリームに設定
-		pDevice->SetStreamSource(0, pCustomMesh->pVtxBuff, 0, sizeof(VERTEX_3D));
+		pDevice->SetStreamSource(0, pCustomMesh->pVtxBuff, 0, sizeof(VERTEX_3D_MULTI));
 
 		// インデックスバッファをデータストリームに設定
 		pDevice->SetIndices(pCustomMesh->pIdxBuff);
 
 		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_3D);
+		pDevice->SetFVF(FVF_VERTEX_3D_MULTI);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, g_apCustomTextureMesh[pCustomMesh->type]);
+		pDevice->SetTexture(0, NULL);
+		pDevice->SetTexture(1, g_apCustomTextureMesh[1]);
 
 		// メッシュフィールドの描画
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,
@@ -161,7 +162,7 @@ void UpdateCustomMesh(void)
 	LPCUSTOMMESH pCustomMesh = &g_aCustomMesh[0];
 
 	// 初期化
-	VERTEX_3D* pVtx;			// 頂点情報へのポインタ
+	VERTEX_3D_MULTI* pVtx;			// 頂点情報へのポインタ
 
 	// 頂点バッファをロックし,頂点情報へのポインタを取得
 	pCustomMesh->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -177,6 +178,7 @@ void UpdateCustomMesh(void)
 			float fDestZ = pVtx[nCntVtx].pos.z / (pCustomMesh->fDepth);
 
 			pVtx[nCntVtx].tex = D3DXVECTOR2(fDestX * TEX_SPLIT, -fDestZ * TEX_SPLIT);
+			pVtx[nCntVtx].texM = D3DXVECTOR2(fDestX * TEX_SPLIT, -fDestZ * TEX_SPLIT);
 		}
 	}
 
@@ -212,7 +214,7 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 		pCustomMesh->nNumIdx = nNumIdx;
 
 		// 頂点バッファの生成
-		pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * nNumVtx,
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_3D_MULTI) * nNumVtx,
 			D3DUSAGE_WRITEONLY,
 			FVF_VERTEX_3D,
 			D3DPOOL_MANAGED,
@@ -220,7 +222,7 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 			NULL);
 
 		// 初期化
-		VERTEX_3D* pVtx;			// 頂点情報へのポインタ
+		VERTEX_3D_MULTI* pVtx;			// 頂点情報へのポインタ
 
 		// 頂点バッファをロックし,頂点情報へのポインタを取得
 		pCustomMesh->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -231,6 +233,7 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			pVtx[nCntVtx].tex = D3DXVECTOR2(1.0f * nCntVtx, 1.0f * nCntVtx);
+			pVtx[nCntVtx].texM = D3DXVECTOR2(1.0f * nCntVtx, 1.0f * nCntVtx);
 
 			D3DXVECTOR3 vtx = *pVtxPos;
 

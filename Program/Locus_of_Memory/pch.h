@@ -39,6 +39,7 @@
 #define DEFAULT_FADESPEED		(0.025f)																		// フェードの速度
 #define FVF_VERTEX_2D			(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)									// 頂点フォーマット(2D)
 #define FVF_VERTEX_3D			(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)						// 頂点フォーマット(3D)
+#define FVF_VERTEX_3D_MULTI		(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_TEX2)		// マルチテクスチャ頂点フォーマット(3D)
 #define SQRTF(X, Y)				(sqrtf(X * X + Y * Y))															// 対角線の長さ算出
 #define INIT_D3DXVEC3			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))													// D3DXVECTOR3型初期化
 #define RANDAM_VEC3(X, Y, Z)	(D3DXVECTOR3((float)(rand() % X), (float)(rand() % Y), (float)(rand() % Z)))	// ランダムVECTOR3
@@ -68,5 +69,17 @@ typedef struct
 	D3DCOLOR col;			// 頂点カラー(r, g, b, a)
 	D3DXVECTOR2 tex;		// テクスチャ座標(x, y)
 }VERTEX_3D;
+
+//*****************************************************************************
+// 頂点情報(3D)の構造体定義 (マルチテクスチャ)
+//*****************************************************************************
+typedef struct VERTEX_3D_MULTI
+{
+	D3DXVECTOR3 pos;		// 頂点座標(x, y, z)
+	D3DXVECTOR3 nor;		// 法線ベクトル
+	D3DCOLOR col;			// 頂点カラー(r, g, b, a)
+	D3DXVECTOR2 tex;		// テクスチャ座標0(x, y)
+	D3DXVECTOR2 texM;		// テクスチャ座標1(x, y)
+}VERTEX_3D_MULTI;
 
 #endif	// _PCH_H_
