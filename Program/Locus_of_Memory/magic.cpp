@@ -657,7 +657,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		{// 当たっていたら
 			// ここで種類に応じた振動を呼び出す
 			SetMagicBubble(nIdx, pDropMagic->oType, -1);
-			VibrationType(VIBRATIONTYPE_CLOSE, MAGICTYPE_COMBUSTION, nIdx);
+			VibrationType(VIBRATIONTYPE_CLOSE, nCntMagic, nIdx);
 			PrintDebugProc("[%d]落ちている魔法とあたっている\n", nCntMagic);
 			return nCntMagic;
 		}
@@ -665,7 +665,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		{// 落ちている魔法の周辺にいたら
 			// ここで種類に応じた振動を呼び出す
 			SetMagicBubble(nIdx, pDropMagic->oType, 0);
-			VibrationType(VIBRATIONTYPE_MEDIUM, MAGICTYPE_COMBUSTION, nIdx);
+			VibrationType(VIBRATIONTYPE_MEDIUM, nCntMagic, nIdx);
 			PrintDebugProc("[%d]周辺に魔法が落ちている\n", nCntMagic);
 			isSearch = true;
 		}
@@ -673,7 +673,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		{// 遠くに魔法が落ちていたら
 			 // ここで種類に応じた振動を呼び出す
 			SetMagicBubble(nIdx, pDropMagic->oType, 1);
-			VibrationType(VIBRATIONTYPE_FAR, MAGICTYPE_COMBUSTION, nIdx);
+			VibrationType(VIBRATIONTYPE_FAR, nCntMagic, nIdx);
 			PrintDebugProc("[%d]遠くに魔法が落ちている\n", nCntMagic);
 			isSearch = true;
 		}
