@@ -54,9 +54,17 @@ void InitObject(void)
 		g_aObject[nCntObject].pos = DEFALT;
 		g_aObject[nCntObject].rot = DEFALT;
 		g_aObject[nCntObject].type = OBJECTTYPE_HOUSE000;
+		g_aObject[nCntObject].EventType = EVENTTYPE_NONE;
+		g_aObject[nCntObject].fAlpha = 1.0f;
 		g_aObject[nCntObject].nIdxShadow = -1;
 		g_aObject[nCntObject].fSize = g_aObjectModel[g_aObject[nCntObject].type].vtxMax.x;
 		g_aObject[nCntObject].bUse = false;
+	}
+
+	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
+	{
+		pParentObject->EventType = EVENTTYPE_NONE;
+		pParentObject->fAlpha = 1.0f;
 	}
 
 	// モデル情報の初期化
@@ -189,6 +197,13 @@ void UpdateObject(void)
 		}
 #endif
 
+		switch (pParentObject->EventType)
+		{
+		case EVENTTYPE_001_1:
+			UpdateObjectEvent001(pParentObject);
+			break;
+		}
+
 		// モーションの更新
 		UpdateMotion(&pParentObject->motion, pParentObject->pModelData);
 	}
@@ -203,6 +218,7 @@ void DrawObject(void)
 	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
 	D3DMATERIAL9 matDef;	// 現在のマテリアルを保存
 	D3DXMATERIAL* pMat;		// マテリアルデータへのポインタ
+	D3DXMATERIAL MatCpy;	// 書き換え用マテリアル
 	Player* pPlayer = GetPlayer();
 	MODE mode = GetMode();
 
@@ -256,8 +272,81 @@ void DrawObject(void)
 			continue;
 		}
 
-		// 階層構造モデル描画関数呼び出し
-		DrawParentModel(&pParentObject->pos, &pParentObject->rot, &pParentObject->mtxWorld, pParentObject->pModelData);
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&pParentObject->mtxWorld);
+
+		// 向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, pParentObject->rot.y, pParentObject->rot.x, pParentObject->rot.z);
+		D3DXMatrixMultiply(&pParentObject->mtxWorld, &pParentObject->mtxWorld, &mtxRot);
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, pParentObject->pos.x, pParentObject->pos.y, pParentObject->pos.z);
+		D3DXMatrixMultiply(&pParentObject->mtxWorld, &pParentObject->mtxWorld, &mtxTrans);
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &pParentObject->mtxWorld);
+
+		// 現在のマテリアルを取得
+		pDevice->GetMaterial(&matDef);
+
+		// 全モデル(パーツ)の描画
+		for (int nCntParentModel = 0; nCntParentModel < pParentObject->pModelData->nNumParts; nCntParentModel++)
+		{
+			D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
+			D3DXMATRIX mtxParent;								// 親のマトリックス
+
+			// パーツのワールドマトリックスを初期化
+			D3DXMatrixIdentity(&pParentObject->pModelData->aModel[nCntParentModel].mtxWorld);
+
+			// パーツの向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pParentObject->pModelData->aModel[nCntParentModel].rot.y, pParentObject->pModelData->aModel[nCntParentModel].rot.x, pParentObject->pModelData->aModel[nCntParentModel].rot.z);
+			D3DXMatrixMultiply(&pParentObject->pModelData->aModel[nCntParentModel].mtxWorld, &pParentObject->pModelData->aModel[nCntParentModel].mtxWorld, &mtxRotOffSetModel);
+
+			// パーツの位置を反映(オフセット)
+			D3DXMatrixTranslation(&mtxTransOffSetModel, pParentObject->pModelData->aModel[nCntParentModel].pos.x, pParentObject->pModelData->aModel[nCntParentModel].pos.y, pParentObject->pModelData->aModel[nCntParentModel].pos.z);
+			D3DXMatrixMultiply(&pParentObject->pModelData->aModel[nCntParentModel].mtxWorld, &pParentObject->pModelData->aModel[nCntParentModel].mtxWorld, &mtxTransOffSetModel);
+
+			// パーツの「親のマトリックス」を設定
+			if (pParentObject->pModelData->aModel[nCntParentModel].nIdxModelParent != -1)
+			{// 親モデルがある場合
+				mtxParent = pParentObject->pModelData->aModel[pParentObject->pModelData->aModel[nCntParentModel].nIdxModelParent].mtxWorld;
+			}
+			else
+			{// 親モデルがない場合
+				mtxParent = pParentObject->mtxWorld;
+			}
+
+			// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
+			D3DXMatrixMultiply(&pParentObject->pModelData->aModel[nCntParentModel].mtxWorld,
+				&pParentObject->pModelData->aModel[nCntParentModel].mtxWorld,
+				&mtxParent);
+
+			// パーツのワールドマトリックスを設定
+			pDevice->SetTransform(D3DTS_WORLD, &pParentObject->pModelData->aModel[nCntParentModel].mtxWorld);
+
+			// マテリアルデータへのポインタを取得
+			pMat = (D3DXMATERIAL*)pParentObject->pModelData->aModel[pParentObject->pModelData->aModel[nCntParentModel].nIdxModel].pBuffMat->GetBufferPointer();
+
+
+			for (int nCntMat = 0; nCntMat < (int)pParentObject->pModelData->aModel[pParentObject->pModelData->aModel[nCntParentModel].nIdxModel].dwNumMat; nCntMat++)
+			{
+				MatCpy = pMat[nCntMat];		// 今のマテリアルをコピー
+
+				MatCpy.MatD3D.Diffuse.a = pParentObject->fAlpha;	// アルファ値を適用
+
+				// マテリアルの設定
+				pDevice->SetMaterial(&MatCpy.MatD3D);
+
+				// テクスチャの設定
+				pDevice->SetTexture(0, pParentObject->pModelData->aModel[pParentObject->pModelData->aModel[nCntParentModel].nIdxModel].apTexture[nCntMat]);
+
+				// パーツの描画
+				pParentObject->pModelData->aModel[pParentObject->pModelData->aModel[nCntParentModel].nIdxModel].pMesh->DrawSubset(nCntMat);
+			}
+		}
+
+		// 保存していたマテリアルを戻す
+		pDevice->SetMaterial(&matDef);
 	}
 }
 
@@ -577,4 +666,20 @@ void UninitRandomObject(void)
 
 	memset(&g_nIdxRandObj, -1, sizeof(int) * MAX_OBJECT);					// ランダムオブジェクトの番号初期化
 	g_nNumRandObj = 0;
+}
+
+//=============================================================================
+//	イベントでのオブジェクト更新処理
+//=============================================================================
+void UpdateObjectEvent001(ParentObject* pParentObject)
+{
+	if (pParentObject->motion.bFinishMotion == true)
+	{
+		pParentObject->fAlpha -= 0.01f;
+
+		if (pParentObject->fAlpha < 0.0f)
+		{
+			pParentObject->bUse = false;
+		}
+	}
 }

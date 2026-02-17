@@ -621,6 +621,7 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 		{// 当たっていたら
 			if (SetMagicEvent(pMagicLocus->MagicEvent, type, pMagicLocus->nIdxObject) == true)
 			{// 魔法と対応するイベントかどうかチェック
+				pMagicLocus->bUse = false;
 				return true;
 			}
 			else
