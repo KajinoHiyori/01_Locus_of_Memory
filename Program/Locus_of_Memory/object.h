@@ -9,6 +9,7 @@
 #include "main.h"
 
 #include "motion.h"
+#include "event.h"
 
 // マクロ定義
 #define MAX_OBJECTMAT		(32)	// マテリアルの最大数
@@ -68,8 +69,10 @@ typedef struct
 	D3DXVECTOR3		pos;		// オブジェクトの位置
 	D3DXVECTOR3		rot;		// オブジェクトの向き
 	OBJECTTYPE		type;		// モデルの種類
+	float			fAlpha;		// アルファ値
 	int				nIdxShadow;	// 影のインデックス
 	float			fSize;		// 大きさ
+	EVENTTYPE		EventType;	// イベントの種類
 	bool			bUse;		// 使用状態
 }Object;
 
@@ -79,8 +82,10 @@ typedef struct
 	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
 	D3DXVECTOR3		pos;		// オブジェクトの位置
 	D3DXVECTOR3		rot;		// オブジェクトの向き
+	float			fAlpha;		// アルファ値
 	Motion			motion;		// モーション情報
 	ModelData*		pModelData;	// モデルの情報
+	EVENTTYPE		EventType;	// イベントの種類
 	bool			bUse;		// 使用状態
 }ParentObject;
 
@@ -126,4 +131,5 @@ Object* GetObjectInfo(int nIdx);
 ParentObject* GetParentObjectInfo(int nIdx);
 ObjectModel* GetObjectModel(void);
 void UninitRandomObject(void);
+void UpdateObjectEvent001(ParentObject* pParentObject);
 #endif

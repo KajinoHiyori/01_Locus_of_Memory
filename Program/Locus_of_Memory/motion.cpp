@@ -40,6 +40,7 @@ void SetMotion(Motion* pMotion, ModelData* pModelData, MOTIONTYPE motiontype, bo
 		pMotion->nNumKeyBlend = pMotion->pMotionData->aMotionInfo[motiontype].nNumKey;
 		pMotion->nKeyBlend = 0;
 		pMotion->nCounterMotionBlend = 0;
+		pMotion->bFinishMotion = false;
 	}
 	else
 	{
@@ -48,6 +49,7 @@ void SetMotion(Motion* pMotion, ModelData* pModelData, MOTIONTYPE motiontype, bo
 		pMotion->bLoopMotion = bLoopMotion;
 		pMotion->nKey = 0;
 		pMotion->nCounterMotion = 0;
+		pMotion->bFinishMotion = false;
 
 		Model* pModel = &pModelData->aModel[0];
 		KEY_INFO* pKeyInfo = &pMotion->pMotionData->aMotionInfo[pMotion->motionType].aKeyInfo[0];
@@ -74,7 +76,12 @@ void SetMotion(Motion* pMotion, ModelData* pModelData, MOTIONTYPE motiontype, bo
 void UpdateMotion(Motion* pMotion, ModelData* pModelData)
 {
 	if (pMotion == NULL)
-	{
+	{// モーションが存在しなければ返す
+		return;
+	}
+
+	if (pMotion->bFinishMotion == true)
+	{// モーションが終わっていれば返す
 		return;
 	}
 
@@ -248,7 +255,7 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData)
 			pMotion->nCounterMotionBlend = 0;	// カウンターリセット
 			if ((pMotion->nKeyBlend = (pMotion->nKeyBlend + 1) % pMotion->nNumKeyBlend) == 0 && pMotion->bLoopMotionBlend == false)
 			{// キーが終着点まで来たかつループ状態じゃなければ
-				//SetMotion(MOTIONTYPE_NEUTRAL, true, true, 10);
+				pMotion->bFinishMotion = true;					// 終了フラグ
 			}
 		}
 
@@ -275,7 +282,7 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData)
 			pMotion->nCounterMotion = 0;	// カウンターリセット
 			if ((pMotion->nKey = (pMotion->nKey + 1) % pMotion->nNumKey) == 0 && pMotion->bLoopMotion == false)
 			{// キーが終着点まで来たかつループ状態じゃなければ
-				SetMotion(pMotion, pModelData, MOTIONTYPE_NEUTRAL, true, true, 10);
+				pMotion->bFinishMotion = true;					// 終了フラグ
 			}
 		}
 	}
