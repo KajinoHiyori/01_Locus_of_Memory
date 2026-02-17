@@ -1,11 +1,11 @@
-//==========================================
+//===================================================================
+//
+// 外壁処理[brickwall.h]
+// Author : KajinoHiyori
 // 
-// 3Dポリゴンの描画[meshsky.h]
-// 
-//==========================================
-#ifndef _MESHSKY_H_
-#define	_MESHSKY_H_
-#include "main.h"
+//===================================================================
+#ifndef _BRICKWALL_H_
+#define	_BRICKWALL_H_
 
 // 空の構造体
 typedef struct
@@ -16,13 +16,12 @@ typedef struct
 	D3DXVECTOR3 pos;					// メッシュフィールドの位置
 	D3DXVECTOR3 rot;					// メッシュフィールドの向き
 	bool bUse;							// 使用状態
-}MeshSky;
+}BrickWall;
 
 // プロトタイプ宣言
-void InitMeshSky(void);
-void UninitMeshSky(void);
-void UpdateMeshSky(void);
-void DrawMeshSky(void);
-void SetMeshSky(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
-D3DXVECTOR3 GetMeshSkyPos(void);
+void InitBrickWall(void);
+void UninitBrickWall(void);
+void UpdateBrickWall(void);
+void DrawBrickWall(void);
+void SetBrickWall(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 #endif

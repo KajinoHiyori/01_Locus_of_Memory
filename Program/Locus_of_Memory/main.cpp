@@ -26,6 +26,7 @@
 
 #include "object.h"
 #include "skybox.h"
+#include "brickwall.h"
 #include "effect.h"
 #include "particle.h"
 #include "motion.h"
@@ -380,6 +381,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// スカイボックスの初期化処理
 	InitSkyBox();
 
+	// 塀の初期化処理
+	InitBrickWall();
+
 	// モーションの初期化処理
 	InitMotion();
 
@@ -440,6 +444,9 @@ void Uninit(void)
 
 	// スカイボックスの終了処理
 	UninitSkyBox();
+
+	// 塀の終了処理
+	UninitBrickWall();
 
 	//// ライトの終了処理
 	//UninitLight();
@@ -528,6 +535,9 @@ void Update(void)
 
 	// スカイボックスの更新処理
 	UpdateSkyBox();
+
+	// 塀の更新処理
+	UpdateBrickWall();
 
 	switch (g_mode)
 	{

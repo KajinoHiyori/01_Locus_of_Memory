@@ -14,6 +14,7 @@
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
+#include "brickwall.h"
 //#include"sound.h"
 
 // グローバル変数
@@ -141,6 +142,9 @@ void DrawResult(void)
 
     // スカイボックスの描画処理
     DrawSkyBox();
+
+    // 塀の描画処理
+    DrawBrickWall();
 
     LPDIRECT3DDEVICE9 pDevice;        // デバイスへのポインタ
 

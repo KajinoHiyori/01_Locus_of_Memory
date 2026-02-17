@@ -16,6 +16,7 @@
 #include "particle.h"
 #include "fog.h"
 #include "debugproc.h"
+#include "brickwall.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
@@ -142,6 +143,9 @@ void DrawTitle(void)
 
 	// スカイボックスの描画処理
 	DrawSkyBox();
+
+	// 塀の描画処理
+	DrawBrickWall();
 
 	// タイトルUIの描画処理
 	DrawTitleUI();

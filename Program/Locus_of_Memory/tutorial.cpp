@@ -11,6 +11,7 @@
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
+#include "brickwall.h"
 //#include"sound.h"
 #include"fade.h"
 //#include"pause.h"
@@ -290,6 +291,9 @@ void DrawTutorial(void)
 
 	// スカイボックスの描画処理
 	DrawSkyBox();
+
+	// 塀の描画処理
+	DrawBrickWall();
 
 	//DrawModel();
 

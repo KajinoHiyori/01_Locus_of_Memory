@@ -44,6 +44,7 @@
 #include "fog.h"
 #include "vibration.h"
 #include"meshfield.h"
+#include "brickwall.h"
 #include "loadscript.h"
 #include "magiccircle.h"
 
@@ -339,6 +340,9 @@ void DrawGame(void)
 
 	// スカイボックスの描画処理
 	DrawSkyBox();
+
+	// 塀の描画処理
+	DrawBrickWall();
 
 	// オブジェクトの描画処理（仮）
 	DrawObject();
