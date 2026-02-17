@@ -198,6 +198,9 @@
     <ClCompile Include="magicbubble.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="collision.cpp">
+      <Filter>main\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -322,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="magicbubble.h">
       <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="collision.h">
+      <Filter>main\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

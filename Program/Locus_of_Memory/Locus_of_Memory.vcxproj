@@ -164,6 +164,7 @@
     <ClCompile Include="animal.cpp" />
     <ClCompile Include="battery.cpp" />
     <ClCompile Include="clock.cpp" />
+    <ClCompile Include="collision.cpp" />
     <ClCompile Include="custommesh.cpp" />
     <ClCompile Include="diagnosis.cpp" />
     <ClCompile Include="diagnosisui.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="animal.h" />
     <ClInclude Include="battery.h" />
     <ClInclude Include="clock.h" />
+    <ClInclude Include="collision.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="custommesh.h" />
     <ClInclude Include="diagnosis.h" />
