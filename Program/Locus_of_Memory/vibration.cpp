@@ -89,18 +89,21 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 		if (Type == VIBRATIONTYPE_NOTHING)
 		{
 			SetJoypadVibration(0, 0, 1, nPlayertype);
+			nVibration = 0;
+
 		}
 		else
 		{
 			switch (nDropMagic)
 			{
 
-			case MAGICTYPE_LEVITATION:
+			case COMMANDOREDER_GGG:
 				// •‚—V
 
 				switch (Type)
 				{
 				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
 
 					if (nVibration >= 6000 && Up == true)
 					{
@@ -129,6 +132,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 				
 				case VIBRATIONTYPE_MEDIUM:
+					//’†‹——£
 
 					if (nVibration >= 15000 && Up == true)
 					{
@@ -157,6 +161,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
 
 					if (nVibration >= 24000 && Up == true)
 					{
@@ -186,7 +191,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				}
 				break;
 
-			case MAGICTYPE_COMBUSTION:
+			case COMMANDOREDER_RRR:
 				// ”RÄ
 
 				nVibration++;
@@ -211,7 +216,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				}
 				break;
 
-			case MAGICTYPE_FLOOD:
+			case COMMANDOREDER_BBB:
 				// ^…
 
 				nVibration = nVibration + 100;
@@ -219,6 +224,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				switch (Type)
 				{
 				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
 
 					if (nVibration >= 10000)
 					{
@@ -237,6 +243,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
 
 					if (nVibration >= 20000)
 					{
@@ -255,6 +262,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
 
 					if (nVibration >= 30000)
 					{
@@ -274,7 +282,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				}
 				break;
 
-			case MAGICTYPE_FLASH:
+			case COMMANDOREDER_YYY:
 				// ƒtƒ‰ƒbƒVƒ…
 
 				nVibration++;
@@ -294,12 +302,13 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				}
 				break;
 
-			case MAGICTYPE_FIREBALL:
+			case COMMANDOREDER_RRG:
 				 // ‰Î‹…
 
 				switch (Type)
 				{
 				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
 
 					nVibration = nVibration + 350;
 
@@ -331,6 +340,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
 
 					nVibration = nVibration + 650;
 
@@ -362,6 +372,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
 
 					nVibration = nVibration + 1000;
 
@@ -395,7 +406,216 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 
 				break;
 
-			case MAGICTYPE_SUNSETDELAY:
+			case COMMANDOREDER_RGR:
+				// ‰Î‹…
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
+
+					nVibration = nVibration + 350;
+
+					if (nCntVibration == 0)
+					{
+						SetJoypadVibration(0, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(0 + nVibration, 10000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						SetJoypadVibration(10000 - nVibration, 0, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 3)
+					{
+						nCntVibration = 0;
+					}
+
+					if (nVibration >= 10000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+					}
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
+
+					nVibration = nVibration + 650;
+
+					if (nCntVibration == 0)
+					{
+						SetJoypadVibration(0, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(0 + nVibration, 20000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						SetJoypadVibration(20000 - nVibration, 0, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 3)
+					{
+						nCntVibration = 0;
+					}
+
+					if (nVibration >= 20000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+					}
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
+
+					nVibration = nVibration + 1000;
+
+					if (nCntVibration == 0)
+					{
+						SetJoypadVibration(0, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(0 + nVibration, 30000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						SetJoypadVibration(30000 - nVibration, 0, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 3)
+					{
+						nCntVibration = 0;
+					}
+
+					if (nVibration >= 30000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+					}
+					break;
+				}
+
+				break;
+
+
+			case COMMANDOREDER_GRR:
+				// ‰Î‹…
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
+
+					nVibration = nVibration + 350;
+
+					if (nCntVibration == 0)
+					{
+						SetJoypadVibration(0, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(0 + nVibration, 10000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						SetJoypadVibration(10000 - nVibration, 0, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 3)
+					{
+						nCntVibration = 0;
+					}
+
+					if (nVibration >= 10000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+					}
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
+
+					nVibration = nVibration + 650;
+
+					if (nCntVibration == 0)
+					{
+						SetJoypadVibration(0, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(0 + nVibration, 20000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						SetJoypadVibration(20000 - nVibration, 0, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 3)
+					{
+						nCntVibration = 0;
+					}
+
+					if (nVibration >= 20000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+					}
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
+
+					nVibration = nVibration + 1000;
+
+					if (nCntVibration == 0)
+					{
+						SetJoypadVibration(0, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(0 + nVibration, 30000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						SetJoypadVibration(30000 - nVibration, 0, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 3)
+					{
+						nCntVibration = 0;
+					}
+
+					if (nVibration >= 30000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+					}
+					break;
+				}
+
+				break;
+
+			case COMMANDOREDER_RYY:
 				// ’x‰„
 
 				switch (Type)
@@ -430,12 +650,84 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				}
 				break;
 
-			case MAGICTYPE_RAINPRAY:
+			case COMMANDOREDER_YRY:
+				// ’x‰„
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
+					break;
+				}
+
+				nVibration++;
+
+				if (nVibration % 60 < 15)
+				{
+					SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
+				}
+				else if (nVibration % 60 >= 15)
+				{
+					SetJoypadVibration(0, 0, 1, nPlayertype);
+				}
+
+				if (nVibration >= 120)
+				{
+					nVibration = 0;
+				}
+				break;
+
+
+			case COMMANDOREDER_YYR:
+				// ’x‰„
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
+					break;
+				}
+
+				nVibration++;
+
+				if (nVibration % 60 < 15)
+				{
+					SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
+				}
+				else if (nVibration % 60 >= 15)
+				{
+					SetJoypadVibration(0, 0, 1, nPlayertype);
+				}
+
+				if (nVibration >= 120)
+				{
+					nVibration = 0;
+				}
+				break;
+
+			case COMMANDOREDER_BBG:
 				// ‰JŒî‚¢
 
 				switch (Type)
 				{
 				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
 
 					if (nCntVibration == 0)
 					{
@@ -473,6 +765,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
 
 					if (nCntVibration == 0)
 					{
@@ -510,6 +803,128 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
+
+					if (nCntVibration == 0)
+					{
+
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(30000 - nVibration, 30000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						nVibDel = 100;
+						nCntVibration = 0;
+					}
+
+					if (nVibDel <= 0)
+					{
+						nVibration = nVibration + 300;
+					}
+					else
+					{
+						nVibDel--;
+
+					}
+
+					if (nVibration >= 30000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+
+					}
+					break;
+				}
+				break;
+	
+			case COMMANDOREDER_BGB:
+				// ‰JŒî‚¢
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
+
+					if (nCntVibration == 0)
+					{
+
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(10000 - nVibration, 10000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						nVibDel = 100;
+						nCntVibration = 0;
+					}
+
+					if (nVibDel <= 0)
+					{
+						nVibration = nVibration + 100;
+					}
+					else
+					{
+						nVibDel--;
+
+					}
+
+					if (nVibration >= 10000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+
+					}
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
+
+					if (nCntVibration == 0)
+					{
+
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(20000 - nVibration, 20000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						nVibDel = 100;
+						nCntVibration = 0;
+					}
+
+					if (nVibDel <= 0)
+					{
+						nVibration = nVibration + 200;
+					}
+					else
+					{
+						nVibDel--;
+
+					}
+
+					if (nVibration >= 20000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+
+					}
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
 
 					if (nCntVibration == 0)
 					{
@@ -548,12 +963,134 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				}
 				break;
 
-			case MAGICTYPE_FREEZE:
-					// “€Œ‹
+			case COMMANDOREDER_GBB:
+				// ‰JŒî‚¢
 
 				switch (Type)
 				{
 				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
+
+					if (nCntVibration == 0)
+					{
+
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(10000 - nVibration, 10000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						nVibDel = 100;
+						nCntVibration = 0;
+					}
+
+					if (nVibDel <= 0)
+					{
+						nVibration = nVibration + 100;
+					}
+					else
+					{
+						nVibDel--;
+
+					}
+
+					if (nVibration >= 10000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+
+					}
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
+
+					if (nCntVibration == 0)
+					{
+
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(20000 - nVibration, 20000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						nVibDel = 100;
+						nCntVibration = 0;
+					}
+
+					if (nVibDel <= 0)
+					{
+						nVibration = nVibration + 200;
+					}
+					else
+					{
+						nVibDel--;
+
+					}
+
+					if (nVibration >= 20000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+
+					}
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
+
+					if (nCntVibration == 0)
+					{
+
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 1)
+					{
+						SetJoypadVibration(30000 - nVibration, 30000 - nVibration, 60, nPlayertype);
+
+					}
+					else if (nCntVibration == 2)
+					{
+						nVibDel = 100;
+						nCntVibration = 0;
+					}
+
+					if (nVibDel <= 0)
+					{
+						nVibration = nVibration + 300;
+					}
+					else
+					{
+						nVibDel--;
+
+					}
+
+					if (nVibration >= 30000)
+					{
+						nCntVibration++;
+						nVibration = 0;
+
+					}
+					break;
+				}
+				break;
+
+			case COMMANDOREDER_BGG:
+				// “€Œ‹
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
 
 					nVibration = nVibration + 35;
 
@@ -574,6 +1111,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
 
 					nVibration = nVibration + 65;
 
@@ -594,6 +1132,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
 
 					nVibration = nVibration + 100;
 
@@ -614,13 +1153,154 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 				}
 				break;
-				
-			case MAGICTYPE_GROWTH:
+
+			case COMMANDOREDER_GBG:
+				// “€Œ‹
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
+
+					nVibration = nVibration + 35;
+
+					if (nVibration >= 10000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 10000, 60, nPlayertype);
+					}
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
+
+					nVibration = nVibration + 65;
+
+					if (nVibration >= 20000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 20000, 60, nPlayertype);
+					}
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
+
+					nVibration = nVibration + 100;
+
+					if (nVibration >= 30000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 30000, 60, nPlayertype);
+					}
+					break;
+				}
+				break;
+
+			case COMMANDOREDER_GGB:
+				// “€Œ‹
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
+
+					nVibration = nVibration + 35;
+
+					if (nVibration >= 10000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 10000, 60, nPlayertype);
+					}
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
+
+					nVibration = nVibration + 65;
+
+					if (nVibration >= 20000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 20000, 60, nPlayertype);
+					}
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
+
+					nVibration = nVibration + 100;
+
+					if (nVibration >= 30000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 30000, 60, nPlayertype);
+					}
+					break;
+				}
+				break;
+
+			case COMMANDOREDER_BYY:
 				// ¬’·
 
 				switch (Type)
 				{
 				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
 
 					nVibration = nVibration + 35;
 
@@ -641,6 +1321,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
 
 					nVibration = nVibration + 65;
 
@@ -661,6 +1342,7 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					break;
 
 				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
 
 					nVibration = nVibration + 100;
 
@@ -683,13 +1365,167 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 
 				break;
 
-			case MAGICTYPE_ACCELERATION:
+			case COMMANDOREDER_YBY:
+				// ¬’·
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
+
+					nVibration = nVibration + 35;
+
+					if (nVibration >= 10000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+					}
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
+
+					nVibration = nVibration + 65;
+
+					if (nVibration >= 20000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+					}
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
+
+					nVibration = nVibration + 100;
+
+					if (nVibration >= 30000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+					}
+					break;
+				}
+
+				break;
+
+			case COMMANDOREDER_YYB:
+				// ¬’·
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+					// ‰“‹——£
+
+					nVibration = nVibration + 35;
+
+					if (nVibration >= 10000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+					}
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+					// ’†‹——£
+
+					nVibration = nVibration + 65;
+
+					if (nVibration >= 20000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+					}
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+					// ‹ß‹——£
+
+					nVibration = nVibration + 100;
+
+					if (nVibration >= 30000)
+					{
+						nVibDel++;
+					}
+
+					if (nVibDel >= 100)
+					{
+						nVibration = 0;
+						nVibDel = 0;
+					}
+					else if (nVibDel == 0)
+					{
+						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
+					}
+					break;
+				}
+
+				break;
+
+			case COMMANDOREDER_GGY:
 				// ‰Á‘¬
 
 				SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
 				break;
-			
-			case MAGICTYPE_TIMEREVERT:
+
+			case COMMANDOREDER_GYG:
+				// ‰Á‘¬
+
+				SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
+				break;
+
+			case COMMANDOREDER_YGG:
+				// ‰Á‘¬
+
+				SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
+				break;
+
+			case COMMANDOREDER_RGB:
 				// Šª‚«–ß‚µ
 
 				switch (Type)
