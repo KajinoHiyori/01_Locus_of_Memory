@@ -198,6 +198,9 @@
     <ClCompile Include="brickwall.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>main\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -322,6 +325,9 @@
     </ClInclude>
     <ClInclude Include="brickwall.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>main\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
