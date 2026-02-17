@@ -16,6 +16,7 @@
 #include "battery.h"
 #include "main.h"
 #include "uimanager.h"
+#include "magicbubble.h"
 #include "object.h"
 #include "skybox.h"
 #include "effect.h"
@@ -114,6 +115,8 @@ void InitGame(void)
 
 	InitUIManager();
 
+	InitMagicBubble();
+
 	InitEffect();
 
 	InitParticle();
@@ -178,6 +181,8 @@ void UninitGame(void)
 	UninitBattery();
 
 	UninitUIManager();
+
+	UninitMagicBubble();
 
 	//UninitScore();
 
@@ -259,6 +264,8 @@ void UpdateGame(void)
 	UpdateMagicUI();
 
 	UpdateUIManager();
+
+	UpdateMagicBubble();
 
 	UpdateClock();
 
@@ -381,6 +388,8 @@ void DrawGame(void)
 	SetFogEnable(false);		// –¶‚ð–³Œø
 
 	DrawUIManager();
+
+	DrawMagicBubble();
 
 	DrawGameUI();
 

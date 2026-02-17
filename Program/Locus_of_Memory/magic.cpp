@@ -14,15 +14,16 @@
 #include "vibration.h"
 #include "event.h"
 #include "magiccircle.h"
+#include "magicbubble.h"
 
 //マクロ定義
 #define MAX_MAGIC				(128)		//魔法の最大数
 #define MAX_DROPMAGIC			(32)		//落ちてる魔法の最大数
 #define MAX_COMMAND				(3)			//コマンドの最大数
 #define MAX_MAGICLOCUS			(64)		//魔法使用場所最大数
-#define DROPMAGIC_RADIUS		(50.0f)		//落ちてる魔法の半径
+#define DROPMAGIC_RADIUS		(70.0f)		//落ちてる魔法の半径
 #define DROPMAGIC_MEDIUMRADIUS	(100.0f)	//落ちてる魔法の半径
-#define DROPMAGIC_FARRADIUS		(150.0f)	//落ちてる魔法の半径
+#define DROPMAGIC_FARRADIUS		(130.0f)	//落ちてる魔法の半径
 #define DISP_MAGIC				(30)		// UIの発動魔法表示時間管理
 
 //グローバル変数宣言
@@ -655,6 +656,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		if (fDiff <= powf(fRadius + pDropMagic->fRadius, 2))
 		{// 当たっていたら
 			// ここで種類に応じた振動を呼び出す
+			SetMagicBubble(nIdx, pDropMagic->oType, -1);
 			VibrationType(VIBRATIONTYPE_CLOSE, MAGICTYPE_COMBUSTION, nIdx);
 			PrintDebugProc("[%d]落ちている魔法とあたっている\n", nCntMagic);
 			return nCntMagic;
@@ -662,6 +664,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		else if (fDiff <= powf(fRadius + DROPMAGIC_MEDIUMRADIUS, 2))
 		{// 落ちている魔法の周辺にいたら
 			// ここで種類に応じた振動を呼び出す
+			SetMagicBubble(nIdx, pDropMagic->oType, 0);
 			VibrationType(VIBRATIONTYPE_MEDIUM, MAGICTYPE_COMBUSTION, nIdx);
 			PrintDebugProc("[%d]周辺に魔法が落ちている\n", nCntMagic);
 			isSearch = true;
@@ -669,8 +672,8 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		else if (fDiff <= powf(fRadius + DROPMAGIC_FARRADIUS, 2))
 		{// 遠くに魔法が落ちていたら
 			 // ここで種類に応じた振動を呼び出す
+			SetMagicBubble(nIdx, pDropMagic->oType, 1);
 			VibrationType(VIBRATIONTYPE_FAR, MAGICTYPE_COMBUSTION, nIdx);
-
 			PrintDebugProc("[%d]遠くに魔法が落ちている\n", nCntMagic);
 			isSearch = true;
 		}
@@ -682,6 +685,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 	{// 範囲外に出た場合
 		// ここで種類に応じた振動を呼び出す
 		VibrationType(VIBRATIONTYPE_NOTHING, MAGICTYPE_COMBUSTION, nIdx);
+		ResetMagicBubble(nIdx);
 	}
 
 	return -1;
