@@ -34,19 +34,7 @@ DWORD g_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
 // サウンドの情報
 SOUNDINFO g_aSoundInfo[SOUND_LABEL_MAX] =
 {
-	{"data/BGM/titlebgm000.wav", -1},		// タイトルBGM
-	{"data/BGM/tutorialbgm000.wav", -1},	// チュートリアルBGM
-	{"data/BGM/gamebgm000.wav", -1},		// ゲームBGM
-	{"data/BGM/resultbgm000.wav", -1},		// リザルトBGM
-	{"data/SE/walkSE000.wav", 0},			// 歩行SE
-	{"data/SE/jumpSE000.wav", 0},			// ジャンプSE
-	{"data/SE/selectSE000.wav", 0},			// 選択SE
-	{"data/SE/selectSE001.wav", 0},			// 選択決定SE
-	{"data/SE/fallSE000.wav", 0},			// 選択決定SE
-	{"data/SE/reactionSE000.wav", 0},		// リアクションSE
-	{"data/SE/butreactionSE001.wav", 0},	// バットリアクションSE
-	{"data/SE/getSE000.wav", 0},			// ゲット
-
+	{"data/BGM/ks039.wav", -1},		// BGM
 };
 
 //=============================================================================

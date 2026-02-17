@@ -8,7 +8,7 @@
 #include "main.h"
 #include "input.h"
 #include "debugproc.h"
-//#include "sound.h"
+#include "sound.h"
 //#include "effect.h"
 //#include "particle.h"
 #include "start.h"
@@ -363,8 +363,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//// ライトの初期化
 	//InitLight();
 
-	//// サウンドの初期化処理
-	//InitSound(hWnd);
+	// サウンドの初期化処理
+	InitSound(hWnd);
 
 	// メッシュフィールドの初期化処理
 	InitMeshField();
@@ -478,12 +478,11 @@ void Uninit(void)
 	//パーティクルの終了処理
 	UninitParticle();
 
+	// サウンドを止める
+	StopSound();
 
-	//// サウンドを止める
-	//StopSound();
-
-	//// サウンドの終了処理
-	//UninitSound();
+	// サウンドの終了処理
+	UninitSound();
 
 	// Direct3Dデバイスの破棄
 	if (g_pD3DDevice != NULL)

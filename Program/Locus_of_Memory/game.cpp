@@ -19,7 +19,7 @@
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
-//#include"sound.h"
+#include"sound.h"
 #include"fade.h"
 //#include"pause.h"
 #include"camera.h"
@@ -118,7 +118,7 @@ void InitGame(void)
 
 	InitParticle();
 
-	//PlaySound(SOUND_LABEL_GAME);
+	PlaySound(SOUND_LABEL_000);
 
 	pVibration->Vibration = false;
 
@@ -179,7 +179,7 @@ void UninitGame(void)
 
 	//UninitTimer();
 
-	//StopSound();
+	StopSound();
 
 	UninitRandomObject();
 
