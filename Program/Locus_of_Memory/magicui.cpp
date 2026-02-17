@@ -17,9 +17,9 @@
 // マクロ定義
 #define MAX_COMMAND			(4)					// 所持可能な魔法の最大数
 #define NUM_KEY				(30)				// 処理を行うキー数
-#define MAGICUI_WIDTH		(600.0f)			// MAGICUIの幅
-#define MAGICUI_HEIGHT		(150.0f)			// MAGICUIの高さ
-#define MAGICUI_X			(15.0f)				// MAGICUIのX軸
+#define MAGICUI_WIDTH		(20.0f)			// MAGICUIの幅
+#define MAGICUI_HEIGHT		(5.0f)			// MAGICUIの高さ
+#define MAGICUI_X			(23.0f)				// MAGICUIのX軸
 #define MAGICUI_YUP			(100.0f)			// MAGICUIのY高度
 #define MAGICUI_YDOWN		(80.0f)				// MAGICUIのY高度
 #define MAGICUI_Z			(40.0f)				// 魔導書の配置場所Z
@@ -145,7 +145,7 @@ void InitMagicUI(void)
 		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_NONDISPLAY;			// UIの表示状態
 		g_aMagicUI[nCntPlayer].nNumKey = NUM_KEY;						// 処理を行うキー数
 		g_aMagicUI[nCntPlayer].nKey = 0;							// 現在のキー
-		g_aMagicUI[nCntPlayer].bDisp = true;			// UI表示状態(trueでポーズ中)
+		g_aMagicUI[nCntPlayer].bDisp = false;			// UI表示状態(trueでポーズ中)
 	}
 
 	// 頂点バッファの生成
@@ -276,6 +276,9 @@ void UpdateMagicUI(void)
 	Player* pPlayer = GetPlayer();
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
+		// 魔導書の中身を更新
+		SetMagicTexture(nCntPlayer);
+
 		// SPELLメニューを開いているかのフラグを立てる
 		if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
 		{
@@ -300,57 +303,63 @@ void UpdateMagicUI(void)
 			continue;
 		}
 
-		
+		// // 全体の演出処理======================================================================================
+		// float fDiffKey = 0.0f;	// キーの差分を計算
+		// float fRateKey = (float)g_aMagicUI[nCntPlayer].nKey / (float)g_aMagicUI[nCntPlayer].nNumKey;
+		// switch (g_aMagicUI[nCntPlayer].state)
+		// {
+		// case MAGICUISTATE_NONDISPLAY:	// 非表示状態
+		// 	g_aMagicUI[nCntPlayer].bDisp = false;
+		// 	break;
+		// 
+		// case MAGICUISTATE_APPEAR:	// 出現状態
+		// 	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+		// 	{
+		// 		// 背景の高度変更
+		// 		fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+		// 		g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
+		// 		// 中心位置からの位置を求める
+		// 		g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
+		// 	}
+		// 	g_aMagicUI[nCntPlayer].nKey++;
+		// 
+		// 	if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
+		// 	{
+		// 		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISPLAY;
+		// 		SetMagicUIDisplay(nCntPlayer);
+		// 	}
+		// 	break;
+		// 
+		// case MAGICUISTATE_DISPLAY:	// 表示状態
+		// 
+		// 	break;
+		// 
+		// case MAGICUISTATE_DISAPPEAR:	// 収縮状態
+		// 	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+		// 	{
+		// 		// 背景の高度変更
+		// 		fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+		// 		g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
+		// 		// 中心位置からの位置を求める
+		// 		g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
+		// 	}
+		// 	g_aMagicUI[nCntPlayer].nKey++;
+		// 
+		// 	if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
+		// 	{
+		// 		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_NONDISPLAY;
+		// 		SetMagicUINonDisplay(nCntPlayer);
+		// 	}
+		// 	break;
+		// }
 
-		// 全体の演出処理======================================================================================
-		float fDiffKey = 0.0f;	// キーの差分を計算
-		float fRateKey = (float)g_aMagicUI[nCntPlayer].nKey / (float)g_aMagicUI[nCntPlayer].nNumKey;
-		switch (g_aMagicUI[nCntPlayer].state)
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++, pVtx+= 4)
 		{
-		case MAGICUISTATE_NONDISPLAY:	// 非表示状態
-			g_aMagicUI[nCntPlayer].bDisp = false;
-			break;
-
-		case MAGICUISTATE_APPEAR:	// 出現状態
-			for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
-			{
-				// 背景の高度変更
-				fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
-				// 中心位置からの位置を求める
-				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
-			}
-			g_aMagicUI[nCntPlayer].nKey++;
-
-			if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
-			{
-				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISPLAY;
-				SetMagicUIDisplay(nCntPlayer);
-			}
-			break;
-
-		case MAGICUISTATE_DISPLAY:	// 表示状態
-
-			break;
-
-		case MAGICUISTATE_DISAPPEAR:	// 収縮状態
-			for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
-			{
-				// 背景の高度変更
-				fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
-				// 中心位置からの位置を求める
-				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
-			}
-			g_aMagicUI[nCntPlayer].nKey++;
-
-			if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
-			{
-				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISPLAY;
-				SetMagicUINonDisplay(nCntPlayer);
-				ResetCommdSave(nCntPlayer);
-			}
-			break;
+			// 頂点座標の設定
+			pVtx[0].pos = D3DXVECTOR3(-g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight, MAGICUI_Z);
+			pVtx[1].pos = D3DXVECTOR3(g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight, MAGICUI_Z);
+			pVtx[2].pos = D3DXVECTOR3(-g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth, -g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight, MAGICUI_Z);
+			pVtx[3].pos = D3DXVECTOR3(g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth, -g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight, MAGICUI_Z);
 		}
 	}
 
@@ -400,7 +409,7 @@ void DrawMagicUI(void)
 
 			if (g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp == false)
 			{
-				continue;
+				//continue;
 			}
 
 			// ポリゴンのワールドマトリックスを初期化
@@ -468,7 +477,7 @@ void SetMagicTexture(int nIdx)
 		switch (commandOrder[nCntMagic])
 		{
 		case COMMANDOREDER_NONE:	// コマンドがない場合
-			g_aMagicUI[nIdx].bDisp = false;
+			g_aMagicUI[nIdx].aMagicUI[nCntMagic].bDisp = false;
 			tex = MAGICUI_TEX_NULL;
 			break;
 
@@ -564,6 +573,8 @@ void SetMagicTexture(int nIdx)
 			tex = MAGICUI_TEX_RGB;
 			break;
 		}
+
+		g_aMagicUI[nIdx].aMagicUI[nCntMagic].tex = tex;
 	}
 }
 
@@ -572,7 +583,55 @@ void SetMagicTexture(int nIdx)
 //======================================================================================
 void SetMagicUIAppear(int nIdx)
 {
+	g_aMagicUI[nIdx].nKey = 0;
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+	{
+		// 非表示のものは処理を行わない
+		if (g_aMagicUI[nIdx].aMagicUI[nCntUI].tex == MAGICUI_TEX_NULL)
+		{
+			continue;
+		}
 
+		// 各種情報の設定
+		switch (nCntUI)
+		{
+		case MAGICUI_TYPE_MAGIC0:	// 1つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(-MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = 0.0f;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC1:	// 2つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = 0.0f;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC2:	// 3つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(-MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = 0.0f;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC3:	// 4つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = 0.0f;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+		}
+	}
 }
 
 //======================================================================================
@@ -580,7 +639,54 @@ void SetMagicUIAppear(int nIdx)
 //======================================================================================
 void SetMagicUIDisplay(int nIdx)
 {
+	g_aMagicUI[nIdx].nKey = 0;
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+	{
+		// 非表示のものは処理を行わない
+		if (g_aMagicUI[nIdx].aMagicUI[nCntUI].tex == MAGICUI_TEX_NULL)
+		{
+			continue;
+		}
 
+		switch (nCntUI)
+		{
+		case MAGICUI_TYPE_MAGIC0:	// 1つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(-MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC1:	// 2つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC2:	// 3つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(-MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC3:	// 4つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+		}
+	}
 }
 
 //======================================================================================
@@ -588,7 +694,54 @@ void SetMagicUIDisplay(int nIdx)
 //======================================================================================
 void SetMagicUIDisappear(int nIdx)
 {
+	g_aMagicUI[nIdx].nKey = 0;
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+	{
+		// 非表示のものは処理を行わない
+		if (g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp == false)
+		{
+			continue;
+		}
 
+		switch (nCntUI)
+		{
+		case MAGICUI_TYPE_MAGIC0:	// 1つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(-MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = 0.0f;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC1:	// 2つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = 0.0f;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC2:	// 3つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(-MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = 0.0f;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC3:	// 4つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = 0.0f;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+		}
+	}
 }
 
 //======================================================================================
@@ -596,5 +749,47 @@ void SetMagicUIDisappear(int nIdx)
 //======================================================================================
 void SetMagicUINonDisplay(int nIdx)
 {
+	g_aMagicUI[nIdx].nKey = 0;
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+	{
+		// 各種情報の設定
+		switch (nCntUI)
+		{
+		case MAGICUI_TYPE_MAGIC0:	// 1つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(-MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = 0.0f;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = false;			// 表示状態
+			break;
 
+		case MAGICUI_TYPE_MAGIC1:	// 2つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = 0.0f;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = false;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC2:	// 3つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(-MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = 0.0f;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = false;			// 表示状態
+			break;
+
+		case MAGICUI_TYPE_MAGIC3:	// 4つ目の魔法
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].pos = D3DXVECTOR3(MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;		// 幅
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeight = 0.0f;		// 高さ
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fWidthDest = 0.0f;				// 幅の目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].fHeightDest = MAGICUI_HEIGHT;				// 高さの目的地
+			g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = false;			// 表示状態
+			break;
+		}
+	}
 }
