@@ -992,7 +992,7 @@ void ToggleFullscreen(HWND hWnd)
 //==================================================================================
 //	テクスチャステージステートのアルファの設定
 //==================================================================================
-void SetTextureStageStateAlpha(int nIdx, DWORD Stage, D3DTEXTURESTAGESTATETYPE Type, DWORD Value)
+void SetTextureStageStateAlpha(int nIdx, DWORD Stage, D3DTEXTUREOP Type, DWORD Value)
 {
 	// テクスチャステージステートの設定
 	g_pD3DDevice->SetTextureStageState(nIdx, D3DTSS_ALPHAARG1, Stage);
@@ -1021,7 +1021,7 @@ void ResetTextureStageStateAlpha(int nNumIdx)
 //==================================================================================
 //	テクスチャステージステートのカラーの設定
 //==================================================================================
-void SetTextureStageStateColor(int nIdx, DWORD Stage, D3DTEXTURESTAGESTATETYPE Type, DWORD Value)
+void SetTextureStageStateColor(int nIdx, DWORD Stage, D3DTEXTUREOP Type, DWORD Value)
 {
 	// テクスチャステージステートの設定
 	g_pD3DDevice->SetTextureStageState(nIdx, D3DTSS_COLORARG1, Stage);

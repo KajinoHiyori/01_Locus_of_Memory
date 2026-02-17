@@ -14,10 +14,13 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MESHFIELD_SPLIT_WIDHT		(30 + 1)		// 横の分割数
-#define MESHFIELD_SPLIT_DEPTH		(30 + 1)		// 縦の分割数
-#define MAX_CUSTOMMESH				(5)				// カスタムメッシュの最大数
-#define TEX_SPLIT					(10)			// テクスチャの分割数
+#define MESHFIELD_SPLIT_WIDHT		(30 + 1)						// 横の分割数
+#define MESHFIELD_SPLIT_DEPTH		(30 + 1)						// 縦の分割数
+#define MAX_CUSTOMMESH				(5)								// カスタムメッシュの最大数
+#define TEX_SPLIT					(10)							// テクスチャの分割数
+#define TEX_DEFAULT					(D3DXVECTOR2(1.0f, 1.0f));		// テクスチャの初期位置
+
+#define RIVER_MOVE					(0.0001f)						// 川のテクスチャの流れる速度
 
 #define VTX_MIN		(D3DXVECTOR3(10000.0f, 10000.0f, 10000.0f))		// オブジェクトの大きさの初期化値(最小)
 #define VTX_MAX		(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// オブジェクトの大きさの初期化値(最大)
@@ -140,8 +143,10 @@ void DrawCustomMesh(void)
 		// 頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_3D_MULTI);
 
+		SetTextureStageStateColor(1, D3DTA_TEXTURE, D3DTOP_BLENDTEXTUREALPHA, D3DTA_CURRENT);
+
 		// テクスチャの設定
-		pDevice->SetTexture(0, NULL);
+		pDevice->SetTexture(0, g_apCustomTextureMesh[0]);
 		pDevice->SetTexture(1, g_apCustomTextureMesh[1]);
 
 		// メッシュフィールドの描画
@@ -151,6 +156,9 @@ void DrawCustomMesh(void)
 			pCustomMesh->nNumVtx,
 			0,
 			pCustomMesh->nNumIdx - 4);
+
+		ResetTextureStageStateColor(2);
+
 	}
 }
 
@@ -159,31 +167,45 @@ void DrawCustomMesh(void)
 //=============================================================================
 void UpdateCustomMesh(void)
 {
-	LPCUSTOMMESH pCustomMesh = &g_aCustomMesh[0];
+	LPCUSTOMMESH pCustomMesh = &g_aCustomMesh[0];		// カスタムメッシュへのポインタ
 
 	// 初期化
 	VERTEX_3D_MULTI* pVtx;			// 頂点情報へのポインタ
 
-	// 頂点バッファをロックし,頂点情報へのポインタを取得
-	pCustomMesh->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
 	for (int nCntCustomMesh = 0; nCntCustomMesh < MAX_CUSTOMMESH; nCntCustomMesh++)
 	{
-		for (int nCntVtx = 0; nCntVtx < pCustomMesh->nNumVtx; nCntVtx++)
-		{
-			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-			pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-
-			float fDestX = pVtx[nCntVtx].pos.x / (pCustomMesh->fWidth);
-			float fDestZ = pVtx[nCntVtx].pos.z / (pCustomMesh->fDepth);
-
-			pVtx[nCntVtx].tex = D3DXVECTOR2(fDestX * TEX_SPLIT, -fDestZ * TEX_SPLIT);
-			pVtx[nCntVtx].texM = D3DXVECTOR2(fDestX * TEX_SPLIT, -fDestZ * TEX_SPLIT);
+		if (pCustomMesh->bUse == false)
+		{// 使っていなければ弾く
+			continue;
 		}
-	}
 
-	// 頂点バッファをアンロックする
-	pCustomMesh->pVtxBuff->Unlock();
+		// 川のテクスチャ移動量を加算
+		pCustomMesh->tex.x += -RIVER_MOVE;
+		pCustomMesh->tex.y += RIVER_MOVE;
+
+		// 頂点バッファをロックし,頂点情報へのポインタを取得
+		pCustomMesh->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		for (int nCntCustomMesh = 0; nCntCustomMesh < MAX_CUSTOMMESH; nCntCustomMesh++)
+		{
+			for (int nCntVtx = 0; nCntVtx < pCustomMesh->nNumVtx; nCntVtx++)
+			{
+				pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+				pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+				// 全体の大きさから現在頂点の位置する割合を算出
+				float fDestX = pVtx[nCntVtx].pos.x / (pCustomMesh->fWidth);
+				float fDestZ = pVtx[nCntVtx].pos.z / (pCustomMesh->fDepth);
+
+				// 対応したテクスチャ座標を設定
+				pVtx[nCntVtx].tex = D3DXVECTOR2(fDestX * TEX_SPLIT, -fDestZ * TEX_SPLIT);
+				pVtx[nCntVtx].texM = D3DXVECTOR2(fDestX * TEX_SPLIT + pCustomMesh->tex.x, -fDestZ * TEX_SPLIT + pCustomMesh->tex.y);
+			}
+		}
+
+		// 頂点バッファをアンロックする
+		pCustomMesh->pVtxBuff->Unlock();
+	}
 }
 
 //=============================================================================
@@ -194,12 +216,12 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	LPCUSTOMMESH pCustomMesh = &g_aCustomMesh[0];
+	LPCUSTOMMESH pCustomMesh = &g_aCustomMesh[0];		// カスタムメッシュへのポインタ
 
 	for (int nCntCustomMesh = 0; nCntCustomMesh < MAX_CUSTOMMESH; nCntCustomMesh++, pCustomMesh++)
 	{
 		if (pCustomMesh->bUse == true)
-		{
+		{// 使っていたら弾く
 			continue;
 		}
 
@@ -209,6 +231,7 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 		// カスタムメッシュの設定
 		pCustomMesh->pos = pos;
 		pCustomMesh->rot = rot;
+		pCustomMesh->tex = TEX_DEFAULT;
 		pCustomMesh->type = MESHFIELDTYPE_000;
 		pCustomMesh->nNumVtx = nNumVtx;
 		pCustomMesh->nNumIdx = nNumIdx;
@@ -216,7 +239,7 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 		// 頂点バッファの生成
 		pDevice->CreateVertexBuffer(sizeof(VERTEX_3D_MULTI) * nNumVtx,
 			D3DUSAGE_WRITEONLY,
-			FVF_VERTEX_3D,
+			FVF_VERTEX_3D_MULTI,
 			D3DPOOL_MANAGED,
 			&pCustomMesh->pVtxBuff,
 			NULL);
@@ -228,7 +251,7 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 		pCustomMesh->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 		for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
-		{
+		{// 頂点情報を設定
 			pVtx[nCntVtx].pos = *pVtxPos;
 			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 			pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -292,7 +315,7 @@ void SetCustomMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int n
 		pCustomMesh->pIdxBuff->Lock(0, 0, (void**)&pIdx, 0);
 
 		for (int nCntIdx = 0; nCntIdx < nNumIdx; nCntIdx++)
-		{
+		{// インデックスを指定
 			pCustomMesh->nIdx[nCntIdx] = *pIdxInfo;
 			pIdx[nCntIdx] = pCustomMesh->nIdx[nCntIdx];
 

@@ -26,6 +26,7 @@ typedef struct CustomMesh
 	LPDIRECT3DINDEXBUFFER9 pIdxBuff;			// インデックスバッファへのポインタ
 	D3DXVECTOR3 pos;							// 位置
 	D3DXVECTOR3 rot;							// 向き
+	D3DXVECTOR2 tex;							// テクスチャの位置
 	MESHFIELDTYPE type;							// 種類
 	float fWidth;								// 幅
 	float fHeigth;								// 高さ
