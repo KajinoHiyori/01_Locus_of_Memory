@@ -714,7 +714,7 @@ void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE paren
 void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 {
 	// âﬂãéÇÃèÓïÒÇäiî[
-	COMMANDOREDER ownCommandOld[MAX_OWNCOMMAND], ownCommandNew[MAX_OWNCOMMAND + 1];
+	COMMANDOREDER ownCommandOld[MAX_OWNCOMMAND];
 	
 	for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
 	{
@@ -732,10 +732,13 @@ void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 		// 1Ç¬à»è„ÇÃñÇñ@ÇèäéùÇµÇƒÇ¢ÇÈèÍçá
 		for (int nCntCommand = 0; nCntCommand < pMagicBook->nCntOwn; nCntCommand++)
 		{
-			ownCommandNew[nCntCommand + 1] = ownCommandOld[nCntCommand];
+			pMagicBook->OwnCommand[nCntCommand + 1] = ownCommandOld[nCntCommand];
 		}
+
 		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
 		pMagicBook->nCntOwn++;
+
+		// èäéùêîÇ™4ÇâzÇ¶Ç»Ç¢ÇÊÇ§Ç…ä«óù
 		if (pMagicBook->nCntOwn > MAX_OWNCOMMAND)
 		{
 			pMagicBook->nCntOwn = MAX_OWNCOMMAND;

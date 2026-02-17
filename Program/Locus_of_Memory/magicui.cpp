@@ -303,55 +303,55 @@ void UpdateMagicUI(void)
 			continue;
 		}
 
-		// // 全体の演出処理======================================================================================
-		// float fDiffKey = 0.0f;	// キーの差分を計算
-		// float fRateKey = (float)g_aMagicUI[nCntPlayer].nKey / (float)g_aMagicUI[nCntPlayer].nNumKey;
-		// switch (g_aMagicUI[nCntPlayer].state)
-		// {
-		// case MAGICUISTATE_NONDISPLAY:	// 非表示状態
-		// 	g_aMagicUI[nCntPlayer].bDisp = false;
-		// 	break;
-		// 
-		// case MAGICUISTATE_APPEAR:	// 出現状態
-		// 	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
-		// 	{
-		// 		// 背景の高度変更
-		// 		fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-		// 		g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
-		// 		// 中心位置からの位置を求める
-		// 		g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
-		// 	}
-		// 	g_aMagicUI[nCntPlayer].nKey++;
-		// 
-		// 	if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
-		// 	{
-		// 		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISPLAY;
-		// 		SetMagicUIDisplay(nCntPlayer);
-		// 	}
-		// 	break;
-		// 
-		// case MAGICUISTATE_DISPLAY:	// 表示状態
-		// 
-		// 	break;
-		// 
-		// case MAGICUISTATE_DISAPPEAR:	// 収縮状態
-		// 	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
-		// 	{
-		// 		// 背景の高度変更
-		// 		fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-		// 		g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
-		// 		// 中心位置からの位置を求める
-		// 		g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
-		// 	}
-		// 	g_aMagicUI[nCntPlayer].nKey++;
-		// 
-		// 	if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
-		// 	{
-		// 		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_NONDISPLAY;
-		// 		SetMagicUINonDisplay(nCntPlayer);
-		// 	}
-		// 	break;
-		// }
+		// 全体の演出処理======================================================================================
+		float fDiffKey = 0.0f;	// キーの差分を計算
+		float fRateKey = (float)g_aMagicUI[nCntPlayer].nKey / (float)g_aMagicUI[nCntPlayer].nNumKey;
+		switch (g_aMagicUI[nCntPlayer].state)
+		{
+		case MAGICUISTATE_NONDISPLAY:	// 非表示状態
+			g_aMagicUI[nCntPlayer].bDisp = false;
+			break;
+		
+		case MAGICUISTATE_APPEAR:	// 出現状態
+			for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+			{
+				// 背景の高度変更
+				fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
+				// 中心位置からの位置を求める
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
+			}
+			g_aMagicUI[nCntPlayer].nKey++;
+		
+			if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
+			{
+				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISPLAY;
+				SetMagicUIDisplay(nCntPlayer);
+			}
+			break;
+		
+		case MAGICUISTATE_DISPLAY:	// 表示状態
+		
+			break;
+		
+		case MAGICUISTATE_DISAPPEAR:	// 収縮状態
+			for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+			{
+				// 背景の高度変更
+				fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
+				// 中心位置からの位置を求める
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
+			}
+			g_aMagicUI[nCntPlayer].nKey++;
+		
+			if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
+			{
+				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_NONDISPLAY;
+				SetMagicUINonDisplay(nCntPlayer);
+			}
+			break;
+		}
 
 		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++, pVtx+= 4)
 		{
@@ -409,7 +409,7 @@ void DrawMagicUI(void)
 
 			if (g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp == false)
 			{
-				//continue;
+				continue;
 			}
 
 			// ポリゴンのワールドマトリックスを初期化
