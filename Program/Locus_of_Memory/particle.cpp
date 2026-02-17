@@ -136,7 +136,7 @@ void UpdateParticle(void)
 				{
 					//à íuÇÃê›íË
 					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 40;
-					pos[0].y = g_aParticle[nCntParticle].pos.y + 150.0f;
+					pos[0].y = g_aParticle[nCntParticle].pos.y;
 					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 40;
 
 					fSpeed = (float)(rand() % 2 + 1);
@@ -155,7 +155,7 @@ void UpdateParticle(void)
 				{
 					//à íuÇÃê›íË
 					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 40;
-					pos[0].y = g_aParticle[nCntParticle].pos.y + 150.0f;
+					pos[0].y = g_aParticle[nCntParticle].pos.y;
 					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 40;
 
 					fSpeed = (float)(rand() % 2 + 1);
@@ -174,7 +174,7 @@ void UpdateParticle(void)
 				{
 					//à íuÇÃê›íË
 					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 40;
-					pos[0].y = g_aParticle[nCntParticle].pos.y + 150.0f;
+					pos[0].y = g_aParticle[nCntParticle].pos.y;
 					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 40;
 
 					fSpeed = (float)(rand() % 2 + 1);

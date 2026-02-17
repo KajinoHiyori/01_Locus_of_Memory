@@ -27,7 +27,7 @@
 #define DISP_MAGIC				(30)		// UIの発動魔法表示時間管理
 
 //グローバル変数宣言
-Magic g_aMagic[MAX_PLAYER][MAX_MAGIC];					//魔法の情報
+Magic g_aMagic[MAX_PLAYER];								//魔法の情報
 DropMagic g_aDropMagic[MAX_DROPMAGIC];					//落ちてる魔法の情報
 COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
 COMMANDTYPE g_aCommandSave[MAX_PLAYER][MAX_COMMAND];		//コマンドの過去の情報
@@ -47,16 +47,12 @@ void InitMagic(void)
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
-		for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
-		{
-			g_aMagic[nCntPlayerType][nCntMagic].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			g_aMagic[nCntPlayerType][nCntMagic].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			g_aMagic[nCntPlayerType][nCntMagic].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			g_aMagic[nCntPlayerType][nCntMagic].mType = MAGICTYPE_NONE;
-			g_aMagic[nCntPlayerType][nCntMagic].bUse = false;
-			g_aMagic[nCntPlayerType][nCntMagic].nLife = 0;
-			g_aMagic[nCntPlayerType][nCntMagic].nIdxShadow = -1;
-		}
+		g_aMagic[nCntPlayerType].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aMagic[nCntPlayerType].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aMagic[nCntPlayerType].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aMagic[nCntPlayerType].mType = MAGICTYPE_NONE;
+		g_aMagic[nCntPlayerType].bUse = false;
+		g_aMagic[nCntPlayerType].nLife = 0;
 	}
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
@@ -76,14 +72,6 @@ void InitMagic(void)
 		g_aDropMagic[nCntMagic].fRadius = DROPMAGIC_RADIUS;
 		g_aDropMagic[nCntMagic].bUse = false;
 	}
-
-	SetMagicPosition(COMMANDOREDER_BBB, D3DXVECTOR3(0.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
-	SetMagicPosition(COMMANDOREDER_RRR, D3DXVECTOR3(150.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
-	SetMagicPosition(COMMANDOREDER_GGG, D3DXVECTOR3(-150.0f, 0.0f, 0.0f), DROPMAGIC_RADIUS);
-
-	SetMagicPosition(COMMANDOREDER_YYY, D3DXVECTOR3(0.0f, 0.0f, 300.0f), DROPMAGIC_RADIUS);
-	SetMagicPosition(COMMANDOREDER_RGB, D3DXVECTOR3(0.0f, 0.0f, -300.0f), DROPMAGIC_RADIUS);
-
 }
 
 //魔法の終了処理==============================
@@ -97,11 +85,16 @@ void UpdateMagic(void)
 {
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
-		for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
+		if (g_aMagic[nCntPlayerType].bUse == true)
 		{
-			if (g_aMagic[nCntPlayerType][nCntMagic].bUse == true)
+			PrintDebugProc("発動中魔法 : %d\n", g_aMagic[nCntPlayerType].mType);
+
+			g_aMagic[nCntPlayerType].nLife--;
+
+			if (g_aMagic[nCntPlayerType].nLife < 0)
 			{
-				PrintDebugProc("発動中魔法 : %d\n", g_aMagic[nCntPlayerType][nCntMagic].mType);
+				g_aMagic[nCntPlayerType].mType = MAGICTYPE_NONE;
+				g_aMagic[nCntPlayerType].bUse = false;
 			}
 		}
 	}
@@ -457,14 +450,15 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 
 	for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
 	{
-		if (g_aMagic[nIdx][nCntMagic].bUse == false)
+		if (g_aMagic[nIdx].bUse == false)
 		{
-			g_aMagic[nIdx][nCntMagic].mType = type;
-			g_aMagic[nIdx][nCntMagic].pos = pos;
-			g_aMagic[nIdx][nCntMagic].rot = rot;
-			g_aMagic[nIdx][nCntMagic].move = move;
-			g_aMagic[nIdx][nCntMagic].bUse = true;
-			SetSpellUI(g_aMagic[nIdx][nCntMagic].mType, nIdx, DISP_MAGIC);
+			g_aMagic[nIdx].mType = type;
+			g_aMagic[nIdx].pos = pos;
+			g_aMagic[nIdx].rot = rot;
+			g_aMagic[nIdx].move = move;
+			g_aMagic[nIdx].nLife = 300;
+			g_aMagic[nIdx].bUse = true;
+			SetSpellUI(g_aMagic[nIdx].mType, nIdx, DISP_MAGIC);
 
 			CollisionMagicLocus(type, pos, 25.0f, nIdx);
 			SetMagicCircle(type, &pPlayer->pos);
@@ -596,9 +590,15 @@ void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx)
 
 
 //魔法情報の取得==============================
-Magic* GetMagic(void)
+Magic* GetMagic(int nIdx)
 {
-	return &g_aMagic[0][0];
+	return &g_aMagic[nIdx];
+}
+
+//使用中魔法情報の取得==============================
+MAGICTYPE GetCurrentMagicType(int nIdx)
+{
+	return g_aMagic[nIdx].mType;
 }
 
 //魔法使用可能場所との当たり判定==============
@@ -662,7 +662,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 			PrintDebugProc("[%d]落ちている魔法とあたっている\n", nCntMagic);
 			return nCntMagic;
 		}
-		else if (fDiff <= powf(fRadius + DROPMAGIC_MEDIUMRADIUS, 2))
+		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 1.5f, 2))
 		{// 落ちている魔法の周辺にいたら
 			// ここで種類に応じた振動を呼び出す
 			SetMagicBubble(nIdx, pDropMagic->oType, 0);
@@ -670,7 +670,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 			PrintDebugProc("[%d]周辺に魔法が落ちている\n", nCntMagic);
 			isSearch = true;
 		}
-		else if (fDiff <= powf(fRadius + DROPMAGIC_FARRADIUS, 2))
+		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 2.5f, 2))
 		{// 遠くに魔法が落ちていたら
 			 // ここで種類に応じた振動を呼び出す
 			SetMagicBubble(nIdx, pDropMagic->oType, 1);

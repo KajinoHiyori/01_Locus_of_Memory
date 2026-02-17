@@ -15,6 +15,7 @@
 #include "loadscript.h"
 #include "magic.h"
 #include "uimanager.h"
+#include "particle.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -33,6 +34,9 @@
 #define POS				(D3DXVECTOR3(0.0f, 50.0f, 0.0f))	// プレイヤーの位置
 #define DEFALT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// xyzが0.0fの場合
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 基本の法線
+#define INERTIA			(0.1f)								// 慣性
+#define FLOATINERTIA	(0.005f)							// 浮遊中慣性
+#define FLOATMOVE		(0.015f)							// 浮遊中移動量
 
 // グローバル変数
 LPD3DXMESH			g_pMeshPlayer[MAX_PLAYER] = {};				// メッシュ(頂点情報)へのポインタ
@@ -130,9 +134,11 @@ void UpdatePlayer(void)
 	float fRotDest = 0.0f;	// 目的の向きを設定
 	float fRotDiffKey = 0.0f;	// 角度の差分
 	float fAngle = 0.0f;		// 角度
+	float fInertia = INERTIA;	// 慣性
 
 	int nDropMagicIdx;									// 落ちてる魔法保管用
 	COMMANDOREDER InputCommand = COMMANDOREDER_NONE;	// 入力したコマンド
+	MAGICTYPE CurrentMagictype;							// 今使っている魔法
 
 	bool bPause = false;	// ポーズ状態の確認
 
@@ -289,6 +295,26 @@ void UpdatePlayer(void)
 		g_aPlayer[nCntPlayer].rot.y += (fRotDiffKey) * CORRECTION_ROT;
 		g_aPlayer[nCntPlayer].rot.y = AngleNormalize(g_aPlayer[nCntPlayer].rot.y);
 
+		// 今使っている魔法を取得
+		CurrentMagictype = GetCurrentMagicType(nCntPlayer);
+
+		switch (CurrentMagictype)
+		{
+		case MAGICTYPE_NONE:
+			g_aPlayer[nCntPlayer].fSpeed = MOVE;
+			break;
+
+		case MAGICTYPE_LEVITATION:
+			g_aPlayer[nCntPlayer].move.y += 0.7625f;
+			g_aPlayer[nCntPlayer].fSpeed = FLOATMOVE;
+			fInertia = FLOATINERTIA;
+			SetParticle(g_aPlayer[nCntPlayer].pos, 1, PARTICLETYPE_LEVITATION);
+			break;
+
+		case MAGICTYPE_ACCELERATION:
+			break;
+		}
+
 		// 重力
 		g_aPlayer[nCntPlayer].move.y -= GRAVITY;
 
@@ -325,9 +351,9 @@ void UpdatePlayer(void)
 		}
 
 		// 移動量の更新
-		g_aPlayer[nCntPlayer].move.x += (0.0f - g_aPlayer[nCntPlayer].move.x) * 0.1f;
-		g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * 0.1f;
-		g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * 0.1f;
+		g_aPlayer[nCntPlayer].move.x += (0.0f - g_aPlayer[nCntPlayer].move.x) * fInertia;
+		g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * fInertia;
+		g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * fInertia;
 
 		// モーションの更新処理
 		UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData);

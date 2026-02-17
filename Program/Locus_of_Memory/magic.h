@@ -113,7 +113,6 @@ typedef struct
 	D3DXVECTOR3 rot;
 	MAGICTYPE mType;
 	int nLife;
-	int nIdxShadow;
 	bool bUse;
 }Magic;
 
@@ -149,7 +148,11 @@ void InitMagic(void);
 void UninitMagic(void);
 void UpdateMagic(void);
 void DrawMagic(void);
-Magic* GetMagic(void);
+Magic* GetMagic(int nIdx);
+
+//使用中魔法情報の取得==============================
+MAGICTYPE GetCurrentMagicType(int nIdx);
+
 MagicCounter* GetMagicCounter(int nIdx);
 
 //入力されたコマンドを配列に格納(playerのMAGICBOOKから魔導書を持っているか確認してセット)
