@@ -50,7 +50,10 @@ void InitPlayer(void)
 
 	Player* pPlayer = &g_aPlayer[0];		// プレイヤーの先頭アドレス
 
-	memset(&pPlayer->magicbook.OwnCommand[0], COMMANDOREDER_NONE, sizeof(COMMANDOREDER) * MAX_OWNCOMMAND);
+	memset(&pPlayer[0].magicbook.OwnCommand[0], COMMANDOREDER_NONE, sizeof(COMMANDOREDER) * MAX_OWNCOMMAND);
+	memset(&pPlayer[1].magicbook.OwnCommand[0], COMMANDOREDER_NONE, sizeof(COMMANDOREDER) * MAX_OWNCOMMAND);
+	pPlayer[0].magicbook.nCntOwn = 0;
+	pPlayer[1].magicbook.nCntOwn = 0;
 
 	// 初期化
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -339,6 +342,8 @@ void UpdatePlayer(void)
 			{
 				PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
 			}
+			PrintDebugProc("コマンド数 : %d\n", g_aPlayer[nCntPlayer].magicbook.nCntOwn);
+
 		}
 	}
 }
@@ -708,6 +713,36 @@ void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE paren
 //========================================================================
 void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 {
+	// 過去の情報を格納
+	COMMANDOREDER ownCommandOld[MAX_OWNCOMMAND], ownCommandNew[MAX_OWNCOMMAND + 1];
+	
+	for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
+	{
+		ownCommandOld[nCntCommand] = pMagicBook->OwnCommand[nCntCommand];
+	}
+
+	if (pMagicBook->nCntOwn <= 0)	// 1つも魔法を持っていない場合
+	{
+		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
+		pMagicBook->nCntOwn++;
+		return;	// 処理を終了
+	}
+	else
+	{
+		// 1つ以上の魔法を所持している場合
+		for (int nCntCommand = 0; nCntCommand < pMagicBook->nCntOwn; nCntCommand++)
+		{
+			ownCommandNew[nCntCommand + 1] = ownCommandOld[nCntCommand];
+		}
+		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
+		pMagicBook->nCntOwn++;
+		if (pMagicBook->nCntOwn > MAX_OWNCOMMAND)
+		{
+			pMagicBook->nCntOwn = MAX_OWNCOMMAND;
+		}
+	}
+
+#if 0
 	if (pMagicBook->nCntOwn <= 0)
 	{
 		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
@@ -722,4 +757,5 @@ void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 
 	pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
 	pMagicBook->nCntOwn++;
+#endif
 }
