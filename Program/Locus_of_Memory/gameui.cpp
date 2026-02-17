@@ -45,7 +45,6 @@
 #define LEFT_POS		(D3DXVECTOR3(120.0f, GAMEUI_POSY, 0.0f))						// onscreenの左のUI座標
 #define RIGHT_POS		(D3DXVECTOR3(1160.0f, GAMEUI_POSY, 0.0f))						// onscreenの右のUI座標
 
-#define COLOR_WHITE		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)	// 白
 #define COLOR_CYAN		D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)	// シアン
 
 // ゲームUIの構造体

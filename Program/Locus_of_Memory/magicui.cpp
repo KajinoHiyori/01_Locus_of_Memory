@@ -1,104 +1,100 @@
 //========================================================
 // 
-// 魔法発動状態のUI表示処理[magicui.cpp]
+// 魔導書のUI表示処理[magicui.cpp]
 // Author : KajinoHiyori
 // 
 //========================================================
 #include "main.h"
 #include "magicui.h"
-#include "magic.h"
 #include "player.h"
 #include "game.h"
 #include "input.h"
 #include "title.h"
 #include "fog.h"
 #include "debugproc.h"
+#include "camera.h"
 
 // マクロ定義
-#define MAX_MAGIC			(4)					// 記録できる魔法の最大数
-#define MAX_MAGICUI_TEX		(MAGICUI_TEX_MAX)	// テクスチャの最大数
-#define MAX_MAGICUI_TYPE	(MAGICUI_TYPE_MAX)	// 表示されるUIの種類
-#define INERTIA				(0.1f)				// UI出現の慣性
-#define FRAME				(20)				// 出現/退出を管理するフレーム数
-#define MAGICUI_POSY		(482.0f)			// 左のUIのX軸
-#define PHONE_WIDTH			(108.0f)			// スマホの幅
-#define PHONE_HEIGHT		(228.0f)			// スマホの高さ
-#define PHONE_HEIGHTUP		(-228.0f)			// スマホの高さ[上]
-#define PHONE_HEIGHTDOWN	(228.0f)			// スマホの高さ[下]
-#define MAGICBOOK_Y			(-170.0f)			// 魔導書メニューの高度
-#define MAGICUI_WIDTH		(PHONE_WIDTH)		// spellメニューの幅
-#define MAGICUI_HEIGHT		(24.0f)				// spellメニューの高さ
-#define ICON_SIZE			(20.0f)				// 各種アイコンの大きさ
-#define MATH_SIZE			(5.0f)				// +=の大きさ
-#define MAGIC0_POSY			(-90.0f)			// 1つ目の魔法の高さ
-#define MAGIC1_POSY			(-10.0f)			// 2つ目の魔法の高さ
-#define MAGIC2_POSY			(80.0f)				// 3つ目の魔法の高さ
-#define MAGIC3_POSY			(170.0f)			// 4つ目の魔法の高さ
-#define COMMAND1_POSX		(-MAGIC_POSX)		// コマンド1つ目のX
-#define ADD01_POSX			(-ECUAL_POSX)		// 01の合成
-#define COMMAND2_POSX		(-COMMAND3_POSX)	// コマンド2つ目のX
-#define ADD12_POSX			(0.0f)				// 12の合成
-#define COMMAND3_POSX		(26.0f)				// コマンド3つ目のX
-#define ECUAL_POSX			(53.0f)				// 合成結果
-#define MAGIC_POSX			(80.0f)				// 発動魔法のX
-#define LEFT_POS			(D3DXVECTOR3(120.0f, MAGICUI_POSY, 0.0f))		// onscreenの左のUI座標
-#define RIGHT_POS			(D3DXVECTOR3(1160.0f, MAGICUI_POSY, 0.0f))		// onscreenの右のUI座標
+#define MAX_COMMAND			(4)					// 所持可能な魔法の最大数
+#define NUM_KEY				(30)				// 処理を行うキー数
+#define MAGICUI_WIDTH		(600.0f)			// MAGICUIの幅
+#define MAGICUI_HEIGHT		(150.0f)			// MAGICUIの高さ
+#define MAGICUI_X			(15.0f)				// MAGICUIのX軸
+#define MAGICUI_YUP			(100.0f)			// MAGICUIのY高度
+#define MAGICUI_YDOWN		(80.0f)				// MAGICUIのY高度
+#define MAGICUI_Z			(40.0f)				// 魔導書の配置場所Z
+#define MAXSPELL_TEX		(MAGICUI_TEX_MAX)	// テクスチャの最大数
+#define MAXSPELL_TYPE		(MAGICUI_TYPE_MAX)	// 配置の最大数
+#define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
+
+// MAGICUIの状態管理
+typedef enum
+{
+	MAGICUISTATE_NONDISPLAY = 0,	// 非表示
+	MAGICUISTATE_APPEAR,			// 出現状態
+	MAGICUISTATE_DISPLAY,			// 表示状態
+	MAGICUISTATE_DISAPPEAR,		// 収縮状態
+	MAGICUISTATE_MAX
+}MAGICUISTATE;
 
 // MAGICUIの構造体
 typedef struct
 {
-	MAGICUI_TYPE	type;			// 表示されるUIの場所を管理
-	MAGICUI_TEX		tex;			// 使用されるテクスチャの種類を管理
-	D3DXVECTOR3		pos;			// 位置
-	float		fWidth;				// 幅
-	float		fHeight;			// 高さ
-	float		fHeightUp;			// 高さ[上]
-	float		fHeightDown;		// 高さ[下]
-	float		fHeightDestUp;		// 高さ[上]の目的値
-	float		fHeightDestDown;	// 高さ[下]の目的値
-	bool		bDisp;				// 表示状態
+	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
+	D3DXVECTOR3		pos;		// 位置
+	MAGICUI_TEX		tex;		// 使用されるテクスチャの種類を管理
+	MAGICUI_TYPE	type;		// 表示されるUIの場所を管理
+	float	fWidth;			// 幅
+	float	fWidthDest;		// 幅の目的値
+	float	fHeight;		// 高さ
+	float	fHeightDest;	// 高さの目的値
+	bool	bDisp;			// 表示状態
 }MAGICUI;
 
 // MAGICUIの全体管理
 typedef struct
 {
-	MAGICUI aMagicUI[MAX_MAGICUI_TYPE];	// UIの種類ごとの表示管理
-	D3DXVECTOR3 pos;					// 中心位置
-	D3DXVECTOR3 posDest;				// 目的の向き
-	int nFrame;							// 現在のフレーム数
-	int nNumFrame;						// 移動にかかるフレーム数
-	int nCounterUI;						// magicの種類を表示する時間
-	bool bDisp;							// 全体の表示管理
+	MAGICUI aMagicUI[MAXSPELL_TYPE];	// UIの種類ごとの表示管理
+	D3DXVECTOR3		pos;		// 中心位置
+	D3DXVECTOR3		rot;		// 向き
+	MAGICUISTATE	state;		// 出現状態
+	int		nNumKey;			// 移動にかかるフレーム数
+	int		nKey;				// 現在のフレーム数
+	bool	bDisp;				// 全体の表示管理
 }MagicUI;
 
 // グローバル変数
-LPDIRECT3DTEXTURE9	g_apTextureMagicUI[MAX_MAGICUI_TEX] = {};	// テクスチャへのポインタ
+LPDIRECT3DTEXTURE9	g_apTextureMagicUI[MAXSPELL_TEX] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffMagicUI = NULL;			// 頂点バッファへのポインタ
 MagicUI g_aMagicUI[MAX_PLAYER];		// MAGICUIの全体管理
 
 // テクスチャの読み込み
-const char* c_apFilenameMagicUI[MAX_MAGICUI_TEX] =
+const char* c_apFilenameMagicUI[MAXSPELL_TEX] =
 {
-	"data\\TEXTURE\\SpellUI\\00_MagicNull.png",
-	"data\\TEXTURE\\SpellUI\\01_Red.png",
-	"data\\TEXTURE\\SpellUI\\02_Green.png",
-	"data\\TEXTURE\\SpellUI\\03_Blue.png",
-	"data\\TEXTURE\\SpellUI\\04_Yellow.png",
-	"data\\TEXTURE\\SpellUI\\13_None.png",
-	"data\\TEXTURE\\SpellUI\\14_Levitation.png",
-	"data\\TEXTURE\\SpellUI\\15_Combustion.png",
-	"data\\TEXTURE\\SpellUI\\16_Flood.png",
-	"data\\TEXTURE\\SpellUI\\17_Flash.png",
-	"data\\TEXTURE\\SpellUI\\18_FireBall.png",
-	"data\\TEXTURE\\SpellUI\\19_SunsetDelay.png",
-	"data\\TEXTURE\\SpellUI\\20_RainPray.png",
-	"data\\TEXTURE\\SpellUI\\21_freeze.png",
-	"data\\TEXTURE\\SpellUI\\22_Grouth.png",
-	"data\\TEXTURE\\SpellUI\\23_Acceleration.png",
-	"data\\TEXTURE\\SpellUI\\24_TimeRevert.png",
-	"data\\TEXTURE\\SpellUI\\27_MagicBook.png",
-	"data\\TEXTURE\\SpellUI\\30_Plus.png",
-	"data\\TEXTURE\\SpellUI\\31_Equal.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_100.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_000.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_001.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_002.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_003.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_004.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_005.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_006.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_007.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_008.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_009.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_010.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_011.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_012.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_013.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_014.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_015.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_016.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_017.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_018.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_019.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_020.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_021.png",
+	"data\\TEXTURE\\MagicUI\\MagicUI_022.png",
 };
 
 //======================================================================================
@@ -106,121 +102,140 @@ const char* c_apFilenameMagicUI[MAX_MAGICUI_TEX] =
 //======================================================================================
 void InitMagicUI(void)
 {
-	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
-	pDevice = GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// UI情報の初期化
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
-	{
-		for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++)
-		{
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].tex = MAGICUI_TEX_MAGICNULL;			// テクスチャの初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].type = MAGICUI_TYPE_0COMMAND0;			// UIの種類の初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth				= 0.0f;				// 幅の初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight			= 0.0f;				// 高さの初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightUp			= 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDown		= 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDestUp		= 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDestDown	= 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp = false;							// 表示状態の初期化
-		}
-		g_aMagicUI[nCntPlayer].bDisp = false;						// 全体の表示状態の初期化
-		g_aMagicUI[nCntPlayer].nCounterUI = 0;						// 発動魔法の初期化
-		g_aMagicUI[nCntPlayer].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
-		g_aMagicUI[nCntPlayer].nFrame = 0;							// 現在のフレームを初期化
-		g_aMagicUI[nCntPlayer].nNumFrame = FRAME;					// 出現の管理を行うフレーム数
-	}
-
-	// テクスチャの読み込み
-	for (int nCntMagicUI = 0; nCntMagicUI < MAX_MAGICUI_TEX; nCntMagicUI++)
-	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameMagicUI[nCntMagicUI], &g_apTextureMagicUI[nCntMagicUI]);
-	}
-
-	// 操作方法の状態を取得
+	// 操作人数の取得
 	OPERATIONTYPE operationType = GetOperationType();
 
+	// プレイヤーの情報を取得
+	Player* pPlayer = GetPlayer();
+
+	// カメラ状態の取得
+	Camera* pCamera = GetCamera();
+	float fRotXCamera[MAX_CAMERA] = { 0.0f, 0.0f };
+	float fRotYCamera[MAX_CAMERA] = { 0.0f, 0.0f };
+	for (int nCntCamera = 0; nCntCamera < MAX_CAMERA; nCntCamera++)
+	{
+		fRotXCamera[nCntCamera] = pCamera[nCntCamera].rot.x;
+		fRotYCamera[nCntCamera] = pCamera[nCntCamera].rot.y;
+	}
+	// テクスチャの読み込み
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TEX; nCntUI++)
+	{
+		D3DXCreateTextureFromFile(pDevice, c_apFilenameMagicUI[nCntUI], &g_apTextureMagicUI[nCntUI]);
+	}
+
+	// 初期化
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+		{
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].tex = MAGICUI_TEX_NULL;					// テクスチャの種類
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].type = MAGICUI_TYPE_MAGIC0;				// テクスチャの配置
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth = MAGICUI_WIDTH;					// 幅
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;				// 高さ
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidthDest = 0.0f;						// 幅の目的地
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest = 0.0f;						// 高さの目的地
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp = false;							// 表示状態
+		}
+		g_aMagicUI[nCntPlayer].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 中心位置
+		g_aMagicUI[nCntPlayer].rot = D3DXVECTOR3(0.0f, 3.14f, 0.0f);	// 中心位置
+		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_NONDISPLAY;			// UIの表示状態
+		g_aMagicUI[nCntPlayer].nNumKey = NUM_KEY;						// 処理を行うキー数
+		g_aMagicUI[nCntPlayer].nKey = 0;							// 現在のキー
+		g_aMagicUI[nCntPlayer].bDisp = true;			// UI表示状態(trueでポーズ中)
+	}
+
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * MAX_MAGICUI_TYPE * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffMagicUI, NULL);
-	
-	VERTEX_2D* pVtx;
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * MAXSPELL_TYPE * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffMagicUI, NULL);
+
+	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffMagicUI->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		switch (operationType)	// 操作人数に応じてUIの位置を変更
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++, pVtx += 4)
 		{
-		case OPERATIONTYPE_2P:	// 2人操作
-			switch (nCntPlayer)
+			// 各種情報の設定
+			switch (nCntUI)
 			{
-			case 0:
-				g_aMagicUI[nCntPlayer].pos = LEFT_POS;
-				g_aMagicUI[nCntPlayer].posDest = LEFT_POS;
-				g_aMagicUI[nCntPlayer].bDisp = true;
-
+			case MAGICUI_TYPE_MAGIC0:	// 1つ目の魔法
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos		= D3DXVECTOR3(-MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].tex		= MAGICUI_TEX_NULL;		// テクスチャの種類
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].type	= MAGICUI_TYPE_MAGIC0;	// テクスチャの配置
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth	= MAGICUI_WIDTH;		// 幅
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidthDest	= 0.0f;				// 幅の目的地
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest = 0.0f;				// 高さの目的地
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp		= false;			// 表示状態
 				break;
-			case 1:
-				g_aMagicUI[nCntPlayer].pos = RIGHT_POS;
-				g_aMagicUI[nCntPlayer].posDest = RIGHT_POS;
-				g_aMagicUI[nCntPlayer].bDisp = true;
 
+			case MAGICUI_TYPE_MAGIC1:	// 2つ目の魔法
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos		= D3DXVECTOR3(MAGICUI_X, MAGICUI_YUP, 0.0f);	// 中心位置
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].tex		= MAGICUI_TEX_NULL;		// テクスチャの種類
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].type	= MAGICUI_TYPE_MAGIC1;	// テクスチャの配置
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth	= MAGICUI_WIDTH;		// 幅
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidthDest	= 0.0f;				// 幅の目的地
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest = 0.0f;				// 高さの目的地
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp		= false;			// 表示状態
+				break;
+
+			case MAGICUI_TYPE_MAGIC2:	// 3つ目の魔法
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos		= D3DXVECTOR3(-MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].tex		= MAGICUI_TEX_NULL;		// テクスチャの種類
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].type	= MAGICUI_TYPE_MAGIC2;	// テクスチャの配置
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth	= MAGICUI_WIDTH;		// 幅
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidthDest	= 0.0f;				// 幅の目的地
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest = 0.0f;				// 高さの目的地
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp		= false;			// 表示状態
+				break;
+
+			case MAGICUI_TYPE_MAGIC3:	// 4つ目の魔法
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos		= D3DXVECTOR3(MAGICUI_X, MAGICUI_YDOWN, 0.0f);	// 中心位置
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].tex		= MAGICUI_TEX_NULL;		// テクスチャの種類
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].type	= MAGICUI_TYPE_MAGIC3;	// テクスチャの配置
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth	= MAGICUI_WIDTH;		// 幅
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = MAGICUI_HEIGHT;		// 高さ
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidthDest	= 0.0f;				// 幅の目的地
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest = 0.0f;				// 高さの目的地
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp		= false;			// 表示状態
 				break;
 			}
-			break;
 
-		default:	// 1人操作
-			if (nCntPlayer > 0)
-			{
-				pVtx += MAX_MAGICUI_TYPE * 4;
-				continue;
-			}
-			g_aMagicUI[nCntPlayer].bDisp = true;
-			g_aMagicUI[nCntPlayer].pos = RIGHT_POS;
-			g_aMagicUI[nCntPlayer].posDest = RIGHT_POS;
-			break;
-		}
+			// 中心位置からの位置を求める
+			g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
 
-		ResetMagicUI(nCntPlayer);
-
-		for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
-		{
 			// 頂点座標の設定
-			pVtx[0].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-			pVtx[0].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-			pVtx[0].pos.z = 0.0f;
-			pVtx[1].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-			pVtx[1].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-			pVtx[1].pos.z = 0.0f;
-			pVtx[2].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-			pVtx[2].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-			pVtx[2].pos.z = 0.0f;
-			pVtx[3].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-			pVtx[3].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-			pVtx[3].pos.z = 0.0f;
+			pVtx[0].pos = D3DXVECTOR3(-g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight, MAGICUI_Z);
+			pVtx[1].pos = D3DXVECTOR3(g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight, MAGICUI_Z);
+			pVtx[2].pos = D3DXVECTOR3(-g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth, -g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight, MAGICUI_Z);
+			pVtx[3].pos = D3DXVECTOR3(g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth, -g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight, MAGICUI_Z);
 
 			// rhwの設定
-			pVtx[0].rhw = 1.0f;
-			pVtx[1].rhw = 1.0f;
-			pVtx[2].rhw = 1.0f;
-			pVtx[3].rhw = 1.0f;
+			pVtx[0].nor = NORMAL;
+			pVtx[1].nor = NORMAL;
+			pVtx[2].nor = NORMAL;
+			pVtx[3].nor = NORMAL;
 
 			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[0].col = COLOR_WHITE;
+			pVtx[1].col = COLOR_WHITE;
+			pVtx[2].col = COLOR_WHITE;
+			pVtx[3].col = COLOR_WHITE;
 
 			// テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
 		}
 	}
-
 	// 頂点バッファをアンロック
 	g_pVtxBuffMagicUI->Unlock();
 }
@@ -230,14 +245,13 @@ void InitMagicUI(void)
 //======================================================================================
 void UninitMagicUI(void)
 {
-
 	// テクスチャの破棄
-	for (int nCntMagicUI = 0; nCntMagicUI < MAX_MAGICUI_TEX; nCntMagicUI++)
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TEX; nCntUI++)
 	{
-		if (g_apTextureMagicUI[nCntMagicUI] != NULL)
+		if (g_apTextureMagicUI[nCntUI] != NULL)
 		{
-			g_apTextureMagicUI[nCntMagicUI]->Release();
-			g_apTextureMagicUI[nCntMagicUI] = NULL;
+			g_apTextureMagicUI[nCntUI]->Release();
+			g_apTextureMagicUI[nCntUI] = NULL;
 		}
 	}
 
@@ -255,80 +269,93 @@ void UninitMagicUI(void)
 //======================================================================================
 void UpdateMagicUI(void)
 {
-	// 操作方法の状態を取得
-	OPERATIONTYPE operationType = GetOperationType();
-
-	// playerの情報を取得
-	Player* pPlayer = GetPlayer();
-
-	if (GetKeyboardTrigger(DIK_8) == true)
-	{
-		SetMagicUI(0);
-		if (operationType == OPERATIONTYPE_2P)
-		{
-			SetMagicUI(1);
-		}
-	}
-	if (GetKeyboardTrigger(DIK_9) == true)
-	{
-		DisappearMagicUI(0);
-		if (operationType == OPERATIONTYPE_2P)
-		{
-			DisappearMagicUI(1);
-		}
-	}
-	VERTEX_2D* pVtx;
+	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffMagicUI->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	Player* pPlayer = GetPlayer();
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		float fDiffKeyUp = 0.0f;	// 現在の位置と目的の位置の差分を計算[上]
-		float fDiffKeyDown = 0.0f;	// 現在の位置と目的の位置の差分を計算[下]
-		float fRateKey = (float)g_aMagicUI[nCntPlayer].nFrame / (float)g_aMagicUI[nCntPlayer].nNumFrame;	// フレームの差分を求める
-
-		// プレイヤーの魔法を記録
-		SetPlayerMagic(nCntPlayer);
-
-		for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++, pVtx += 4)	// 頂点バッファに数値を代入
+		// SPELLメニューを開いているかのフラグを立てる
+		if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
 		{
-			// 頂点座標の設定
-			pVtx[0].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-			pVtx[0].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-			pVtx[0].pos.z = 0.0f;
-			pVtx[1].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-			pVtx[1].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-			pVtx[1].pos.z = 0.0f;
-			pVtx[2].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-			pVtx[2].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-			pVtx[2].pos.z = 0.0f;
-			pVtx[3].pos.x = g_aMagicUI[nCntPlayer].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fWidth;
-			pVtx[3].pos.y = g_aMagicUI[nCntPlayer].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y + g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
-			pVtx[3].pos.z = 0.0f;
+			if ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+			{
+				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_APPEAR;
+				SetMagicUIAppear(nCntPlayer);
+			}
+			g_aMagicUI[nCntPlayer].bDisp = true;
+		}
+		else
+		{
+			if ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+			{
+				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISAPPEAR;
+				SetMagicUIDisappear(nCntPlayer);
+			}
+		}
 
-			// rhwの設定
-			pVtx[0].rhw = 1.0f;
-			pVtx[1].rhw = 1.0f;
-			pVtx[2].rhw = 1.0f;
-			pVtx[3].rhw = 1.0f;
+		if (g_aMagicUI[nCntPlayer].bDisp == false)
+		{
+			continue;
+		}
 
-			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		
 
-			// テクスチャ座標の設定
-			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+		// 全体の演出処理======================================================================================
+		float fDiffKey = 0.0f;	// キーの差分を計算
+		float fRateKey = (float)g_aMagicUI[nCntPlayer].nKey / (float)g_aMagicUI[nCntPlayer].nNumKey;
+		switch (g_aMagicUI[nCntPlayer].state)
+		{
+		case MAGICUISTATE_NONDISPLAY:	// 非表示状態
+			g_aMagicUI[nCntPlayer].bDisp = false;
+			break;
+
+		case MAGICUISTATE_APPEAR:	// 出現状態
+			for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+			{
+				// 背景の高度変更
+				fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
+				// 中心位置からの位置を求める
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
+			}
+			g_aMagicUI[nCntPlayer].nKey++;
+
+			if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
+			{
+				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISPLAY;
+				SetMagicUIDisplay(nCntPlayer);
+			}
+			break;
+
+		case MAGICUISTATE_DISPLAY:	// 表示状態
+
+			break;
+
+		case MAGICUISTATE_DISAPPEAR:	// 収縮状態
+			for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+			{
+				// 背景の高度変更
+				fDiffKey = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeightDest - g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight;
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight = g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].fHeight + fDiffKey * fRateKey;
+				// 中心位置からの位置を求める
+				g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos += g_aMagicUI[nCntPlayer].pos;
+			}
+			g_aMagicUI[nCntPlayer].nKey++;
+
+			if (g_aMagicUI[nCntPlayer].nKey > g_aMagicUI[nCntPlayer].nNumKey)
+			{
+				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISPLAY;
+				SetMagicUINonDisplay(nCntPlayer);
+				ResetCommdSave(nCntPlayer);
+			}
+			break;
 		}
 	}
 
 	// 頂点バッファをアンロック
 	g_pVtxBuffMagicUI->Unlock();
-
 }
 
 //======================================================================================
@@ -336,687 +363,238 @@ void UpdateMagicUI(void)
 //======================================================================================
 void DrawMagicUI(void)
 {
-#if 0
-	// 一時的にfogを切る
-	SetFogEnable(false);
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+	D3DXMATRIX UIMatrix, mtxRot;	// UIのマトリックス情報を取得
+	Player* pPlayer = GetPlayer();
 
-	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
-	// デバイスの取得
-	pDevice = GetDevice();
+	// ワールドマトリックスの初期化(デフォルトの値にする)
+	D3DXMatrixIdentity(&UIMatrix);
 
-	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffMagicUI, 0, sizeof(VERTEX_2D));
+	// アルファテストを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法を設定(基準値より大きい場合描画)
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+	// ライトをオフにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	// カリングをオフにする
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
 		if (g_aMagicUI[nCntPlayer].bDisp == false)
 		{
 			continue;
 		}
+		// UIのマトリックス情報を取得
+		UIMatrix = pPlayer->mtxWorld;
 
-		for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++)
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &UIMatrix);
+
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 		{
-			if (g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp == true)
+			D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
+			D3DXMATRIX	mtxParent;					// 親のマトリックス
+
+			if (g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].bDisp == false)
 			{
-				// テクスチャの設定
-				pDevice->SetTexture(0, g_apTextureMagicUI[g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].tex]);
-
-				// ポリゴンの描画
-				pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + (nCntPlayer * MAX_MAGICUI_TYPE * 4), 2);
+				continue;
 			}
+
+			// ポリゴンのワールドマトリックスを初期化
+			D3DXMatrixIdentity(&g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld);
+
+			// パーツの位置を反映
+			D3DXMatrixTranslation(&mtxTransModel, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.z);
+			D3DXMatrixMultiply(&g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &mtxTransModel);
+
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aMagicUI[nCntPlayer].rot.y, g_aMagicUI[nCntPlayer].rot.x, g_aMagicUI[nCntPlayer].rot.z);
+			D3DXMatrixMultiply(&g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &mtxRot);
+
+			// 親マトリックスを設定
+			mtxParent = UIMatrix;
+
+			// 算出したパーツのワールドマトリックスと親モデルのマトリックスを掛け合わせる
+			D3DXMatrixMultiply(&g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &mtxParent);
+
+			// パーツのワールドマトリックスを設定
+			pDevice->SetTransform(D3DTS_WORLD, &g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld);
+
+			// 頂点バッファをデータストリームに設定
+			pDevice->SetStreamSource(0, g_pVtxBuffMagicUI, 0, sizeof(VERTEX_3D));
+
+			// 頂点フォーマットの設定
+			pDevice->SetFVF(FVF_VERTEX_3D);
+
+			// テクスチャの設定
+			pDevice->SetTexture(0, g_apTextureMagicUI[g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].tex]);
+
+			// UIの描画
+			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + (nCntPlayer * MAXSPELL_TYPE * 4), 2);
 		}
 	}
+	// ライトをオンにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	// fogを戻す
-	SetFogEnable(true);
-#endif
+	// カリングを元に戻す
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	// アルファテストを無効にする
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 }
 
 //======================================================================================
-// 魔導書の中身の初期化処理
+// プレイヤーの魔導書の情報を移す
 //======================================================================================
-void ResetMagicUI(int nIdx)
+void SetMagicTexture(int nIdx)
 {
-	// 操作方法の状態を取得
-	OPERATIONTYPE operationType = GetOperationType();
+	Player* pPlayer = GetPlayer();
 
-	for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++)
+	// プレイヤーの所持魔法を取得してローカルで格納
+	COMMANDOREDER commandOrder[MAX_COMMAND];
+	// テクスチャ情報をローカルで保存
+	MAGICUI_TEX	tex = MAGICUI_TEX_NULL;
+
+	for (int nCntMagic = 0; nCntMagic < MAX_COMMAND; nCntMagic++)
 	{
-		switch (nCntUI)
+		commandOrder[nCntMagic] = pPlayer[nIdx].magicbook.OwnCommand[nCntMagic];
+
+		// コマンドごとにテクスチャを配置
+		switch (commandOrder[nCntMagic])
 		{
-		case MAGICUI_TYPE_MAGICBOOK:	// 魔導書
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].tex		= MAGICUI_TEX_MAGICBOOK;				// 魔導書
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].type		= MAGICUI_TYPE_MAGICBOOK;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].pos		= D3DXVECTOR3(0.0f, MAGICBOOK_Y, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].fWidth	= MAGICUI_WIDTH;						// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].fHeight	= MAGICUI_HEIGHT;						// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_MAGICBOOK].bDisp	= false;									// テクスチャの初期化
+		case COMMANDOREDER_NONE:	// コマンドがない場合
+			g_aMagicUI[nIdx].bDisp = false;
+			tex = MAGICUI_TEX_NULL;
 			break;
 
-			// 1つ目の魔法
-		case MAGICUI_TYPE_0COMMAND0:	// 1つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].tex		= MAGICUI_TEX_MAGICNULL;							// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].type		= MAGICUI_TYPE_0COMMAND0;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].pos		= D3DXVECTOR3(COMMAND1_POSX, MAGIC0_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].fWidth	= ICON_SIZE;										// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].fHeight	= ICON_SIZE;										// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].bDisp	= false;												// テクスチャの初期化
+		case COMMANDOREDER_GGG:	// GGG
+			tex = MAGICUI_TEX_GGG;
 			break;
 
-		case MAGICUI_TYPE_0_01ADD:	// 01の合成
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].tex		= MAGICUI_TEX_ADD;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].type		= MAGICUI_TYPE_0_01ADD;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].pos		= D3DXVECTOR3(ADD01_POSX, MAGIC0_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].fWidth		= MATH_SIZE;							// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].fHeight	= MATH_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_01ADD].bDisp		= false;											// テクスチャの初期化
+		case COMMANDOREDER_RRR:	// RRR
+			tex = MAGICUI_TEX_RRR;
 			break;
 
-		case MAGICUI_TYPE_0COMMAND1:	// 2つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].tex = MAGICUI_TEX_MAGICNULL;					// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].type = MAGICUI_TYPE_0COMMAND1;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].pos = D3DXVECTOR3(COMMAND2_POSX, MAGIC0_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].fWidth = ICON_SIZE;						// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].fHeight = ICON_SIZE;						// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].bDisp = false;								// テクスチャの初期化
+		case COMMANDOREDER_BBB:	// BBB
+			tex = MAGICUI_TEX_BBB;
 			break;
 
-		case MAGICUI_TYPE_0_12ADD:	// 12の合成
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].tex = MAGICUI_TEX_ADD;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].type = MAGICUI_TYPE_0_12ADD;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].pos = D3DXVECTOR3(ADD12_POSX, MAGIC0_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].fWidth = MATH_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].fHeight = MATH_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_12ADD].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_YYY:	// YYY
+			tex = MAGICUI_TEX_YYY;
 			break;
 
-		case MAGICUI_TYPE_0COMMAND2:	// 3つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].tex = MAGICUI_TEX_MAGICNULL;							// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].type = MAGICUI_TYPE_0COMMAND2;						// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].pos = D3DXVECTOR3(COMMAND3_POSX, MAGIC0_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].fWidth = ICON_SIZE;								// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].fHeight = ICON_SIZE;								// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].bDisp = false;										// テクスチャの初期化
+		case COMMANDOREDER_RRG:	// RRG
+			tex = MAGICUI_TEX_RRG;
 			break;
 
-		case MAGICUI_TYPE_0_EQUAL:	// 合成結果
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].tex = MAGICUI_TEX_EQUAL;							// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].type = MAGICUI_TYPE_0_EQUAL;						// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].pos = D3DXVECTOR3(ECUAL_POSX, MAGIC0_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].fWidth = MATH_SIZE;								// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].fHeight = MATH_SIZE;								// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0_EQUAL].bDisp = false;										// テクスチャの初期化
+		case COMMANDOREDER_RGR:	// RGR
+			tex = MAGICUI_TEX_RGR;
 			break;
 
-		case MAGICUI_TYPE_0MAGIC:	// 発動された魔法
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].tex = MAGICUI_TEX_NONE;					// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].type = MAGICUI_TYPE_0MAGIC;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].pos = D3DXVECTOR3(MAGIC_POSX, MAGIC0_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].fWidth = ICON_SIZE;					// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].fHeight = ICON_SIZE;					// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].bDisp = false;							// テクスチャの初期化
+		case COMMANDOREDER_GRR:	// GRR
+			tex = MAGICUI_TEX_GRR;
 			break;
 
-			// 2つ目の魔法
-		case MAGICUI_TYPE_1COMMAND0:	// 1つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].tex = MAGICUI_TEX_MAGICNULL;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].type = MAGICUI_TYPE_1COMMAND0;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].pos = D3DXVECTOR3(COMMAND1_POSX, MAGIC1_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].fWidth = ICON_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].fHeight = ICON_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_RYY:	// RYY
+			tex = MAGICUI_TEX_RYY;
 			break;
 
-		case MAGICUI_TYPE_1_01ADD:	// 01の合成
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].tex = MAGICUI_TEX_ADD;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].type = MAGICUI_TYPE_1_01ADD;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].pos = D3DXVECTOR3(ADD01_POSX, MAGIC1_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].fWidth = MATH_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].fHeight = MATH_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_01ADD].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_YRY:	// YRY
+			tex = MAGICUI_TEX_YRY;
 			break;
 
-		case MAGICUI_TYPE_1COMMAND1:	// 2つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].tex = MAGICUI_TEX_MAGICNULL;					// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].type = MAGICUI_TYPE_1COMMAND1;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].pos = D3DXVECTOR3(COMMAND2_POSX, MAGIC1_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].fWidth = ICON_SIZE;						// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].fHeight = ICON_SIZE;						// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].bDisp = false;								// テクスチャの初期化
+		case COMMANDOREDER_YYR:	// YYR
+			tex = MAGICUI_TEX_YYR;
 			break;
 
-		case MAGICUI_TYPE_1_12ADD:	// 12の合成
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].tex = MAGICUI_TEX_ADD;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].type = MAGICUI_TYPE_1_12ADD;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].pos = D3DXVECTOR3(ADD12_POSX, MAGIC1_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].fWidth = MATH_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].fHeight = MATH_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_12ADD].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_BBG:	// BBG
+			tex = MAGICUI_TEX_BBG;
 			break;
 
-		case MAGICUI_TYPE_1COMMAND2:	// 3つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].tex = MAGICUI_TEX_MAGICNULL;							// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].type = MAGICUI_TYPE_1COMMAND2;						// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].pos = D3DXVECTOR3(COMMAND3_POSX, MAGIC1_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].fWidth = ICON_SIZE;								// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].fHeight = ICON_SIZE;								// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].bDisp = false;										// テクスチャの初期化
+		case COMMANDOREDER_BGB:	// BGB
+			tex = MAGICUI_TEX_BGB;
 			break;
 
-		case MAGICUI_TYPE_1_EQUAL:	// 合成結果
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].tex = MAGICUI_TEX_EQUAL;							// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].type = MAGICUI_TYPE_1_EQUAL;						// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].pos = D3DXVECTOR3(ECUAL_POSX, MAGIC1_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].fWidth = MATH_SIZE;								// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].fHeight = MATH_SIZE;								// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1_EQUAL].bDisp = false;										// テクスチャの初期化
+		case COMMANDOREDER_GBB:	// GBB
+			tex = MAGICUI_TEX_GBB;
 			break;
 
-		case MAGICUI_TYPE_1MAGIC:	// 発動された魔法
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].tex = MAGICUI_TEX_NONE;					// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].type = MAGICUI_TYPE_1MAGIC;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].pos = D3DXVECTOR3(MAGIC_POSX, MAGIC1_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].fWidth = ICON_SIZE;					// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].fHeight = ICON_SIZE;					// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].bDisp = false;							// テクスチャの初期化
+		case COMMANDOREDER_BGG:	// BGG
+			tex = MAGICUI_TEX_BGG;
 			break;
 
-			// 3つ目の魔法
-		case MAGICUI_TYPE_2COMMAND0:	// 1つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].tex = MAGICUI_TEX_MAGICNULL;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].type = MAGICUI_TYPE_2COMMAND0;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].pos = D3DXVECTOR3(COMMAND1_POSX, MAGIC2_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].fWidth = ICON_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].fHeight = ICON_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_GBG:	// GBG
+			tex = MAGICUI_TEX_GBG;
 			break;
 
-		case MAGICUI_TYPE_2_01ADD:	// 01の合成
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].tex = MAGICUI_TEX_ADD;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].type = MAGICUI_TYPE_2_01ADD;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].pos = D3DXVECTOR3(ADD01_POSX, MAGIC2_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].fWidth = MATH_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].fHeight = MATH_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_01ADD].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_GGB:	// GGB
+			tex = MAGICUI_TEX_GGB;
 			break;
 
-		case MAGICUI_TYPE_2COMMAND1:	// 2つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].tex = MAGICUI_TEX_MAGICNULL;					// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].type = MAGICUI_TYPE_2COMMAND1;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].pos = D3DXVECTOR3(COMMAND2_POSX, MAGIC2_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].fWidth = ICON_SIZE;						// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].fHeight = ICON_SIZE;						// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].bDisp = false;								// テクスチャの初期化
+		case COMMANDOREDER_BYY:	// BYY
+			tex = MAGICUI_TEX_BYY;
 			break;
 
-		case MAGICUI_TYPE_2_12ADD:	// 12の合成
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].tex = MAGICUI_TEX_ADD;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].type = MAGICUI_TYPE_2_12ADD;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].pos = D3DXVECTOR3(ADD12_POSX, MAGIC2_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].fWidth = MATH_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].fHeight = MATH_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_12ADD].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_YBY:	// YBY
+			tex = MAGICUI_TEX_YBY;
 			break;
 
-		case MAGICUI_TYPE_2COMMAND2:	// 3つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].tex = MAGICUI_TEX_MAGICNULL;							// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].type = MAGICUI_TYPE_2COMMAND2;						// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].pos = D3DXVECTOR3(COMMAND3_POSX, MAGIC2_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].fWidth = ICON_SIZE;								// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].fHeight = ICON_SIZE;								// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].bDisp = false;										// テクスチャの初期化
+		case COMMANDOREDER_YYB:	// YYB
+			tex = MAGICUI_TEX_YYB;
 			break;
 
-		case MAGICUI_TYPE_2_EQUAL:	// 合成結果
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].tex = MAGICUI_TEX_EQUAL;							// どの魔法も入力されていない
-			// ここでバグが発生
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].type = MAGICUI_TYPE_2_EQUAL;						// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].pos = D3DXVECTOR3(ECUAL_POSX, MAGIC2_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].fWidth = MATH_SIZE;								// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].fHeight = MATH_SIZE;								// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2_EQUAL].bDisp = false;										// テクスチャの初期化
+		case COMMANDOREDER_GGY:	// GGY
+			tex = MAGICUI_TEX_GGY;
 			break;
 
-		case MAGICUI_TYPE_2MAGIC:	// 発動された魔法
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].tex = MAGICUI_TEX_NONE;					// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].type = MAGICUI_TYPE_2MAGIC;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].pos = D3DXVECTOR3(MAGIC_POSX, MAGIC2_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].fWidth = ICON_SIZE;					// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].fHeight = ICON_SIZE;					// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].bDisp = false;							// テクスチャの初期化
+		case COMMANDOREDER_GYG:	// GYG
+			tex = MAGICUI_TEX_GYG;
 			break;
 
-			// 4つ目の魔法
-		case MAGICUI_TYPE_3COMMAND0:	// 1つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].tex = MAGICUI_TEX_MAGICNULL;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].type = MAGICUI_TYPE_3COMMAND0;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].pos = D3DXVECTOR3(COMMAND1_POSX, MAGIC3_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].fWidth = ICON_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].fHeight = ICON_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_YGG:	// YGG
+			tex = MAGICUI_TEX_YGG;
 			break;
 
-		case MAGICUI_TYPE_3_01ADD:	// 01の合成
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].tex = MAGICUI_TEX_ADD;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].type = MAGICUI_TYPE_3_01ADD;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].pos = D3DXVECTOR3(ADD01_POSX, MAGIC3_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].fWidth = MATH_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].fHeight = MATH_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_01ADD].bDisp = false;											// テクスチャの初期化
+		case COMMANDOREDER_RGB:	// RGB
+			tex = MAGICUI_TEX_RGB;
 			break;
-
-		case MAGICUI_TYPE_3COMMAND1:	// 2つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].tex = MAGICUI_TEX_MAGICNULL;					// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].type = MAGICUI_TYPE_3COMMAND1;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].pos = D3DXVECTOR3(COMMAND2_POSX, MAGIC3_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].fWidth = ICON_SIZE;						// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].fHeight = ICON_SIZE;						// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].bDisp = false;								// テクスチャの初期化
-			break;
-
-		case MAGICUI_TYPE_3_12ADD:	// 12の合成
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].tex = MAGICUI_TEX_ADD;								// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].type = MAGICUI_TYPE_3_12ADD;							// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].pos = D3DXVECTOR3(ADD12_POSX, MAGIC3_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].fWidth = MATH_SIZE;									// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].fHeight = MATH_SIZE;									// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_12ADD].bDisp = false;											// テクスチャの初期化
-			break;
-
-		case MAGICUI_TYPE_3COMMAND2:	// 3つ目のコマンド
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].tex = MAGICUI_TEX_MAGICNULL;							// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].type = MAGICUI_TYPE_3COMMAND2;						// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].pos = D3DXVECTOR3(COMMAND3_POSX, MAGIC3_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].fWidth = ICON_SIZE;								// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].fHeight = ICON_SIZE;								// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].bDisp = false;										// テクスチャの初期化
-			break;
-
-		case MAGICUI_TYPE_3_EQUAL:	// 合成結果
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].tex = MAGICUI_TEX_EQUAL;							// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].type = MAGICUI_TYPE_3_EQUAL;						// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].pos = D3DXVECTOR3(ECUAL_POSX, MAGIC3_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].fWidth = MATH_SIZE;								// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].fHeight = MATH_SIZE;								// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3_EQUAL].bDisp = false;										// テクスチャの初期化
-			break;
-
-		case MAGICUI_TYPE_3MAGIC:	// 発動された魔法
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].tex = MAGICUI_TEX_NONE;					// どの魔法も入力されていない
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].type = MAGICUI_TYPE_3MAGIC;				// UIの種類の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].pos = D3DXVECTOR3(MAGIC_POSX, MAGIC3_POSY, 0.0f);	// 位置の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].fWidth = ICON_SIZE;					// 幅の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].fHeight = ICON_SIZE;					// 高さの初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].fHeightUp = 0.0f;				// 高さ[上]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].fHeightDown = 0.0f;				// 高さ[下]の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].fHeightDestUp = 0.0f;				// 高さ[上]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].fHeightDestDown = 0.0f;				// 高さ[下]の目的地の初期化
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].bDisp = false;							// テクスチャの初期化
-			break;	
 		}
 	}
 }
 
 //======================================================================================
-// UIを配置
+// 魔導書を出現状態にする
 //======================================================================================
-void SetMagicUI(int nIdx)
+void SetMagicUIAppear(int nIdx)
 {
-	for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++)
-	{
-		g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = true;
-	}
-	g_aMagicUI[nIdx].bDisp = true;
-	g_aMagicUI[nIdx].nFrame = 0;
+
 }
 
 //======================================================================================
-// UIを非表示にする
+// 魔導書を表示状態にする
 //======================================================================================
-void DisappearMagicUI(int nIdx)
+void SetMagicUIDisplay(int nIdx)
 {
-	for (int nCntUI = 0; nCntUI < MAX_MAGICUI_TYPE; nCntUI++)
-	{
-		g_aMagicUI[nIdx].aMagicUI[nCntUI].bDisp = false;
-	}
-	g_aMagicUI[nIdx].nFrame = 0;
+
 }
 
 //======================================================================================
-// プレイヤーの魔導書の情報を記録する
+// 魔導書を収縮状態にする
 //======================================================================================
-void SetPlayerMagic(int nIdx)
+void SetMagicUIDisappear(int nIdx)
 {
-	Player* pPlayer = GetPlayer();	// プレイヤーの情報を取得
 
-	for (int nCntCommand = 0; nCntCommand < MAX_MAGIC; nCntCommand++)
-	{
-		MAGICUI_TEX magicUI[MAX_MAGIC];
+}
 
-		// 1つ目の魔法
-		switch (pPlayer[nIdx].magicbook.OwnCommand[nCntCommand])
-		{
-		case COMMANDOREDER_NONE:	// 魔法を取得していない場合
-			magicUI[0] = MAGICUI_TEX_MAGICNULL;
-			magicUI[1] = MAGICUI_TEX_MAGICNULL;
-			magicUI[2] = MAGICUI_TEX_MAGICNULL;
-			magicUI[3] = MAGICUI_TEX_NONE;
-			break;
+//======================================================================================
+// 魔導書を非表示状態にする
+//======================================================================================
+void SetMagicUINonDisplay(int nIdx)
+{
 
-		// 単色魔法=================================
-		case COMMANDOREDER_RRR:	// RRRの場合
-			magicUI[0] = MAGICUI_TEX_RED;
-			magicUI[1] = MAGICUI_TEX_RED;
-			magicUI[2] = MAGICUI_TEX_RED;
-			magicUI[3] = MAGICUI_TEX_COMBUSTION;
-			break;
-
-		case COMMANDOREDER_GGG:	// GGGの場合
-			magicUI[0] = MAGICUI_TEX_GREEN;
-			magicUI[1] = MAGICUI_TEX_GREEN;
-			magicUI[2] = MAGICUI_TEX_GREEN;
-			magicUI[3] = MAGICUI_TEX_LEVITATION;
-			break;
-
-		case COMMANDOREDER_BBB:	// BBBの場合
-			magicUI[0] = MAGICUI_TEX_BLUE;
-			magicUI[1] = MAGICUI_TEX_BLUE;
-			magicUI[2] = MAGICUI_TEX_BLUE;
-			magicUI[3] = MAGICUI_TEX_FLOOD;
-			break;
-
-		case COMMANDOREDER_YYY:	// YYYの場合
-			magicUI[0] = MAGICUI_TEX_YELLOW;
-			magicUI[1] = MAGICUI_TEX_YELLOW;
-			magicUI[2] = MAGICUI_TEX_YELLOW;
-			magicUI[3] = MAGICUI_TEX_FLASH;
-			break;
-		
-		// 火球魔法=================================
-		case COMMANDOREDER_RRG:	// RRGの場合
-			magicUI[0] = MAGICUI_TEX_RED;
-			magicUI[1] = MAGICUI_TEX_RED;
-			magicUI[2] = MAGICUI_TEX_GREEN;
-			magicUI[3] = MAGICUI_TEX_FIREBALL;
-			break;
-
-		case COMMANDOREDER_RGR:	// RGRの場合
-			magicUI[0] = MAGICUI_TEX_RED;
-			magicUI[1] = MAGICUI_TEX_GREEN;
-			magicUI[2] = MAGICUI_TEX_RED;
-			magicUI[3] = MAGICUI_TEX_FIREBALL;
-			break;
-
-		case COMMANDOREDER_GRR:	// GRRの場合
-			magicUI[0] = MAGICUI_TEX_GREEN;
-			magicUI[1] = MAGICUI_TEX_RED;
-			magicUI[2] = MAGICUI_TEX_RED;
-			magicUI[3] = MAGICUI_TEX_FIREBALL;
-			break;
-
-		// 太陽魔法=================================
-		case COMMANDOREDER_RYY:	// RYYの場合
-			magicUI[0] = MAGICUI_TEX_RED;
-			magicUI[1] = MAGICUI_TEX_YELLOW;
-			magicUI[2] = MAGICUI_TEX_YELLOW;
-			magicUI[3] = MAGICUI_TEX_SUNSETDELAY;
-			break;
-
-		case COMMANDOREDER_YRY:	// YRYの場合
-			magicUI[0] = MAGICUI_TEX_YELLOW;
-			magicUI[1] = MAGICUI_TEX_RED;
-			magicUI[2] = MAGICUI_TEX_YELLOW;
-			magicUI[3] = MAGICUI_TEX_SUNSETDELAY;
-			break;
-
-		case COMMANDOREDER_YYR:	// YYRの場合
-			magicUI[0] = MAGICUI_TEX_YELLOW;
-			magicUI[1] = MAGICUI_TEX_YELLOW;
-			magicUI[2] = MAGICUI_TEX_RED;
-			magicUI[3] = MAGICUI_TEX_SUNSETDELAY;
-			break;
-		
-		// 雨乞魔法=================================
-		case COMMANDOREDER_BBG:	// BBGの場合
-			magicUI[0] = MAGICUI_TEX_BLUE;
-			magicUI[1] = MAGICUI_TEX_BLUE;
-			magicUI[2] = MAGICUI_TEX_GREEN;
-			magicUI[3] = MAGICUI_TEX_RAINPRAY;
-			break;
-
-		case COMMANDOREDER_BGB:	// BGBの場合
-			magicUI[0] = MAGICUI_TEX_BLUE;
-			magicUI[1] = MAGICUI_TEX_GREEN;
-			magicUI[2] = MAGICUI_TEX_BLUE;
-			magicUI[3] = MAGICUI_TEX_RAINPRAY;
-			break;
-
-		case COMMANDOREDER_GBB:	//GBBの場合
-			magicUI[0] = MAGICUI_TEX_GREEN;
-			magicUI[1] = MAGICUI_TEX_BLUE;
-			magicUI[2] = MAGICUI_TEX_BLUE;
-			magicUI[3] = MAGICUI_TEX_RAINPRAY;
-			break;
-
-		// 氷結魔法=================================
-		case COMMANDOREDER_BGG:	//GBBの場合
-			magicUI[0] = MAGICUI_TEX_BLUE;
-			magicUI[1] = MAGICUI_TEX_GREEN;
-			magicUI[2] = MAGICUI_TEX_GREEN;
-			magicUI[3] = MAGICUI_TEX_FREEZE;
-			break;
-
-		case COMMANDOREDER_GBG:	// GBGの場合
-			magicUI[0] = MAGICUI_TEX_GREEN;
-			magicUI[1] = MAGICUI_TEX_BLUE;
-			magicUI[2] = MAGICUI_TEX_GREEN;
-			magicUI[3] = MAGICUI_TEX_FREEZE;
-			break;
-
-		case COMMANDOREDER_GGB:	// GGBの場合
-			magicUI[0] = MAGICUI_TEX_GREEN;
-			magicUI[1] = MAGICUI_TEX_GREEN;
-			magicUI[2] = MAGICUI_TEX_BLUE;
-			magicUI[3] = MAGICUI_TEX_FREEZE;
-			break;
-
-		// 成長魔法=================================
-		case COMMANDOREDER_BYY:	// BYYの場合
-			magicUI[0] = MAGICUI_TEX_BLUE;
-			magicUI[1] = MAGICUI_TEX_YELLOW;
-			magicUI[2] = MAGICUI_TEX_YELLOW;
-			magicUI[3] = MAGICUI_TEX_GROWTH;
-			break;
-
-		case COMMANDOREDER_YBY:	// YBYの場合
-			magicUI[0] = MAGICUI_TEX_YELLOW;
-			magicUI[1] = MAGICUI_TEX_BLUE;
-			magicUI[2] = MAGICUI_TEX_YELLOW;
-			magicUI[3] = MAGICUI_TEX_GROWTH;
-			break;
-
-		case COMMANDOREDER_YYB:	// YYBの場合
-			magicUI[0] = MAGICUI_TEX_YELLOW;
-			magicUI[1] = MAGICUI_TEX_YELLOW;
-			magicUI[2] = MAGICUI_TEX_BLUE;
-			magicUI[3] = MAGICUI_TEX_GROWTH;
-			break;
-
-		// 加速魔法=================================
-		case COMMANDOREDER_GGY:	// GGYの場合
-			magicUI[0] = MAGICUI_TEX_GREEN;
-			magicUI[1] = MAGICUI_TEX_GREEN;
-			magicUI[2] = MAGICUI_TEX_YELLOW;
-			magicUI[3] = MAGICUI_TEX_ACCELERATION;
-			break;
-
-		case COMMANDOREDER_GYG:	// GYGの場合
-			magicUI[0] = MAGICUI_TEX_GREEN;
-			magicUI[1] = MAGICUI_TEX_YELLOW;
-			magicUI[2] = MAGICUI_TEX_GREEN;
-			magicUI[3] = MAGICUI_TEX_ACCELERATION;
-			break;
-
-		case COMMANDOREDER_YGG:	// YGGの場合
-			magicUI[0] = MAGICUI_TEX_YELLOW;
-			magicUI[1] = MAGICUI_TEX_GREEN;
-			magicUI[2] = MAGICUI_TEX_GREEN;
-			magicUI[3] = MAGICUI_TEX_ACCELERATION;
-			break;
-
-		// 時間魔法=================================
-		case COMMANDOREDER_RGB:	// RGBの場合
-			magicUI[0] = MAGICUI_TEX_RED;
-			magicUI[1] = MAGICUI_TEX_GREEN;
-			magicUI[2] = MAGICUI_TEX_BLUE;
-			magicUI[3] = MAGICUI_TEX_ACCELERATION;
-			break;
-		}
-
-		switch (nCntCommand)
-		{
-		case 0:	// 1つ目の魔法
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND0].tex	= magicUI[0];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND1].tex	= magicUI[1];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0COMMAND2].tex	= magicUI[2];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_0MAGIC].tex		= magicUI[3];
-			break;
-
-		case 1:	// 2つ目の魔法
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND0].tex	= magicUI[0];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND1].tex	= magicUI[1];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1COMMAND2].tex	= magicUI[2];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_1MAGIC].tex		= magicUI[3];
-			break;
-
-		case 2:	// 3つ目の魔法
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND0].tex	= magicUI[0];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND1].tex	= magicUI[1];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2COMMAND2].tex	= magicUI[2];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_2MAGIC].tex		= magicUI[3];
-			break;
-
-		case 3:	// 4つ目の魔法
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND0].tex	= magicUI[0];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND1].tex	= magicUI[1];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3COMMAND2].tex	= magicUI[2];
-			g_aMagicUI[nIdx].aMagicUI[MAGICUI_TYPE_3MAGIC].tex		= magicUI[3];
-			break;
-		}
-	}
 }

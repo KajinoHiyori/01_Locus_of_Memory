@@ -8,10 +8,8 @@
 #include"player.h"
 #include"input.h"
 #include "debugproc.h"
-#include "gameui.h"
 #include "magicui.h"
 #include "spellui.h"
-#include "menubg.h"
 #include "clock.h"
 #include "battery.h"
 #include "main.h"
@@ -89,8 +87,6 @@ void InitGame(void)
 	// 魔法の初期化処理
 	InitMagic();
 
-	InitMenuBG();
-
 	// ポーズの初期化処理
 	//InitPause();
 
@@ -121,8 +117,6 @@ void InitGame(void)
 
 	InitParticle();
 
-	InitGameUI();
-	
 	//PlaySound(SOUND_LABEL_GAME);
 
 	pVibration->Vibration = false;
@@ -162,12 +156,8 @@ void UninitGame(void)
 	// 魔法の終了処理
 	UninitMagic();
 
-	UninitMenuBG();
-
 	// ポーズの終了処理
 	//UninitPause();
-
-	UninitGameUI();
 
 	UninitSpellUI();
 
@@ -249,16 +239,12 @@ void UpdateGame(void)
 	// 魔法陣の更新処理
 	UpdateMagicCircle();
 
-	UpdateMenuBG();
-
 	if (g_bPause == true)
 	{
 		// ポーズの更新処理
 		//UpdatePause();
 	}
 
-	UpdateGameUI();
-	
 	UpdateSpellUI();
 
 	UpdateMagicUI();
@@ -390,10 +376,6 @@ void DrawGame(void)
 	DrawUIManager();
 
 	DrawMagicBubble();
-
-	DrawGameUI();
-
-	DrawMenuBG();
 
 	DrawSpellUI();
 

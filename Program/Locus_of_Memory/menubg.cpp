@@ -14,6 +14,7 @@
 #include "clock.h"
 #include "magicui.h"
 
+#if 0
 // マクロ定義
 #define MAX_MAGIC			(4)					// 記録できる魔法の最大数
 #define MAX_MENUBG_TEX		(MENUBG_TEX_MAX)	// テクスチャの最大数
@@ -393,3 +394,4 @@ void DisappearMenuBG(int nIdx)
 			break;
 		}
 }
+#endif
