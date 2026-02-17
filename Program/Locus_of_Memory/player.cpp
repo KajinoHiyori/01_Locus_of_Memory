@@ -48,13 +48,14 @@ void InitPlayer(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 
-	Player* pPlayer = &g_aPlayer[0];		// プレイヤーの先頭アドレス
-
-	memset(&pPlayer[0].magicbook.OwnCommand[0], COMMANDOREDER_NONE, sizeof(COMMANDOREDER) * MAX_OWNCOMMAND);
-	memset(&pPlayer[1].magicbook.OwnCommand[0], COMMANDOREDER_NONE, sizeof(COMMANDOREDER) * MAX_OWNCOMMAND);
-	pPlayer[0].magicbook.nCntOwn = 0;
-	pPlayer[1].magicbook.nCntOwn = 0;
-
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
+		{
+			g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] = COMMANDOREDER_NONE;
+		}
+		g_aPlayer[nCntPlayer].magicbook.nCntOwn = 0;
+	}
 	// 初期化
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
@@ -138,213 +139,216 @@ void UpdatePlayer(void)
 	// 過去の位置を保存
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		if (g_aPlayer[nCntPlayer].bUse == true)
+		if (g_aPlayer[nCntPlayer].bUse == false)
 		{
-			g_aPlayer[nCntPlayer].posOld = g_aPlayer[nCntPlayer].pos;
+			continue;
 		}
+		g_aPlayer[nCntPlayer].posOld = g_aPlayer[nCntPlayer].pos;
 	}
 
 	// 操作
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		if (g_aPlayer[nCntPlayer].bUse == true)
+		if (g_aPlayer[nCntPlayer].bUse == false)
 		{
-			// 過去の位置を保存
-			g_aPlayer[nCntPlayer].posOld = g_aPlayer[nCntPlayer].pos;
-			moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			// ポーズ状態の取得
-			bPause = GetPause(nCntPlayer);
+			continue;
+		}
+		// 過去の位置を保存
+		g_aPlayer[nCntPlayer].posOld = g_aPlayer[nCntPlayer].pos;
+		moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		// ポーズ状態の取得
+		bPause = GetPause(nCntPlayer);
 
-			// 落ちてる魔法との判定 (保管)
-			nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius,nCntPlayer);
+		// 落ちてる魔法との判定 (保管)
+		nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius,nCntPlayer);
 
-			switch (g_aPlayer[nCntPlayer].state)
+		switch (g_aPlayer[nCntPlayer].state)
+		{
+		case PLAYERSTATE_NORMAL:	// 通常時
+			if (bPause == true)	// ポーズ状態の場合、各種処理を行わない[]
 			{
-			case PLAYERSTATE_NORMAL:	// 通常時
-				if (bPause == true)	// ポーズ状態の場合、各種処理を行わない[]
-				{
-				
-				}
-				else
-				{
-					// キー入力を受け付ける====================================
-						// 移動方向を管理
-					if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
-					{
-						moveDir.x -= 1.0f;
-					}
-					else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
-					{
-						moveDir.x += 1.0f;
-					}
-					if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
-					{
-						moveDir.z += 1.0f;
-					}
-					else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
-					{
-						moveDir.z -= 1.0f;
-					}
-
-					// ジャンプ処理
-					if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
-					{
-						g_aPlayer[nCntPlayer].move.y = JUMP;
-						g_aPlayer[nCntPlayer].bJump = true;
-						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
-					}
-
-					if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
-					{// Xボタンを押したかつ何かしらのコマンドが近くにある
-						OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
-					}
-
-					// モーションの確認
-					if (GetKeyboardTrigger(DIK_Z) == true)
-					{
-						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-					}
-					if (GetKeyboardTrigger(DIK_X) == true)
-					{
-						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
-					}
-					if (GetKeyboardTrigger(DIK_C) == true)
-					{
-						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, true, true, BLENDFRAME);
-					}
-					if (GetKeyboardTrigger(DIK_V) == true)
-					{
-						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, true, true, BLENDFRAME);
-					}
-					if (GetKeyboardTrigger(DIK_B) == true)
-					{
-						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, true, true, BLENDFRAME);
-					}
-					if (GetKeyboardTrigger(DIK_N) == true)
-					{
-						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, true, true, BLENDFRAME);
-					}
-
-					// 移動方向の正規化
-					D3DXVec3Normalize(&moveDir, &moveDir);
-
-					// スティックの入力方向を利用
-					GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer);
-
-					// 移動状態を求める(fMoveDir == 0は移動していない)
-					fMoveDir = SQRTF(moveDir.x, moveDir.z);
-
-				}
-				break;
-
-			case PLAYERSTATE_PAUSE:
-
-				break;
-
-			case PLAYERSTATE_SPELL:
-				InputCommand = PressCommand(nCntPlayer);	// 呪文の入力を受け付ける
-				break;
-
-			case PLAYERSTATE_MAGIC:
-
-				break;
+			
 			}
+			else
+			{
+				// キー入力を受け付ける====================================
+					// 移動方向を管理
+				if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+				{
+					moveDir.x -= 1.0f;
+				}
+				else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+				{
+					moveDir.x += 1.0f;
+				}
+				if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+				{
+					moveDir.z += 1.0f;
+				}
+				else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+				{
+					moveDir.z -= 1.0f;
+				}
 
-			if (fMoveDir != 0)
-			{// 移動している場合
-				fRotMove = g_aPlayer[nCntPlayer].rot.y;							// 今の向き
-				fRotDest = atan2f(moveDir.x, moveDir.z) + pCamera[nCntPlayer].rot.y;		// 目的地への向き
+				// ジャンプ処理
+				if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
+				{
+					g_aPlayer[nCntPlayer].move.y = JUMP;
+					g_aPlayer[nCntPlayer].bJump = true;
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
+				}
 
-				// 目的向きに移動方向を合わせる
-				moveDir.x = sinf(fRotDest) * fMoveDir;
-				moveDir.z = cosf(fRotDest) * fMoveDir;
+				if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
+				{// Xボタンを押したかつ何かしらのコマンドが近くにある
+					OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
+				}
 
-				// 移動量の更新
-				g_aPlayer[nCntPlayer].move.x += (g_aPlayer[nCntPlayer].fSpeed * -moveDir.x);
-				g_aPlayer[nCntPlayer].move.z += (g_aPlayer[nCntPlayer].fSpeed * -moveDir.z);
-
-
-				fAngle = atan2f(-moveDir.x, moveDir.z);
-				fAngle = AngleNormalize(fAngle);
-				g_aPlayer[nCntPlayer].rotDest.y = fRotDest;
-				fRotDest = AngleNormalize(fRotDest);
-
-				if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
-				{// ジャンプ状態じゃないかつ移動モーション中じゃない
+				// モーションの確認
+				if (GetKeyboardTrigger(DIK_Z) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+				}
+				if (GetKeyboardTrigger(DIK_X) == true)
+				{
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
 				}
-			}
-			else if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
-			{// もし歩行中だったら
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-			}
-
-			// プレイヤーの方向を補正
-			fRotDiffKey = g_aPlayer[nCntPlayer].rotDest.y - g_aPlayer[nCntPlayer].rot.y;	// 差分を計算
-			fRotDiffKey = AngleNormalize(fRotDiffKey);
-			g_aPlayer[nCntPlayer].rot.y += (fRotDiffKey) * CORRECTION_ROT;
-			g_aPlayer[nCntPlayer].rot.y = AngleNormalize(g_aPlayer[nCntPlayer].rot.y);
-
-			// 重力
-			g_aPlayer[nCntPlayer].move.y -= GRAVITY;
-
-			// 位置の更新
-			g_aPlayer[nCntPlayer].pos += g_aPlayer[nCntPlayer].move;
-
-			// メッシュフィールドとの当たり判定
-			if (CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || 
-				g_aPlayer[nCntPlayer].pos.y <= 0.0f)
-			{
-				if (g_aPlayer[nCntPlayer].bJump == true)
-				{// ジャンプしている状態で判定があったら
-					// 着地モーション
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
+				if (GetKeyboardTrigger(DIK_C) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, true, true, BLENDFRAME);
 				}
-				g_aPlayer[nCntPlayer].pos.y = 0.0f;
-				g_aPlayer[nCntPlayer].bJump = false;
-			}
-
-			// オブジェクトとの当たり判定
-			CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius);
-
-			// 使用したコマンドと所持コマンドを判定
-			for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
-			{
-				if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == InputCommand && g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] != MAGICTYPE_NONE)
-				{// コマンドを所有していたら
-					// 魔法を使用する (モーションセット, 魔法セット)
-					g_aPlayer[nCntPlayer].state = PLAYERSTATE_MAGIC;
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, false, true, BLENDFRAME);
-					SetMagic(ChangeMagic(InputCommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
-					break;
+				if (GetKeyboardTrigger(DIK_V) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, true, true, BLENDFRAME);
 				}
+				if (GetKeyboardTrigger(DIK_B) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, true, true, BLENDFRAME);
+				}
+				if (GetKeyboardTrigger(DIK_N) == true)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, true, true, BLENDFRAME);
+				}
+
+				// 移動方向の正規化
+				D3DXVec3Normalize(&moveDir, &moveDir);
+
+				// スティックの入力方向を利用
+				GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer);
+
+				// 移動状態を求める(fMoveDir == 0は移動していない)
+				fMoveDir = SQRTF(moveDir.x, moveDir.z);
+
 			}
+			break;
+
+		case PLAYERSTATE_PAUSE:
+
+			break;
+
+		case PLAYERSTATE_SPELL:
+			InputCommand = PressCommand(nCntPlayer);	// 呪文の入力を受け付ける
+			break;
+
+		case PLAYERSTATE_MAGIC:
+
+			break;
+		}
+
+		if (fMoveDir != 0)
+		{// 移動している場合
+			fRotMove = g_aPlayer[nCntPlayer].rot.y;							// 今の向き
+			fRotDest = atan2f(moveDir.x, moveDir.z) + pCamera[nCntPlayer].rot.y;		// 目的地への向き
+
+			// 目的向きに移動方向を合わせる
+			moveDir.x = sinf(fRotDest) * fMoveDir;
+			moveDir.z = cosf(fRotDest) * fMoveDir;
 
 			// 移動量の更新
-			g_aPlayer[nCntPlayer].move.x += (0.0f - g_aPlayer[nCntPlayer].move.x) * 0.1f;
-			g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * 0.1f;
-			g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * 0.1f;
+			g_aPlayer[nCntPlayer].move.x += (g_aPlayer[nCntPlayer].fSpeed * -moveDir.x);
+			g_aPlayer[nCntPlayer].move.z += (g_aPlayer[nCntPlayer].fSpeed * -moveDir.z);
 
-			// モーションの更新処理
-			UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData);
 
-			//// デバッグ表示
-			//PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
-			//PrintDebugProc("プレイヤー[%d]の移動量 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].move.x, g_aPlayer[nCntPlayer].move.y, g_aPlayer[nCntPlayer].move.z);
-			//PrintDebugProc("プレイヤー[%d]の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rot.x, g_aPlayer[nCntPlayer].rot.y, g_aPlayer[nCntPlayer].rot.z);
-			//PrintDebugProc("プレイヤー[%d]の目的の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rotDest.x, g_aPlayer[nCntPlayer].rotDest.y, g_aPlayer[nCntPlayer].rotDest.z);
+			fAngle = atan2f(-moveDir.x, moveDir.z);
+			fAngle = AngleNormalize(fAngle);
+			g_aPlayer[nCntPlayer].rotDest.y = fRotDest;
+			fRotDest = AngleNormalize(fRotDest);
 
-			PrintDebugProc("入力コマンド : %d\n", InputCommand);
-
-			PrintDebugProc("コマンドタイプ : %d\n", nDropMagicIdx);
-
-			for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
-			{
-				PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
+			if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
+			{// ジャンプ状態じゃないかつ移動モーション中じゃない
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
 			}
-			PrintDebugProc("コマンド数 : %d\n", g_aPlayer[nCntPlayer].magicbook.nCntOwn);
-
 		}
+		else if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
+		{// もし歩行中だったら
+			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+		}
+
+		// プレイヤーの方向を補正
+		fRotDiffKey = g_aPlayer[nCntPlayer].rotDest.y - g_aPlayer[nCntPlayer].rot.y;	// 差分を計算
+		fRotDiffKey = AngleNormalize(fRotDiffKey);
+		g_aPlayer[nCntPlayer].rot.y += (fRotDiffKey) * CORRECTION_ROT;
+		g_aPlayer[nCntPlayer].rot.y = AngleNormalize(g_aPlayer[nCntPlayer].rot.y);
+
+		// 重力
+		g_aPlayer[nCntPlayer].move.y -= GRAVITY;
+
+		// 位置の更新
+		g_aPlayer[nCntPlayer].pos += g_aPlayer[nCntPlayer].move;
+
+		// メッシュフィールドとの当たり判定
+		if (CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || 
+			g_aPlayer[nCntPlayer].pos.y <= 0.0f)
+		{
+			if (g_aPlayer[nCntPlayer].bJump == true)
+			{// ジャンプしている状態で判定があったら
+				// 着地モーション
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
+			}
+			g_aPlayer[nCntPlayer].pos.y = 0.0f;
+			g_aPlayer[nCntPlayer].bJump = false;
+		}
+
+		// オブジェクトとの当たり判定
+		CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius);
+
+		// 使用したコマンドと所持コマンドを判定
+		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
+		{
+			if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == InputCommand && g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] != MAGICTYPE_NONE)
+			{// コマンドを所有していたら
+				// 魔法を使用する (モーションセット, 魔法セット)
+				g_aPlayer[nCntPlayer].state = PLAYERSTATE_MAGIC;
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, false, true, BLENDFRAME);
+				SetMagic(ChangeMagic(InputCommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
+				break;
+			}
+		}
+
+		// 移動量の更新
+		g_aPlayer[nCntPlayer].move.x += (0.0f - g_aPlayer[nCntPlayer].move.x) * 0.1f;
+		g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * 0.1f;
+		g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * 0.1f;
+
+		// モーションの更新処理
+		UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData);
+
+		//// デバッグ表示
+		//PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
+		//PrintDebugProc("プレイヤー[%d]の移動量 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].move.x, g_aPlayer[nCntPlayer].move.y, g_aPlayer[nCntPlayer].move.z);
+		//PrintDebugProc("プレイヤー[%d]の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rot.x, g_aPlayer[nCntPlayer].rot.y, g_aPlayer[nCntPlayer].rot.z);
+		//PrintDebugProc("プレイヤー[%d]の目的の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rotDest.x, g_aPlayer[nCntPlayer].rotDest.y, g_aPlayer[nCntPlayer].rotDest.z);
+
+		PrintDebugProc("入力コマンド : %d\n", InputCommand);
+
+		PrintDebugProc("コマンドタイプ : %d\n", nDropMagicIdx);
+
+		for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
+		{
+			PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
+		}
+		PrintDebugProc("コマンド数 : %d\n", g_aPlayer[nCntPlayer].magicbook.nCntOwn);
+		PrintDebugProc("使用状態 : %d\n", g_aPlayer[nCntPlayer].bUse);
+	
 	}
 }
 
@@ -729,20 +733,24 @@ void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 	}
 	else
 	{
-		// 1つ以上の魔法を所持している場合
-		for (int nCntCommand = 0; nCntCommand < pMagicBook->nCntOwn; nCntCommand++)
-		{
-			pMagicBook->OwnCommand[nCntCommand + 1] = ownCommandOld[nCntCommand];
-		}
+		//エラーを吐く可能性アリ\\
 
-		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
 		pMagicBook->nCntOwn++;
-
 		// 所持数が4を越えないように管理
 		if (pMagicBook->nCntOwn > MAX_OWNCOMMAND)
 		{
 			pMagicBook->nCntOwn = MAX_OWNCOMMAND;
 		}
+		// 1つ以上の魔法を所持している場合
+		//pMagicBook->OwnCommand[1] = ownCommandOld[0];
+		//pMagicBook->OwnCommand[2] = ownCommandOld[1];
+		//pMagicBook->OwnCommand[3] = ownCommandOld[2];
+		for (int nCntCommand = 0; nCntCommand < pMagicBook->nCntOwn -1; nCntCommand++)
+		{
+			pMagicBook->OwnCommand[nCntCommand + 1] = ownCommandOld[nCntCommand];
+		}
+
+		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
 	}
 
 #if 0
