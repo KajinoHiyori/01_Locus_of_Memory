@@ -159,9 +159,6 @@
     <ClCompile Include="startui.cpp">
       <Filter>title\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="gameui.cpp">
-      <Filter>UI\cpp</Filter>
-    </ClCompile>
     <ClCompile Include="magicui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
@@ -173,9 +170,6 @@
     </ClCompile>
     <ClCompile Include="battery.cpp">
       <Filter>object\cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="menubg.cpp">
-      <Filter>UI\cpp</Filter>
     </ClCompile>
     <ClCompile Include="skybox.cpp">
       <Filter>object\cpp</Filter>
@@ -200,6 +194,9 @@
     </ClCompile>
     <ClCompile Include="collision.cpp">
       <Filter>main\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="brickwall.cpp">
+      <Filter>object\cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,9 +284,6 @@
     <ClInclude Include="magicui.h">
       <Filter>UI\h</Filter>
     </ClInclude>
-    <ClInclude Include="gameui.h">
-      <Filter>UI\h</Filter>
-    </ClInclude>
     <ClInclude Include="spellui.h">
       <Filter>UI\h</Filter>
     </ClInclude>
@@ -298,9 +292,6 @@
     </ClInclude>
     <ClInclude Include="battery.h">
       <Filter>object\h</Filter>
-    </ClInclude>
-    <ClInclude Include="menubg.h">
-      <Filter>UI\h</Filter>
     </ClInclude>
     <ClInclude Include="skybox.h">
       <Filter>object\h</Filter>
@@ -328,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="collision.h">
       <Filter>main\h</Filter>
+    </ClInclude>
+    <ClInclude Include="brickwall.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

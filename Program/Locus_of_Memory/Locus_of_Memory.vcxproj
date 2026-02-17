@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClCompile Include="animal.cpp" />
     <ClCompile Include="battery.cpp" />
+    <ClCompile Include="brickwall.cpp" />
     <ClCompile Include="clock.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="custommesh.cpp" />
@@ -170,12 +171,10 @@
     <ClCompile Include="diagnosisui.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="event.cpp" />
-    <ClCompile Include="gameui.cpp" />
     <ClCompile Include="loadscript.cpp" />
     <ClCompile Include="magicbubble.cpp" />
     <ClCompile Include="magiccircle.cpp" />
     <ClCompile Include="magicui.cpp" />
-    <ClCompile Include="menubg.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -211,6 +210,7 @@
   <ItemGroup>
     <ClInclude Include="animal.h" />
     <ClInclude Include="battery.h" />
+    <ClInclude Include="brickwall.h" />
     <ClInclude Include="clock.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="color.h" />
@@ -219,12 +219,10 @@
     <ClInclude Include="diagnosisui.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="event.h" />
-    <ClInclude Include="gameui.h" />
     <ClInclude Include="loadscript.h" />
     <ClInclude Include="magicbubble.h" />
     <ClInclude Include="magiccircle.h" />
     <ClInclude Include="magicui.h" />
-    <ClInclude Include="menubg.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="camera.h" />
