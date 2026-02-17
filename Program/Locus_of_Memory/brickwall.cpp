@@ -15,13 +15,13 @@
 #define PRIMITIVE	(DIVISION_W * DIVISION_H * 2 + (DIVISION_H - 1) * 4)	// プリミティブ数
 #define INDEX		(PRIMITIVE + 2)					// インデックス数
 #define VERTEX		(WIDTH_SIZE * HEIGHT_SIZE)		// 頂点数
-
-#define SIZE		(500.0f)	// 高さ
+#define HEIGHT		(500.0f)	// 高さ
+#define SIZE		(5000.0f)	// 幅
 #define MOVE		(1.5f)		// 移動量
 #define ROTATE		(0.05f)		// 回転量
 #define NORMAL		(D3DXVECTOR3(0.0f, 0.0f, -1.0f))	// 法線
 #define DEFAULT		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// デフォルト
-#define POS			(D3DXVECTOR3(0.0f, -250.0f, 0.0f))	// 位置
+#define POS			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 位置
 
 // グローバル変数
 LPDIRECT3DTEXTURE9 g_pTextureBrickWall = NULL;	// テクスチャへのポインタ
@@ -37,7 +37,7 @@ void InitBrickWall(void)
 	pDevice = GetDevice();
 
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\sky001.jpg", &g_pTextureBrickWall);
+	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\wall003.jpg", &g_pTextureBrickWall);
 
 	// 初期化
 	g_BrickWall.pos = DEFAULT;
@@ -64,12 +64,12 @@ void InitBrickWall(void)
 		{
 			// 頂点座標の設定
 			pVtx[nCntWidth].pos.x = sinf(-D3DX_PI / (DIVISION_W / 2) * (nCntWidth)) * SIZE;
-			pVtx[nCntWidth].pos.y = nCntHeight * SIZE;
+			pVtx[nCntWidth].pos.y = nCntHeight * HEIGHT;
 			pVtx[nCntWidth].pos.z = cosf(-D3DX_PI / (DIVISION_W / 2) * (nCntWidth)) * SIZE;
 			
 			// テクスチャ座標の設定
-			pVtx[nCntWidth].tex.x = (float)nCntWidth / DIVISION_W;
-			pVtx[nCntWidth].tex.y = (float)nCntHeight / (DIVISION_H);
+			pVtx[nCntWidth].tex.x = (float)nCntWidth / DIVISION_W * 200;
+			pVtx[nCntWidth].tex.y = (float)nCntHeight / (DIVISION_H) * 10;
 
 			// 法線の設定
 			pVtx[nCntWidth].nor = NORMAL;
