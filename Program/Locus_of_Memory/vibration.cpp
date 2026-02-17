@@ -92,11 +92,16 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 		}
 		else
 		{
-			if (nDropMagic == MAGICTYPE_LEVITATION)
-			{ // •‚—V
+			switch (nDropMagic)
+			{
 
-				if (Type == VIBRATIONTYPE_FAR)
+			case MAGICTYPE_LEVITATION:
+				// •‚—V
+
+				switch (Type)
 				{
+				case VIBRATIONTYPE_FAR:
+
 					if (nVibration >= 6000 && Up == true)
 					{
 						Up = false;
@@ -120,11 +125,11 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 
 					}
 
-
 					SetJoypadVibration(300 + nVibration, 300 + nVibration, 60, nPlayertype);
-				}
-				else if (Type == VIBRATIONTYPE_MEDIUM)
-				{
+					break;
+				
+				case VIBRATIONTYPE_MEDIUM:
+
 					if (nVibration >= 15000 && Up == true)
 					{
 						Up = false;
@@ -148,11 +153,11 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 
 					}
 
-
 					SetJoypadVibration(300 + nVibration, 300 + nVibration, 60, nPlayertype);
-				}
-				else if (Type == VIBRATIONTYPE_CLOSE)
-				{
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
 					if (nVibration >= 24000 && Up == true)
 					{
 						Up = false;
@@ -169,20 +174,20 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 						nVibration = nVibration - 300;
 
 					}
-		
+
 					else if (Up == true)
 					{
 						nVibration = nVibration + 300;
 
 					}
-		
 
 					SetJoypadVibration(300 + nVibration, 300 + nVibration, 60, nPlayertype);
+					break;
 				}
+				break;
 
-			}
-			else if (nDropMagic == MAGICTYPE_COMBUSTION)
-			{ // ”RÄ
+			case MAGICTYPE_COMBUSTION:
+				// ”RÄ
 
 				nVibration++;
 
@@ -198,20 +203,23 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				{
 					SetJoypadVibration(0, 30000 - (nVibForce * Type), 60, nPlayertype);
 				}
-		
+
 
 				if (nVibration >= 120)
 				{
 					nVibration = 0;
 				}
-			}
-			else if (nDropMagic == MAGICTYPE_FLOOD)
-			{ // ^…
+				break;
+
+			case MAGICTYPE_FLOOD:
+				// ^…
 
 				nVibration = nVibration + 100;
 
-				if (Type == VIBRATIONTYPE_FAR)
+				switch (Type)
 				{
+				case VIBRATIONTYPE_FAR:
+
 					if (nVibration >= 10000)
 					{
 						nVibDel++;
@@ -226,9 +234,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 10000 - nVibration, 60, nPlayertype);
 					}
-				}
-				else if (Type == VIBRATIONTYPE_MEDIUM)
-				{
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
 					if (nVibration >= 20000)
 					{
 						nVibDel++;
@@ -243,9 +252,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 20000 - nVibration, 60, nPlayertype);
 					}
-				}
-				else if (Type == VIBRATIONTYPE_CLOSE)
-				{
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
 					if (nVibration >= 30000)
 					{
 						nVibDel++;
@@ -260,13 +270,12 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 30000 - nVibration, 60, nPlayertype);
 					}
+					break;
 				}
+				break;
 
-
-
-			}
-			else if (nDropMagic == MAGICTYPE_FLASH)
-			{ // ƒtƒ‰ƒbƒVƒ…
+			case MAGICTYPE_FLASH:
+				// ƒtƒ‰ƒbƒVƒ…
 
 				nVibration++;
 
@@ -283,12 +292,15 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				{
 					nVibration = 0;
 				}
-			}
-			else if (nDropMagic == MAGICTYPE_FIREBALL)
-			{ // ‰Î‹…
+				break;
 
-				if (Type == VIBRATIONTYPE_FAR)
+			case MAGICTYPE_FIREBALL:
+				 // ‰Î‹…
+
+				switch (Type)
 				{
+				case VIBRATIONTYPE_FAR:
+
 					nVibration = nVibration + 350;
 
 					if (nCntVibration == 0)
@@ -316,9 +328,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 						nCntVibration++;
 						nVibration = 0;
 					}
-				}
-				else if (Type == VIBRATIONTYPE_MEDIUM)
-				{
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
 					nVibration = nVibration + 650;
 
 					if (nCntVibration == 0)
@@ -346,9 +359,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 						nCntVibration++;
 						nVibration = 0;
 					}
-				}
-				else if (Type == VIBRATIONTYPE_CLOSE)
-				{
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
 					nVibration = nVibration + 1000;
 
 					if (nCntVibration == 0)
@@ -376,11 +390,28 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 						nCntVibration++;
 						nVibration = 0;
 					}
+					break;
 				}
 
-			}
-			else if (nDropMagic == MAGICTYPE_SUNSETDELAY)
-			{ // ’x‰„
+				break;
+
+			case MAGICTYPE_SUNSETDELAY:
+				// ’x‰„
+
+				switch (Type)
+				{
+				case VIBRATIONTYPE_FAR:
+
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
+					break;
+				}
 
 				nVibration++;
 
@@ -397,12 +428,15 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 				{
 					nVibration = 0;
 				}
-			}
-			else if (nDropMagic == MAGICTYPE_RAINPRAY)
-			{ // ‰JŒî‚¢
-				
-				if (Type == VIBRATIONTYPE_FAR)
+				break;
+
+			case MAGICTYPE_RAINPRAY:
+				// ‰JŒî‚¢
+
+				switch (Type)
 				{
+				case VIBRATIONTYPE_FAR:
+
 					if (nCntVibration == 0)
 					{
 
@@ -436,9 +470,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 						nVibration = 0;
 
 					}
-				}
-				else if (Type == VIBRATIONTYPE_MEDIUM)
-				{
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
 					if (nCntVibration == 0)
 					{
 
@@ -472,9 +507,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 						nVibration = 0;
 
 					}
-				}
-				else if (Type == VIBRATIONTYPE_CLOSE)
-				{
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
 					if (nCntVibration == 0)
 					{
 
@@ -508,16 +544,17 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 						nVibration = 0;
 
 					}
+					break;
 				}
+				break;
 
+			case MAGICTYPE_FREEZE:
+					// “€Œ‹
 
-			}
-			else if (nDropMagic == MAGICTYPE_FREEZE)
-			{ // “€Œ‹
-
-
-				if (Type == VIBRATIONTYPE_FAR)
+				switch (Type)
 				{
+				case VIBRATIONTYPE_FAR:
+
 					nVibration = nVibration + 35;
 
 					if (nVibration >= 10000)
@@ -534,9 +571,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 10000, 60, nPlayertype);
 					}
-				}
-				else if (Type == VIBRATIONTYPE_MEDIUM)
-				{
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
 					nVibration = nVibration + 65;
 
 					if (nVibration >= 20000)
@@ -553,9 +591,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 20000, 60, nPlayertype);
 					}
-				}
-				else if (Type == VIBRATIONTYPE_CLOSE)
-				{
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
 					nVibration = nVibration + 100;
 
 					if (nVibration >= 30000)
@@ -572,15 +611,17 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 30000, 60, nPlayertype);
 					}
+					break;
 				}
+				break;
+				
+			case MAGICTYPE_GROWTH:
+				// ¬’·
 
-
-			}
-			else if (nDropMagic == MAGICTYPE_GROWTH)
-			{ // ¬’·
-
-				if (Type == VIBRATIONTYPE_FAR)
+				switch (Type)
 				{
+				case VIBRATIONTYPE_FAR:
+
 					nVibration = nVibration + 35;
 
 					if (nVibration >= 10000)
@@ -597,9 +638,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
 					}
-				}
-				else if (Type == VIBRATIONTYPE_MEDIUM)
-				{
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
 					nVibration = nVibration + 65;
 
 					if (nVibration >= 20000)
@@ -616,9 +658,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
 					}
-				}
-				else if (Type == VIBRATIONTYPE_CLOSE)
-				{
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
 					nVibration = nVibration + 100;
 
 					if (nVibration >= 30000)
@@ -635,22 +678,24 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					{
 						SetJoypadVibration(0 + nVibration, 0 + nVibration, 60, nPlayertype);
 					}
+					break;
 				}
 
+				break;
 
-			}
-			else if (nDropMagic == MAGICTYPE_ACCELERATION)
-			{ // ‰Á‘¬
+			case MAGICTYPE_ACCELERATION:
+				// ‰Á‘¬
 
 				SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
+				break;
+			
+			case MAGICTYPE_TIMEREVERT:
+				// Šª‚«–ß‚µ
 
-			}
-			else if (nDropMagic == MAGICTYPE_TIMEREVERT)
-			{ // Šª‚«–ß‚µ
-
-
-				if (Type == VIBRATIONTYPE_FAR)
+				switch (Type)
 				{
+				case VIBRATIONTYPE_FAR:
+
 					if (nVibration <= 0 && Left == true)
 					{
 						Left = false;
@@ -683,9 +728,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					}
 
 					SetJoypadVibration(10000 - nVibration, 0 + nVibration, 60, nPlayertype);
-				}
-				else if (Type == VIBRATIONTYPE_MEDIUM)
-				{
+					break;
+
+				case VIBRATIONTYPE_MEDIUM:
+
 					if (nVibration <= 0 && Left == true)
 					{
 						Left = false;
@@ -718,9 +764,10 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					}
 
 					SetJoypadVibration(20000 - nVibration, 0 + nVibration, 60, nPlayertype);
-				}
-				else if (Type == VIBRATIONTYPE_CLOSE)
-				{
+					break;
+
+				case VIBRATIONTYPE_CLOSE:
+
 					if (nVibration <= 0 && Left == true)
 					{
 						Left = false;
@@ -753,9 +800,8 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 					}
 
 					SetJoypadVibration(30000 - nVibration, 0 + nVibration, 60, nPlayertype);
+					break;
 				}
-
-
 			}
 		}
 
