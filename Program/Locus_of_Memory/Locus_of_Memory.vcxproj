@@ -171,6 +171,7 @@
     <ClCompile Include="diagnosisui.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="event.cpp" />
+    <ClCompile Include="grain.cpp" />
     <ClCompile Include="loadscript.cpp" />
     <ClCompile Include="magicbubble.cpp" />
     <ClCompile Include="magiccircle.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="diagnosisui.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="event.h" />
+    <ClInclude Include="grain.h" />
     <ClInclude Include="loadscript.h" />
     <ClInclude Include="magicbubble.h" />
     <ClInclude Include="magiccircle.h" />
