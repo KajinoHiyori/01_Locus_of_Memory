@@ -334,9 +334,6 @@ void DrawGame(void)
 	// パーティクルの描画処理
 	DrawParticle();
 
-	// 粒の描画処理
-	DrawGrain();
-
 	SetFogEnable(false);		// 霧を無効
 
 	DrawUIManager();
@@ -344,6 +341,9 @@ void DrawGame(void)
 	SetFogEnable(false);		// 霧を無効
 
 	DrawPlayer();
+
+	// 粒の描画処理
+	DrawGrain();
 
 	// 魔法の描画処理
 	DrawMagic();
