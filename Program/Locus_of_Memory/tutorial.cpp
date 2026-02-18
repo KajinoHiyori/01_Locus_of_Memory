@@ -26,6 +26,7 @@
 //#include"wall.h"
 //#include"field.h"
 #include"meshfield.h"
+#include "uimanager.h"
 #include "custommesh.h"
 #include "vibration.h"
 //#include"mashwall.h"
@@ -34,9 +35,6 @@
 //#include"score.h"
 //#include"timer.h"
 
-
-bool g_bPauseMenu1 = true;					// ポーズメニュー状態のON/OFF
-bool g_bPause1 = false;
 TUTORIALSTATE g_TutorialState = TUTORIALSTATE_NONE;		// ゲームの状態
 int g_nCounterTutorialState = 0;				// 状態管理カウンター
 int g_nCntFade = 0;
@@ -84,6 +82,8 @@ void InitTutorial(void)
 	//
 	//PlaySound(SOUND_LABEL_GAME);
 
+	// UIの状態を初期化
+	SetPauseFalse();
 }
 //=======================================================
 // ゲームの終了処理
@@ -134,79 +134,45 @@ void UpdateTutorial(void)
 	FADE* pFade = GetFade();
 	//Timer* pTimer = GetTimer();
 
+	// プレイヤーの更新処理
+	//UpdateBG();
 
-	if (GetKeyboardTrigger(DIK_P) == true)
-	{
-		g_bPause1 = (g_bPause1) ? false : true;
-	}
-	
-	
-	if (g_bPause1 == true)
-	{// ポーズ中
+	UpdateLight();
 
-		if (GetKeyboardTrigger(DIK_F4) == true)
-		{// ポーズ画面ON/OFF切り替え
+	// 魔法の更新処理
+	UpdateMagic();
 
-			g_bPauseMenu1 = g_bPauseMenu1 ? false : true;
-		}
+	//UpdateField();
 
-		if (g_bPauseMenu1 == true)
-		{// ポーズ画面ON
+	//UpdateMeshsky();
 
-			// ポーズの更新処理
-			//UpdatePause();
-		}
-	}
-	else
-	{
-		// プレイヤーの更新処理
-		//UpdateBG();
+	UpdateMeshField();
 
-		UpdateLight();
+	UpdateCustomMesh();
 
-		// 魔法の更新処理
-		UpdateMagic();
+	//UpdateMashwall();
 
-		//UpdateField();
+	//UpdateBullet();
 
-		//UpdateMeshsky();
+	UpdateShadow();
 
-		UpdateMeshField();
+	//UpdateBillboard();
 
-		UpdateCustomMesh();
+	UpdatePlayer();
 
-		//UpdateMashwall();
+	//UpdateMotion();
 
-		//UpdateBullet();
+	//UpdateModel();
 
-		UpdateShadow();
+	//UpdateBlock();
 
-		//UpdateBillboard();
+	//UpdateWall();
 
-		UpdatePlayer();
-
-		//UpdateMotion();
-
-		//UpdateModel();
-
-		//UpdateBlock();
-
-		//UpdateWall();
-
-		//UpdateScore();
-
-
-	}
+	//UpdateScore();
 
 	switch (g_TutorialState)
 	{
 	case TUTORIALSTATE_NORMAL:		// 通常状態
-
-		if (GetKeyboardTrigger(DIK_P) == true && *pFade == FADE_NONE || GetJoypadPress(JOYKEY_X,1) == true && *pFade == FADE_NONE)
-		{// ポーズON/OFF切り替え
-
-			g_bPause1 = g_bPause1 ? false : true;
-		}
 
 		break;
 
@@ -231,22 +197,18 @@ void UpdateTutorial(void)
 
 	if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
 	{// 0以下になった
+		g_TutorialState = TUTORIALSTATE_NONE;
 
+		// フェード設定(ゲーム画面に移行)
+		SetFade(MODE_GAME);
 
-			g_TutorialState = TUTORIALSTATE_NONE;
+		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+		{
+			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+		}
 
-			// フェード設定(ゲーム画面に移行)
-			SetFade(MODE_GAME);
-
-			for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
-			{
-				VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
-			}
-
-			// サウンド停止
-			//StopSound(SOUND_LABEL_BGM000);
-		
-
+		// サウンド停止
+		//StopSound(SOUND_LABEL_BGM000);
 	}
 
 
@@ -302,24 +264,8 @@ void DrawTutorial(void)
 	//DrawWall();
 
 	//DrawScore();
-
-
-	if (g_bPause1 == true)
-	{// ポーズ中
-
-		if (g_bPauseMenu1 == true)
-		{// ポーズ画面ON
-
-			// ポーズの描画処理
-			//DrawPause();
-		}
-	}
-
 }
-void SetTutorialePause(bool bPause1)
-{
-	g_bPause1 = bPause1;
-}
+
 void SetTutorialState(TUTORIALSTATE state, int nCounter)
 {
 	g_TutorialState = state;				// ゲーム状態設定

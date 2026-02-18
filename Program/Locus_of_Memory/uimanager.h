@@ -52,6 +52,7 @@ void InitUIManager(void);
 void UninitUIManager(void);
 void UpdateUIManager(void);
 void DrawUIManager(void);
+void SetPauseFalse(void);
 bool GetPause(int nIdx);
 D3DXMATRIX GetUIMatrix(int nIdx);	// UIのマトリックス情報を取得
 D3DXVECTOR3 GetUIPos(int nIdx);	// UIの位置を取得

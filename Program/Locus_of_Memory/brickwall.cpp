@@ -1,9 +1,12 @@
 //========================================================================
 // 
-// 3D塀の描画[BrickWall.cpp]
+// 塀の描画[BrickWall.cpp]
 //
 //========================================================================
 #include "brickwall.h"
+#include "debugproc.h"
+#include "main.h"
+#include "player.h"
 #include "input.h"
 #include "color.h"
 
@@ -47,12 +50,7 @@ void InitBrickWall(void)
 	g_BrickWall.bUse = false;
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * VERTEX,	// 確保するバッファのサイズ
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_3D,									// 頂点フォーマット
-		D3DPOOL_MANAGED,
-		&g_BrickWall.pVtxBuff,
-		NULL);
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * VERTEX, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_BrickWall.pVtxBuff, NULL);
 
 	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -152,7 +150,38 @@ void UninitBrickWall(void)
 //========================================================================
 void UpdateBrickWall(void)
 {
-	
+	D3DXVECTOR3 posStart, posEnd;
+	Player* pPlayer = GetPlayer();
+
+	for (int nCntPlayer = 0; nCntPlayer < 1; nCntPlayer++, pPlayer++)
+	{
+		for (int nCntWidth = 0; nCntWidth < WIDTH_SIZE; nCntWidth++)
+		{
+			// 頂点座標を渡す
+			posStart.x = sinf(-D3DX_PI / (DIVISION_W / 2) * (nCntWidth)) * SIZE;
+			posStart.y = 0;
+			posStart.z = cosf(-D3DX_PI / (DIVISION_W / 2) * (nCntWidth)) * SIZE;
+
+			// 頂点座標を渡す
+			if (nCntWidth == WIDTH_SIZE - 1)
+			{
+				posEnd.x = sinf(-D3DX_PI / (DIVISION_W / 2) * (0)) * SIZE;
+				posEnd.y = 0;
+				posEnd.z = cosf(-D3DX_PI / (DIVISION_W / 2) * (0)) * SIZE;
+			}
+			else
+			{
+				posEnd.x = sinf(-D3DX_PI / (DIVISION_W / 2) * (nCntWidth + 1)) * SIZE;
+				posEnd.y = 0;
+				posEnd.z = cosf(-D3DX_PI / (DIVISION_W / 2) * (nCntWidth + 1)) * SIZE;
+			}
+
+			if (CrossCollision(&pPlayer->pos, &pPlayer->posOld, posStart, posEnd, true, true) == true)
+			{
+
+			}
+		}
+	}
 }
 
 //========================================================================
