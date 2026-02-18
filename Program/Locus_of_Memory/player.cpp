@@ -35,8 +35,11 @@
 #define DEFALT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// xyzが0.0fの場合
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 基本の法線
 #define INERTIA			(0.1f)								// 慣性
+#define FLOATSPEED		(0.7625f)							// 浮遊速度
 #define FLOATINERTIA	(0.005f)							// 浮遊中慣性
 #define FLOATMOVE		(0.015f)							// 浮遊中移動量
+#define ACCELEMOVE		(0.175f)							// 加速中移動量
+#define ACCELEINERTIA	(0.025f)							// 加速中
 
 // グローバル変数
 LPD3DXMESH			g_pMeshPlayer[MAX_PLAYER] = {};				// メッシュ(頂点情報)へのポインタ
@@ -302,16 +305,22 @@ void UpdatePlayer(void)
 		{
 		case MAGICTYPE_NONE:
 			g_aPlayer[nCntPlayer].fSpeed = MOVE;
+			fInertia = INERTIA;
 			break;
 
+			// 浮遊魔法発動中
 		case MAGICTYPE_LEVITATION:
-			g_aPlayer[nCntPlayer].move.y += 0.7625f;
-			g_aPlayer[nCntPlayer].fSpeed = FLOATMOVE;
-			fInertia = FLOATINERTIA;
+			g_aPlayer[nCntPlayer].bJump = true;				// ジャンプ状態にする
+			g_aPlayer[nCntPlayer].move.y += FLOATSPEED;		// 浮遊速度加算
+			g_aPlayer[nCntPlayer].fSpeed = FLOATMOVE;		// 浮遊中の移動量に
+			fInertia = FLOATINERTIA;						// 浮遊中の慣性に
 			SetParticle(g_aPlayer[nCntPlayer].pos, 1, PARTICLETYPE_LEVITATION);
 			break;
 
+			// 加速魔法発動中
 		case MAGICTYPE_ACCELERATION:
+			g_aPlayer[nCntPlayer].fSpeed = ACCELEMOVE;		// 加速中の移動量に
+			fInertia = ACCELEINERTIA;						// 加速中の慣性に
 			break;
 		}
 

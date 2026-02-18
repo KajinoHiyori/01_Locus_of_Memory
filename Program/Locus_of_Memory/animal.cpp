@@ -28,6 +28,7 @@ const char* c_apFilenameAnimal[MAX_ANIMAL] =
 //===============================
 void InitAnimal(void)
 {
+#if 0
 	int nNumVtx;							// 頂点数
 	DWORD dwSizeFVF;						// 頂点フォーマットのサイズ
 	BYTE* pVtxBuff;							// 頂点バッファへのポインタ
@@ -71,7 +72,7 @@ void InitAnimal(void)
 	g_Animal.aModel[3].nIdxModelParent = 0;								// 親モデルのインデックスを設定
 	g_Animal.aModel[3].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[3]の位置(オフセット)
 	g_Animal.aModel[3].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[3]の向き
-
+#endif
 }
 
 //===============================
@@ -79,6 +80,7 @@ void InitAnimal(void)
 //===============================
 void UninitAnimal(void)
 {
+#if 0
 	for (int nCntModel = 0; nCntModel < MAX_ANIMAL; nCntModel++)
 	{
 		// テクスチャの破棄
@@ -95,6 +97,7 @@ void UninitAnimal(void)
 			g_Animal.aModel[nCntModel].pBuffMat = NULL;
 		}
 	}
+#endif
 }
 
 //===============================
@@ -110,6 +113,7 @@ void UpdateAnimal(void)
 //===============================
 void DrawAnimal(void)
 {
+#if 0
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	D3DXMATRIX mtxRot, mtxTrans;			// 計算用マトリックス
 	D3DMATERIAL9 matDet;					// 現在のマテリアル保存用
@@ -194,4 +198,5 @@ void DrawAnimal(void)
 	}
 	// 保存していたマテリアルを戻す
 	pDevice->SetMaterial(&matDet);
+#endif
 }

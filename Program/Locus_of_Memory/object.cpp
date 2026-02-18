@@ -467,7 +467,21 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		}
 
 		pParentObject->pModelData = SetModelData(parentmodeltype);					// モデルデータ設定
-		pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_HOUSE);	// モーションデータ設定
+		switch (parentmodeltype)
+		{
+		case PARENTMODELTYPE_PLAYER1P:
+			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLAYER);	// モーションデータ設定
+			break;
+		case PARENTMODELTYPE_PLAYER2P:
+			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLAYER);	// モーションデータ設定
+			break;
+		case PARENTMODELTYPE_HOUSE:
+			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_HOUSE);	// モーションデータ設定
+			break;
+		case PARENTMODELTYPE_DRAGON:
+			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_DRAGON);	// モーションデータ設定
+			break;
+		}
 
 		// 各種設定
 		pParentObject->pos = pos;

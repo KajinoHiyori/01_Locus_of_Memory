@@ -201,6 +201,9 @@
     <ClCompile Include="sound.cpp">
       <Filter>main\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="grain.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -328,6 +331,9 @@
     </ClInclude>
     <ClInclude Include="sound.h">
       <Filter>main\h</Filter>
+    </ClInclude>
+    <ClInclude Include="grain.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
