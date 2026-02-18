@@ -33,7 +33,7 @@ void InitLight(void)
 	D3DXVECTOR3 vecDir;		// ライトの方向ベクトル
 
 	g_fAngle = -1.70f;
-	g_fColor = D3DXCOLOR(0.8f,0.5f,0.0f,1.0f);
+	g_fColor = D3DXCOLOR(0.8f, 0.5f, 0.0f, 1.0f);
 
 	// ライトの情報をクリア
 	ZeroMemory(&g_aLight[0], sizeof(D3DLIGHT9) * NUM_LIGHT);
@@ -66,7 +66,7 @@ void InitLight(void)
 			vecDir = DIRECTOPN2;
 			break;
 		}
-	
+
 		D3DXVec3Normalize(&vecDir, &vecDir);	// ベクトルを正規化
 		g_aLight[nCntLight].Direction = vecDir;
 		// ライトを設定
@@ -89,10 +89,8 @@ void UninitLight(void)
 //========================================================================
 void UpdateLight(void)
 {
-//#if 0
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	static D3DXVECTOR3 vecDir;		// ライトの方向ベクトル
-	static int fDegree = 0.0f;		// 角度
 
 	// ライトの情報をクリア
 	ZeroMemory(&g_aLight[0], sizeof(D3DLIGHT9) * NUM_LIGHT);
@@ -109,14 +107,7 @@ void UpdateLight(void)
 			// ライトの拡散光を設定
 			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTEST;
 
-			//fDegree += -1.0f;
-
-			if (fDegree < -180.0f)
-			{
-				fDegree = 180.0f;
-			}
-
-			g_fAngle = DegreeToRadian(fDegree);
+			//g_fAngle -= 0.01f;
 
 			if (g_fAngle > D3DX_PI)
 			{
@@ -131,7 +122,7 @@ void UpdateLight(void)
 			vecDir.y = cosf(g_fAngle);
 
 			// ライトの方向を設定
-			vecDir = DIRECTOPN0;
+			//vecDir = DIRECTOPN0;
 			break;
 
 		case 1:	// 1番目のライト
@@ -155,6 +146,8 @@ void UpdateLight(void)
 			SetLightColors(g_fColor, LIGHT_BRIGHTER, LIGHT_BRIGHT);
 		}
 
+
+
 		D3DXVec3Normalize(&vecDir, &vecDir);	// ベクトルを正規化
 		g_aLight[nCntLight].Direction = vecDir;
 		// ライトを設定
@@ -162,12 +155,12 @@ void UpdateLight(void)
 		// ライトを有効にする
 		pDevice->LightEnable(nCntLight, TRUE);
 
-		PrintDebugProc("[%d]ライトの角度 : %.2f", nCntLight, g_fAngle);
+
 		//PrintDebugProc("ライト[%d]の位置 : (%.3f, %.3f, %.3f)\n", 0, vecDir.x, vecDir.y, vecDir.z);
 		//PrintDebugProc("ライト[%d]の位置 : (%.3f)\n", 0, g_fAngle);
 
 	}
-//#endif
+
 }
 
 //======================================================================================

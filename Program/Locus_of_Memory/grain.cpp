@@ -16,17 +16,21 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_GRAIN			(128)					// 粒の最大数
+#define MAX_GRAIN			(4096)					// 粒の最大数
 #define GRAIN_RADIUS		(25.0f)					// 粒の半径
 #define GRAINALPHA_FADE		(0.025f)				// 粒のフェードスピード
 #define GRAINTEX_SPRIT		(5)						// テクスチャの一列の分割数
 #define GRAINTEX_SPRITPOS	(1.0f / GRAINTEX_SPRIT)	// テクスチャの分割座標
+#define MAX_GRAINRADIUS		(150)					// 粒の半径の最大
+#define MIN_GRAINRADIUS		(100)					// 粒の半径の最小
+#define MAX_GRAINLIFE		(180)					// 粒の寿命の最大
+#define MIN_GRAINLIFE		(60)					// 粒の寿命の最小
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
 LPDIRECT3DTEXTURE9 g_pTextureBuffGrain = {};		// テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffGrain = NULL;	// 頂点バッファへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffGrain = NULL;		// 頂点バッファへのポインタ
 Grain g_aGrain[MAX_GRAIN];							// 粒の情報
 int g_aNumGrainIdx[MAX_GRAIN];						// 使用している粒のインデックス
 int g_nNumGrain;									// 使用している粒の数
@@ -122,10 +126,9 @@ void UpdateGrain(void)
 {
 	Grain* pGrain = &g_aGrain[0];					// 粒へのポインタ
 
-	for (; g_nNumGrain < 64;)
-	{
-		D3DXVECTOR3 pos = RANDAM_VEC3(500, 500, 500);
-		SetGrain(pos, INIT_D3DXVEC3, COLOR_ORANGE, (GRAINTYPE)(rand() % GRAINTYPE_MAX), rand() % 180 + 60, (float)(rand() % 30 + 15));
+	for (; g_nNumGrain < MAX_GRAIN;)
+	{// 常に最大数を維持する
+		SetGrain();
 	}
 
 	PrintDebugProc("NumGrain %d\n", g_nNumGrain);
@@ -145,6 +148,12 @@ void UpdateGrain(void)
 		pGrain->pos += pGrain->move;						// 移動させる
 		g_aGrain[nCntGrain].fRadius -= GRAINALPHA_FADE;		// 半径を小さくする
 		pGrain->nLife--;									// 寿命を減らす
+
+		pGrain->fAngle += pGrain->fSpeed;
+
+		pGrain->fAngle = AngleNormalize(pGrain->fAngle);
+
+		pGrain->pos.y += sinf(pGrain->fAngle) * 0.075f;
 
 		if (pGrain->nLife < 0)
 		{// 寿命が尽きたら
@@ -219,9 +228,9 @@ void DrawGrain(void)
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
-	// Zテストを無効にする
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);	// Zテストの比較方法を変更(Zバッファの前後関係に関わらず描画する)
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);		// Zバッファ更新の有効/無効の設定
+	//// Zテストを無効にする
+	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);	// Zテストの比較方法を変更(Zバッファの前後関係に関わらず描画する)
+	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);		// Zバッファ更新の有効/無効の設定
 
 	for (int nCntGrain = 0; nCntGrain < g_nNumGrain; nCntGrain++, pGrain++)
 	{
@@ -280,19 +289,19 @@ void DrawGrain(void)
 //======================================================================================
 // 粒の設定処理
 //======================================================================================
-void SetGrain(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXCOLOR col, GRAINTYPE type, int nLife, float fRadius)
+void SetGrain(void)
 {
 	Grain* pGrain = &g_aGrain[g_nNumGrain];		// 対象粒へのポインタ
 
-	col.a = 0.0f;
-
 	// 各値設定
-	pGrain->pos = pos;
-	pGrain->move = move;
-	pGrain->col = col;
-	pGrain->type = type;
-	pGrain->fRadius = fRadius;
-	pGrain->nLife = nLife;
+	pGrain->pos = D3DXVECTOR3(-5000.0f, 0.0f, -5000.0f) + RANDAM_VEC3(10000, 1500, 10000);
+	pGrain->col = COLOR_RANDOM + D3DXCOLOR(0.5f, 0.5f, 0.5f, 0.0f);
+	pGrain->col.a = 0.0f;
+	pGrain->type = (GRAINTYPE)(rand() % GRAINTYPE_MAX);
+	pGrain->fRadius = (float)((rand() % MAX_GRAINRADIUS + MIN_GRAINRADIUS) / 10);
+	pGrain->fAngle = ((float)(rand() % 629 - 314) / 100);
+	pGrain->fSpeed = ((float)(rand() % 30 - 15) / 100);
+	pGrain->nLife = rand() % MAX_GRAINLIFE + MIN_GRAINLIFE;
 	pGrain->bUse = true;
 
 	VERTEX_3D* pVtx;    // 頂点情報の設定

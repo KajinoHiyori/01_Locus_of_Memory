@@ -52,6 +52,8 @@ typedef struct Grain
 	D3DXMATRIX	mtxWorld;		// ワールドマトリックス
 	GRAINTYPE	type;			// 種類
 	float		fRadius;		// 半径
+	float		fAngle;			// 角度
+	float		fSpeed;			// 速度
 	int			nLife;			// 寿命（色）
 	bool		bUse;			// 使用しているか
 }Grain;
@@ -63,7 +65,7 @@ void InitGrain(void);
 void UninitGrain(void);
 void UpdateGrain(void);
 void DrawGrain(void);
-void SetGrain(D3DXVECTOR3 pos,D3DXVECTOR3 move, D3DXCOLOR col, GRAINTYPE type, int nLife, float fRadius);
+void SetGrain(void);
 void ReleaseGrain(int nIdx);
 
 #endif	// _GRAIN_H_
