@@ -219,8 +219,16 @@ void DrawObject(void)
 	D3DMATERIAL9 matDef;	// 現在のマテリアルを保存
 	D3DXMATERIAL* pMat;		// マテリアルデータへのポインタ
 	D3DXMATERIAL MatCpy;	// 書き換え用マテリアル
-	Player* pPlayer = GetPlayer();
+	//Player* pPlayer = GetPlayer();
 	MODE mode = GetMode();
+
+	// 影の描画用変数
+	D3DXMATRIX mtxShadow;		// シャドウマトリックス
+	D3DLIGHT9 light;			// ライトの情報
+	D3DXVECTOR4 posLight;		// ライトの位置
+	D3DXVECTOR3 pos, normal;	// 平面の点, 法線ベクトル
+	D3DXPLANE plane;			// 平面の情報
+	D3DXMATERIAL mat;			// マテリアル保持用
 
 	ParentObject* pParentObject = &g_aParentObject[0];
 
@@ -270,6 +278,61 @@ void DrawObject(void)
 		if (pParentObject->bUse == false)
 		{// 使っていなかったら弾く
 			continue;
+		}
+
+		if (pParentObject->type == PARENTMODELTYPE_DRAGON)	// ドラゴンの場合
+		{
+			// ライトの位置を設定
+			pDevice->GetLight(0, &light);
+			posLight = D3DXVECTOR4(-light.Direction.x, -light.Direction.y, -light.Direction.z, 0.0f);
+
+			// 平面情報を生成
+			pos = D3DXVECTOR3(0.0f, 0.05f, 0.0f);		// 高さが0ならなんでもいい
+			normal = NORMAL_PLANE;
+			D3DXPlaneFromPointNormal(&plane, &pos, &normal);
+
+			// 現在のマテリアルを取得
+			pDevice->GetMaterial(&matDef);
+
+			// 全モデル(パーツ)の描画
+			for (int nCntOffSetModel = 0; nCntOffSetModel < pParentObject->pModelData->nNumModel; nCntOffSetModel++)
+			{
+				D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
+				D3DXMATRIX mtxParent;								// 親のマトリックス
+
+				// ワールドマトリックスの初期化(デフォルトの値にする)
+				D3DXMatrixIdentity(&mtxShadow);
+
+				// シャドウマトリックスの生成
+				D3DXMatrixShadow(&mtxShadow, &posLight, &plane);
+				D3DXMatrixMultiply(&mtxShadow, &pParentObject->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxShadow);
+
+				// パーツのワールドマトリックスを設定
+				pDevice->SetTransform(D3DTS_WORLD, &mtxShadow);
+
+				// マテリアルデータへのポインタを取得
+				pMat = (D3DXMATERIAL*)pParentObject->pModelData->aModel[nCntOffSetModel].pBuffMat->GetBufferPointer();
+
+				for (int nCntMat = 0; nCntMat < (int)pParentObject->pModelData->aModel[nCntOffSetModel].dwNumMat; nCntMat++)
+				{
+					mat = pMat[nCntMat];
+
+					mat.MatD3D.Diffuse.r = 0.0f;
+					mat.MatD3D.Diffuse.g = 0.0f;
+					mat.MatD3D.Diffuse.b = 0.0f;
+
+					// マテリアルの設定
+					pDevice->SetMaterial(&mat.MatD3D);
+
+					// テクスチャの設定
+					pDevice->SetTexture(0, pParentObject->pModelData->aModel[nCntOffSetModel].apTexture[nCntMat]);
+
+					// プレイヤー(パーツ)の描画
+					pParentObject->pModelData->aModel[nCntOffSetModel].pMesh->DrawSubset(nCntMat);
+				}
+			}
+			// 保存していたマテリアルを戻す
+			pDevice->SetMaterial(&matDef);
 		}
 
 		// ワールドマトリックスの初期化
@@ -467,6 +530,7 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		}
 
 		pParentObject->pModelData = SetModelData(parentmodeltype);					// モデルデータ設定
+		pParentObject->type = parentmodeltype;
 		switch (parentmodeltype)
 		{
 		case PARENTMODELTYPE_PLAYER1P:

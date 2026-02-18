@@ -89,7 +89,7 @@ void UninitLight(void)
 //========================================================================
 void UpdateLight(void)
 {
-#if 0
+//#if 0
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	static D3DXVECTOR3 vecDir;		// ライトの方向ベクトル
 	static int fDegree = 0.0f;		// 角度
@@ -109,7 +109,7 @@ void UpdateLight(void)
 			// ライトの拡散光を設定
 			g_aLight[nCntLight].Diffuse = LIGHT_BRIGHTEST;
 
-			fDegree += -1.0f;
+			//fDegree += -1.0f;
 
 			if (fDegree < -180.0f)
 			{
@@ -131,7 +131,7 @@ void UpdateLight(void)
 			vecDir.y = cosf(g_fAngle);
 
 			// ライトの方向を設定
-			//vecDir = DIRECTOPN0;
+			vecDir = DIRECTOPN0;
 			break;
 
 		case 1:	// 1番目のライト
@@ -167,7 +167,7 @@ void UpdateLight(void)
 		//PrintDebugProc("ライト[%d]の位置 : (%.3f)\n", 0, g_fAngle);
 
 	}
-#endif
+//#endif
 }
 
 //======================================================================================

@@ -83,6 +83,7 @@ typedef struct
 	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
 	D3DXVECTOR3		pos;		// オブジェクトの位置
 	D3DXVECTOR3		rot;		// オブジェクトの向き
+	PARENTMODELTYPE	type;		// 階層構造オブジェクトの種類
 	float			fAlpha;		// アルファ値
 	Motion			motion;		// モーション情報
 	ModelData*		pModelData;	// モデルの情報
