@@ -2925,21 +2925,21 @@ Mesh {
   0,
   0;;
   Material {
-   0.571200;0.282400;0.000000;1.000000;;
+   0.570980;0.282353;0.000000;1.000000;;
    5.000000;
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\mokume01_01.jpg";
+    "data\\TEXTURE\\wood003.jpg";
    }
   }
   Material {
-   0.408000;0.216800;0.184800;1.000000;;
+   0.407843;0.216471;0.185098;1.000000;;
    5.000000;
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\Locus-of-Memory\\01_Locus_of_Memory\\3D表\現技術\\モデルビューワ Ver.3.0\\data\\TEXTURE\\wood000.jpg";
+    "data\\TEXTURE\\wood000.jpg";
    }
   }
   Material {
@@ -2948,7 +2948,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\nc220402_麻縄4.png";
+    "data\\TEXTURE\\rope.png";
    }
   }
  }

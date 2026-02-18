@@ -4,8 +4,8 @@ Format Text Ver 1.0
 Scene {
 	pos -21.7647 -38.2730 6256.7944
 	lookat 0.0000 0.0000 0.0000
-	head 86.2864
-	pich 0.4308
+	head 86.4064
+	pich 0.3508
 	bank 0.0000
 	ortho 0
 	zoom2 1.1987
@@ -18,9 +18,9 @@ Scene {
 	}
 }
 Material 3 {
-	"木の板" col(0.714 0.353 0.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Downloads\mokume01_01.jpg")
+	"木の板" col(0.714 0.353 0.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\wood003.jpg")
 	"柱" col(0.510 0.271 0.231 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\wood000.jpg")
-	"ロープ" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Downloads\nc220402_麻縄4.png")
+	"ロープ" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex("C:\Users\student\Desktop\Locus-of-Memory\01_Locus_of_Memory\3D表現技術\モデルビューワ Ver.3.0\data\TEXTURE\rope.png")
 }
 Object "柱１" {
 	visible 15
