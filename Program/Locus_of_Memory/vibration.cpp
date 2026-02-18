@@ -618,28 +618,28 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 			case COMMANDOREDER_RYY:
 				// ’x‰„
 
-				switch (Type)
-				{
-				case VIBRATIONTYPE_FAR:
+				//switch (Type)
+				//{
+				//case VIBRATIONTYPE_FAR:
 
-					break;
+				//	break;
 
-				case VIBRATIONTYPE_MEDIUM:
+				//case VIBRATIONTYPE_MEDIUM:
 
-					break;
+				//	break;
 
-				case VIBRATIONTYPE_CLOSE:
+				//case VIBRATIONTYPE_CLOSE:
 
-					break;
-				}
+				//	break;
+				//}
 
 				nVibration++;
 
-				if (nVibration % 60 < 15)
+				if (nVibration % 120 < 15)
 				{
 					SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
 				}
-				else if (nVibration % 60 >= 15)
+				else if (nVibration % 120 >= 15)
 				{
 					SetJoypadVibration(0, 0, 1, nPlayertype);
 				}
@@ -670,11 +670,11 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 
 				nVibration++;
 
-				if (nVibration % 60 < 15)
+				if (nVibration % 120 < 15)
 				{
 					SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
 				}
-				else if (nVibration % 60 >= 15)
+				else if (nVibration % 120 >= 15)
 				{
 					SetJoypadVibration(0, 0, 1, nPlayertype);
 				}
@@ -706,11 +706,11 @@ void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 
 				nVibration++;
 
-				if (nVibration % 60 < 15)
+				if (nVibration % 120 < 15)
 				{
 					SetJoypadVibration(30000 - (nVibForce * Type), 30000 - (nVibForce * Type), 60, nPlayertype);
 				}
-				else if (nVibration % 60 >= 15)
+				else if (nVibration % 120 >= 15)
 				{
 					SetJoypadVibration(0, 0, 1, nPlayertype);
 				}
