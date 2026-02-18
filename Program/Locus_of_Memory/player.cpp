@@ -628,7 +628,6 @@ void DrawPlayer(void)
 
 		// 保存していたマテリアルを戻す
 		pDevice->SetMaterial(&matDef);
-
 	}
 
 	//// Zテストを有効にする
