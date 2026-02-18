@@ -4,53 +4,39 @@
 //	Author : HAYATO NAMBA
 // 
 //=============================================================================
+#include "main.h"
 #include"game.h"
-#include"player.h"
 #include"input.h"
 #include "debugproc.h"
+#include"fade.h"
+#include"sound.h"
+#include "fog.h"
+#include"effect.h"
+#include"particle.h"
+#include"camera.h"
+#include"player.h"
+#include "magic.h"
+#include "uimanager.h"
 #include "magicui.h"
+#include "magicbubble.h"
+#include "magiccircle.h"
 #include "spellui.h"
 #include "clock.h"
 #include "battery.h"
-#include "main.h"
-#include "uimanager.h"
-#include "magicbubble.h"
 #include "object.h"
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
-#include"sound.h"
-#include"fade.h"
-//#include"pause.h"
-#include"camera.h"
 #include"light.h"
-//#include"polygon.h"
-//#include"model.h"
 #include"shadow.h"
-//#include"billboard.h"
-//#include"wall.h"
-//#include"field.h"
-//#include"mashwall.h"
-//#include"meshsky.h"
-//#include"block.h"
-//#include"fence.h"
-//#include"coin.h"
-//#include"half_fence.h"
-//#include"score.h"
-//#include"timer.h"
-#include"effect.h"
-#include"particle.h"
-#include "magic.h"
-#include "fog.h"
 #include "vibration.h"
 #include"meshfield.h"
 #include "brickwall.h"
 #include "loadscript.h"
-#include "magiccircle.h"
+#include "grain.h"
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 int g_nCounterGameState = 0;				// 状態管理カウンター
-bool g_bPause;								// ポーズ状態
 
 //=======================================================
 // ゲームの初期化処理
@@ -58,8 +44,6 @@ bool g_bPause;								// ポーズ状態
 void InitGame(void)
 {
 	VIBRATION* pVibration = GetVibration();
-
-	g_bPause = false;		// ポーズ初期化
 
 	// プレイヤーの初期化設定
 	//InitBG();
@@ -117,6 +101,9 @@ void InitGame(void)
 	InitEffect();
 
 	InitParticle();
+
+	// 粒の初期化処理
+	InitGrain();
 
 	PlaySound(SOUND_LABEL_000);
 
@@ -179,25 +166,22 @@ void UninitGame(void)
 
 	//UninitTimer();
 
+	// 粒の終了処理
+	UninitGrain();
+
 	StopSound();
 
 	UninitRandomObject();
 
 }
 //=======================================================
-// ゲートの更新処理
+// ゲームの更新処理
 //=======================================================
 void UpdateGame(void)
 {
 	Player* pPlayer = GetPlayer();
 	FADE* pFade = GetFade();
 	//Timer* pTimer = GetTimer();
-
-	if (GetJoypadTrigger(JOYKEY_START, 0) == true)
-	{
-		g_bPause = g_bPause ? false : true;
-		//SetPauseMenu(PAUSE_MENU_MAGICBOOK);
-	}
 
 	// プレイヤーの更新処理
 	//UpdateBG();
@@ -240,11 +224,8 @@ void UpdateGame(void)
 	// 魔法陣の更新処理
 	UpdateMagicCircle();
 
-	if (g_bPause == true)
-	{
-		// ポーズの更新処理
-		//UpdatePause();
-	}
+	// 粒の更新処理
+	UpdateGrain();
 
 	UpdateSpellUI();
 
@@ -353,6 +334,9 @@ void DrawGame(void)
 	// パーティクルの描画処理
 	DrawParticle();
 
+	// 粒の描画処理
+	DrawGrain();
+
 	SetFogEnable(false);		// 霧を無効
 
 	DrawUIManager();
@@ -389,12 +373,6 @@ void DrawGame(void)
 
 	DrawBattery();
 
-	if (g_bPause == true)
-	{
-		// ポーズの描画処理
-		//DrawPause();
-	}
-
 	SetFogEnable(true);			// 霧を有効
 
 }
@@ -404,7 +382,7 @@ void DrawGame(void)
 //=============================================================================
 void SetEnablePause(bool bPause)
 {
-	g_bPause = bPause;
+	//g_bPause = bPause;
 }
 
 void SetGameState(GAMESTATE state, int nCounter)

@@ -558,6 +558,7 @@ void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, float fRadius)
 		}
 
 		pDropMagic->pos = pos;
+		pDropMagic->fRadius = fRadius;
 		pDropMagic->oType = type;
 		pDropMagic->bUse = true;
 
@@ -662,7 +663,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 			PrintDebugProc("[%d]落ちている魔法とあたっている\n", nCntMagic);
 			return nCntMagic;
 		}
-		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 1.5f, 2))
+		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 2.5f, 2))
 		{// 落ちている魔法の周辺にいたら
 			// ここで種類に応じた振動を呼び出す
 			SetMagicBubble(nIdx, pDropMagic->oType, 0);
@@ -670,7 +671,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 			PrintDebugProc("[%d]周辺に魔法が落ちている\n", nCntMagic);
 			isSearch = true;
 		}
-		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 2.5f, 2))
+		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 5.0f, 2))
 		{// 遠くに魔法が落ちていたら
 			 // ここで種類に応じた振動を呼び出す
 			SetMagicBubble(nIdx, pDropMagic->oType, 1);

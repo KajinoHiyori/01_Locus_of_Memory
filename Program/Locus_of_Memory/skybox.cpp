@@ -86,8 +86,6 @@ void DrawSkyBox(void)
 
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);		// ライトを無効にする
 
-
-
 	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);		// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法(基準値より大きければ描画)

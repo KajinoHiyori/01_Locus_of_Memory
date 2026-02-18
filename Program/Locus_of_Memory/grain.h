@@ -1,35 +1,69 @@
-////========================================================
-//// 
-//// エフェクト処理[effect.h]
-//// Author : MatuhasiEito
-//// Author : KajinoHiyori
-//// 
-////========================================================
-//#ifndef _EFFECT_H_
-//#define _EFFECT_H_
+//=============================================================================
 //
-//// エフェクトの種類
-//typedef enum
-//{
-//	EFFECT_TYPE_NORMAL = 0,	// 通常のエフェクト
-//	EFFECT_TYPE_MAX
-//}EFFECT_TYPE;
-//
-//// エフェクトのテクスチャの種類
-//typedef enum
-//{
-//	EFFECT_TEX_CIRCLE = 0,	// 円形のエフェクト
-//	EFFECT_TEX_DIAMOND,		// ダイヤ型のエフェクト
-//	EFFECT_TEX_WING000,		// 羽のエフェクト[下向き]
-//	EFFECT_TEX_WING001,		// 羽のエフェクト[横向き]
-//	EFFECT_TEX_WING002,		// 羽のエフェクト[上向き]
-//	EFFECT_TEX_MAX
-//}EFFECT_TEX;
-//
-////プロトタイプ宣言
-//void InitEffect(void);
-//void UninitEffect(void);
-//void UpdateEffect(void);
-//void DrawEffect(void);
-//void SetEffect(EFFECT_TYPE type, EFFECT_TEX tex, D3DXVECTOR3 pos,D3DXVECTOR3 move, D3DXCOLOR col, int nLife, float fRadius);
-//#endif
+//	画面上の粒の処理 [grain.h]
+//	Author : SHUMA AIZU
+// 
+//=============================================================================
+
+#ifndef _GRAIN_H_
+#define _GRAIN_H_
+
+//*****************************************************************************
+// 種類
+//*****************************************************************************
+typedef enum
+{
+	GRAINTYPE_A = 0,
+	GRAINTYPE_B,
+	GRAINTYPE_C,
+	GRAINTYPE_D,
+	GRAINTYPE_E,
+	GRAINTYPE_F,
+	GRAINTYPE_G,
+	GRAINTYPE_H,
+	GRAINTYPE_I,
+	GRAINTYPE_J,
+	GRAINTYPE_K,
+	GRAINTYPE_L,
+	GRAINTYPE_N,
+	GRAINTYPE_M,
+	GRAINTYPE_O,
+	GRAINTYPE_P,
+	GRAINTYPE_Q,
+	GRAINTYPE_R,
+	GRAINTYPE_S,
+	GRAINTYPE_T,
+	GRAINTYPE_U,
+	GRAINTYPE_V,
+	GRAINTYPE_W,
+	GRAINTYPE_X,
+	GRAINTYPE_Y,
+	GRAINTYPE_MAX
+}GRAINTYPE;
+
+//*****************************************************************************
+// 構造体定義
+//*****************************************************************************
+typedef struct Grain
+{
+	D3DXVECTOR3 pos;			// 位置
+	D3DXVECTOR3 move;			// 移動量
+	D3DXCOLOR	col;			// 色
+	D3DXMATRIX	mtxWorld;		// ワールドマトリックス
+	GRAINTYPE	type;			// 種類
+	float		fRadius;		// 半径
+	int			nLife;			// 寿命（色）
+	bool		bUse;			// 使用しているか
+}Grain;
+
+//*****************************************************************************
+// プロトタイプ宣言
+//*****************************************************************************
+void InitGrain(void);
+void UninitGrain(void);
+void UpdateGrain(void);
+void DrawGrain(void);
+void SetGrain(D3DXVECTOR3 pos,D3DXVECTOR3 move, D3DXCOLOR col, GRAINTYPE type, int nLife, float fRadius);
+void ReleaseGrain(int nIdx);
+
+#endif	// _GRAIN_H_
