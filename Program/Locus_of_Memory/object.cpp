@@ -657,6 +657,11 @@ void LoadObjectModel(const char* pModelPath)
 	// 頂点バッファをアンロック
 	g_aObjectModel[g_nNumObjectModel].pMesh->UnlockVertexBuffer();
 
+	if (vtxMin.y > -3.0f)
+	{
+		vtxMin.y = -5.0f;
+	}
+
 	// オブジェクトの当たり判定を各配列に代入
 	g_aObjectModel[g_nNumObjectModel].vtxMin = vtxMin;
 	g_aObjectModel[g_nNumObjectModel].vtxMax = vtxMax;

@@ -46,61 +46,43 @@ void InitGame(void)
 {
 	VIBRATION* pVibration = GetVibration();
 
-	// プレイヤーの初期化設定
-	//InitBG();
-
-	//InitPause();
-
 	// ライトの初期化処理
 	InitLight();
 
-	//InitField();
-
-	//InitMeshsky();
-
-	//InitWall();
-
-	//InitMashwall();
-
-	//InitBullet();
-
-	//InitBillboard();
-
+	// 影の初期化処理
 	InitShadow();
 
+	// プレイヤーの初期化処理
 	InitPlayer();
 
 	// 魔法の初期化処理
 	InitMagic();
 
-	// ポーズの初期化処理
-	//InitPause();
-
+	// 魔法発動状態表示の初期化処理
 	InitSpellUI();
 
 	// 魔法陣の初期化処理
 	InitMagicCircle();
 
+	// 魔導書表示の初期化処理
 	InitMagicUI();
 
+	// 時計の初期化処理
 	InitClock();
 
+	// バッテリーの初期化処理
 	InitBattery();
 
-	//InitModel();
-
-	//InitBlock();
-
-	//InitScore();
-
-	//InitTimer();
-
+	// 3D空間UIの初期化処理
 	InitUIManager();
 
+	// 
 	InitMagicBubble();
 
+	// エフェクトの初期化処理
 	InitEffect();
 
+	// パーティクルの初期化処理
 	InitParticle();
 
 	// 文字の初期化処理
@@ -109,10 +91,12 @@ void InitGame(void)
 	// 粒の初期化処理
 	InitSparkle();
 
+	// BGM再生
 	PlaySound(SOUND_LABEL_000);
 
 	pVibration->Vibration = false;
 
+	// 魔法関連オブジェクトの読み込み
 	LoadMagicObject(MAGICOBJECTINFO_SCRIPT);
 
 }
@@ -121,54 +105,38 @@ void InitGame(void)
 //=======================================================
 void UninitGame(void)
 {
-	// プレイヤーの終了処理
-	//UninitPause();
-
 	// ライトの終了処理
 	UninitLight();
 
-	//UninitField();
-
-	//UninitWall();
-
-	//UninitMashwall();
-
-	//UninitBullet();
-
+	// 影の終了処理
 	UninitShadow();
 
-	//UninitBillboard();
-
+	// プレイヤーの終了処理
 	UninitPlayer();
-
-	//UninitModel();
-
-	//UninitBlock();
 
 	// 魔法の終了処理
 	UninitMagic();
 
-	// ポーズの終了処理
-	//UninitPause();
-
+	// 魔法発動状態表示の終了処理
 	UninitSpellUI();
 
 	// 魔法陣の終了処理
 	UninitMagicCircle();
 
+	// 魔導書表示の終了処理
 	UninitMagicUI();
 
+	// 時計の終了処理
 	UninitClock();
 
+	// バッテリーの終了処理
 	UninitBattery();
 
+	// 3D空間UIの終了処理
 	UninitUIManager();
 
+	// 
 	UninitMagicBubble();
-
-	//UninitScore();
-
-	//UninitTimer();
 
 	// 文字の終了処理
 	UninitGrain();
@@ -176,10 +144,11 @@ void UninitGame(void)
 	// 粒の終了処理
 	UninitSparkle();
 
+	// BGM終了
 	StopSound();
 
+	// ランダムオブジェクトの解放処理
 	UninitRandomObject();
-
 }
 //=======================================================
 // ゲームの更新処理
@@ -188,42 +157,18 @@ void UpdateGame(void)
 {
 	Player* pPlayer = GetPlayer();
 	FADE* pFade = GetFade();
-	//Timer* pTimer = GetTimer();
-
-	// プレイヤーの更新処理
-	//UpdateBG();
 
 	// ライトの更新処理
 	UpdateLight();
 
-	//UpdateField();
-
-	//UpdateMeshsky();
-
 	// メッシュフィールドの更新処理
 	UpdateMeshField();
 
-	//UpdateWall();
-
-	//UpdateMashwall();
-
-	//UpdateBullet();
-
+	// 影の更新処理
 	UpdateShadow();
 
-	//UpdateBillboard();
-
+	// プレイヤーの更新処理
 	UpdatePlayer();
-
-	//UpdateMotion();
-
-	//UpdateModel();
-
-	//UpdateBlock();
-
-	//UpdateScore();
-
-	//UpdateTimer();
 
 	// 魔法の更新処理
 	UpdateMagic();
@@ -237,16 +182,22 @@ void UpdateGame(void)
 	// 粒の更新処理
 	UpdateSparkle();
 
+	// 魔法発動状態表示の更新処理
 	UpdateSpellUI();
 
+	// 魔導書表示の更新処理
 	UpdateMagicUI();
 
+	// 3D空間UIの更新処理
 	UpdateUIManager();
 
+	// 
 	UpdateMagicBubble();
 
+	// 時計の更新処理
 	UpdateClock();
 
+	// バッテリーの更新処理
 	UpdateBattery();
 
 	switch (g_gameState)
@@ -308,26 +259,11 @@ void UpdateGame(void)
 //=======================================================
 void DrawGame(void)
 {
-	// プレイヤーの描画処理
-	//DrawBG();
-
-	//DrawField();
-
-	//DrawMeshsky();
-
 	// メッシュフィールドの描画処理
 	DrawMeshField();
 
-	//DrawWall();
-
-	//DrawMashwall();
-
-	//DrawBullet();
-
 	// 影の描画処理
 	DrawShadow();
-
-	//DrawBillboard();
 
 	// スカイボックスの描画処理
 	DrawSkyBox();
@@ -346,10 +282,12 @@ void DrawGame(void)
 
 	SetFogEnable(false);		// 霧を無効
 
+	// 3D空間UIの描画処理
 	DrawUIManager();
 
 	SetFogEnable(false);		// 霧を無効
 
+	// プレイヤーの描画処理
 	DrawPlayer();
 
 	// 文字の描画処理
@@ -364,26 +302,23 @@ void DrawGame(void)
 	// 魔法陣の描画処理
 	DrawMagicCircle();
 
-	//DrawModel();
-
-	//DrawBlock();
-
-	//DrawScore();
-
-	//DrawTimer();
-
 	SetFogEnable(false);		// 霧を無効
 
 	DrawUIManager();
 
+	// 
 	DrawMagicBubble();
 
+	// 魔法発動状態表示の描画処理
 	DrawSpellUI();
 
+	// 魔導書表示の描画処理
 	DrawMagicUI();
 
+	// 時計の描画処理
 	DrawClock();
 
+	// バッテリーの描画処理
 	DrawBattery();
 
 	SetFogEnable(true);			// 霧を有効
