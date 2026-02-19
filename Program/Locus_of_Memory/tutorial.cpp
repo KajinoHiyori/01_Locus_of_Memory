@@ -208,12 +208,24 @@ void UpdateTutorial(void)
 
 	UpdatePlayer();
 
-	UpdateUIManager();
-	UpdateMagicUI();
-	UpdateMagicBubble();
 	UpdateMagicCircle();
+
+	// 魔法発動状態表示の更新処理
 	UpdateSpellUI();
+
+	// 魔導書表示の更新処理
+	UpdateMagicUI();
+
+	// 3D空間UIの更新処理
+	UpdateUIManager();
+
+	// 
+	UpdateMagicBubble();
+
+	// 時計の更新処理
 	UpdateClock();
+
+	// バッテリーの更新処理
 	UpdateBattery();
 
 	//UpdateMotion();

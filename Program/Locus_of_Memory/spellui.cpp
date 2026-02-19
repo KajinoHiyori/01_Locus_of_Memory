@@ -1238,7 +1238,7 @@ void SetSpellUINonDisplay(int nIdx)
 		}
 	}
 	g_aSpellUI[nIdx].state = SPELLUISTATE_NONDISPLAY;
-
+	g_aSpellUI[nIdx].bSpell = false;
 	g_aSpellUI[nIdx].rot = D3DXVECTOR3(0.0f, 3.14f, 0.0f);	// 中心位置
 	g_aSpellUI[nIdx].magicType = SPELLUI_TEX_NONE;		// 発動中の魔法を格納
 	g_aSpellUI[nIdx].nNumKey = NUM_KEY;			// 処理を行うキー数
