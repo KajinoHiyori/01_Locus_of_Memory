@@ -206,21 +206,22 @@ void UpdateGame(void)
 
 		break;
 
-	case GAMESTATE_END:			// 終了状態
-
+	case GAMESTATE_CLEAR:			// 終了状態
 		g_nCounterGameState--;		// 状態管理カウンター減少
 
 		if (g_nCounterGameState <= 0 || GetKeyboardTrigger(DIK_RETURN) == true && *pFade == FADE_NONE)
 		{// 0以下になった
-
 			g_gameState = GAMESTATE_NONE;
 
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_WHITE);
-
-			// サウンド停止
-			//StopSound(SOUND_LABEL_BGM000);
 		}
+
+		break;
+
+	case GAMESTATE_TIMEOVER:
+		g_nCounterGameState--;		// 状態管理カウンター減少
+		break;
 	}
 
 
@@ -325,19 +326,18 @@ void DrawGame(void)
 
 }
 
-//=============================================================================
-// ポーズメニュー設定処理
-//=============================================================================
-void SetEnablePause(bool bPause)
-{
-	//g_bPause = bPause;
-}
-
+//=======================================================
+// ゲームの状態設定処理
+//=======================================================
 void SetGameState(GAMESTATE state, int nCounter)
 {
 	g_gameState = state;				// ゲーム状態設定
 	g_nCounterGameState = nCounter;		// 状態管理カウンター設定
 }
+
+//=======================================================
+// ゲームの状態取得処理
+//=======================================================
 GAMESTATE GetGameState(void)
 {
 	return g_gameState;
