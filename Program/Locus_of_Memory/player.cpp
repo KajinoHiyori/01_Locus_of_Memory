@@ -56,6 +56,7 @@ Player				g_aPlayer[MAX_PLAYER];						// プレイヤーの情報を格納
 void InitPlayer(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+	MODE mode = GetMode();	// 現在のモードを取得
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
@@ -78,14 +79,6 @@ void InitPlayer(void)
 		g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
 		g_aPlayer[nCntPlayer].bUse = false;
 		g_aPlayer[nCntPlayer].bJump = false;
-	}
-
-	OPERATIONTYPE operationtyoe = GetOperationType();
-	SetPlayer(0, POS, DEFALT, PARENTMODELTYPE_PLAYER1P);
-
-	if (operationtyoe == OPERATIONTYPE_2P)
-	{
-		SetPlayer(1, DEFALT, DEFALT, PARENTMODELTYPE_PLAYER2P);
 	}
 }
 

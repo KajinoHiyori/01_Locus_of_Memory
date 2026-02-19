@@ -38,6 +38,11 @@
 #include "sparkle.h"
 #include "goal.h"
 
+// マクロ定義
+#define GAMEPOS_1P		(D3DXVECTOR3(-950.0f, 0.0f, -2800.0f))	// 1Pの位置[GAME]
+#define GAMEPOS_2P		(D3DXVECTOR3(-950.0f, 0.0f, -2770.0f))	// 2Pの位置[GAME]
+#define PLAYER_ROT		(D3DXVECTOR3(0.0f, -1.57f, 0.0f))	// プレイヤーの向き
+
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 int g_nCounterGameState = 0;				// 状態管理カウンター
 
@@ -109,6 +114,20 @@ void InitGame(void)
 
 	// ゲームの状態を通常状態に
 	g_gameState = GAMESTATE_NORMAL;
+
+	// プレイヤーの設置
+	OPERATIONTYPE operationtyoe = GetOperationType();
+	switch (operationtyoe)
+	{
+	case OPERATIONTYPE_2P:	// 2人操作
+		SetPlayer(0, GAMEPOS_1P, PLAYER_ROT, PARENTMODELTYPE_PLAYER1P);
+		SetPlayer(1, GAMEPOS_2P, PLAYER_ROT, PARENTMODELTYPE_PLAYER2P);
+		break;
+
+	default:	// 1人操作
+		SetPlayer(0, GAMEPOS_1P, PLAYER_ROT, PARENTMODELTYPE_PLAYER1P);
+		break;
+	}
 
 }
 //=======================================================

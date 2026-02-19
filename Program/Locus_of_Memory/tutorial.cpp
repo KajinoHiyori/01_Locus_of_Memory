@@ -44,6 +44,10 @@
 #include "clock.h"
 #include "battery.h"
 
+// マクロ定義
+#define TUTORIALPOS_1P	(D3DXVECTOR3(-3560.0f, 0.0f, -2500.0f))	// 1Pの位置[TUTORIAL]			
+#define TUTORIALPOS_2P	(D3DXVECTOR3(-3530.0f, 0.0f, -2500.0f))	// 2Pの位置[TUTORIAL]
+
 TUTORIALSTATE g_TutorialState = TUTORIALSTATE_NONE;		// ゲームの状態
 int g_nCounterTutorialState = 0;				// 状態管理カウンター
 int g_nCntFade = 0;
@@ -112,6 +116,20 @@ void InitTutorial(void)
 
 	// UIの状態を初期化
 	SetPauseFalse();
+
+	// プレイヤーの設置
+	OPERATIONTYPE operationtyoe = GetOperationType();
+	switch (operationtyoe)
+	{
+	case OPERATIONTYPE_2P:	// 2人操作
+		SetPlayer(0, TUTORIALPOS_1P, INIT_D3DXVEC3, PARENTMODELTYPE_PLAYER1P);
+		SetPlayer(1, TUTORIALPOS_2P, INIT_D3DXVEC3, PARENTMODELTYPE_PLAYER2P);
+		break;
+
+	default:	// 1人操作
+		SetPlayer(0, TUTORIALPOS_1P, INIT_D3DXVEC3, PARENTMODELTYPE_PLAYER1P);
+		break;
+	}
 }
 //=======================================================
 // ゲームの終了処理
