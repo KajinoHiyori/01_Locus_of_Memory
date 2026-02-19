@@ -155,7 +155,7 @@ void DrawCustomMesh(void)
 			0,
 			pCustomMesh->nNumVtx,
 			0,
-			pCustomMesh->nNumIdx - 4);
+			pCustomMesh->nNumIdx - 2);
 
 		ResetTextureStageStateColor(2);
 

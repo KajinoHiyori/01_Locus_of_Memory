@@ -223,8 +223,7 @@ void DrawSparkle(void)
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
 	//// Zテストを無効にする
-	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);	// Zテストの比較方法を変更(Zバッファの前後関係に関わらず描画する)
-	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);		// Zバッファ更新の有効/無効の設定
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);		// Zバッファ更新の有効/無効の設定
 
 	for (int nCntSparkle = 0; nCntSparkle < g_nNumSparkle; nCntSparkle++, pSparkle++)
 	{
@@ -267,7 +266,6 @@ void DrawSparkle(void)
 	}
 
 	// Zテストを有効にする
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	// αブレンディングを戻す

@@ -278,6 +278,12 @@ void DrawGame(void)
 	// パーティクルの描画処理
 	DrawParticle();
 
+	// 文字の描画処理
+	DrawGrain();
+
+	// 粒の描画処理
+	DrawSparkle();
+
 	SetFogEnable(false);		// 霧を無効
 
 	// 3D空間UIの描画処理
@@ -287,12 +293,6 @@ void DrawGame(void)
 
 	// プレイヤーの描画処理
 	DrawPlayer();
-
-	// 文字の描画処理
-	DrawGrain();
-
-	// 粒の描画処理
-	DrawSparkle();
 
 	// 魔法の描画処理
 	DrawMagic();
