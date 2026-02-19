@@ -200,6 +200,7 @@
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="sparkle.cpp" />
     <ClCompile Include="spellui.cpp" />
     <ClCompile Include="start.cpp" />
     <ClCompile Include="startui.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="shadow.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="sparkle.h" />
     <ClInclude Include="spellui.h" />
     <ClInclude Include="start.h" />
     <ClInclude Include="startui.h" />

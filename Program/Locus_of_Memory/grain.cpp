@@ -1,6 +1,6 @@
 //=============================================================================
 //
-//	画面上の粒の処理 [grain.h]
+//	画面上の文字の処理 [grain.h]
 //	Author : SHUMA AIZU
 // 
 //=============================================================================
@@ -16,27 +16,27 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_GRAIN			(4096)					// 粒の最大数
-#define GRAIN_RADIUS		(25.0f)					// 粒の半径
-#define GRAINALPHA_FADE		(0.025f)				// 粒のフェードスピード
+#define MAX_GRAIN			(2048)					// 文字の最大数
+#define GRAIN_RADIUS		(25.0f)					// 文字の半径
+#define GRAINALPHA_FADE		(0.025f)				// 文字のフェードスピード
 #define GRAINTEX_SPRIT		(5)						// テクスチャの一列の分割数
 #define GRAINTEX_SPRITPOS	(1.0f / GRAINTEX_SPRIT)	// テクスチャの分割座標
-#define MAX_GRAINRADIUS		(150)					// 粒の半径の最大
-#define MIN_GRAINRADIUS		(100)					// 粒の半径の最小
-#define MAX_GRAINLIFE		(180)					// 粒の寿命の最大
-#define MIN_GRAINLIFE		(60)					// 粒の寿命の最小
+#define MAX_GRAINRADIUS		(150)					// 文字の半径の最大
+#define MIN_GRAINRADIUS		(100)					// 文字の半径の最小
+#define MAX_GRAINLIFE		(180)					// 文字の寿命の最大
+#define MIN_GRAINLIFE		(60)					// 文字の寿命の最小
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
 LPDIRECT3DTEXTURE9 g_pTextureBuffGrain = {};		// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffGrain = NULL;		// 頂点バッファへのポインタ
-Grain g_aGrain[MAX_GRAIN];							// 粒の情報
-int g_aNumGrainIdx[MAX_GRAIN];						// 使用している粒のインデックス
-int g_nNumGrain;									// 使用している粒の数
+Grain g_aGrain[MAX_GRAIN];							// 文字の情報
+int g_aNumGrainIdx[MAX_GRAIN];						// 使用している文字のインデックス
+int g_nNumGrain;									// 使用している文字の数
 
 //======================================================================================
-// 粒の初期化処理
+// 文字の初期化処理
 //======================================================================================
 void InitGrain(void)
 {
@@ -44,49 +44,49 @@ void InitGrain(void)
 
 	Grain* pGrain = &g_aGrain[0];
 
-	//テクスチャ読み込み
+	// テクスチャ読み込み
 	D3DXCreateTextureFromFile(pDevice, 
 		"data/TEXTURE/grain.jpg", 
 		&g_pTextureBuffGrain);
 
-	//初期化
+	// 初期化
 	memset(pGrain, NULL, sizeof(Grain) * MAX_GRAIN);
 	memset(&g_aNumGrainIdx[0], -1, sizeof(int) * MAX_GRAIN);
 	g_nNumGrain = 0;
 
-	//頂点バッファの生成
+	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * MAX_GRAIN * 4, 
 		D3DUSAGE_WRITEONLY, 
 		FVF_VERTEX_3D, 
 		D3DPOOL_MANAGED, 
 		&g_pVtxBuffGrain, NULL);
 
-	VERTEX_3D* pVtx;    //頂点情報の設定
+	VERTEX_3D* pVtx;    // 頂点情報の設定
 
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffGrain->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntGrain = 0; nCntGrain < MAX_GRAIN; nCntGrain++, pGrain++)
 	{
-		//頂点座標の設定
+		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3(-pGrain->fRadius, pGrain->fRadius, 0.0f);
 		pVtx[1].pos = D3DXVECTOR3(pGrain->fRadius, pGrain->fRadius, 0.0f);
 		pVtx[2].pos = D3DXVECTOR3(-pGrain->fRadius, -pGrain->fRadius, 0.0f);
 		pVtx[3].pos = D3DXVECTOR3(pGrain->fRadius, -pGrain->fRadius, 0.0f);
 
-		//rhwの設定
+		// 法線の設定
 		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 		pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 		pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 		pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
-		//頂点カラーの設定
+		// 頂点カラーの設定
 		pVtx[0].col = COLOR_WHITE;
 		pVtx[1].col = COLOR_WHITE;
 		pVtx[2].col = COLOR_WHITE;
 		pVtx[3].col = COLOR_WHITE;
 
-		//テクスチャ座標の設定
+		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 		pVtx[1].tex = D3DXVECTOR2(0.2f, 0.0f);
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 0.2f);
@@ -99,7 +99,7 @@ void InitGrain(void)
 }
 
 //======================================================================================
-// 粒の終了処理
+// 文字の終了処理
 //======================================================================================
 void UninitGrain(void)
 {
@@ -120,11 +120,11 @@ void UninitGrain(void)
 }
 
 //======================================================================================
-// 粒の更新処理
+// 文字の更新処理
 //======================================================================================
 void UpdateGrain(void)
 {
-	Grain* pGrain = &g_aGrain[0];					// 粒へのポインタ
+	Grain* pGrain = &g_aGrain[0];					// 文字へのポインタ
 
 	for (; g_nNumGrain < MAX_GRAIN;)
 	{// 常に最大数を維持する
@@ -133,9 +133,9 @@ void UpdateGrain(void)
 
 	PrintDebugProc("NumGrain %d\n", g_nNumGrain);
 
-	VERTEX_3D* pVtx;    //頂点情報の設定
+	VERTEX_3D* pVtx;    // 頂点情報の設定
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffGrain->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntGrain = 0; nCntGrain < g_nNumGrain; nCntGrain++)
@@ -209,13 +209,13 @@ void UpdateGrain(void)
 }
 
 //======================================================================================
-// 粒の描画処理
+// 文字の描画処理
 //======================================================================================
 void DrawGrain(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();		// デバイスの取得
 
-	Grain* pGrain = &g_aGrain[0];					// 粒へのポインタ
+	Grain* pGrain = &g_aGrain[0];					// 文字へのポインタ
 	D3DXMATRIX mtxRot, mtxTrans;					// 計算用マトリックス
 	D3DXMATRIX mtxView;								// ビューマトリックス
 
@@ -239,36 +239,36 @@ void DrawGrain(void)
 			PrintDebugProc("データ異常発生中 : grain\n");
 		}
 
-		//ワールドマトリックスの初期化
+		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&pGrain->mtxWorld);
 
-		//ビューマトリックスを取得
+		// ビューマトリックスを取得
 		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
-		//粒をカメラに対して正面に向ける
+		// 文字をカメラに対して正面に向ける
 		D3DXMatrixInverse(&pGrain->mtxWorld, NULL, &mtxView);	//逆行列を求める
 
 		pGrain->mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
 		pGrain->mtxWorld._42 = 0.0f;
 		pGrain->mtxWorld._43 = 0.0f;
 
-		//位置を反映
+		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, pGrain->pos.x, pGrain->pos.y, pGrain->pos.z);
 		D3DXMatrixMultiply(&pGrain->mtxWorld, &pGrain->mtxWorld, &mtxTrans);
 
-		//ワールドマトリックスの設定
+		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &pGrain->mtxWorld);
 
-		//頂点バッファをデータストリームに設定
+		// 頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, g_pVtxBuffGrain, 0, sizeof(VERTEX_3D));
 
-		//頂点フォーマットの設定
+		// 頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_3D);
 
-		//テクスチャ
+		// テクスチャの設定
 		pDevice->SetTexture(0, g_pTextureBuffGrain);
 
-		//粒の描画
+		// 文字の描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntGrain * 4, 2);
 	}
 
@@ -287,11 +287,11 @@ void DrawGrain(void)
 }
 
 //======================================================================================
-// 粒の設定処理
+// 文字の設定処理
 //======================================================================================
 void SetGrain(void)
 {
-	Grain* pGrain = &g_aGrain[g_nNumGrain];		// 対象粒へのポインタ
+	Grain* pGrain = &g_aGrain[g_nNumGrain];		// 対象文字へのポインタ
 
 	// 各値設定
 	pGrain->pos = D3DXVECTOR3(-5000.0f, 0.0f, -5000.0f) + RANDAM_VEC3(10000, 1500, 10000);
@@ -329,7 +329,7 @@ void SetGrain(void)
 }
 
 //======================================================================================
-// 粒の解放処理
+// 文字の解放処理
 //======================================================================================
 void ReleaseGrain(int nIdx)
 {

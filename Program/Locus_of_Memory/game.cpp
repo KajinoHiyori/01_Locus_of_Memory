@@ -34,6 +34,7 @@
 #include "brickwall.h"
 #include "loadscript.h"
 #include "grain.h"
+#include "sparkle.h"
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 int g_nCounterGameState = 0;				// 状態管理カウンター
@@ -102,8 +103,11 @@ void InitGame(void)
 
 	InitParticle();
 
-	// 粒の初期化処理
+	// 文字の初期化処理
 	InitGrain();
+
+	// 粒の初期化処理
+	InitSparkle();
 
 	PlaySound(SOUND_LABEL_000);
 
@@ -166,8 +170,11 @@ void UninitGame(void)
 
 	//UninitTimer();
 
-	// 粒の終了処理
+	// 文字の終了処理
 	UninitGrain();
+
+	// 粒の終了処理
+	UninitSparkle();
 
 	StopSound();
 
@@ -224,8 +231,11 @@ void UpdateGame(void)
 	// 魔法陣の更新処理
 	UpdateMagicCircle();
 
-	// 粒の更新処理
+	// 文字の更新処理
 	UpdateGrain();
+
+	// 粒の更新処理
+	UpdateSparkle();
 
 	UpdateSpellUI();
 
@@ -342,8 +352,11 @@ void DrawGame(void)
 
 	DrawPlayer();
 
-	// 粒の描画処理
+	// 文字の描画処理
 	DrawGrain();
+
+	// 粒の描画処理
+	DrawSparkle();
 
 	// 魔法の描画処理
 	DrawMagic();
