@@ -635,6 +635,8 @@ void UpdateUIBG(int nIdx)
 //========================================================================
 void SetUIAppear(int nIdx)
 {
+	Player* pPlayer = GetPlayer();
+	pPlayer[nIdx].state = PLAYERSTATE_PAUSE;
 	g_aUIManager[nIdx].bPause = true;
 	g_aUIManager[nIdx].state = UISTATE_APPEAR;
 	g_aUIManager[nIdx].nKey = 0;
@@ -712,6 +714,8 @@ void SetUINonDisp(int nIdx)
 	g_aUIManager[nIdx].stateNext = UISTATE_NONDISPLAY;				// UIÇÃï\é¶èÛë‘
 	g_aUIManager[nIdx].nSelect = UITYPE_CLOCK;						// ëIëÇµÇƒÇ¢ÇÈéÌóﬁ(int)
 	DissapearBattery(nIdx);
+	Player* pPlayer = GetPlayer();
+	pPlayer[nIdx].state = PLAYERSTATE_NORMAL;
 }
 
 //========================================================================

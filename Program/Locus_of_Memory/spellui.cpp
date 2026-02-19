@@ -378,70 +378,11 @@ void UpdateSpellUI(void)
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffSpellUI->Lock(0, 0, (void**)&pVtx, 0);
 
+	bool bSpell = false;	// ポーズ状態との兼ね合いを管理
+
 	Player* pPlayer = GetPlayer();
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		// SPELLメニューを開いているかのフラグを立てる
-		if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
-		{
-			if ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-			{
-				g_aSpellUI[nCntPlayer].state = SPELLUISTATE_APPEAR;
-				SetSpellUIAppear(nCntPlayer);
-			}
-			g_aSpellUI[nCntPlayer].bSpell = true;
-			pPlayer->state = PLAYERSTATE_SPELL;
-		}
-		else
-		{
-			if ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-			{
-				g_aSpellUI[nCntPlayer].state = SPELLUISTATE_DISAPPEAR;
-				SetSpellUIDisappear(nCntPlayer);
-				ResetCommand(nCntPlayer);
-				pPlayer->state = PLAYERSTATE_NORMAL;
-			}
-		}
-
-		if (g_aSpellUI[nCntPlayer].aSpellUI[SPELLUI_TYPE_COMMAND0].bDisp == false &&
-			g_aSpellUI[nCntPlayer].aSpellUI[SPELLUI_TYPE_COMMAND1].bDisp == false &&
-			g_aSpellUI[nCntPlayer].aSpellUI[SPELLUI_TYPE_COMMAND2].bDisp == false)
-		{ // コマンド入力が行われていない場合、セーブ内容を初期化
-			ResetCommdSave(nCntPlayer);
-		}
-
-
-		if (g_aSpellUI[nCntPlayer].bSpell == false)
-		{
-			continue;
-		}
-
-		// コマンドの入力情報を取得
-		COMMANDTYPE* commandType = GetCommandSaveType(nCntPlayer);
-		COMMANDTYPE CommandUI[MAX_COMMAND];
-		for (int nCntUI = 0; nCntUI < MAX_COMMAND; nCntUI++)
-		{
-			CommandUI[nCntUI] = commandType[nCntUI];
-			switch (CommandUI[nCntUI])
-			{
-			case COMMANDTYPE_NONE:	// 入力なし
-				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_MAGICNULL;
-				break;
-			case COMMANDTYPE_R:	// 赤魔法
-				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_RED;
-				break;
-			case COMMANDTYPE_G:	// 緑魔法
-				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_GREEN;
-				break;
-			case COMMANDTYPE_B:	// 青魔法
-				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_BLUE;
-				break;
-			case COMMANDTYPE_Y:	// 黄魔法
-				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_YELLOW;
-				break;
-			}
-		}
-
 		// 全体の演出処理======================================================================================
 		float fDiffKey = 0.0f;	// キーの差分を計算
 		float fRateKey = (float)g_aSpellUI[nCntPlayer].nKey / (float)g_aSpellUI[nCntPlayer].nNumKey;
@@ -545,12 +486,84 @@ void UpdateSpellUI(void)
 				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp = false;
 				break;
 			}
-			
+
 			// 頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(-g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, SPELLUI_Z);
 			pVtx[1].pos = D3DXVECTOR3(g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, SPELLUI_Z);
 			pVtx[2].pos = D3DXVECTOR3(-g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, -g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, SPELLUI_Z);
 			pVtx[3].pos = D3DXVECTOR3(g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, -g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, SPELLUI_Z);
+		}
+
+
+		if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aSpellUI[nCntPlayer].bSpell == true)
+		{
+			SetSpellUIDisappear(nCntPlayer);
+			bSpell = true;
+		}
+		else if (g_aSpellUI[nCntPlayer].bSpell == false && pPlayer->state == PLAYERSTATE_PAUSE)
+		{
+			SetSpellUINonDisplay(nCntPlayer);
+			continue;
+		}
+
+		// SPELLメニューを開いているかのフラグを立てる
+		if (pPlayer->state != PLAYERSTATE_PAUSE && ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true))
+		{
+			if (bSpell == false && ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true))
+			{
+				g_aSpellUI[nCntPlayer].state = SPELLUISTATE_APPEAR;
+				SetSpellUIAppear(nCntPlayer);
+				g_aSpellUI[nCntPlayer].bSpell = true;
+				pPlayer->state = PLAYERSTATE_SPELL;
+			}
+		}
+		else
+		{
+			if (pPlayer->state != PLAYERSTATE_PAUSE && ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true))
+			{
+				g_aSpellUI[nCntPlayer].state = SPELLUISTATE_DISAPPEAR;
+				SetSpellUIDisappear(nCntPlayer);
+				ResetCommand(nCntPlayer);
+				pPlayer->state = PLAYERSTATE_NORMAL;
+			}
+		}
+
+		if (g_aSpellUI[nCntPlayer].bSpell == false)
+		{
+			continue;
+		}
+
+		if (g_aSpellUI[nCntPlayer].aSpellUI[SPELLUI_TYPE_COMMAND0].bDisp == false &&
+			g_aSpellUI[nCntPlayer].aSpellUI[SPELLUI_TYPE_COMMAND1].bDisp == false &&
+			g_aSpellUI[nCntPlayer].aSpellUI[SPELLUI_TYPE_COMMAND2].bDisp == false)
+		{ // コマンド入力が行われていない場合、セーブ内容を初期化
+			ResetCommdSave(nCntPlayer);
+		}
+
+		// コマンドの入力情報を取得
+		COMMANDTYPE* commandType = GetCommandSaveType(nCntPlayer);
+		COMMANDTYPE CommandUI[MAX_COMMAND];
+		for (int nCntUI = 0; nCntUI < MAX_COMMAND; nCntUI++)
+		{
+			CommandUI[nCntUI] = commandType[nCntUI];
+			switch (CommandUI[nCntUI])
+			{
+			case COMMANDTYPE_NONE:	// 入力なし
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_MAGICNULL;
+				break;
+			case COMMANDTYPE_R:	// 赤魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_RED;
+				break;
+			case COMMANDTYPE_G:	// 緑魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_GREEN;
+				break;
+			case COMMANDTYPE_B:	// 青魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_BLUE;
+				break;
+			case COMMANDTYPE_Y:	// 黄魔法
+				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].tex = SPELLUI_TEX_YELLOW;
+				break;
+			}
 		}
 	}
 
@@ -647,181 +660,6 @@ void DrawSpellUI(void)
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
 }
-
-#if 0
-//======================================================================================
-// spellの中身の初期化処理
-//======================================================================================
-void ResetSpellUI(int nIdx)
-{
-	// 操作方法の状態を取得
-	OPERATIONTYPE operationType = GetOperationType();
-
-	for (int nCntUI = 0; nCntUI < MAXSPELL_TEX; nCntUI++)
-	{
-		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
-		{
-			switch (nCntUI)
-			{
-			case SPELLUI_TYPE_PHONE:	// phone
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_PHONE].tex = SPELLUI_TEX_PHONE;				// phone
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_PHONE].type = SPELLUI_TYPE_PHONE;				// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_PHONE].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_PHONE].fWidth = PHONE_WIDTH;						// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_PHONE].fHeight = PHONE_HEIGHT;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_PHONE].bDisp = true;								// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_SPELL:	// spell
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_SPELL].tex = SPELLUI_TEX_SPELL;				// spell
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_SPELL].type = SPELLUI_TYPE_SPELL;				// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_SPELL].pos = D3DXVECTOR3(0.0f, SPELL_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_SPELL].fWidth = SPELL_WIDTH;						// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_SPELL].fHeight = SPELL_HEIGHT;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_SPELL].bDisp = true;								// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND0].tex = SPELLUI_TEX_MAGICNULL;							// どの魔法も入力されていない
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND0].type = SPELLUI_TYPE_COMMAND0;							// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND0].pos = D3DXVECTOR3(-COMMMAND_DIGIT, COMMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND0].fWidth = COMMMAND_SIZE;									// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND0].fHeight = COMMMAND_SIZE;									// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND0].bDisp = true;												// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND1].tex = SPELLUI_TEX_MAGICNULL;				// どの魔法も入力されていない
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND1].type = SPELLUI_TYPE_COMMAND1;				// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND1].pos = D3DXVECTOR3(0.0f, COMMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND1].fWidth = COMMMAND_SIZE;						// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND1].fHeight = COMMMAND_SIZE;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND1].bDisp = true;									// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND2].tex = SPELLUI_TEX_MAGICNULL;							// どの魔法も入力されていない
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND2].type = SPELLUI_TYPE_COMMAND2;							// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND2].pos = D3DXVECTOR3(COMMMAND_DIGIT, COMMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND2].fWidth = COMMMAND_SIZE;									// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND2].fHeight = COMMMAND_SIZE;									// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_COMMAND2].bDisp = true;												// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_MAGIC:	// 発動された魔法
-				g_aSpellUI[nIdx].magicType = SPELLUI_TEX_NONE;					// どの魔法も入力されていない
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].type = SPELLUI_TYPE_MAGIC;				// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].pos = D3DXVECTOR3(0.0f, MAGIC_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].fWidth = MAGIC_SIZE;						// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].fHeight = MAGIC_SIZE;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_MAGIC].bDisp = false;							// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_RED:	// 赤魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_RED].tex = SPELLUI_TEX_RED;									// 赤魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_RED].type = SPELLUI_TYPE_RED;									// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_RED].pos = D3DXVECTOR3(COMMMAND_DIGIT, RBCOMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_RED].fWidth = COMMMAND_SIZE;									// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_RED].fHeight = COMMMAND_SIZE;									// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_RED].bDisp = true;												// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_GREEN:	// 緑魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_GREEN].tex = SPELLUI_TEX_GREEN;					// 緑魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_GREEN].type = SPELLUI_TYPE_GREEN;					// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_GREEN].pos = D3DXVECTOR3(0.0f, GCOMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_GREEN].fWidth = COMMMAND_SIZE;						// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_GREEN].fHeight = COMMMAND_SIZE;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_GREEN].bDisp = true;									// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_BLUE:	// 青魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_BLUE].tex = SPELLUI_TEX_BLUE;									// 青魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_BLUE].type = SPELLUI_TYPE_BLUE;								// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_BLUE].pos = D3DXVECTOR3(-COMMMAND_DIGIT, RBCOMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_BLUE].fWidth = COMMMAND_SIZE;									// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_BLUE].fHeight = COMMMAND_SIZE;									// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_BLUE].bDisp = true;												// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_YELLOW:	// 黄魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_YELLOW].tex = SPELLUI_TEX_YELLOW;					// 黄魔法
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_YELLOW].type = SPELLUI_TYPE_YELLOW;					// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_YELLOW].pos = D3DXVECTOR3(0.0f, YCOMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_YELLOW].fWidth = COMMMAND_SIZE;						// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_YELLOW].fHeight = COMMMAND_SIZE;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_YELLOW].bDisp = true;									// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_OP_R:	// 赤魔法発動ボタン
-				if (operationType == OPERATIONTYPE_1P || operationType == OPERATIONTYPE_2P)	// ジョイパッド操作
-				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].tex = SPELLUI_TEX_B;				// Bボタン
-				}
-				else if (OPERATIONTYPE_KEYBOARD)	// キーボード1P操作
-				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].tex = SPELLUI_TEX_L;				// Lキー
-				}
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].type = SPELLUI_TYPE_OP_R;					// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].pos = D3DXVECTOR3(RB_OPTYPE_X, RBCOMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].fWidth = BUTTON_SIZE;						// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].fHeight = BUTTON_SIZE;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_R].bDisp = true;								// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_OP_G:	// 緑魔法発動ボタン
-				if (operationType == OPERATIONTYPE_1P || operationType == OPERATIONTYPE_2P)	// ジョイパッド操作
-				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].tex = SPELLUI_TEX_A;				// Aボタン
-				}
-				else if (OPERATIONTYPE_KEYBOARD)	// キーボード1P操作
-				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].tex = SPELLUI_TEX_K;				// Kキー
-				}
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].type = SPELLUI_TYPE_OP_G;				// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].pos = D3DXVECTOR3(0.0f, G_OPTYPE_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].fWidth = BUTTON_SIZE;							// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].fHeight = BUTTON_SIZE;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_G].bDisp = true;							// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_OP_B:	// 青魔法発動ボタン
-				if (operationType == OPERATIONTYPE_1P || operationType == OPERATIONTYPE_2P)	// ジョイパッド操作
-				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].tex = SPELLUI_TEX_X;				// Xボタン
-				}
-				else if (OPERATIONTYPE_KEYBOARD)	// キーボード1P操作
-				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].tex = SPELLUI_TEX_J;				// Jキー
-				}
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].type = SPELLUI_TYPE_OP_B;				// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].pos = D3DXVECTOR3(-RB_OPTYPE_X, RBCOMMAND_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].fWidth = BUTTON_SIZE;							// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].fHeight = BUTTON_SIZE;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_B].bDisp = true;							// テクスチャの初期化
-				break;
-
-			case SPELLUI_TYPE_OP_Y:	// 黄魔法発動ボタン
-				if (operationType == OPERATIONTYPE_1P || operationType == OPERATIONTYPE_2P)	// ジョイパッド操作
-				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].tex = SPELLUI_TEX_Y;				// Yボタン
-				}
-				else if (OPERATIONTYPE_KEYBOARD)	// キーボード1P操作
-				{
-					g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].tex = SPELLUI_TEX_I;				// 4キー
-				}
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].type = SPELLUI_TYPE_OP_Y;				// UIの種類の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].pos = D3DXVECTOR3(0.0f, Y_OPTYPE_Y, 0.0f);	// 位置の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].fWidth = BUTTON_SIZE;							// 幅の初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].fHeight = BUTTON_SIZE;						// 高さの初期化
-				g_aSpellUI[nIdx].g_SpellUI[SPELLUI_TYPE_OP_Y].bDisp = true;							// テクスチャの初期化
-				break;
-			}
-		}
-
-	}
-}
-#endif
 
 //======================================================================================
 // UIを発動中の魔法に変更
