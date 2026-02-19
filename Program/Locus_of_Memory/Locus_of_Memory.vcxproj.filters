@@ -76,15 +76,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="result\diagnosis">
-      <UniqueIdentifier>{6e5b0275-37aa-4a63-81f8-18166a1faa6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="result\diagnosis\cpp">
-      <UniqueIdentifier>{418a0b79-25b5-4eed-8033-69aed28a1555}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="result\diagnosis\h">
-      <UniqueIdentifier>{1f2d99e1-e807-43bb-afed-716532e51fc0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="start">
       <UniqueIdentifier>{baa7f50d-c47a-4371-be37-df55d81e81fb}</UniqueIdentifier>
     </Filter>
@@ -93,6 +84,15 @@
     </Filter>
     <Filter Include="start\h">
       <UniqueIdentifier>{ae2b38cd-afe6-4251-acb4-0b82ae96410c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="diagnosis">
+      <UniqueIdentifier>{5ed6f820-27e6-4636-a750-a922a9a85ee2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="diagnosis\cpp">
+      <UniqueIdentifier>{418a0b79-25b5-4eed-8033-69aed28a1555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="diagnosis\h">
+      <UniqueIdentifier>{1f2d99e1-e807-43bb-afed-716532e51fc0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -217,10 +217,10 @@
       <Filter>game\cpp</Filter>
     </ClCompile>
     <ClCompile Include="diagnosis.cpp">
-      <Filter>result\diagnosis\cpp</Filter>
+      <Filter>diagnosis\cpp</Filter>
     </ClCompile>
     <ClCompile Include="diagnosisui.cpp">
-      <Filter>result\diagnosis\cpp</Filter>
+      <Filter>diagnosis\cpp</Filter>
     </ClCompile>
     <ClCompile Include="resultui.cpp">
       <Filter>result\cpp</Filter>
@@ -357,10 +357,10 @@
       <Filter>game\h</Filter>
     </ClInclude>
     <ClInclude Include="diagnosisui.h">
-      <Filter>result\diagnosis\h</Filter>
+      <Filter>diagnosis\h</Filter>
     </ClInclude>
     <ClInclude Include="diagnosis.h">
-      <Filter>result\diagnosis\h</Filter>
+      <Filter>diagnosis\h</Filter>
     </ClInclude>
     <ClInclude Include="resultui.h">
       <Filter>result\h</Filter>

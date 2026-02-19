@@ -1,7 +1,3 @@
-#if 0
-
-#endif // 0
-
 //======================================================================================
 // 
 // 3Dアクションゲーム_MASTER KEY[Start.cpp]
@@ -18,6 +14,7 @@
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
+#include "debugproc.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
@@ -87,6 +84,8 @@ void UpdateStart(void)
 {
 	// 現在のフェードの状態を管理
 	FADE* pfade = GetFade();
+
+	PrintDebugProc("ここはロゴ画面\n");
 
 	// ライトの更新処理
 	UpdateLight();

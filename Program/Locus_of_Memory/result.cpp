@@ -15,15 +15,12 @@
 #include "effect.h"
 #include "particle.h"
 #include "brickwall.h"
+#include "debugproc.h"
 //#include"sound.h"
 
 // グローバル変数
 LPDIRECT3DTEXTURE9    g_pTextureResult = NULL;        // テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffResult = NULL;    // 頂点バッファへのポインタ
-D3DXVECTOR3 g_posResult;
-D3DXVECTOR3 g_moveResult;
-int g_nCounterAnimResult;
-int g_nPatternAnimResult;
 
 //=======================================================
 // リザルトの初期化処理
@@ -45,6 +42,7 @@ void UninitResult(void)
 //=======================================================
 void UpdateResult(void)
 {
+    PrintDebugProc("ここはリザルト画面\n");
     FADE* pFade = GetFade();
 
     if (GetKeyboardTrigger(DIK_RETURN) == true && *pFade == FADE_NONE || GetJoypadTrigger(JOYKEY_A, 0) == true && *pFade == FADE_NONE)

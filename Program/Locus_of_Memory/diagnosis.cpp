@@ -1,7 +1,3 @@
-#if 0
-
-
-#endif // 0
 //======================================================================================
 // 
 // 診断画面のメイン処理[diagnosis.cpp]
@@ -9,6 +5,7 @@
 //======================================================================================
 #include "main.h"
 #include "fade.h"
+#include "debugproc.h"
 #include "diagnosis.h"
 #include "camera.h"
 #include "light.h"
@@ -23,6 +20,7 @@
 #define WIDTH			(650.0f)	// 幅
 #define HEIGHT			(370.0f)	// 高さ
 #define DISTANCE		(100.0f)	// 視点注視点間の距離
+#define FADE_TITLE		(300)		// タイトル画面への遷移をカウント
 #define DEFAULT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// xyz0.0f
 #define POS_V			(D3DXVECTOR3(0.0f, -50.0f, -200.0f))	// 視点の位置
 #define POS_R			(D3DXVECTOR3(0.0f, -20.0f, 0.0f))	// 注視点の位置
@@ -32,6 +30,7 @@
 // グローバル変数
 bool g_bFadeScane;				// フェード状態を管理
 DIAGNOSISTYPE g_diagnosisType;	// 操作方法
+int g_nCounterTitle = 0;	// タイトル画面への遷移間隔をカウント
 
 //======================================================================================
 // タイトルの初期化処理
@@ -63,6 +62,7 @@ void InitDiagnosis(void)
 	InitDiagnosisUI();
 
 	g_diagnosisType = DIAGNOSISTYPE_1P;
+	g_nCounterTitle = 0;	// 遷移間隔の初期化
 }
 
 //======================================================================================
@@ -85,6 +85,10 @@ void UninitDiagnosis(void)
 //======================================================================================
 void UpdateDiagnosis(void)
 {
+	PrintDebugProc("ここは診断画面 %d\n", g_nCounterTitle);
+
+	g_nCounterTitle++;	// 遷移間隔をカウント
+
 	// 現在のフェードの状態を管理
 	FADE *pfade = GetFade();
 
@@ -94,11 +98,10 @@ void UpdateDiagnosis(void)
 	// タイトルUIの更新処理
 	UpdateDiagnosisUI();
 
-
-	if ((GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true) && *pfade == FADE_NONE)
+	if ((g_nCounterTitle > FADE_TITLE || (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true)) && *pfade == FADE_NONE)
 	{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
 		g_bFadeScane = true;
-		SetFade(MODE_START, COLOR_WHITE);
+		SetFade(MODE_TITLE, COLOR_WHITE);
 	}
 	
 }

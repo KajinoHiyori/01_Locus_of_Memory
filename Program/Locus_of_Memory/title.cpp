@@ -87,6 +87,8 @@ void UninitTitle(void)
 //======================================================================================
 void UpdateTitle(void)
 {
+	PrintDebugProc("ここはタイトル画面\n");
+
 	// 現在のフェードの状態を管理
 	FADE *pfade = GetFade();
 
@@ -115,7 +117,7 @@ void UpdateTitle(void)
 		}
 		if (g_nModeResult >= NEXT_MODE)
 		{
-			SetFade(MODE_RESULT, COLOR_WHITE);
+			SetFade(MODE_DIAGNOSIS, COLOR_WHITE);
 			g_bFade = true;
 		}
 		else if ((GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true) && *pfade == FADE_NONE)
