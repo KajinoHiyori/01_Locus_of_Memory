@@ -112,7 +112,7 @@ MODELSET
 	POS = 1400 0 2800
 	ROT = 0 0 0
 	SHADOW = 0
-	COLLISION = 1
+	COLLISION = 0
 END_MODELSET
 
 #城
@@ -121,7 +121,7 @@ MODELSET
 	POS = -1500 0 3000
 	ROT = 0 0 0
 	SHADOW = 0
-	COLLISION = 1
+	COLLISION = 0
 END_MODELSET
 
 #スタート地点周囲
@@ -465,7 +465,7 @@ MODELSET
 	POS = 30 0 1650
 	ROT = 0 0 0
 	SHADOW = 0
-	COLLISION = 1
+	COLLISION = 0
 END_MODELSET
 
 #------------------------------------------------------------------------------

@@ -430,6 +430,11 @@ void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 			continue;
 		}
 
+		if (pObject->bCollision == false)
+		{// 当たり判定しないなら戻る
+			continue;
+		}
+
 		ObjectModel* pObjectModel = &g_aObjectModel[pObject->type];	// モデルタイプ
 
 		posA = D3DXVECTOR3(pObjectModel->vtxMin.x, 0.0f, pObjectModel->vtxMax.z);
@@ -455,16 +460,11 @@ void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 		D3DXVec3TransformCoord(&posD, &posD, &pObject->mtxWorld);
 
 		if (pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius < pObject->pos.y + pObjectModel->vtxMax.y)
-		{
-			//// 当たり判定
-			//if (pObject->bCollision == true)
-			//{
-				CrossCollision(pPos, pPosOld, posB, posA, true, false);
-				CrossCollision(pPos, pPosOld, posC, posB, true, false);
-				CrossCollision(pPos, pPosOld, posD, posC, true, false);
-				CrossCollision(pPos, pPosOld, posA, posD, true, false);
-			//}
-
+		{// 当たり判定
+			CrossCollision(pPos, pPosOld, posB, posA, true, false);
+			CrossCollision(pPos, pPosOld, posC, posB, true, false);
+			CrossCollision(pPos, pPosOld, posD, posC, true, false);
+			CrossCollision(pPos, pPosOld, posA, posD, true, false);
 		}
 
 		// モデルの範囲内か判定
@@ -504,6 +504,7 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 			g_aObject[nCntObject].pos = pos;
 			g_aObject[nCntObject].rot = rot;
 			g_aObject[nCntObject].type = type;
+			g_aObject[nCntObject].bCollision = isCollision;
 			g_aObject[nCntObject].bUse = true;
 
 			if (isRandObj == true)

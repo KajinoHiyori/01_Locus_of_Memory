@@ -5,6 +5,7 @@
 //
 //========================================================================
 #include "main.h"
+#include "game.h"
 #include "debugproc.h"
 #include "player.h"
 #include "shadow.h"
@@ -16,6 +17,7 @@
 #include "magic.h"
 #include "uimanager.h"
 #include "particle.h"
+#include "goal.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -321,6 +323,13 @@ void UpdatePlayer(void)
 
 		// オブジェクトとの当たり判定
 		CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius);
+
+		// ゴールとの当たり判定
+		if (CollisionGoal(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius) && GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
+		{// 当たっているかつXボタンが押されたら
+			// クリア状態にする
+			SetGameState(GAMESTATE_CLEAR, 0);
+		}
 
 		// 使用したコマンドと所持コマンドを判定
 		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)

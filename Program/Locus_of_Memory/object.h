@@ -102,6 +102,7 @@ typedef struct
 	int				nIdxShadow;	// 影のインデックス
 	float			fSize;		// 大きさ
 	EVENTTYPE		EventType;	// イベントの種類
+	bool			bCollision;	// 当たり判定するか
 	bool			bUse;		// 使用状態
 }Object;
 

@@ -36,6 +36,7 @@
 #include "loadscript.h"
 #include "grain.h"
 #include "sparkle.h"
+#include "goal.h"
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 int g_nCounterGameState = 0;				// 状態管理カウンター
@@ -79,6 +80,12 @@ void InitGame(void)
 
 	// 
 	InitMagicBubble();
+
+	// ゴールの初期化処理
+	InitGoal();
+
+	// ゴールの設定処理
+	SetGoal(D3DXVECTOR3(1400.0f, 0.0f, 2800.0f), 150.0f);
 
 	// エフェクトの初期化処理
 	InitEffect();
