@@ -16,6 +16,7 @@
 #include "particle.h"
 #include "brickwall.h"
 #include "debugproc.h"
+#include "color.h"
 //#include"sound.h"
 
 // ƒOƒ[ƒoƒ‹•Ï”

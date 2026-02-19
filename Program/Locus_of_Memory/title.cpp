@@ -17,6 +17,7 @@
 #include "fog.h"
 #include "debugproc.h"
 #include "brickwall.h"
+#include "color.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間

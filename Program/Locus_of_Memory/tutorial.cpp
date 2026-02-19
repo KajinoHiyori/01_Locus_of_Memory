@@ -27,7 +27,6 @@
 //#include"wall.h"
 //#include"field.h"
 #include"meshfield.h"
-#include "uimanager.h"
 #include "custommesh.h"
 #include "vibration.h"
 //#include"mashwall.h"
@@ -35,6 +34,15 @@
 //#include"block.h"
 //#include"score.h"
 //#include"timer.h"
+
+// UI関連の初期化
+#include "uimanager.h"
+#include "magicui.h"
+#include "magicbubble.h"
+#include "magiccircle.h"
+#include "spellui.h"
+#include "clock.h"
+#include "battery.h"
 
 TUTORIALSTATE g_TutorialState = TUTORIALSTATE_NONE;		// ゲームの状態
 int g_nCounterTutorialState = 0;				// 状態管理カウンター
@@ -61,7 +69,26 @@ void InitTutorial(void)
 
 	//InitMeshfield();
 
+	// 魔法発動状態表示の初期化処理
+	InitSpellUI();
 
+	// 魔法陣の初期化処理
+	InitMagicCircle();
+
+	// 魔導書表示の初期化処理
+	InitMagicUI();
+
+	// 時計の初期化処理
+	InitClock();
+
+	// バッテリーの初期化処理
+	InitBattery();
+
+	// 3D空間UIの初期化処理
+	InitUIManager();
+
+	// 
+	InitMagicBubble();
 
 	//InitMashwall();
 
@@ -161,6 +188,14 @@ void UpdateTutorial(void)
 
 	UpdatePlayer();
 
+	UpdateUIManager();
+	UpdateMagicUI();
+	UpdateMagicBubble();
+	UpdateMagicCircle();
+	UpdateSpellUI();
+	UpdateClock();
+	UpdateBattery();
+
 	//UpdateMotion();
 
 	//UpdateModel();
@@ -251,6 +286,14 @@ void DrawTutorial(void)
 	DrawParticle();
 
 	DrawPlayer();
+
+	DrawUIManager();
+	DrawMagicUI();
+	DrawMagicBubble();
+	DrawMagicCircle();
+	DrawSpellUI();
+	DrawClock();
+	DrawBattery();
 
 	// スカイボックスの描画処理
 	DrawSkyBox();

@@ -6,6 +6,7 @@
 //=============================================================================
 #include "main.h"
 #include"game.h"
+#include "color.h"
 #include"input.h"
 #include "debugproc.h"
 #include"fade.h"

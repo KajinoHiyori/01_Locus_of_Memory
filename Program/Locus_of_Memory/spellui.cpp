@@ -13,6 +13,7 @@
 #include "fog.h"
 #include "debugproc.h"
 #include "camera.h"
+#include "color.h"
 
 // マクロ定義
 #define MAX_COMMAND			(3)					// 受け付けるコマンドの最大数
@@ -131,10 +132,14 @@ void InitSpellUI(void)
 		fRotXCamera[nCntCamera] = pCamera[nCntCamera].rot.x;
 		fRotYCamera[nCntCamera] = pCamera[nCntCamera].rot.y;
 	}
+
 	// テクスチャの読み込み
 	for (int nCntUI = 0; nCntUI < MAXSPELL_TEX; nCntUI++)
 	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameSpellUI[nCntUI], &g_apTextureSpellUI[nCntUI]);
+		if (g_apTextureSpellUI[nCntUI] == NULL)
+		{
+			D3DXCreateTextureFromFile(pDevice, c_apFilenameSpellUI[nCntUI], &g_apTextureSpellUI[nCntUI]);
+		}
 	}
 
 	// 初期化

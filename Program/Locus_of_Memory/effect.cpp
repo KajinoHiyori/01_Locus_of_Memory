@@ -11,6 +11,7 @@
 #include"camera.h"
 #include "fog.h"
 #include "debugproc.h"
+#include "color.h"
 
 // マクロ定義
 #define MAX_EFFECT		(16384)				// エフェクトの最大数

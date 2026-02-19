@@ -15,6 +15,7 @@
 #include "effect.h"
 #include "particle.h"
 #include "debugproc.h"
+#include "color.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間

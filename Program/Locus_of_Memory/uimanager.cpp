@@ -103,10 +103,14 @@ void InitUIManager(void)
 		fRotXCamera[nCntCamera] = pCamera[nCntCamera].rot.x;
 		fRotYCamera[nCntCamera] = pCamera[nCntCamera].rot.y;
 	}
+
 	// テクスチャの読み込み
 	for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameUIManager[nCntUI], &g_apTextureUIManager[nCntUI]);
+		if (g_apTextureUIManager[nCntUI] == NULL)
+		{
+			D3DXCreateTextureFromFile(pDevice, c_apFilenameUIManager[nCntUI], &g_apTextureUIManager[nCntUI]);
+		}
 	}
 
 	// 初期化

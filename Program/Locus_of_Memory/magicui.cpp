@@ -5,6 +5,7 @@
 // 
 //========================================================
 #include "main.h"
+#include "color.h"
 #include "magicui.h"
 #include "player.h"
 #include "game.h"
@@ -123,7 +124,10 @@ void InitMagicUI(void)
 	// テクスチャの読み込み
 	for (int nCntUI = 0; nCntUI < MAXSPELL_TEX; nCntUI++)
 	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameMagicUI[nCntUI], &g_apTextureMagicUI[nCntUI]);
+		if (g_apTextureMagicUI[nCntUI] == NULL)
+		{
+			D3DXCreateTextureFromFile(pDevice, c_apFilenameMagicUI[nCntUI], &g_apTextureMagicUI[nCntUI]);
+		}
 	}
 
 	// 初期化

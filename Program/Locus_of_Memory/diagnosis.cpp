@@ -5,6 +5,7 @@
 //======================================================================================
 #include "main.h"
 #include "fade.h"
+#include "color.h"
 #include "debugproc.h"
 #include "diagnosis.h"
 #include "camera.h"

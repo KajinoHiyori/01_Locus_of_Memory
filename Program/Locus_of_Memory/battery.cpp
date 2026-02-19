@@ -61,7 +61,10 @@ void InitBattery(void)
 	// テクスチャの読み込み
 	for (int nCntBattery = 0; nCntBattery < NUM_PLACE; nCntBattery++)
 	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameBattery[nCntBattery], &g_apTextureBattery[nCntBattery]);
+		if (g_apTextureBattery[nCntBattery] == NULL)
+		{
+			D3DXCreateTextureFromFile(pDevice, c_apFilenameBattery[nCntBattery], &g_apTextureBattery[nCntBattery]);
+		}
 	}
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)

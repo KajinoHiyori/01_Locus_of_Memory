@@ -89,7 +89,10 @@ void InitMagicBubble(void)
 	// テクスチャの読み込み
 	for (int nCntUI = 0; nCntUI < MAXMAGICBUBBLE_TYPE; nCntUI++)
 	{
-		D3DXCreateTextureFromFile(pDevice, c_apFilenameMagicBubble[nCntUI], &g_apTextureMagicBubble[nCntUI]);
+		if (g_apTextureMagicBubble[nCntUI] == NULL)
+		{
+			D3DXCreateTextureFromFile(pDevice, c_apFilenameMagicBubble[nCntUI], &g_apTextureMagicBubble[nCntUI]);
+		}
 	}
 
 	// 初期化

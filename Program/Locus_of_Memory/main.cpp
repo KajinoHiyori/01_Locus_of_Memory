@@ -20,7 +20,7 @@
 #include "fade.h"
 #include "fog.h"
 #include "loadscript.h"
-
+#include "color.h"
 #include "camera.h"
 //#include "light.h"
 
