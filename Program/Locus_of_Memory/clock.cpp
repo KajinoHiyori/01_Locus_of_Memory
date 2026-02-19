@@ -10,6 +10,8 @@
 #include "main.h"
 #include "title.h"
 #include "debugproc.h"
+#include "color.h"
+#include "game.h"
 
 // マクロ定義
 #define NUM_PLACE		(4)				// 時計の最大数
@@ -27,6 +29,7 @@
 #define END_MIN			(0)		// 終了時刻[分]
 #define MAX_MIN			(60)	// 分の最大値
 #define INTERVAL_TIME	(15)	// どのくらいの間隔で1分進むのか
+#define END_TIME		(2000)	// ゲーム終了時間
 
 // 時計の構造体定義
 typedef struct
@@ -186,6 +189,11 @@ void UpdateClock(void)
 		}
 	}
 	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
+
+	if (g_time.nTime >= END_TIME)
+	{// 一定時間を超えたらゲーム終了
+		SetGameState(GAMESTATE_TIMEOVER, 0);
+	}
 
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
 	aTexU[0] = g_time.nTime % 10000 / 1000;
