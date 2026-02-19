@@ -207,6 +207,9 @@
     <ClCompile Include="sparkle.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="goal.cpp">
+      <Filter>game\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -340,6 +343,9 @@
     </ClInclude>
     <ClInclude Include="sparkle.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="goal.h">
+      <Filter>game\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
