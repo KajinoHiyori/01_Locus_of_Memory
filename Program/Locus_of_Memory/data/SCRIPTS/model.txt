@@ -25,7 +25,7 @@ TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 46
+NUM_MODEL = 48
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -76,6 +76,8 @@ MODEL_FILENAME = data/MODEL/magicobj/shovel000.x			# [42]シャベル
 MODEL_FILENAME = data/MODEL/landmark/x/landmark001.x		# [43]風車
 MODEL_FILENAME = data/MODEL/landmark/x/landmark002.x		# [44]灯台
 MODEL_FILENAME = data/MODEL/landmark/x/landmark000.x		# [45]煙突
+MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall000.x	# [46]チュートリアル分断壁
+MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall001.x	# [47]チュートリアル分断壁
 
 #------------------------------------------------------------------------------
 # モデル配置情報
@@ -668,13 +670,13 @@ END_MODELSET
 # 川
 #------------------------------------------------------------------------------
 
-MODELSET
-	TYPE = 28
-	POS = 2600.0 0 2500.0
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 0
-END_MODELSET
+#MODELSET
+#	TYPE = 28
+#	POS = 2600.0 0 2500.0
+#	ROT = 0 0 0
+#	SHADOW = 0
+#	COLLISION = 0
+#END_MODELSET
 
 #------------------------------------------------------------------------------
 # 焚火
@@ -794,6 +796,25 @@ MODELSET
 	TYPE = 42
 	POS = -2970 70 890
 	ROT = -110 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+#------------------------------------------------------------------------------
+# チュートリアル壁
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 46
+	POS = -2950 0 -750
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 47
+	POS = -985 0 -2850
+	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
@@ -1006,7 +1027,7 @@ END_MAGICEVENTSET
 
 CUSTOMMESHSET
 	CUSTOMMESH_FILENAME = data/SCRIPTS/MESH/river000.bin
-	POS = 3000.0 5.0 2250.0
+	POS = 2600.0 0 2500.0
 	ROT = 0.0 0.0 0.0
 END_CUSTOMMESHSET
 
