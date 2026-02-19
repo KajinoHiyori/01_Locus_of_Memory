@@ -205,7 +205,7 @@
       <Filter>object\cpp</Filter>
     </ClCompile>
     <ClCompile Include="sparkle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>object\cpp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,7 +339,7 @@
       <Filter>object\h</Filter>
     </ClInclude>
     <ClInclude Include="sparkle.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

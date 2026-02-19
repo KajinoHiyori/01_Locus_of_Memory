@@ -496,6 +496,11 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 	{
 		if (g_aObject[nCntObject].bUse == false)
 		{
+			// 弧度法への変換
+			rot.x = DegreeToRadian(rot.x);
+			rot.y = DegreeToRadian(rot.y);
+			rot.z = DegreeToRadian(rot.z);
+
 			g_aObject[nCntObject].pos = pos;
 			g_aObject[nCntObject].rot = rot;
 			g_aObject[nCntObject].type = type;
@@ -528,6 +533,11 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		{// 使っていたら弾く
 			continue;
 		}
+
+		// 弧度法への変換
+		rot.x = DegreeToRadian(rot.x);
+		rot.y = DegreeToRadian(rot.y);
+		rot.z = DegreeToRadian(rot.z);
 
 		pParentObject->pModelData = SetModelData(parentmodeltype);					// モデルデータ設定
 		pParentObject->type = parentmodeltype;
