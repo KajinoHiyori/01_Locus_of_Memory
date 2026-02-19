@@ -167,6 +167,12 @@ void UninitClock(void)
 //======================================================================================
 void UpdateClock(void)
 {
+	MODE mode = GetMode();
+	if (mode == MODE_TUTORIAL)
+	{
+		g_time.state = CLOCKSTATE_STOP;
+	}
+
 	// 時間管理
 	if (g_time.state == CLOCKSTATE_OPERATION)	// タイマーが稼働中の場合
 	{
