@@ -98,12 +98,6 @@ void InitGame(void)
 	// パーティクルの初期化処理
 	InitParticle();
 
-	// 文字の初期化処理
-	InitGrain();
-
-	// 粒の初期化処理
-	InitSparkle();
-
 	// BGM再生
 	PlaySound(SOUND_LABEL_000);
 
@@ -149,12 +143,6 @@ void UninitGame(void)
 
 	// 魔法陣の終了処理
 	UninitMagicCircle();
-
-	// 文字の終了処理
-	UninitGrain();
-
-	// 粒の終了処理
-	UninitSparkle();
 
 	// BGM終了
 	StopSound();

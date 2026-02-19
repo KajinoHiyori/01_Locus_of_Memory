@@ -165,4 +165,5 @@ ParentObject* GetParentObjectInfo(int nIdx);
 ObjectModel* GetObjectModel(void);
 void UninitRandomObject(void);
 void UpdateObjectEvent001(ParentObject* pParentObject);
+void UpdateTitleDragon(ParentObject* pParentObject);
 #endif

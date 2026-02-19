@@ -183,9 +183,9 @@ void UpdateCamera(MODE mode)
 		pCamera->posV.y += (pCamera->posVDest.y - pCamera->posV.y) * CAMERA_INERTIA;
 		pCamera->posV.z += (pCamera->posVDest.z - pCamera->posV.z) * CAMERA_INERTIA;
 
-		//PrintDebugProc("視点 = { %.2f %.2f %.2f }\n", pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
-		//PrintDebugProc("注視点 = { %.2f %.2f %.2f }\n", pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
-		//PrintDebugProc("カメラの向き = { %.2f %.2f %.2f }\n", pCamera->rot.x, pCamera->rot.y, pCamera->rot.z);
+		PrintDebugProc("視点 = { %.2f %.2f %.2f }\n", pCamera->posV.x, pCamera->posV.y, pCamera->posV.z);
+		PrintDebugProc("注視点 = { %.2f %.2f %.2f }\n", pCamera->posR.x, pCamera->posR.y, pCamera->posR.z);
+		PrintDebugProc("カメラの向き = { %.2f %.2f %.2f }\n", pCamera->rot.x, pCamera->rot.y, pCamera->rot.z);
 
 		return;		// 早期リターン
 	}

@@ -18,6 +18,8 @@
 #include "debugproc.h"
 #include "brickwall.h"
 #include "color.h"
+#include "grain.h"
+#include "sparkle.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
@@ -135,12 +137,6 @@ void UpdateTitle(void)
 //======================================================================================
 void DrawTitle(void)
 {
-	// エフェクトの描画処理
-	DrawEffect();
-
-	// パーティクルの描画処理
-	DrawParticle();
-
 	// オブジェクトの描画処理（仮）
 	DrawObject();
 
@@ -149,6 +145,18 @@ void DrawTitle(void)
 
 	// 塀の描画処理
 	DrawBrickWall();
+
+	// エフェクトの描画処理
+	DrawEffect();
+
+	// パーティクルの描画処理
+	DrawParticle();
+
+	// 文字の描画処理
+	DrawGrain();
+
+	// 粒の描画処理
+	DrawSparkle();
 
 	// タイトルUIの描画処理
 	DrawTitleUI();

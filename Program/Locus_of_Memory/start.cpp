@@ -16,6 +16,8 @@
 #include "particle.h"
 #include "debugproc.h"
 #include "color.h"
+#include "grain.h"
+#include "sparkle.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
@@ -112,17 +114,23 @@ void UpdateStart(void)
 //======================================================================================
 void DrawStart(void)
 {
+	// オブジェクトの描画処理（仮）
+	DrawObject();
+
+	// スカイボックスの描画処理
+	DrawSkyBox();
+
 	// エフェクトの描画処理
 	DrawEffect();
 
 	// パーティクルの描画処理
 	DrawParticle();
 
-	// オブジェクトの描画処理（仮）
-	DrawObject();
+	// 文字の描画処理
+	DrawGrain();
 
-	// スカイボックスの描画処理
-	DrawSkyBox();
+	// 粒の描画処理
+	DrawSparkle();
 
 	// タイトルUIの描画処理
 	DrawStartUI();

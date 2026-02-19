@@ -9,8 +9,6 @@
 #include "input.h"
 #include "debugproc.h"
 #include "sound.h"
-//#include "effect.h"
-//#include "particle.h"
 #include "start.h"
 #include "title.h"
 #include "tutorial.h"
@@ -29,6 +27,8 @@
 #include "brickwall.h"
 #include "effect.h"
 #include "particle.h"
+#include "grain.h"
+#include "sparkle.h"
 #include "motion.h"
 #include "shadow.h"
 #include "meshfield.h"
@@ -393,11 +393,17 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// デバッグ表示の初期化処理
 	InitDebugProc();
 	
-	//エフェクトの初期化処理
+	// エフェクトの初期化処理
 	InitEffect();
 
-	//パーティクルの初期化処理
+	// パーティクルの初期化処理
 	InitParticle();
+
+	// 文字の初期化処理
+	InitGrain();
+
+	// 粒の初期化処理
+	InitSparkle();
 
 #ifndef _DEBUG
 	// マウスカーソルを非表示
@@ -472,11 +478,17 @@ void Uninit(void)
 	// フェードの終了処理
 	UninitFade();
 
-	//エフェクトの終了処理
+	// エフェクトの終了処理
 	UninitEffect();
 
-	//パーティクルの終了処理
+	// パーティクルの終了処理
 	UninitParticle();
+
+	// 文字の終了処理
+	UninitGrain();
+
+	// 粒の終了処理
+	UninitSparkle();
 
 	// サウンドを止める
 	StopSound();
@@ -576,11 +588,17 @@ void Update(void)
 	// フェードの更新処理
 	UpdateFade();
 
-	//エフェクトの更新処理
+	// エフェクトの更新処理
 	UpdateEffect();
 
-	//パーティクルの更新処理
+	// パーティクルの更新処理
 	UpdateParticle();
+
+	// 文字の更新処理
+	UpdateGrain();
+
+	// 粒の更新処理
+	UpdateSparkle();
 
 	UpdateVibration();
 

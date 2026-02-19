@@ -189,6 +189,11 @@ void UpdateObject(void)
 			continue;
 		}
 
+		if (pParentObject->type == PARENTMODELTYPE_DRAGON)
+		{
+			UpdateTitleDragon(pParentObject);
+		}
+
 #ifdef _DEBUG
 		// モーションテスト
 		if (GetKeyboardTrigger(DIK_5) == true)
@@ -776,4 +781,32 @@ void UpdateObjectEvent001(ParentObject* pParentObject)
 			pParentObject->bUse = false;
 		}
 	}
+}
+
+#define DRAGON_DEFAULTPOS		(D3DXVECTOR3(0.0f, 3000.0f, 3500.0f))
+#define DRAGON_MOVERADIUS		(3000.0f)
+
+//=============================================================================
+//	タイトルでのドラゴンの更新処理
+//=============================================================================
+void UpdateTitleDragon(ParentObject* pParentObject)
+{
+	static float fAngle = 0.0f;
+	D3DXVECTOR3 pos = DRAGON_DEFAULTPOS;
+	D3DXVECTOR3 posDest;
+
+	fAngle += 0.005f;
+
+	fAngle = AngleNormalize(fAngle);
+
+	posDest.x = pos.x + sinf(fAngle) * DRAGON_MOVERADIUS;
+	posDest.y = pos.y;
+	posDest.z = pos.z + cosf(fAngle) * DRAGON_MOVERADIUS;
+
+	pParentObject->rot.y = atan2f(pParentObject->pos.x - posDest.x, pParentObject->pos.z - posDest.z);
+
+	pParentObject->rot.y = AngleNormalize(pParentObject->rot.y);
+
+	pParentObject->pos = posDest;
+
 }

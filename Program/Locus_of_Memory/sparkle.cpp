@@ -302,6 +302,11 @@ void SetSparkle(void)
 	pSparkle->nLife = rand() % MAX_SPARKLELIFE + MIN_SPARKLELIFE;
 	pSparkle->bUse = true;
 
+	if (GetMode() == MODE_TITLE || GetMode() == MODE_START)
+	{
+		pSparkle->pos.y += 500.0f;
+	}
+
 	VERTEX_3D* pVtx;    // 頂点情報の設定
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得

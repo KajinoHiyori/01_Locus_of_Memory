@@ -34,6 +34,8 @@
 //#include"block.h"
 //#include"score.h"
 //#include"timer.h"
+#include "grain.h"
+#include "sparkle.h"
 
 // UI関連の初期化
 #include "uimanager.h"
@@ -297,13 +299,25 @@ void DrawTutorial(void)
 	// オブジェクトの描画処理（仮）
 	DrawObject();
 
+	DrawPlayer();
+
+	// スカイボックスの描画処理
+	DrawSkyBox();
+
+	// 塀の描画処理
+	DrawBrickWall();
+
 	// エフェクトの描画処理
 	DrawEffect();
 
 	// パーティクルの描画処理
 	DrawParticle();
 
-	DrawPlayer();
+	// 文字の描画処理
+	DrawGrain();
+
+	// 粒の描画処理
+	DrawSparkle();
 
 	DrawUIManager();
 	DrawMagicUI();
@@ -312,12 +326,6 @@ void DrawTutorial(void)
 	DrawSpellUI();
 	DrawClock();
 	DrawBattery();
-
-	// スカイボックスの描画処理
-	DrawSkyBox();
-
-	// 塀の描画処理
-	DrawBrickWall();
 
 	//DrawModel();
 
