@@ -336,7 +336,7 @@ Mesh {
    0.460000;0.460000;0.460000;;
    0.096667;0.096667;0.096667;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\01_Locus_of_Memory\\3D表\現技術\\モデルビューワ Ver.3.0\\data\\TEXTURE\\metallic.jpg";
+    "data\\TEXTURE\\metallic.jpg";
    }
   }
   Material {
@@ -345,7 +345,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\01_Locus_of_Memory\\3D表\現技術\\モデルビューワ Ver.3.0\\data\\TEXTURE\\keyhole003.jpg";
+    "data\\TEXTURE\\keyhole003.jpg";
    }
   }
   Material {
@@ -354,7 +354,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\01_Locus_of_Memory\\3D表\現技術\\モデルビューワ Ver.3.0\\data\\TEXTURE\\metallic.jpg";
+    "data\\TEXTURE\\metallic.jpg";
    }
   }
  }

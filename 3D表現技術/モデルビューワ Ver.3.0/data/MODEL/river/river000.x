@@ -239,7 +239,7 @@ Mesh {
    1.000000;1.000000;1.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\01_Locus_of_Memory\\3D表\現技術\\モデルビューワ Ver.3.0\\data\\TEXTURE\\river000.jpg";
+    "data\\TEXTURE\\river000.jpg";
    }
   }
  }
