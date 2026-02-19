@@ -5,6 +5,7 @@
 //
 //======================================================================================
 #include "uimanager.h"
+#include "spellui.h"
 #include "clock.h"
 #include "battery.h"
 #include "player.h"
@@ -437,6 +438,12 @@ void UpdateUIManager(void)
 			break;
 		}
 
+		if (g_aUIManager[nCntPlayer].bPause == false)
+		{
+			continue;
+		}
+		
+		pPlayer->state = PLAYERSTATE_PAUSE;
 		// UI‚Ì•\Ž¦Šp“x‚ðÝ’è
 		g_aUIManager[nCntPlayer].rot.y = pPlayer->rot.y + D3DX_PI;
 		g_aUIManager[nCntPlayer].rot.y = AngleNormalize(g_aUIManager[nCntPlayer].rot.y);
@@ -716,6 +723,10 @@ void SetUINonDisp(int nIdx)
 	DissapearBattery(nIdx);
 	Player* pPlayer = GetPlayer();
 	pPlayer[nIdx].state = PLAYERSTATE_NORMAL;
+	if (((GetKeyboardPress(DIK_TAB) == true && nIdx == 0) || GetJoypadRightTriggePress(nIdx) == true || GetJoypadLeftTriggePress(nIdx) == true))
+	{
+		SetSpellUIAppear(nIdx);
+	}
 }
 
 //========================================================================

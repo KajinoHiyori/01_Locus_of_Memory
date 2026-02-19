@@ -174,9 +174,11 @@ void UninitMagicBubble(void)
 //======================================================================================
 void UpdateMagicBubble(void)
 {
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	Player* pPlayer = GetPlayer();
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+		if (pPlayer->state == PLAYERSTATE_PAUSE || pPlayer->state == PLAYERSTATE_SPELL || pPlayer->state == PLAYERSTATE_MAGIC)
 		{
 			g_aMagicBubble[nCntPlayer].bDisp = false;
 		}
