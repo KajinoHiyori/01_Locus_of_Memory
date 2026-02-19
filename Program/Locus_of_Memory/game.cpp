@@ -117,26 +117,8 @@ void UninitGame(void)
 	// 魔法の終了処理
 	UninitMagic();
 
-	// 魔法発動状態表示の終了処理
-	UninitSpellUI();
-
 	// 魔法陣の終了処理
 	UninitMagicCircle();
-
-	// 魔導書表示の終了処理
-	UninitMagicUI();
-
-	// 時計の終了処理
-	UninitClock();
-
-	// バッテリーの終了処理
-	UninitBattery();
-
-	// 3D空間UIの終了処理
-	UninitUIManager();
-
-	// 
-	UninitMagicBubble();
 
 	// 文字の終了処理
 	UninitGrain();

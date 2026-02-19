@@ -35,6 +35,14 @@
 #include "custommesh.h"
 #include "vibration.h"
 
+// UIの終了処理に必要
+#include "uimanager.h"
+#include "magicbubble.h"
+#include "magicui.h"
+#include "spellui.h"
+#include "clock.h"
+#include "battery.h"
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -477,6 +485,25 @@ void Uninit(void)
 
 	//パーティクルの終了処理
 	UninitParticle();
+
+	// UIのテクスチャを破棄======================
+	// 魔法発動状態表示の終了処理
+	UninitSpellUI();
+
+	// 魔導書表示の終了処理
+	UninitMagicUI();
+
+	// 時計の終了処理
+	UninitClock();
+
+	// バッテリーの終了処理
+	UninitBattery();
+
+	// 3D空間UIの終了処理
+	UninitUIManager();
+
+	// 吹き出しの終了処理
+	UninitMagicBubble();
 
 	// サウンドを止める
 	StopSound();
