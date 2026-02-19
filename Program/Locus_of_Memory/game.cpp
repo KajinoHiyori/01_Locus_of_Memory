@@ -99,6 +99,9 @@ void InitGame(void)
 	// 魔法関連オブジェクトの読み込み
 	LoadMagicObject(MAGICOBJECTINFO_SCRIPT);
 
+	// ゲームの状態を通常状態に
+	g_gameState = GAMESTATE_NORMAL;
+
 }
 //=======================================================
 // ゲームの終了処理
@@ -182,6 +185,7 @@ void UpdateGame(void)
 	// バッテリーの更新処理
 	UpdateBattery();
 
+
 	switch (g_gameState)
 	{
 	case GAMESTATE_NORMAL:		// 通常状態
@@ -203,13 +207,32 @@ void UpdateGame(void)
 
 	case GAMESTATE_TIMEOVER:
 		g_nCounterGameState--;		// 状態管理カウンター減少
+
+		if (g_nCounterGameState <= 0 && *pFade == FADE_NONE)
+		{// 0以下になった
+			g_gameState = GAMESTATE_NONE;
+
+			// フェード設定(リザルト画面に移行)
+			SetFade(MODE_RESULT, COLOR_BLACK);
+		}
+		break;
+
+	case GAMESTATE_BATTERYOVER:
+		g_nCounterGameState--;		// 状態管理カウンター減少
+
+		if (g_nCounterGameState <= 0 && *pFade == FADE_NONE)
+		{// 0以下になった
+			g_gameState = GAMESTATE_NONE;
+
+			// フェード設定(リザルト画面に移行)
+			SetFade(MODE_RESULT, COLOR_BLACK);
+		}
 		break;
 	}
 
 
 	if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
 	{// 0以下になった
-
 		g_gameState = GAMESTATE_NONE;
 
 		// フェード設定(リザルト画面に移行)
@@ -219,23 +242,7 @@ void UpdateGame(void)
 		{
 			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
 		}
-
-		// サウンド停止
-		//StopSound(SOUND_LABEL_BGM000);
 	}
-
-	//else if (/*GetKeyboardTrigger(DIK_L) == true && *pFade == FADE_NONE ||*/ pTimer->Time <= 0 && *pFade == FADE_NONE)
-	//{// 0以下になった
-
-	//	g_gameState = GAMESTATE_NONE;
-
-	//	// フェード設定(リザルト画面に移行)
-	//	SetFade(MODE_LOSE);
-
-	//	// サウンド停止
-	//	StopSound(SOUND_LABEL_BGM000);
-	//}
-
 }
 //=======================================================
 // ゲームの描画処理

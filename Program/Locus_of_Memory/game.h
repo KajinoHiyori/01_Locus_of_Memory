@@ -14,7 +14,9 @@ typedef enum
 {
 	GAMESTATE_NONE = 0,		// 何もしていない状態
 	GAMESTATE_NORMAL,		// 通常状態
-	GAMESTATE_END,			// 終了状態
+	GAMESTATE_CLEAR,		// クリア状態
+	GAMESTATE_TIMEOVER,		// 時間切れ状態
+	GAMESTATE_BATTERYOVER,	// バッテリー切れ状態
 	GAMESTATE_MAX
 }GAMESTATE;
 
@@ -23,7 +25,6 @@ void InitGame(void);
 void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
-void SetEnablePause(bool bPause);
 void SetGameState(GAMESTATE state, int nCounter);
 GAMESTATE GetGameState(void);
 
