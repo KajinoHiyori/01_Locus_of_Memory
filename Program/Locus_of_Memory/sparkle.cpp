@@ -145,7 +145,7 @@ void UpdateSparkle(void)
 			PrintDebugProc("データ異常発生中 : sparkle\n");
 		}
 
-		pSparkle->pos += pSparkle->move;						// 移動させる
+		pSparkle->pos += pSparkle->move * pSparkle->fSpeed;		// 移動させる
 		g_aSparkle[nCntSparkle].fRadius -= SPARKLEALPHA_FADE;	// 半径を小さくする
 		pSparkle->nLife--;										// 寿命を減らす
 
@@ -217,7 +217,7 @@ void DrawSparkle(void)
 
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);		// ライトを無効にする
 
-	//αブレンディングを加算合成して設定
+	// αブレンディングを加算合成して設定
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
@@ -233,36 +233,36 @@ void DrawSparkle(void)
 			PrintDebugProc("データ異常発生中 : sparkle\n");
 		}
 
-		//ワールドマトリックスの初期化
+		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&pSparkle->mtxWorld);
 
-		//ビューマトリックスを取得
+		// ビューマトリックスを取得
 		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
-		//粒をカメラに対して正面に向ける
-		D3DXMatrixInverse(&pSparkle->mtxWorld, NULL, &mtxView);	//逆行列を求める
+		// 粒をカメラに対して正面に向ける
+		D3DXMatrixInverse(&pSparkle->mtxWorld, NULL, &mtxView);	// 逆行列を求める
 
-		pSparkle->mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
+		pSparkle->mtxWorld._41 = 0.0f;		// マトリックス(行列)の内容
 		pSparkle->mtxWorld._42 = 0.0f;
 		pSparkle->mtxWorld._43 = 0.0f;
 
-		//位置を反映
+		// 位置を反映
 		D3DXMatrixTranslation(&mtxTrans, pSparkle->pos.x, pSparkle->pos.y, pSparkle->pos.z);
 		D3DXMatrixMultiply(&pSparkle->mtxWorld, &pSparkle->mtxWorld, &mtxTrans);
 
-		//ワールドマトリックスの設定
+		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &pSparkle->mtxWorld);
 
-		//頂点バッファをデータストリームに設定
+		// 頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, g_pVtxBuffSparkle, 0, sizeof(VERTEX_3D));
 
-		//頂点フォーマットの設定
+		// 頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_3D);
 
-		//テクスチャ
+		// テクスチャの設定
 		pDevice->SetTexture(0, g_pTextureBuffSparkle);
 
-		//粒の描画
+		// 粒の描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntSparkle * 4, 2);
 	}
 
@@ -270,7 +270,7 @@ void DrawSparkle(void)
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
-	//αブレンディングを戻す
+	// αブレンディングを戻す
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
@@ -289,9 +289,13 @@ void SetSparkle(void)
 
 	D3DXVECTOR3 move;
 
+	move.x = (float)((float)(rand() % 201 - 100) / 100);
+	move.y = (float)((float)(rand() % 201 - 100) / 100);
+	move.z = (float)((float)(rand() % 201 - 100) / 100);
+
 	// 各値設定
 	pSparkle->pos = D3DXVECTOR3(-5000.0f, 0.0f, -5000.0f) + RANDAM_VEC3(10000, 1500, 10000);
-	pSparkle->move;
+	pSparkle->move = move;
 	pSparkle->col = COLOR_RANDOM + D3DXCOLOR(0.5f, 0.5f, 0.5f, 0.0f);
 	pSparkle->col.a = 0.0f;
 	pSparkle->fRadius = (float)((rand() % MAX_SPARKLERADIUS + MIN_SPARKLERADIUS) / 10);
@@ -329,7 +333,7 @@ void SetSparkle(void)
 //======================================================================================
 void ReleaseSparkle(int nIdx)
 {
-	g_aSparkle[nIdx] = g_aSparkle[g_nNumSparkle - 1];					// 最後尾の情報を代入
+	g_aSparkle[nIdx] = g_aSparkle[g_nNumSparkle - 1];				// 最後尾の情報を代入
 	memset(&g_aSparkle[g_nNumSparkle - 1], NULL, sizeof(Sparkle));	// 最後尾の情報をリセット
 	g_nNumSparkle--;												// 使用数を減らす
 }
