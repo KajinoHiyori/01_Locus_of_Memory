@@ -293,6 +293,7 @@ void UpdateUIManager(void)
 {
 	Player* pPlayer = GetPlayer();	// プレイヤーの情報を取得
 	FADE* pFade = GetFade();	// フェードの状態を取得
+	MODE mode = GetMode();	// 現在のモードを取得
 	D3DXVECTOR3 posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// オフセットの情報を初期化
 
 	VERTEX_3D* pVtx;
@@ -379,7 +380,16 @@ void UpdateUIManager(void)
 						break;
 
 					case UITYPE_RETRY:	// RETRYを選択
-						SetFade(MODE_GAME, COLOR_WHITE);
+						switch (mode)
+						{
+						case MODE_TUTORIAL:	// チュートリアル
+							SetFade(MODE_TUTORIAL, COLOR_WHITE);
+							break;
+
+						case MODE_GAME:	// ゲーム
+							SetFade(MODE_GAME, COLOR_WHITE);
+							break;
+						}
 						break;
 
 					case UITYPE_QUIT:	// QUITを選択
