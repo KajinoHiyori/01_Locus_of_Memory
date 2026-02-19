@@ -5,6 +5,7 @@
 // 
 //=============================================================================
 #include"tutorial.h"
+#include "color.h"
 #include"player.h"
 #include"input.h"
 #include "object.h"
@@ -186,7 +187,7 @@ void UpdateTutorial(void)
 			g_TutorialState = TUTORIALSTATE_NONE;
 
 			// フェード設定(ゲーム画面に移行)
-			SetFade(MODE_GAME);
+			SetFade(MODE_GAME, COLOR_WHITE);
 
 			// サウンド停止
 			//StopSound(SOUND_LABEL_BGM000);
@@ -200,7 +201,7 @@ void UpdateTutorial(void)
 		g_TutorialState = TUTORIALSTATE_NONE;
 
 		// フェード設定(ゲーム画面に移行)
-		SetFade(MODE_GAME);
+		SetFade(MODE_GAME, COLOR_WHITE);
 
 		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
 		{

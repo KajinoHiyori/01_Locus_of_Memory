@@ -20,11 +20,11 @@ typedef enum
 }FADE;
 
 // プロトタイプ宣言
-void InitFade(MODE modeNext);
+void InitFade(MODE modeNext, D3DXCOLOR col);
 void UninitFade(void);
 void UpdateFade(void);
 void DrawFade(void);
-void SetFade(MODE modeNext);
+void SetFade(MODE modeNext, D3DXCOLOR col);
 FADE* GetFade(void);
 
 #endif

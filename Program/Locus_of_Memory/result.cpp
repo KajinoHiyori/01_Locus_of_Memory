@@ -123,7 +123,7 @@ void UpdateResult(void)
     {
         //StopSound();
 
-        SetFade(MODE_DIAGNOSIS);
+        SetFade(MODE_DIAGNOSIS, COLOR_WHITE);
     }
 }
 //=======================================================

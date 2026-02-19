@@ -115,14 +115,14 @@ void UpdateTitle(void)
 		}
 		if (g_nModeResult >= NEXT_MODE)
 		{
-			SetFade(MODE_RESULT);
+			SetFade(MODE_RESULT, COLOR_WHITE);
 			g_bFade = true;
 		}
 		else if ((GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true) && *pfade == FADE_NONE)
 		{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
 			g_nModeResult = 0;
 			g_bFade = true;
-			SetFade(MODE_TUTORIAL);
+			SetFade(MODE_TUTORIAL, COLOR_WHITE);
 		}
 	}
 }

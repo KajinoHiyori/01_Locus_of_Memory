@@ -102,7 +102,7 @@ void UpdateStart(void)
 		{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
 			g_nModeTitle = 0;
 			g_bStartFade = true;
-			SetFade(MODE_TITLE);
+			SetFade(MODE_TITLE, COLOR_WHITE);
 		}
 	}
 }

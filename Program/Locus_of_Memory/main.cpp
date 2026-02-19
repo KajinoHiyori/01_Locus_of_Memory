@@ -388,7 +388,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitMotion();
 
 	// モードの設定
-	InitFade(g_mode);
+	InitFade(g_mode, COLOR_WHITE);
 
 	// デバッグ表示の初期化処理
 	InitDebugProc();
@@ -642,8 +642,10 @@ void Draw(void)
 				break;
 			}
 
+			SetFogEnable(false);
 			// フェードの描画処理
 			DrawFade();
+			SetFogEnable(true);
 
 			// ビューポートを元に戻す
 			g_pD3DDevice->SetViewport(&viewportDef);

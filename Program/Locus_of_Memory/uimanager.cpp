@@ -375,11 +375,11 @@ void UpdateUIManager(void)
 						break;
 
 					case UITYPE_RETRY:	// RETRY‚ð‘I‘ð
-						SetFade(MODE_GAME);
+						SetFade(MODE_GAME, COLOR_WHITE);
 						break;
 
 					case UITYPE_QUIT:	// QUIT‚ð‘I‘ð
-						SetFade(MODE_TITLE);
+						SetFade(MODE_TITLE, COLOR_WHITE);
 						break;
 					}
 				}

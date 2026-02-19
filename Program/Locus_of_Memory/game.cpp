@@ -216,7 +216,7 @@ void UpdateGame(void)
 			g_gameState = GAMESTATE_NONE;
 
 			// フェード設定(リザルト画面に移行)
-			SetFade(MODE_RESULT);
+			SetFade(MODE_RESULT, COLOR_WHITE);
 
 			// サウンド停止
 			//StopSound(SOUND_LABEL_BGM000);
@@ -230,7 +230,7 @@ void UpdateGame(void)
 		g_gameState = GAMESTATE_NONE;
 
 		// フェード設定(リザルト画面に移行)
-		SetFade(MODE_RESULT);
+		SetFade(MODE_RESULT, COLOR_WHITE);
 
 		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
 		{
