@@ -1322,7 +1322,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\TEXTURE\\old_gold.jpg";
+    "data\\TEXTURE\\oldgold.png";
    }
   }
   Material {
@@ -1331,7 +1331,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\TEXTURE\\old_gold.jpg";
+    "data\\TEXTURE\\oldgold.png";
    }
   }
   Material {
