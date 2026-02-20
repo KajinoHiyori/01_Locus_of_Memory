@@ -91,7 +91,7 @@ void InitGame(void)
 	InitGoal();
 
 	// ゴールの設定処理
-	SetGoal(D3DXVECTOR3(1400.0f, 0.0f, 2800.0f), 150.0f);
+	SetGoal(D3DXVECTOR3(1400.0f, 50.0f, 2800.0f), 150.0f);
 
 	// エフェクトの初期化処理
 	InitEffect();
@@ -173,6 +173,9 @@ void UpdateGame(void)
 
 	// プレイヤーの更新処理
 	UpdatePlayer();
+
+	// ゴールの更新処理
+	UpdateGoal();
 
 	// 魔法の更新処理
 	UpdateMagic();
@@ -285,6 +288,9 @@ void DrawGame(void)
 
 	// オブジェクトの描画処理（仮）
 	DrawObject();
+
+	// ゴールの描画処理
+	DrawGoal();
 
 	// エフェクトの描画処理
 	DrawEffect();

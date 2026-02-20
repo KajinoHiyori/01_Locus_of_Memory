@@ -13,9 +13,9 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define INFORMATION_SCRIPT		"data/SCRIPTS/information.txt"		// スクリプト情報スクリプト
-#define MODEL_SCRIPT			"data/SCRIPTS/model.txt"			// モデル情報スクリプト
-#define MAGICOBJECTINFO_SCRIPT	"data/SCRIPTS/Magicobjectinfo.txt"	// 魔法オブジェクト情報スクリプト
+#define INFORMATION_SCRIPT		"data/SCRIPTS/INFORMATION/information.txt"		// スクリプト情報スクリプト
+#define MODEL_SCRIPT			"data/SCRIPTS/OBJECT/model.txt"					// モデル情報スクリプト
+#define MAGICOBJECTINFO_SCRIPT	"data/SCRIPTS/INFORMATION/Magicobjectinfo.txt"	// 魔法オブジェクト情報スクリプト
 
 //*****************************************************************************
 // プロトタイプ宣言

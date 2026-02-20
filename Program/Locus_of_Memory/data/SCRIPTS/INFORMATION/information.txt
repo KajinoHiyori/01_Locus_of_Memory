@@ -11,17 +11,19 @@ SCRIPT
 #	モーションファイル
 #------------------------------------------------------------------------------
 
-MOTIONSCRIPT = data/SCRIPTS/player_motion.txt
-MOTIONSCRIPT = data/SCRIPTS/house_motion.txt
-MOTIONSCRIPT = data/SCRIPTS/dragon_motion.txt
+MOTIONSCRIPT = data/SCRIPTS/MOTION/player_motion.txt
+MOTIONSCRIPT = data/SCRIPTS/MOTION/house_motion.txt
+MOTIONSCRIPT = data/SCRIPTS/MOTION/dragon_motion.txt
+MOTIONSCRIPT = data/SCRIPTS/MOTION/book_motion.txt
 
 #------------------------------------------------------------------------------
 #	階層構造モデルファイル
 #------------------------------------------------------------------------------
 
-PARENTSCRIPT = data/SCRIPTS/1P_model.txt
-PARENTSCRIPT = data/SCRIPTS/2P_model.txt
-PARENTSCRIPT = data/SCRIPTS/house_model.txt
-PARENTSCRIPT = data/SCRIPTS/dragon_model.txt
+PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/1P_model.txt
+PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/2P_model.txt
+PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/house_model.txt
+PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/dragon_model.txt
+PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/book_model.txt
 
 END_SCRIPT

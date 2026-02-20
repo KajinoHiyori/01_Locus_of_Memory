@@ -46,6 +46,7 @@ typedef enum MOTIONDATATYPE
 	MOTIONDATATYPE_PLAYER = 0,		// プレイヤーのモーションデータ
 	MOTIONDATATYPE_HOUSE,			// 家のモーションデータ
 	MOTIONDATATYPE_DRAGON,			// ドラゴンのモーションデータ
+	MOTIONDATATYPE_BOOK,			// 本のモーションデータ
 	MOTIONDATATYPE_MAX
 }MOTIONDATATYPE;
 

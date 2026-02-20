@@ -565,6 +565,9 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		case PARENTMODELTYPE_DRAGON:
 			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_DRAGON);	// モーションデータ設定
 			break;
+		case PARENTMODELTYPE_BOOK:
+			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_BOOK);		// モーションデータ設定
+			break;
 		}
 
 		// 各種設定

@@ -15,14 +15,14 @@
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-Goal g_Goal;					// ゴールの情報
+Book g_Book;					// 本の情報
 
 //=============================================================================
 // ゴール地点の初期化処理
 //=============================================================================
 void InitGoal(void)
 {
-	memset(&g_Goal, NULL, sizeof(Goal));
+	memset(&g_Book, NULL, sizeof(Book));
 }
 
 //=============================================================================
@@ -38,7 +38,7 @@ void UninitGoal(void)
 //=============================================================================
 void UpdateGoal(void)
 {
-
+	UpdateMotion(&g_Book.motion, g_Book.pModelData, &g_Book.OffSetData);
 }
 
 //==============================================================================
@@ -46,7 +46,7 @@ void UpdateGoal(void)
 //==============================================================================
 void DrawGoal(void)
 {
-
+	DrawParentModel(&g_Book.pos, &g_Book.rot, &g_Book.mtxWorld, g_Book.pModelData, &g_Book.OffSetData);
 }
 
 //==============================================================================
@@ -54,8 +54,12 @@ void DrawGoal(void)
 //==============================================================================
 void SetGoal(D3DXVECTOR3 pos, float fRadius)
 {
-	g_Goal.pos = pos;
-	g_Goal.fRadius = fRadius;
+	g_Book.pos = pos;
+	g_Book.fRadius = fRadius;
+	g_Book.pModelData = SetModelData(PARENTMODELTYPE_BOOK);
+	g_Book.motion.pMotionData = SetMotionData(MOTIONDATATYPE_BOOK);
+
+	SetMotion(&g_Book.motion, g_Book.pModelData, &g_Book.OffSetData, MOTIONTYPE_NEUTRAL, true, false, 10);
 }
 
 //==============================================================================
@@ -66,9 +70,9 @@ bool CollisionGoal(D3DXVECTOR3 pos, float fRadius)
 	float fDiff = 0.0f;		// 判定用変数
 
 	// 各距離を二乗したものをすべて足す
-	fDiff = powf(g_Goal.pos.x - pos.x, 2) + powf(g_Goal.pos.y - pos.y, 2) + powf(g_Goal.pos.z - pos.z, 2);
+	fDiff = powf(g_Book.pos.x - pos.x, 2) + powf(g_Book.pos.y - pos.y, 2) + powf(g_Book.pos.z - pos.z, 2);
 
-	if (fDiff <= powf(fRadius + g_Goal.fRadius, 2))
+	if (fDiff <= powf(fRadius + g_Book.fRadius, 2))
 	{// 当たっていたら
 		return true;		// 真を返す
 	}
