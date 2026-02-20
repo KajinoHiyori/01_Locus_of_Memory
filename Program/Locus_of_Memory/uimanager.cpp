@@ -18,25 +18,31 @@
 #include "fade.h"
 
 // マクロ定義
-#define MAXUI_TEX		(UITEX_MAX)		// テクスチャの最大数
-#define MAX_SELECT		(UITYPE_MAX)	// 選択できる最大数
-#define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
-#define GAMEUI_POSY		(110.0f)		// 左のUIのY軸
-#define PHONE_WIDTH		(28.125f)		// スマホの幅
-#define PHONE_HEIGHT	(50.0f)			// スマホの高さ
-#define FLICKER			(0.5f)			// UI画面のちらつきを軽減
-#define PHONE_Y			(60.0f)			// スマホの高度
-#define UI_DISTANCEX	(60.0f)		// UIとplayerの距離X
-#define UI_DISTANCEZ	(60.0f)		// UIとplayerの距離Z
-#define NUM_KEY			(30)			// 処理を行うキー数
-#define MENU_HEIGHT		(6.35f)			// メニューの高さ
-#define MENU_POS		(D3DXVECTOR3(0.0f, 30.0f, 0.0f))	// メニューの表示位置
-#define SELECT_HEIGHT	(5.00f)			// 選択部の高さ
-#define CLOCK_POS		(D3DXVECTOR3(0.0f, 5.0f, 0.0f))	// 時計の高さ
-#define CONTINUE_POS	(D3DXVECTOR3(0.0f, -10.0f, 0.0f))	// continueの高さ
-#define RETRY_POS		(D3DXVECTOR3(0.0f, -25.0f, 0.0f))	// retryの高さ
-#define QUIT_POS		(D3DXVECTOR3(0.0f, -40.0f, 0.0f))		// quitの高さ
-#define UI_POS			(D3DXVECTOR3(sinf(-0.45f) * UI_DISTANCEX, PHONE_Y, cosf(0.45f) * UI_DISTANCEZ))	// UIの角度
+#define MAXUI_TEX			(UITEX_MAX)		// テクスチャの最大数
+#define MAX_SELECT			(UITYPE_MAX)	// 選択できる最大数
+#define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
+#define GAMEUI_POSY			(110.0f)		// 左のUIのY軸
+#define PHONE_WIDTH			(28.125f)		// スマホの幅
+#define PHONE_HEIGHT		(50.0f)			// スマホの高さ
+#define FLICKER				(0.5f)			// UI画面のちらつきを軽減
+#define PHONE_Y				(60.0f)			// スマホの高度
+#define UI_DISTANCEX		(60.0f)		// UIとplayerの距離X
+#define UI_DISTANCEZ		(60.0f)		// UIとplayerの距離Z
+#define NUM_KEY				(30)			// 処理を行うキー数
+#define MENU_HEIGHT			(6.35f)			// メニューの高さ
+#define MENU_POS			(D3DXVECTOR3(0.0f, 30.0f, 0.0f))	// メニューの表示位置
+#define SELECT_HEIGHT		(5.00f)			// 選択部の高さ
+#define CLOCK_POS			(D3DXVECTOR3(0.0f, 5.0f, 0.0f))		// 時計の高さ
+#define CONTINUE_POS		(D3DXVECTOR3(0.0f, -10.0f, 0.0f))	// continueの高さ
+#define RETRY_POS			(D3DXVECTOR3(0.0f, -25.0f, 0.0f))	// retryの高さ
+#define QUIT_POS			(D3DXVECTOR3(0.0f, -40.0f, 0.0f))	// quitの高さ
+#define BATTERY_WIDTH		(13.5f)	// バッテリーの幅
+#define BATTERY_HEIGHT		(6.0f)	// バッテリーの高さ
+#define BATTERY_POS			(D3DXVECTOR3(6.1f, 49.0f, 0.0f))	// バッテリーの位置
+#define BATTERYFRAME_WIDTH	(21.0f)	// バッテリーフレームの幅
+#define BATTERYFRAME_HEIGHT	(6.0f)	// バッテリーフレームの高さ
+#define BATTERYFRAME_POS	(D3DXVECTOR3(0.0f, 49.0f, 0.0f))	// バッテリーフレームの位置
+#define UI_POS				(D3DXVECTOR3(sinf(-0.45f) * UI_DISTANCEX, PHONE_Y, cosf(0.45f) * UI_DISTANCEZ))	// UIの角度
 
 // UIのテクスチャの状態
 typedef struct
@@ -136,7 +142,7 @@ void InitUIManager(void)
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;							// 表示状態
 		}
 		g_aUIManager[nCntPlayer].pos = UI_POS;	// 中心位置
-		g_aUIManager[nCntPlayer].rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);		// 中心位置
+		g_aUIManager[nCntPlayer].rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);	// 中心位置
 		g_aUIManager[nCntPlayer].type = UITYPE_CLOCK;						// 選択している種類(type)
 		g_aUIManager[nCntPlayer].state = UISTATE_NONDISPLAY;				// UIの表示状態
 		g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;			// UIの表示状態
@@ -170,13 +176,23 @@ void InitUIManager(void)
 				break;
 
 			case UITEX_BATTERY:	// バッテリー
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = BATTERY_POS;			// 中心位置
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_BATTERY;		// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = BATTERY_WIDTH;			// 幅
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = BATTERY_HEIGHT;					// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = BATTERY_WIDTH;			// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = BATTERY_HEIGHT;			// 高さの目的地
 				break;
 
 			case UITEX_BATTERYFRAME:	// バッテリーフレーム
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = BATTERYFRAME_POS;			// 中心位置
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_BATTERYFRAME;	// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = BATTERYFRAME_WIDTH;			// 幅
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = BATTERYFRAME_HEIGHT;			// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = BATTERYFRAME_WIDTH;		// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = BATTERYFRAME_HEIGHT;		// 高さの目的地
 				break;
 
 			case UITEX_PAUSEMENU:	// ポーズメニュー
@@ -262,10 +278,20 @@ void InitUIManager(void)
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos += g_aUIManager[nCntPlayer].pos;
 
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+			if (nCntUI == UITEX_BATTERY || nCntUI == UITEX_BATTERYFRAME)
+			{
+				pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+				pVtx[1].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, 0.0f, 0.0f);
+				pVtx[2].pos = D3DXVECTOR3(0.0f, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+				pVtx[3].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+			}
+			else
+			{
+				pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+				pVtx[1].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+				pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+				pVtx[3].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+			}
 
 			// rhwの設定
 			pVtx[0].nor = NORMAL;
@@ -495,15 +521,42 @@ void UpdateUIManager(void)
 			continue;
 		}
 		
+		// バッテリー残量に応じて幅を変化
+		int nBattery = GetBattery(nCntPlayer);
+		g_aUIManager[nCntPlayer].aUITexture[UITEX_BATTERY].fWidth = BATTERY_WIDTH * ((float)nBattery / 100.0f);
+		if (nBattery > 30)
+		{
+			g_aUIManager[nCntPlayer].aUITexture[UITEX_BATTERY].col = COLOR_GREENBATTERY;
+		}
+		else if (nBattery > 15)
+		{
+			g_aUIManager[nCntPlayer].aUITexture[UITEX_BATTERY].col = COLOR_YELLOWBATTERY;
+		}
+		else
+		{
+			g_aUIManager[nCntPlayer].aUITexture[UITEX_BATTERY].col = COLOR_REDBATTERY;
+		}
+
+		// ポーズ状態にする
 		pPlayer->state = PLAYERSTATE_PAUSE;
 		
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pVtx += 4)
 		{
 			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+			if (nCntUI == UITEX_BATTERY || nCntUI == UITEX_BATTERYFRAME)
+			{
+				pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+				pVtx[1].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, 0.0f, 0.0f);
+				pVtx[2].pos = D3DXVECTOR3(0.0f, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+				pVtx[3].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+			}
+			else
+			{
+				pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+				pVtx[1].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+				pVtx[2].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+				pVtx[3].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, -g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
+			}
 
 			// 頂点カラーの設定
 			pVtx[0].col = g_aUIManager[nCntPlayer].aUITexture[nCntUI].col;

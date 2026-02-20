@@ -16,8 +16,6 @@
 #define NUM_PLACE		(3)				// バッテリーの最大数
 #define NUM_SIZE		(7)				// 数字のサイズ
 #define SPELLUI_POSY	(482.0f)		// 左のUIのX軸
-#define LEFT_POS		(D3DXVECTOR3(120.0f, SPELLUI_POSY, 0.0f))		// onscreenの左のUI座標
-#define RIGHT_POS		(D3DXVECTOR3(1160.0f, SPELLUI_POSY, 0.0f))		// onscreenの右のUI座標
 #define PHONE_WIDTH		(108.0f)		// スマホの幅
 #define PHONE_HEIGHT	(228.0f)		// スマホの高さ
 #define MAX_BATTERY		(100)			// 最大バッテリー
@@ -148,6 +146,15 @@ void UninitBattery(void)
 void UpdateBattery(void)
 {
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
+
+	if (GetKeyboardTrigger(DIK_UPARROW) == true)
+	{
+		AddBattery(0, 10);
+	}
+	else if (GetKeyboardTrigger(DIK_DOWNARROW) == true)
+	{
+		DisBattery(0, 10);
+	}
 
 	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
