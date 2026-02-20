@@ -37,6 +37,7 @@
 #include "grain.h"
 #include "sparkle.h"
 #include "goal.h"
+#include "custommesh.h"
 
 // マクロ定義
 #define GAMEPOS_1P		(D3DXVECTOR3(-950.0f, 0.0f, -2800.0f))	// 1Pの位置[GAME]
@@ -164,6 +165,9 @@ void UpdateGame(void)
 	// メッシュフィールドの更新処理
 	UpdateMeshField();
 
+	// カスタムメッシュの更新処理
+	UpdateCustomMesh();
+
 	// 影の更新処理
 	UpdateShadow();
 
@@ -266,6 +270,9 @@ void DrawGame(void)
 {
 	// メッシュフィールドの描画処理
 	DrawMeshField();
+
+	// カスタムメッシュの描画処理
+	DrawCustomMesh();
 
 	// 影の描画処理
 	DrawShadow();
