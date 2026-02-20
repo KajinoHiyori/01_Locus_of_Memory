@@ -8,6 +8,7 @@
 #include "titleui.h"
 #include "title.h"
 #include "input.h"
+#include "fog.h"
 
 // タイトルUIの種類
 typedef enum
@@ -56,7 +57,7 @@ typedef struct
 #define SELECT_NUM			(3)			// 操作方法選択数
 #define LOGO_POS			(D3DXVECTOR3(350.0f, 200.0f, 0.0f))	// ロゴの位置
 #define LOGO_WIDTH			(300.0f)	// ロゴの横幅
-#define LOGO_HEIGHT			(150.0f)	// ロゴの縦幅
+#define LOGO_HEIGHT			(75.0f)	// ロゴの縦幅
 #define SELECT_POS			(D3DXVECTOR3(1000.0f, 400.0f, 0.0f))	// セレクトボタンの開始位置
 #define SELECT_WIDTH		(150.0f)	// セレクトボタンの横幅
 #define SELECT_HEIGHT		(75.0f)		// セレクトボタンの縦幅
@@ -65,10 +66,10 @@ typedef struct
 // テクスチャの読み込み
 const char* c_apFilenameTitleUI[TITLEUITYPE_MAX] =
 {
-	"data\\TEXTURE\\title_000.png",	// [TITLETEXT_TYPE_BG]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
+	"data\\TEXTURE\\title\\title_000.png",	// [TITLETEXT_TYPE_BG]
+	"data\\TEXTURE\\title\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
+	"data\\TEXTURE\\title\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
+	"data\\TEXTURE\\title\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
 };
 
 // グローバル変数
@@ -286,6 +287,7 @@ void DrawTitleUI(void)
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
+	SetFogEnable(false);
 	for (int nCntTitle = 0; nCntTitle < NUM_TITLEUI; nCntTitle++)
 	{
 		if (g_aTitleUI[nCntTitle].bDisp == true)
@@ -296,4 +298,5 @@ void DrawTitleUI(void)
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntTitle * 4, 2);
 		}
 	}
+	SetFogEnable(true);
 }
