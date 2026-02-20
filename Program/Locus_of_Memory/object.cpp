@@ -421,12 +421,13 @@ void DrawObject(void)
 //=============================================================================
 //	オブジェクトの当たり判定処理
 //=============================================================================
-void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius)
+bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius)
 {
 	Object* pObject = &g_aObject[0];				// 先頭アドレス
 	D3DXMATRIX mtxRot, mtxTrans, mtxScale;			// 計算用マトリックス
 	D3DXVECTOR3 posMax, posMin;						// 
 	D3DXVECTOR3 posA, posB, posC, posD;
+	bool isRand = false;
 
 	for (int nCntModel = 0; nCntModel < MAX_OBJECT; nCntModel++, pObject++)
 	{
@@ -481,6 +482,7 @@ void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 			if (pPosOld->y + fRadius >= pObject->pos.y + pObjectModel->vtxMax.y)
 			{
 				pPos->y = pObject->pos.y + pObjectModel->vtxMax.y - fRadius;
+				isRand = true;
 			}
 
 			// 下から
@@ -490,6 +492,8 @@ void CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 			}
 		}
 	}
+
+	return isRand;
 }
 
 //======================================================================================
