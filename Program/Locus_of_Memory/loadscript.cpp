@@ -11,6 +11,7 @@
 #include "motion.h"
 #include "magic.h"
 #include "custommesh.h"
+#include "goal.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -790,6 +791,9 @@ HRESULT LoadModel(const char* pModelFileName)
 			break;
 		}
 	}
+
+	// ゴールの設定処理 (避難)
+	SetGoal(D3DXVECTOR3(1400.0f, 50.0f, 2800.0f), 150.0f);
 
 	return S_OK;
 }

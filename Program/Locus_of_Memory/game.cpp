@@ -87,12 +87,6 @@ void InitGame(void)
 	// 
 	InitMagicBubble();
 
-	// ゴールの初期化処理
-	InitGoal();
-
-	// ゴールの設定処理
-	SetGoal(D3DXVECTOR3(1400.0f, 50.0f, 2800.0f), 150.0f);
-
 	// エフェクトの初期化処理
 	InitEffect();
 

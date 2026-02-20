@@ -38,6 +38,7 @@ void UninitGoal(void)
 //=============================================================================
 void UpdateGoal(void)
 {
+	// モーション更新
 	UpdateMotion(&g_Book.motion, g_Book.pModelData, &g_Book.OffSetData);
 }
 
@@ -46,6 +47,7 @@ void UpdateGoal(void)
 //==============================================================================
 void DrawGoal(void)
 {
+	// 階層構造モデル描画
 	DrawParentModel(&g_Book.pos, &g_Book.rot, &g_Book.mtxWorld, g_Book.pModelData, &g_Book.OffSetData);
 }
 
@@ -54,11 +56,17 @@ void DrawGoal(void)
 //==============================================================================
 void SetGoal(D3DXVECTOR3 pos, float fRadius)
 {
+	// 各値設定
 	g_Book.pos = pos;
 	g_Book.fRadius = fRadius;
+
+	// モデルデータ設定
 	g_Book.pModelData = SetModelData(PARENTMODELTYPE_BOOK);
+
+	// モーションデータ設定
 	g_Book.motion.pMotionData = SetMotionData(MOTIONDATATYPE_BOOK);
 
+	// ニュートラルに
 	SetMotion(&g_Book.motion, g_Book.pModelData, &g_Book.OffSetData, MOTIONTYPE_NEUTRAL, true, false, 10);
 }
 

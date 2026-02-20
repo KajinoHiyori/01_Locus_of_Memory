@@ -34,6 +34,7 @@
 #include "meshfield.h"
 #include "custommesh.h"
 #include "vibration.h"
+#include "goal.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -404,6 +405,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// 粒の初期化処理
 	InitSparkle();
+
+	// ゴールの初期化処理
+	InitGoal();
 
 #ifndef _DEBUG
 	// マウスカーソルを非表示
