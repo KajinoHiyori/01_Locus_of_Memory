@@ -25,10 +25,18 @@
 #define PHONE_WIDTH		(28.125f)		// スマホの幅
 #define PHONE_HEIGHT	(50.0f)			// スマホの高さ
 #define FLICKER			(0.5f)			// UI画面のちらつきを軽減
-#define PHONE_Y			(50.0f)			// スマホの高度
-#define UI_DISTANCEX	(-60.0f)		// UIとplayerの距離X
-#define UI_DISTANCEZ	(-60.0f)		// UIとplayerの距離Z
+#define PHONE_Y			(60.0f)			// スマホの高度
+#define UI_DISTANCEX	(60.0f)		// UIとplayerの距離X
+#define UI_DISTANCEZ	(60.0f)		// UIとplayerの距離Z
 #define NUM_KEY			(30)			// 処理を行うキー数
+#define MENU_HEIGHT		(6.35f)			// メニューの高さ
+#define MENU_POS		(D3DXVECTOR3(0.0f, 30.0f, 0.0f))	// メニューの表示位置
+#define SELECT_HEIGHT	(5.00f)			// 選択部の高さ
+#define CLOCK_POS		(D3DXVECTOR3(0.0f, 5.0f, 0.0f))	// 時計の高さ
+#define CONTINUE_POS	(D3DXVECTOR3(0.0f, -10.0f, 0.0f))	// continueの高さ
+#define RETRY_POS		(D3DXVECTOR3(0.0f, -25.0f, 0.0f))	// retryの高さ
+#define QUIT_POS		(D3DXVECTOR3(0.0f, -40.0f, 0.0f))		// quitの高さ
+#define UI_POS			(D3DXVECTOR3(sinf(-0.45f) * UI_DISTANCEX, PHONE_Y, cosf(0.45f) * UI_DISTANCEZ))	// UIの角度
 
 // UIのテクスチャの状態
 typedef struct
@@ -121,20 +129,20 @@ void InitUIManager(void)
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;						// 色
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_BG;							// テクスチャの種類
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;						// 幅
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = PHONE_HEIGHT;						// 高さ
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;								// 幅の目的地
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;								// 高さの目的地
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;					// 幅
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = PHONE_HEIGHT;					// 高さ
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = 0.0f;						// 幅の目的地
+			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;						// 高さの目的地
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;							// 表示状態
 		}
-		g_aUIManager[nCntPlayer].pos = D3DXVECTOR3(0.0f, PHONE_Y, 0.0f);	// 中心位置
-		g_aUIManager[nCntPlayer].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 中心位置
+		g_aUIManager[nCntPlayer].pos = UI_POS;	// 中心位置
+		g_aUIManager[nCntPlayer].rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);		// 中心位置
 		g_aUIManager[nCntPlayer].type = UITYPE_CLOCK;						// 選択している種類(type)
 		g_aUIManager[nCntPlayer].state = UISTATE_NONDISPLAY;				// UIの表示状態
-		g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;				// UIの表示状態
-		g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;						// 選択している種類(int)
+		g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;			// UIの表示状態
+		g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;					// 選択している種類(int)
 		g_aUIManager[nCntPlayer].nNumKey = NUM_KEY;							// 処理を行うキー数
-		g_aUIManager[nCntPlayer].nKey = 0;								// 現在のキー
+		g_aUIManager[nCntPlayer].nKey = 0;									// 現在のキー
 		g_aUIManager[nCntPlayer].bPause = false;							// ポーズ状態(trueでポーズ中)
 	}
 
@@ -172,33 +180,63 @@ void InitUIManager(void)
 				break;
 
 			case UITEX_PAUSEMENU:	// ポーズメニュー
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = MENU_POS;				// 中心位置
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_PAUSEMENU;		// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;		// 幅
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = MENU_HEIGHT;		// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = PHONE_WIDTH;	// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = MENU_HEIGHT;	// 高さの目的地
 				break;
 
 			case UITEX_CLOCKMENU:	// 時計メニュー
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = MENU_POS;				// 中心位置
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_CLOCKMENU;		// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;		// 幅
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = MENU_HEIGHT;		// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = PHONE_WIDTH;	// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = MENU_HEIGHT;	// 高さの目的地
 				break;
 
 			case UITEX_CLOCK:	// 時計[選択状態]
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_YELLOW;			// 色
-				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_CLOCK;			// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = CLOCK_POS;				// 中心位置
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_YELLOW;				// 色
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_CLOCK;				// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;			// 幅
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = SELECT_HEIGHT;		// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = PHONE_WIDTH;		// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = SELECT_HEIGHT;	// 高さの目的地
 				break;
 
 			case UITEX_CONTINUE:	// continue
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = CONTINUE_POS;				// 中心位置
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_CONTINUE;		// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;			// 幅
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = SELECT_HEIGHT;		// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = PHONE_WIDTH;		// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = SELECT_HEIGHT;	// 高さの目的地
 				break;
 
 			case UITEX_RETRY:	// retry
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = RETRY_POS;				// 中心位置
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_RETRY;			// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;			// 幅
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = SELECT_HEIGHT;		// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = PHONE_WIDTH;		// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = SELECT_HEIGHT;	// 高さの目的地
 				break;
 
 			case UITEX_QUIT:	// quit
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = QUIT_POS;				// 中心位置
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].col = COLOR_WHITE;			// 色
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex = UITEX_QUIT;			// テクスチャの種類
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth = PHONE_WIDTH;			// 幅
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight = SELECT_HEIGHT;		// 高さ
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidthDest = PHONE_WIDTH;		// 幅の目的地
+				g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = SELECT_HEIGHT;	// 高さの目的地
 				break;
 
 			case UITEX_FILTER:	// フィルター
@@ -458,22 +496,9 @@ void UpdateUIManager(void)
 		}
 		
 		pPlayer->state = PLAYERSTATE_PAUSE;
-		// UIの表示角度を設定
-		g_aUIManager[nCntPlayer].rot.y = pPlayer->rot.y + D3DX_PI;
-		g_aUIManager[nCntPlayer].rot.y = AngleNormalize(g_aUIManager[nCntPlayer].rot.y);
-
-		// プレイヤーの位置や向きに合わせてUIの表示位置を更新
-		g_aUIManager[nCntPlayer].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.y - 0.875f) * UI_DISTANCEX;
-		g_aUIManager[nCntPlayer].pos.z = pPlayer->pos.z + cosf(pPlayer->rot.y - 0.875f) * UI_DISTANCEZ;
-
+		
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pVtx += 4)
 		{
-			// オフセット情報の初期化
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = posOffset;
-
-			// 中心位置からの位置を求める
-			g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos = g_aUIManager[nCntPlayer].pos;
-
 			// 頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(-g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
 			pVtx[1].pos = D3DXVECTOR3(g_aUIManager[nCntPlayer].aUITexture[nCntUI].fWidth, g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeight, 0.0f);
@@ -497,9 +522,9 @@ void UpdateUIManager(void)
 //========================================================================
 void DrawUIManager(void)
 {
-	//#if 0
+	Player* pPlayer = GetPlayer();
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX mtxRot, mtxTrans;	// 計算用マトリックス
+	D3DXMATRIX mtxRot, mtxTrans, mtxPlayer, mtxParent;	// 計算用マトリックス
 	D3DXMATRIX mtxView;		// ビューマトリックスの取得
 
 	// アルファテストを有効にする
@@ -520,6 +545,12 @@ void DrawUIManager(void)
 			continue;
 		}
 
+		// UIのマトリックス情報を取得
+		mtxPlayer = pPlayer->mtxWorld;
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &mtxPlayer);
+
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 		{
 			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp == false)
@@ -535,21 +566,24 @@ void DrawUIManager(void)
 				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 			}
 
-			// ワールドマトリックスの初期化(デフォルトの値にする)
+			// ポリゴンのワールドマトリックスを初期化
 			D3DXMatrixIdentity(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld);
 
-			// ビューマトリックスを取得する
-			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+			// パーツの位置を反映
+			D3DXMatrixTranslation(&mtxTrans, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.x, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.y, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.z);
+			D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &mtxTrans);
 
 			// 向きを反映
 			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aUIManager[nCntPlayer].rot.y, g_aUIManager[nCntPlayer].rot.x, g_aUIManager[nCntPlayer].rot.z);
 			D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &mtxRot);
 
-			// 位置を反映
-			D3DXMatrixTranslation(&mtxTrans, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.x, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.y, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.z);
-			D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &mtxTrans);
+			// 親マトリックスを設定
+			mtxParent = mtxPlayer;
 
-			// ワールドマトリックスの設定
+			// 算出したパーツのワールドマトリックスと親モデルのマトリックスを掛け合わせる
+			D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &mtxParent);
+
+			// パーツのワールドマトリックスを設定
 			pDevice->SetTransform(D3DTS_WORLD, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld);
 
 			// 頂点バッファをデータストリームに設定
@@ -703,14 +737,12 @@ void SetUISelect(int nIdx)
 {
 	for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 	{
-		g_aUIManager[nIdx].nKey = 0;
-		g_aUIManager[nIdx].aUITexture[nCntUI].fWidth = PHONE_WIDTH;	// 幅
-		g_aUIManager[nIdx].aUITexture[nCntUI].fHeight = PHONE_HEIGHT;	// 高さ
-		g_aUIManager[nIdx].aUITexture[nCntUI].fWidthDest = 0.0f;		// 幅の目的地
-		g_aUIManager[nIdx].aUITexture[nCntUI].fHeightDest = 0.0f;		// 高さの目的地
-		g_aUIManager[nIdx].aUITexture[nCntUI].bDisp = true;		// 表示状態
-		g_aUIManager[nIdx].state = UISTATE_SELECT;					// 選択状態
+		g_aUIManager[nIdx].aUITexture[nCntUI].bDisp = true;
 	}
+	g_aUIManager[nIdx].aUITexture[UITEX_BG].fHeight = PHONE_HEIGHT;			// 高さを管理
+	g_aUIManager[nIdx].aUITexture[UITEX_FILTER].fHeight = PHONE_HEIGHT;			// 高さを管理
+	g_aUIManager[nIdx].aUITexture[UITEX_BGFILTER].fHeight = PHONE_HEIGHT;			// 高さを管理
+	g_aUIManager[nIdx].state = UISTATE_SELECT;					// 選択状態
 	SetBattery(nIdx);
 	g_aUIManager[nIdx].aUITexture[UITEX_CLOCKMENU].bDisp = false;
 }
@@ -722,12 +754,7 @@ void SetUINonDisp(int nIdx)
 {
 	for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 	{
-		g_aUIManager[nIdx].aUITexture[nCntUI].fWidth = PHONE_WIDTH;	// 幅
-		g_aUIManager[nIdx].aUITexture[nCntUI].fHeight = 0.0f;	// 高さ
-		g_aUIManager[nIdx].aUITexture[nCntUI].fWidthDest = PHONE_WIDTH;		// 幅の目的地
-		g_aUIManager[nIdx].aUITexture[nCntUI].fHeightDest = PHONE_HEIGHT;		// 高さの目的地
 		g_aUIManager[nIdx].aUITexture[nCntUI].bDisp = false;		// 表示状態
-		g_aUIManager[nIdx].state = UISTATE_NONDISPLAY;					// 選択状態
 	}
 	g_aUIManager[nIdx].nKey = 0;
 	g_aUIManager[nIdx].bPause = false;
@@ -809,13 +836,9 @@ void SetClockNonDisp(int nIdx)
 {
 	for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 	{
-		g_aUIManager[nIdx].aUITexture[nCntUI].fWidth = PHONE_WIDTH;	// 幅
-		g_aUIManager[nIdx].aUITexture[nCntUI].fHeight = 0.0f;	// 高さ
-		g_aUIManager[nIdx].aUITexture[nCntUI].fWidthDest = PHONE_WIDTH;		// 幅の目的地
-		g_aUIManager[nIdx].aUITexture[nCntUI].fHeightDest = PHONE_HEIGHT;		// 高さの目的地
 		g_aUIManager[nIdx].aUITexture[nCntUI].bDisp = false;		// 表示状態
-		g_aUIManager[nIdx].state = UISTATE_NONDISPLAY;					// 選択状態
 	}
+	g_aUIManager[nIdx].state = UISTATE_NONDISPLAY;					// 選択状態
 	g_aUIManager[nIdx].nKey = 0;
 	g_aUIManager[nIdx].bPause = false;
 }

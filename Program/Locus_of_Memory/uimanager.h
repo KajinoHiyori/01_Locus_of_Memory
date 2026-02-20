@@ -62,7 +62,6 @@ void SetUIAppear(int nIdx);		// UIを出現状態にする
 void SetUIDissapear(int nIdx);	// UIを消滅状態にする
 void SetUISelect(int nIdx);		// UIを選択状態にする
 void SetUINonDisp(int nIdx);	// UIを非表示状態にする
-
 void SetClockAppear(int nIdx);		// 時計を出現状態にする
 void SetClockMenu(int nIdx);		// 時計を表示状態にする
 void SetClockDissapear(int nIdx);	// 時計を消滅状態にする
