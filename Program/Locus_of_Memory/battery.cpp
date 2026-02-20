@@ -11,6 +11,7 @@
 #include "main.h"
 #include "color.h"
 #include "input.h"
+#include "game.h"
 
 // マクロ定義
 #define NUM_PLACE		(3)				// バッテリーの最大数
@@ -311,6 +312,7 @@ void DisBattery(int nIdx, int nValue)
 	// 最低値になったら0に戻る
 	if (g_aBattery[nIdx].nBattery <= MIN_BATTERY)
 	{
+		SetGameState(GAMESTATE_BATTERYOVER, 0);
 		g_aBattery[nIdx].nBattery = MIN_BATTERY;
 	}
 
