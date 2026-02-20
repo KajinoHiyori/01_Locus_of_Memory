@@ -15,6 +15,7 @@ MOTIONSCRIPT = data/SCRIPTS/MOTION/player_motion.txt
 MOTIONSCRIPT = data/SCRIPTS/MOTION/house_motion.txt
 MOTIONSCRIPT = data/SCRIPTS/MOTION/dragon_motion.txt
 MOTIONSCRIPT = data/SCRIPTS/MOTION/book_motion.txt
+MOTIONSCRIPT = data/SCRIPTS/MOTION/watermill_motion.txt
 
 #------------------------------------------------------------------------------
 #	階層構造モデルファイル
@@ -25,5 +26,6 @@ PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/2P_model.txt
 PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/house_model.txt
 PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/dragon_model.txt
 PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/book_model.txt
+PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/watermill_model.txt
 
 END_SCRIPT

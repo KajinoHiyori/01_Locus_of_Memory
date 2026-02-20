@@ -175,11 +175,14 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetDat
 			// XŽ²
 			fDiffKey = pKeyNext->fRotX - pKey->fRotX;
 			fRotXCurrent = pKey->fRotX + (fDiffKey * fRateKey);
+			fRotXCurrent = AngleNormalize(fRotXCurrent);
 
 			fDiffKeyBlend = pKeyNextBlend->fRotX - pKeyBlend->fRotX;
 			fRotXBlend = pKeyBlend->fRotX + (fDiffKeyBlend * fRateKeyBlend);
+			fRotXBlend = AngleNormalize(fRotXBlend);
 
 			fDiffBlend = fRotXBlend - fRotXCurrent;
+			fDiffBlend = AngleNormalize(fDiffBlend);
 
 			fRotX = fRotXCurrent + (fDiffBlend * fRateBlend);
 
@@ -188,11 +191,14 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetDat
 			// YŽ²
 			fDiffKey = pKeyNext->fRotY - pKey->fRotY;
 			fRotYCurrent = pKey->fRotY + (fDiffKey * fRateKey);
+			fRotYCurrent = AngleNormalize(fRotYCurrent);
 
 			fDiffKeyBlend = pKeyNextBlend->fRotY - pKeyBlend->fRotY;
 			fRotYBlend = pKeyBlend->fRotY + (fDiffKeyBlend * fRateKeyBlend);
+			fRotYBlend = AngleNormalize(fRotYBlend);
 
 			fDiffBlend = fRotYBlend - fRotYCurrent;
+			fDiffBlend = AngleNormalize(fDiffBlend);
 
 			fRotY = fRotYCurrent + (fDiffBlend * fRateBlend);
 
@@ -201,11 +207,14 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetDat
 			// ZŽ²
 			fDiffKey = pKeyNext->fRotZ - pKey->fRotZ;
 			fRotZCurrent = pKey->fRotZ + (fDiffKey * fRateKey);
+			fRotZCurrent = AngleNormalize(fRotZCurrent);
 
 			fDiffKeyBlend = pKeyNextBlend->fRotZ - pKeyBlend->fRotZ;
 			fRotZBlend = pKeyBlend->fRotZ + (fDiffKeyBlend * fRateKeyBlend);
+			fRotZBlend = AngleNormalize(fRotZBlend);
 
 			fDiffBlend = fRotZBlend - fRotZCurrent;
+			fDiffBlend = AngleNormalize(fDiffBlend);
 
 			fRotZ = fRotZCurrent + (fDiffBlend * fRateBlend);
 
@@ -225,12 +234,16 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetDat
 
 			// Œü‚«·•ª
 			fDiffKey = pKeyNext->fRotX - pKey->fRotX;
+			fDiffKey = AngleNormalize(fDiffKey);
+
 			fRotX = AngleNormalize(pKey->fRotX + (fDiffKey * fRateKey));
 
 			fDiffKey = pKeyNext->fRotY - pKey->fRotY;
+			fDiffKey = AngleNormalize(fDiffKey);
 			fRotY = AngleNormalize(pKey->fRotY + (fDiffKey * fRateKey));
 
 			fDiffKey = pKeyNext->fRotZ - pKey->fRotZ;
+			fDiffKey = AngleNormalize(fDiffKey);
 			fRotZ = AngleNormalize(pKey->fRotZ + (fDiffKey * fRateKey));
 		}
 

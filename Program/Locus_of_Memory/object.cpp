@@ -568,6 +568,9 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		case PARENTMODELTYPE_BOOK:
 			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_BOOK);		// モーションデータ設定
 			break;
+		case PARENTMODELTYPE_WATERMILL:
+			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_WATERMILL);		// モーションデータ設定
+			break;
 		}
 
 		// 各種設定
