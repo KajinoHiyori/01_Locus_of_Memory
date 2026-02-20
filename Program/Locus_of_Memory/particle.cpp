@@ -193,7 +193,7 @@ void UpdateParticle(void)
 
 				//燃焼=============================================================================
 			case PARTICLETYPE_COMBUSTION:
-				for (int nCntAppear = 0; nCntAppear < 8; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 3; nCntAppear++)
 				{
 					//位置の設(
 					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 50;
@@ -216,7 +216,7 @@ void UpdateParticle(void)
 
 					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_COMBUSTION], COLOR_RED, 100, 20);
 				}
-				for (int nCntAppear = 0; nCntAppear < 5; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 2; nCntAppear++)
 				{
 					//位置の設定
 					pos[1].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 30;
@@ -315,7 +315,7 @@ void UpdateParticle(void)
 
 				//凍結=============================================================================
 			case PARTICLETYPE_FREEZE:
-				for (int nCntAppear = 0; nCntAppear < 7; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 3; nCntAppear++)
 				{
 					//位置の設定
 					pos[0].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
@@ -333,7 +333,7 @@ void UpdateParticle(void)
 
 					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FREEZE], COLOR_CYAN, 100, 5);
 				}
-				for (int nCntAppear = 0; nCntAppear < 7; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 3; nCntAppear++)
 				{
 					//位置の設定
 					pos[1].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
