@@ -108,6 +108,13 @@ typedef struct
 	bool			bUse;		// 使用状態
 }Object;
 
+// モーション中のデータの構造体定義
+typedef struct OffSetData
+{
+	D3DXVECTOR3 pos[MAX_PARTS];						// 位置
+	D3DXVECTOR3 rot[MAX_PARTS];						// 向き
+}OffSetData;
+
 // 階層構造オブジェクトの構造体定義
 typedef struct
 {
@@ -118,6 +125,7 @@ typedef struct
 	float			fAlpha;		// アルファ値
 	Motion			motion;		// モーション情報
 	ModelData*		pModelData;	// モデルの情報
+	OffSetData		OffSetData;	// モーション中の階層構造情報
 	EVENTTYPE		EventType;	// イベントの種類
 	bool			bUse;		// 使用状態
 }ParentObject;
@@ -141,11 +149,9 @@ typedef struct Model
 // 階層構造モデルデータの構造体定義
 typedef struct ModelData
 {
-	Model				aModel[MAX_PARTS];					// モデル (パーツ)
-	D3DXVECTOR3			aOffSet[MAX_PARTS];					// モデルのオフセット[位置]を保存
-	D3DXVECTOR3			aOffSetRot[MAX_PARTS];				// モデルのオフセット[角度]を保存
-	int					nNumModel;							// モデルの総数
-	int					nNumParts;							// パーツの総数
+	Model				aModel[MAX_PARTS];			// モデル (パーツ)
+	int					nNumModel;					// モデルの総数
+	int					nNumParts;					// パーツの総数
 }ModelData;
 
 // プロトタイプ宣言

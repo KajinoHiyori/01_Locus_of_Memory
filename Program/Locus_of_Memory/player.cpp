@@ -199,7 +199,7 @@ void UpdatePlayer(void)
 				{
 					g_aPlayer[nCntPlayer].move.y = JUMP;
 					g_aPlayer[nCntPlayer].bJump = true;
-					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
 				}
 
 				if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
@@ -255,12 +255,12 @@ void UpdatePlayer(void)
 
 			if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
 			{// ジャンプ状態じゃないかつ移動モーション中じゃない
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
 			}
 		}
 		else if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
 		{// もし歩行中だったら
-			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 		}
 
 		// プレイヤーの方向を補正
@@ -308,7 +308,7 @@ void UpdatePlayer(void)
 			if (g_aPlayer[nCntPlayer].bJump == true)
 			{// ジャンプしている状態で判定があったら
 				// 着地モーション
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
 			}
 			g_aPlayer[nCntPlayer].pos.y = 0.0f;
 			g_aPlayer[nCntPlayer].bJump = false;
@@ -331,7 +331,7 @@ void UpdatePlayer(void)
 			{// コマンドを所有していたら
 				// 魔法を使用する (モーションセット, 魔法セット)
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_MAGIC;
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, false, true, BLENDFRAME);
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, false, true, BLENDFRAME);
 				SetMagic(ChangeMagic(InputCommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
 				break;
 			}
@@ -343,7 +343,7 @@ void UpdatePlayer(void)
 		g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * fInertia;
 
 		// モーションの更新処理
-		UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData);
+		UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData);
 
 		// デバッグ表示
 		PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
@@ -622,7 +622,7 @@ void DrawPlayer(void)
 		}
 
 		// 描画関数
-		DrawParentModel(&pPlayer->pos, &pPlayer->rot, &pPlayer->mtxWorld, pPlayer->pModelData);
+		DrawParentModel(&pPlayer->pos, &pPlayer->rot, &pPlayer->mtxWorld, pPlayer->pModelData, &pPlayer->OffSetData);
 
 		//// ワールドマトリックスの初期化
 		//D3DXMatrixIdentity(&pPlayer->mtxWorld);
@@ -721,7 +721,7 @@ void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE paren
 	g_aPlayer[nIdx].nIdxShadow = SetShadow(SHADOWTYPE_CIRCLE, SHADOｗ, SHADOｗ);
 
 	// モーションを設定
-	SetMotion(&g_aPlayer[nIdx].motion, g_aPlayer[nIdx].pModelData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);
+	SetMotion(&g_aPlayer[nIdx].motion, g_aPlayer[nIdx].pModelData, &g_aPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);
 }
 
 //========================================================================

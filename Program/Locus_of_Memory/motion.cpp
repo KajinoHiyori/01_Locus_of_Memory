@@ -27,7 +27,7 @@ void InitMotion(void)
 //=============================================================================
 //	モーションの設定処理
 //=============================================================================
-void SetMotion(Motion* pMotion, ModelData* pModelData, MOTIONTYPE motiontype, bool bLoopMotion, bool bBlendMotion, int nFrameBlend)
+void SetMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetData, MOTIONTYPE motiontype, bool bLoopMotion, bool bBlendMotion, int nFrameBlend)
 {
 	if (bBlendMotion == true)
 	{
@@ -53,19 +53,21 @@ void SetMotion(Motion* pMotion, ModelData* pModelData, MOTIONTYPE motiontype, bo
 
 		Model* pModel = &pModelData->aModel[0];
 		KEY_INFO* pKeyInfo = &pMotion->pMotionData->aMotionInfo[pMotion->motionType].aKeyInfo[0];
+		D3DXVECTOR3* pOffSetPos = &pOffSetData->pos[0];
+		D3DXVECTOR3* pOffSetRot = &pOffSetData->rot[0];
 
-		for (int nCntModel = 0; nCntModel < pModelData->nNumModel; nCntModel++, pModel++, pKeyInfo++)
+		for (int nCntModel = 0; nCntModel < pModelData->nNumModel; nCntModel++, pModel++, pKeyInfo++, pOffSetPos++, pOffSetRot++)
 		{// 全パーツの初期化
-			pModel->pos.x = pKeyInfo->aKey[0].fPosX;
-			pModel->pos.y = pKeyInfo->aKey[0].fPosY;
-			pModel->pos.z = pKeyInfo->aKey[0].fPosZ;
+			pOffSetPos->x = pKeyInfo->aKey[0].fPosX;
+			pOffSetPos->y = pKeyInfo->aKey[0].fPosY;
+			pOffSetPos->z = pKeyInfo->aKey[0].fPosZ;
 
-			pModel->rot.x = pKeyInfo->aKey[0].fRotX;
-			pModel->rot.y = pKeyInfo->aKey[0].fRotY;
-			pModel->rot.z = pKeyInfo->aKey[0].fRotZ;
+			pOffSetRot->x = pKeyInfo->aKey[0].fRotX;
+			pOffSetRot->y = pKeyInfo->aKey[0].fRotY;
+			pOffSetRot->z = pKeyInfo->aKey[0].fRotZ;
 
-			pModel->pos += pModel->posLocal;
-			pModel->rot += pModel->rotLocal;
+			*pOffSetPos += pModel->posLocal;
+			*pOffSetRot += pModel->rotLocal;
 		}
 	}
 }
@@ -73,7 +75,7 @@ void SetMotion(Motion* pMotion, ModelData* pModelData, MOTIONTYPE motiontype, bo
 //=============================================================================
 //	モーションの更新処理
 //=============================================================================
-void UpdateMotion(Motion* pMotion, ModelData* pModelData)
+void UpdateMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetData)
 {
 	if (pMotion == NULL)
 	{// モーションが存在しなければ返す
@@ -102,6 +104,8 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData)
 
 		// 対象モデル
 		Model* pModel = &pModelData->aModel[nCntModel];
+		D3DXVECTOR3* pOffSetPos = &pOffSetData->pos[nCntModel];
+		D3DXVECTOR3* pOffSetRot = &pOffSetData->rot[nCntModel];
 
 		// 最大フレームと現在のフレームの比率
 		float fRateKey = (float)pMotion->nCounterMotion / (float)pMotion->pMotionData->aMotionInfo[pMotion->motionType].aKeyInfo[pMotion->nKey].nFrame;
@@ -231,17 +235,17 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData)
 		}
 
 		// パーツの向きと位置を設定
-		pModel->pos = D3DXVECTOR3(fPosX, fPosY, fPosZ);
-		pModel->rot = D3DXVECTOR3(fRotX, fRotY, fRotZ);
+		*pOffSetPos = D3DXVECTOR3(fPosX, fPosY, fPosZ);
+		*pOffSetRot = D3DXVECTOR3(fRotX, fRotY, fRotZ);
 
 		// オフセット位置加算
-		pModel->pos += pModel->posLocal;
-		pModel->rot += pModel->rotLocal;
+		*pOffSetPos += pModel->posLocal;
+		*pOffSetRot += pModel->rotLocal;
 
 		// 補正
-		pModel->rot.x = AngleNormalize(pModel->rot.x);
-		pModel->rot.y = AngleNormalize(pModel->rot.y);
-		pModel->rot.z = AngleNormalize(pModel->rot.z);
+		pOffSetRot->x = AngleNormalize(pOffSetRot->x);
+		pOffSetRot->y = AngleNormalize(pOffSetRot->y);
+		pOffSetRot->z = AngleNormalize(pOffSetRot->z);
 	}
 
 	if (pMotion->bBlendMotion == true)

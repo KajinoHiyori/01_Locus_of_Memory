@@ -909,7 +909,7 @@ bool CrossCollision(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3 posStar
 //==================================================================================
 //	モデルの描画処理 (階層構造)
 //==================================================================================
-void DrawParentModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pRot, D3DXMATRIX *pMtxWorld, ModelData *pModelData)
+void DrawParentModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pRot, D3DXMATRIX *pMtxWorld, ModelData *pModelData, OffSetData *pOffSetData)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
@@ -938,16 +938,18 @@ void DrawParentModel(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pRot, D3DXMATRIX *pMtxWorld
 	{
 		D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
 		D3DXMATRIX mtxParent;								// 親のマトリックス
+		D3DXVECTOR3 pos = pOffSetData->pos[nCntParentModel];
+		D3DXVECTOR3 rot = pOffSetData->rot[nCntParentModel];
 
 		// パーツのワールドマトリックスを初期化
 		D3DXMatrixIdentity(&pModelData->aModel[nCntParentModel].mtxWorld);
 
 		// パーツの向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pModelData->aModel[nCntParentModel].rot.y, pModelData->aModel[nCntParentModel].rot.x, pModelData->aModel[nCntParentModel].rot.z);
+		D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, rot.y, rot.x, rot.z);
 		D3DXMatrixMultiply(&pModelData->aModel[nCntParentModel].mtxWorld, &pModelData->aModel[nCntParentModel].mtxWorld, &mtxRotOffSetModel);
 
 		// パーツの位置を反映(オフセット)
-		D3DXMatrixTranslation(&mtxTransOffSetModel, pModelData->aModel[nCntParentModel].pos.x, pModelData->aModel[nCntParentModel].pos.y, pModelData->aModel[nCntParentModel].pos.z);
+		D3DXMatrixTranslation(&mtxTransOffSetModel, pos.x, pos.y, pos.z);
 		D3DXMatrixMultiply(&pModelData->aModel[nCntParentModel].mtxWorld, &pModelData->aModel[nCntParentModel].mtxWorld, &mtxTransOffSetModel);
 
 		// パーツの「親のマトリックス」を設定

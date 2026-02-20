@@ -9,6 +9,7 @@
 #define _MAIN_H_			// 2重インクルード防止のマクロを定義する
 
 struct ModelData;
+struct OffSetData;
 
 //*****************************************************************************
 // モードの種類
@@ -41,7 +42,7 @@ float AngleNormalize(float fAngle);
 float DegreeToRadian(float fDegree);
 int RadianToDegree(float fRadian);
 bool CrossCollision(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3 posStart, D3DXVECTOR3 posEnd, bool bRetrun, bool bIn);
-void DrawParentModel(D3DXVECTOR3* pPos, D3DXVECTOR3* pRot, D3DXMATRIX* pMtxWorld, ModelData* pModelData);
+void DrawParentModel(D3DXVECTOR3* pPos, D3DXVECTOR3* pRot, D3DXMATRIX* pMtxWorld, ModelData* pModelData, OffSetData *pOffSetData);
 void ToggleFullscreen(HWND hWnd);
 void SetTextureStageStateAlpha(int nIdx, DWORD Stage, D3DTEXTUREOP Type, DWORD Value);
 void ResetTextureStageStateAlpha(int nNumIdx);

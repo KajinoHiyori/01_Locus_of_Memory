@@ -198,7 +198,7 @@ void UpdateObject(void)
 		// モーションテスト
 		if (GetKeyboardTrigger(DIK_5) == true)
 		{
-			SetMotion(&pParentObject->motion, pParentObject->pModelData, MOTIONTYPE_MOVE, false, true, 10);
+			SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
 		}
 #endif
 
@@ -210,7 +210,7 @@ void UpdateObject(void)
 		}
 
 		// モーションの更新
-		UpdateMotion(&pParentObject->motion, pParentObject->pModelData);
+		UpdateMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData);
 	}
 }
 
@@ -367,11 +367,11 @@ void DrawObject(void)
 			D3DXMatrixIdentity(&pParentObject->pModelData->aModel[nCntParentModel].mtxWorld);
 
 			// パーツの向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pParentObject->pModelData->aModel[nCntParentModel].rot.y, pParentObject->pModelData->aModel[nCntParentModel].rot.x, pParentObject->pModelData->aModel[nCntParentModel].rot.z);
+			D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pParentObject->OffSetData.rot[nCntParentModel].y, pParentObject->OffSetData.rot[nCntParentModel].x, pParentObject->OffSetData.rot[nCntParentModel].z);
 			D3DXMatrixMultiply(&pParentObject->pModelData->aModel[nCntParentModel].mtxWorld, &pParentObject->pModelData->aModel[nCntParentModel].mtxWorld, &mtxRotOffSetModel);
 
 			// パーツの位置を反映(オフセット)
-			D3DXMatrixTranslation(&mtxTransOffSetModel, pParentObject->pModelData->aModel[nCntParentModel].pos.x, pParentObject->pModelData->aModel[nCntParentModel].pos.y, pParentObject->pModelData->aModel[nCntParentModel].pos.z);
+			D3DXMatrixTranslation(&mtxTransOffSetModel, pParentObject->OffSetData.pos[nCntParentModel].x, pParentObject->OffSetData.pos[nCntParentModel].y, pParentObject->OffSetData.pos[nCntParentModel].z);
 			D3DXMatrixMultiply(&pParentObject->pModelData->aModel[nCntParentModel].mtxWorld, &pParentObject->pModelData->aModel[nCntParentModel].mtxWorld, &mtxTransOffSetModel);
 
 			// パーツの「親のマトリックス」を設定
@@ -569,7 +569,7 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		pParentObject->bUse = true;
 
 		// ニュートラルモーションで開始
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, MOTIONTYPE_NEUTRAL, true, false, 10);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, false, 10);
 
 		break;
 	}

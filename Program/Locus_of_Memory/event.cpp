@@ -62,7 +62,7 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 	case MAGICTYPE_COMBUSTION:
 		pParentObject->EventType = EVENTTYPE_001_1;
 		SetParticle(pParentObject->pos, 150, PARTICLETYPE_COMBUSTION);
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, MOTIONTYPE_MOVE, false, true, 10);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, false, 10);
 		return true;
 
 	default:

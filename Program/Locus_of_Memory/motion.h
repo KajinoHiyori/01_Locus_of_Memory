@@ -10,7 +10,9 @@
 
 #include "main.h"
 
-struct ModelData;		// 前方宣言 ポインタ型でのみ使用可能
+// 前方宣言 ポインタ型でのみ使用可能
+struct ModelData;
+struct OffSetData;
 
 /* おそらくポインタ型ではバイト数が固定のため、変数宣言時にメモリを確保する量を構造体から参照する必要がないためと思われる */
 
@@ -114,8 +116,8 @@ typedef struct Motion
 // プロトタイプ宣言
 //*****************************************************************************
 void InitMotion(void);
-void SetMotion(Motion* pMotion, ModelData* pModelData, MOTIONTYPE motiontype, bool bLoopMotion, bool bBlendMotion, int nFrameBlend);
-void UpdateMotion(Motion* motion, ModelData* model);
+void SetMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetData, MOTIONTYPE motiontype, bool bLoopMotion, bool bBlendMotion, int nFrameBlend);
+void UpdateMotion(Motion* motion, ModelData* model, OffSetData* pOffSetData);
 void LoadMotion(bool bLoop, int nNumKey, KEY_INFO* pKeyInfo, int nMotion, int nNumMotion);
 MotionData* SetMotionData(MOTIONDATATYPE type);
 

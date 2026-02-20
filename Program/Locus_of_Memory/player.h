@@ -59,6 +59,7 @@ typedef struct
 	D3DXVECTOR3		rotDest;	// プレイヤーの目的の向き
 	Motion			motion;		// プレイヤーのモーション情報
 	ModelData*		pModelData;	// モデルの情報
+	OffSetData		OffSetData;	// モーション中の階層構造情報
 	PLAYERSTATE		state;		// プレイヤーの状態
 	MagicBook		magicbook;	// 魔法の種類
 	int				nIdxShadow;	// 影のインデックス
