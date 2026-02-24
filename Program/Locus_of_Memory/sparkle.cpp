@@ -155,10 +155,6 @@ void UpdateSparkle(void)
 {
 	Sparkle* pSparkle = &g_aSparkle[0];					// 粒へのポインタ
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxTrans, mtxView;
-
-	// ビューマトリックスを取得
-	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
 	for (; g_nNumSparkle < MAX_SPARKLE;)
 	{// 常に最大数を維持する
@@ -166,11 +162,6 @@ void UpdateSparkle(void)
 	}
 
 	PrintDebugProc("NumSparkle %d\n", g_nNumSparkle);
-
-	VERTEX_3D* pVtx;    // 頂点情報の設定
-
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffSparkle->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntSparkle = 0; nCntSparkle < g_nNumSparkle; nCntSparkle++)
 	{
@@ -216,6 +207,38 @@ void UpdateSparkle(void)
 			continue;
 		}
 
+		// ポインタを進める
+		pSparkle++;
+	}
+}
+
+//=============================================================================
+// 粒の描画処理
+//=============================================================================
+void DrawSparkle(void)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();		// デバイスの取得
+
+	Sparkle* pSparkle = &g_aSparkle[0];				// 粒へのポインタ
+	D3DXMATRIX mtxRot, mtxTrans;					// 計算用マトリックス
+	D3DXMATRIX mtx;									// 単位行列
+	D3DXMATRIX mtxView;								// ビューマトリックス
+
+	// ビューマトリックスを取得
+	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+	VERTEX_3D* pVtx;    // 頂点情報の設定
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffSparkle->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntSparkle = 0; nCntSparkle < g_nNumSparkle; nCntSparkle++)
+	{
+		if (pSparkle->bUse == false)
+		{
+			PrintDebugProc("データ異常発生中 : sparkle\n");
+		}
+
 		//ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&pSparkle->mtxWorld);
 
@@ -249,24 +272,10 @@ void UpdateSparkle(void)
 		pVtx[3].col = pSparkle->col;
 
 		// ポインタを進める
-		pSparkle++;
 		pVtx += 4;
 	}
 
 	g_pVtxBuffSparkle->Unlock();
-}
-
-//=============================================================================
-// 粒の描画処理
-//=============================================================================
-void DrawSparkle(void)
-{
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();		// デバイスの取得
-
-	Sparkle* pSparkle = &g_aSparkle[0];				// 粒へのポインタ
-	D3DXMATRIX mtxRot, mtxTrans;					// 計算用マトリックス
-	D3DXMATRIX mtx;
-	D3DXMATRIX mtxView;								// ビューマトリックス
 
 	SetFogEnable(false);		// 霧を消す
 
@@ -282,16 +291,6 @@ void DrawSparkle(void)
 
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&mtx);
-
-	////ビューマトリックスを取得
-	//pDevice->GetTransform(D3DTS_VIEW, &mtxView);
-
-	////エフェクトをカメラに対して正面に向ける
-	//D3DXMatrixInverse(&mtx, NULL, &mtxView);	//逆行列を求める
-
-	//mtx._41 = 0.0f;		//マトリックス(行列)の内容
-	//mtx._42 = 0.0f;
-	//mtx._43 = 0.0f;
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &mtx);

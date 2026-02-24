@@ -20,9 +20,9 @@ typedef enum
 {
 	EFFECT_TEX_CIRCLE = 0,	// 円形のエフェクト
 	EFFECT_TEX_DIAMOND,		// ダイヤ型のエフェクト
-	EFFECT_TEX_WING000,		// 羽のエフェクト[下向き]
-	EFFECT_TEX_WING001,		// 羽のエフェクト[横向き]
-	EFFECT_TEX_WING002,		// 羽のエフェクト[上向き]
+	EFFECT_TEX_WING000,		// 羽のエフェクト[上向き]
+	EFFECT_TEX_WING001,		// 羽のエフェクト[下向き]
+	EFFECT_TEX_WING002,		// 羽のエフェクト[横向き]
 	EFFECT_TEX_MAX
 }EFFECT_TEX;
 

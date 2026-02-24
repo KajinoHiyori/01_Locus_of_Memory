@@ -155,10 +155,6 @@ void UpdateGrain(void)
 {
 	Grain* pGrain = &g_aGrain[0];					// 文字へのポインタ
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxTrans, mtxView;
-
-	// ビューマトリックスを取得
-	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
 	for (; g_nNumGrain < MAX_GRAIN;)
 	{// 常に最大数を維持する
@@ -166,11 +162,6 @@ void UpdateGrain(void)
 	}
 
 	PrintDebugProc("NumGrain %d\n", g_nNumGrain);
-
-	VERTEX_3D* pVtx;    // 頂点情報の設定
-
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffGrain->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntGrain = 0; nCntGrain < g_nNumGrain; nCntGrain++)
 	{
@@ -216,6 +207,38 @@ void UpdateGrain(void)
 			continue;
 		}
 
+		// ポインタを進める
+		pGrain++;
+	}
+}
+
+//======================================================================================
+// 文字の描画処理
+//======================================================================================
+void DrawGrain(void)
+{
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();		// デバイスの取得
+
+	Grain* pGrain = &g_aGrain[0];					// 文字へのポインタ
+	D3DXMATRIX mtxRot, mtxTrans;					// 計算用マトリックス
+	D3DXMATRIX mtx;
+	D3DXMATRIX mtxView;								// ビューマトリックス
+
+	// ビューマトリックスを取得
+	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+	VERTEX_3D* pVtx;    // 頂点情報の設定
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffGrain->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntGrain = 0; nCntGrain < g_nNumGrain; nCntGrain++, pGrain++)
+	{
+		if (pGrain->bUse == false)
+		{
+			PrintDebugProc("データ異常発生中 : grain\n");
+		}
+
 		//ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&pGrain->mtxWorld);
 
@@ -255,24 +278,10 @@ void UpdateGrain(void)
 		pVtx[3].tex = D3DXVECTOR2(GRAINTEX_SPRITPOS * (pGrain->type % GRAINTEX_SPRIT) + GRAINTEX_SPRITPOS, GRAINTEX_SPRITPOS * (pGrain->type / GRAINTEX_SPRIT) + GRAINTEX_SPRITPOS);
 
 		// ポインタを進める
-		pGrain++;
 		pVtx += 4;
 	}
 
 	g_pVtxBuffGrain->Unlock();
-}
-
-//======================================================================================
-// 文字の描画処理
-//======================================================================================
-void DrawGrain(void)
-{
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();		// デバイスの取得
-
-	Grain* pGrain = &g_aGrain[0];					// 文字へのポインタ
-	D3DXMATRIX mtxRot, mtxTrans;					// 計算用マトリックス
-	D3DXMATRIX mtx;
-	D3DXMATRIX mtxView;								// ビューマトリックス
 
 	SetFogEnable(false);		// 霧を消す
 
