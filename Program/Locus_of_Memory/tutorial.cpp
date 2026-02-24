@@ -36,6 +36,7 @@
 //#include"timer.h"
 #include "grain.h"
 #include "sparkle.h"
+#include "animal.h"
 
 // UI関連の初期化
 #include "uimanager.h"
@@ -93,7 +94,7 @@ void InitTutorial(void)
 	// 3D空間UIの初期化処理
 	InitUIManager();
 
-	// 
+	// 吹き出しの初期化処理
 	InitMagicBubble();
 
 	//InitMashwall();
@@ -132,6 +133,9 @@ void InitTutorial(void)
 		SetPlayer(0, TUTORIALPOS_1P, INIT_D3DXVEC3, PARENTMODELTYPE_PLAYER1P);
 		break;
 	}
+
+	// ドラゴンの状態を設定
+	SetDragonType(0, DRAGONTYPE_FIRE);
 }
 //=======================================================
 // ゲームの終了処理
@@ -189,6 +193,9 @@ void UpdateTutorial(void)
 
 	// 魔法の更新処理
 	UpdateMagic();
+
+	// 動物の更新処理
+	UpdateAnimal();
 
 	//UpdateField();
 
@@ -307,6 +314,9 @@ void DrawTutorial(void)
 	DrawShadow();
 
 	//DrawBillboard();
+
+	// 動物の描画処理
+	DrawAnimal();
 
 	// オブジェクトの描画処理（仮）
 	DrawObject();

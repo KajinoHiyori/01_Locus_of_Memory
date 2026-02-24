@@ -20,6 +20,7 @@
 #include "color.h"
 #include "grain.h"
 #include "sparkle.h"
+#include "animal.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
@@ -70,6 +71,9 @@ void InitTitle(void)
 	InitTitleUI();
 
 	g_operationType = OPERATIONTYPE_1P;
+
+	// ドラゴンのタイプを決定
+	SetDragonType(0, DRAGONTYPE_FLYING);
 }
 
 //======================================================================================
@@ -97,6 +101,9 @@ void UpdateTitle(void)
 
 	// ライトの更新処理
 	UpdateLight();
+
+	// ドラゴンの更新処理
+	UpdateAnimal();
 
 	// タイトルUIの更新処理
 	UpdateTitleUI();
@@ -145,6 +152,9 @@ void DrawTitle(void)
 
 	// 塀の描画処理
 	DrawBrickWall();
+
+	// 動物の描画処理
+	DrawAnimal();
 
 	// エフェクトの描画処理
 	DrawEffect();

@@ -4,75 +4,41 @@
 //	Author:OBIKA SOUMA
 //
 //========================================================================
-
 #include "animal.h"
+#include "debugproc.h"
+#include "motion.h"
 
-//===============================
-//	グローバル変数
-//===============================
-Animal g_Animal;
+// マクロ定義
+#define MAX_DRAGON	(10)	// ドラゴンの最大数
+#define FLY_POS		(D3DXVECTOR3(0.0f, 3000.0f, 3500.0f))	// ドラゴンの位置[飛竜]
+#define MOVERADIUS	(3000.0f)								// ドラゴンの移動周期[飛竜]
+#define FIRE_POS	(D3DXVECTOR3(690.0f, 0.0f, -5000.0f))	// ドラゴンの位置[火竜]
 
-//===============================
-//	モデルファイル
-//===============================
-const char* c_apFilenameAnimal[MAX_ANIMAL] =
+// ドラゴンの構造体
+typedef struct
 {
-	"data\\MODEL\\animal\\dragon000.x",		// ドラゴン(上顎)
-	"data\\MODEL\\animal\\dragon001.x",		// ドラゴン(下顎)
-	"data\\MODEL\\animal\\dragon002.x",		// ドラゴン(首)
-	"data\\MODEL\\animal\\dragon003.x"		// ドラゴン(手)
-};
+	DRAGONTYPE type;	// ドラゴンの種類
+	int nIdx;			// 階層構造オブジェクトのインデックス
+	bool bUse;			// ドラゴンの使用状態
+}Dragon;
+
+// グローバル変数
+Dragon g_aDragon[MAX_DRAGON];
+int g_nCounterDragon;
 
 //===============================
 //	動物の初期化処理
 //===============================
 void InitAnimal(void)
 {
-#if 0
-	int nNumVtx;							// 頂点数
-	DWORD dwSizeFVF;						// 頂点フォーマットのサイズ
-	BYTE* pVtxBuff;							// 頂点バッファへのポインタ
-	LPDIRECT3DDEVICE9 pDevice;
+	g_nCounterDragon = 0;	// ドラゴンの総数をカウント
 
-	// デバイスの取得
-	pDevice = GetDevice();
-
-	// 動物の初期化
-	g_Animal.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	g_Animal.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	g_Animal.nType = 0;
-	g_Animal.bUse = false;
-
-	for (int nCntModel = 0; nCntModel < MAX_ANIMAL; nCntModel++)
+	for (int nCntDragon = 0; nCntDragon < MAX_DRAGON; nCntDragon++)
 	{
-		D3DXLoadMeshFromX(c_apFilenameAnimal[nCntModel],
-			D3DXMESH_SYSTEMMEM,
-			pDevice, NULL,
-			&g_Animal.aModel[nCntModel].pBuffMat,
-			NULL,
-			&g_Animal.aModel[nCntModel].dwNumMat,
-			&g_Animal.aModel[nCntModel].pMesh);
+		g_aDragon[nCntDragon].type = DRAGONTYPE_NONE;
+		g_aDragon[nCntDragon].nIdx = -1;
+		g_aDragon[nCntDragon].bUse = false;
 	}
-
-	g_Animal.nNumModel = MAX_ANIMAL;
-
-	// 各パーツの階層構造設定
-	g_Animal.aModel[0].nIdxModelParent = -1;							// 親モデルのインデックスを設定
-	g_Animal.aModel[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[0]の位置(オフセット)
-	g_Animal.aModel[0].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[0]の向き
-
-	g_Animal.aModel[1].nIdxModelParent = 0;								// 親モデルのインデックスを設定
-	g_Animal.aModel[1].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[1]の位置(オフセット)
-	g_Animal.aModel[1].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[1]の向き
-
-	g_Animal.aModel[2].nIdxModelParent = 0;								// 親モデルのインデックスを設定
-	g_Animal.aModel[2].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[2]の位置(オフセット)
-	g_Animal.aModel[2].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[2]の向き
-
-	g_Animal.aModel[3].nIdxModelParent = 0;								// 親モデルのインデックスを設定
-	g_Animal.aModel[3].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[3]の位置(オフセット)
-	g_Animal.aModel[3].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);				// パーツ[3]の向き
-#endif
 }
 
 //===============================
@@ -80,24 +46,7 @@ void InitAnimal(void)
 //===============================
 void UninitAnimal(void)
 {
-#if 0
-	for (int nCntModel = 0; nCntModel < MAX_ANIMAL; nCntModel++)
-	{
-		// テクスチャの破棄
-		if (g_Animal.aModel[nCntModel].pMesh != NULL)
-		{
-			g_Animal.aModel[nCntModel].pMesh->Release();
-			g_Animal.aModel[nCntModel].pMesh = NULL;
-		}
 
-		// 頂点バッファの破棄
-		if (g_Animal.aModel[nCntModel].pBuffMat != NULL)
-		{
-			g_Animal.aModel[nCntModel].pBuffMat->Release();
-			g_Animal.aModel[nCntModel].pBuffMat = NULL;
-		}
-	}
-#endif
 }
 
 //===============================
@@ -105,7 +54,26 @@ void UninitAnimal(void)
 //===============================
 void UpdateAnimal(void)
 {
+	for (int nCntDragon = 0; nCntDragon < MAX_DRAGON; nCntDragon++)
+	{
+		if (g_aDragon[nCntDragon].bUse == false)
+		{
+			continue;
+		}
+		
+		switch (g_aDragon[nCntDragon].type)
+		{
+		case DRAGONTYPE_FLYING:	// 飛竜
+			UpdateFlyDragon(nCntDragon);
+			break;
+		}
 
+		ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
+
+		// モーションの更新
+		UpdateMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData);
+		PrintDebugProc("ドラゴンの位置 : [%f, %f, %f]", pParentObject->pos.x, pParentObject->pos.y, pParentObject->pos.z);
+	}
 }
 
 //===============================
@@ -113,90 +81,61 @@ void UpdateAnimal(void)
 //===============================
 void DrawAnimal(void)
 {
-#if 0
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans;			// 計算用マトリックス
-	D3DMATERIAL9 matDet;					// 現在のマテリアル保存用
-	D3DXMATERIAL* pMat;						// マテリアルデータへのポインタ
 
-	// 現在のマテリアルを取得
-	pDevice->GetMaterial(&matDet);
+}
 
-	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&g_Animal.mtxWorld);
+//===============================
+//	ドラゴンのインデックスを取得
+//===============================
+void SetDragon(int nIdx)
+{
+	g_aDragon[g_nCounterDragon].bUse = true;
+	g_aDragon[g_nCounterDragon].nIdx = nIdx;
+	g_nCounterDragon++;
+}
 
-	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, g_Animal.rot.y,
-		g_Animal.rot.x,
-		g_Animal.rot.z);
-	D3DXMatrixMultiply(&g_Animal.mtxWorld, &g_Animal.mtxWorld, &mtxRot);
+//===============================
+//	ドラゴンのタイプを設定
+//===============================
+void SetDragonType(int nCntDragon, DRAGONTYPE type)
+{
+	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
+	g_aDragon[nCntDragon].type = type;
 
-	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans,
-		g_Animal.pos.x,
-		g_Animal.pos.y,
-		g_Animal.pos.z);
-	D3DXMatrixMultiply(&g_Animal.mtxWorld, &g_Animal.mtxWorld, &mtxTrans);
-
-	//  ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &g_Animal.mtxWorld);
-
-	// 全モデル(パーツ)の描画
-	for (int nCntModel = 0; nCntModel < g_Animal.nNumModel; nCntModel++)
+	if (g_aDragon[nCntDragon].type == DRAGONTYPE_FLYING)
 	{
-		D3DXMATRIX mtxRotModel, mmtxTransModel;						// 計算用マトリックス
-		D3DXMATRIX mtxParent;										// 親のマトリックス
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&g_Animal.aModel[nCntModel].mtxWorld);
-
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_Animal.aModel[nCntModel].rot.y,
-			g_Animal.aModel[nCntModel].rot.x,
-			g_Animal.aModel[nCntModel].rot.z);
-		D3DXMatrixMultiply(&g_Animal.aModel[nCntModel].mtxWorld, &g_Animal.aModel[nCntModel].mtxWorld, &mtxRot);
-
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans,
-			g_Animal.aModel[nCntModel].pos.x,
-			g_Animal.aModel[nCntModel].pos.y,
-			g_Animal.aModel[nCntModel].pos.z);
-		D3DXMatrixMultiply(&g_Animal.aModel[nCntModel].mtxWorld, &g_Animal.aModel[nCntModel].mtxWorld, &mtxTrans);
-
-		// パーツの「親のマトリックス」を設定
-		if (g_Animal.aModel[nCntModel].nIdxModelParent != -1)
-		{// 親モデルがある場合
-			mtxParent = g_Animal.aModel[g_Animal.aModel[nCntModel].nIdxModelParent].mtxWorld;
-		}
-		else
-		{// 親モデルがない場合
-			mtxParent = g_Animal.mtxWorld;
-		}
-
-		// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
-		D3DXMatrixMultiply(&g_Animal.aModel[nCntModel].mtxWorld,
-			&g_Animal.aModel[nCntModel].mtxWorld,
-			&mtxParent);
-
-		//  ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &g_Animal.aModel[nCntModel].mtxWorld);
-
-		// マテリアルデータへのポインタを取得
-		pMat = (D3DXMATERIAL*)g_Animal.aModel[nCntModel].pBuffMat->GetBufferPointer();
-
-		for (int nCntMat = 0; nCntMat < (int)g_Animal.aModel[nCntModel].dwNumMat; nCntMat++)
-		{
-			// マテリアルの設定
-			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
-
-			// テクスチャの設定
-			pDevice->SetTexture(0, NULL);
-
-			// モデルパーツの描画
-			g_Animal.aModel[nCntModel].pMesh->DrawSubset(nCntMat);
-		}
+		pParentObject->pos = FLY_POS;
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
 	}
-	// 保存していたマテリアルを戻す
-	pDevice->SetMaterial(&matDet);
-#endif
+	else
+	{
+		pParentObject->pos = FIRE_POS;
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, false, true, 10);
+	}
+}
+
+//===============================
+//	飛翔ドラゴンの更新
+//===============================
+void UpdateFlyDragon(int nCntDragon)
+{
+	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
+
+	static float fAngle = 0.0f;
+	D3DXVECTOR3 pos = FLY_POS;
+	D3DXVECTOR3 posDest;
+
+	fAngle += 0.005f;
+
+	fAngle = AngleNormalize(fAngle);
+
+	posDest.x = pos.x + sinf(fAngle) * MOVERADIUS;
+	posDest.y = pos.y;
+	posDest.z = pos.z + cosf(fAngle) * MOVERADIUS;
+
+	pParentObject->rot.y = atan2f(pParentObject->pos.x - posDest.x, pParentObject->pos.z - posDest.z);
+
+	pParentObject->rot.y = AngleNormalize(pParentObject->rot.y);
+
+	pParentObject->pos = posDest;
 }

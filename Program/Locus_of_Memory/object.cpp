@@ -7,6 +7,7 @@
 #include "main.h"
 #include "object.h"
 #include "player.h"
+#include "animal.h"
 #include "meshfield.h"
 #include "shadow.h"
 #include "player.h"
@@ -187,11 +188,6 @@ void UpdateObject(void)
 		if (pParentObject->bUse == false)
 		{// 使っていなかったら弾く
 			continue;
-		}
-
-		if (pParentObject->type == PARENTMODELTYPE_DRAGON)
-		{
-			UpdateTitleDragon(pParentObject);
 		}
 
 #ifdef _DEBUG
@@ -564,6 +560,7 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 			break;
 		case PARENTMODELTYPE_DRAGON:
 			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_DRAGON);	// モーションデータ設定
+			SetDragon(nCntParentObject);	// ドラゴンのインデックスを渡す
 			break;
 		case PARENTMODELTYPE_BOOK:
 			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_BOOK);		// モーションデータ設定
@@ -794,32 +791,4 @@ void UpdateObjectEvent001(ParentObject* pParentObject)
 			pParentObject->bUse = false;
 		}
 	}
-}
-
-#define DRAGON_DEFAULTPOS		(D3DXVECTOR3(0.0f, 3000.0f, 3500.0f))
-#define DRAGON_MOVERADIUS		(3000.0f)
-
-//=============================================================================
-//	タイトルでのドラゴンの更新処理
-//=============================================================================
-void UpdateTitleDragon(ParentObject* pParentObject)
-{
-	static float fAngle = 0.0f;
-	D3DXVECTOR3 pos = DRAGON_DEFAULTPOS;
-	D3DXVECTOR3 posDest;
-
-	fAngle += 0.005f;
-
-	fAngle = AngleNormalize(fAngle);
-
-	posDest.x = pos.x + sinf(fAngle) * DRAGON_MOVERADIUS;
-	posDest.y = pos.y;
-	posDest.z = pos.z + cosf(fAngle) * DRAGON_MOVERADIUS;
-
-	pParentObject->rot.y = atan2f(pParentObject->pos.x - posDest.x, pParentObject->pos.z - posDest.z);
-
-	pParentObject->rot.y = AngleNormalize(pParentObject->rot.y);
-
-	pParentObject->pos = posDest;
-
 }

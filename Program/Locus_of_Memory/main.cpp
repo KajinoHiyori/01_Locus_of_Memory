@@ -12,6 +12,7 @@
 #include "start.h"
 #include "title.h"
 #include "tutorial.h"
+#include "animal.h"
 #include "game.h"
 #include "result.h"
 #include "diagnosis.h"
@@ -408,6 +409,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// ゴールの初期化処理
 	InitGoal();
+
+	// 動物の初期化処理
+	InitAnimal();
 
 #ifndef _DEBUG
 	// マウスカーソルを非表示

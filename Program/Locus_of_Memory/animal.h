@@ -4,51 +4,30 @@
 //	Author:OBIKA SOUMA
 //
 //==========================================================================
-
 #ifndef _ANIMAL_H_
 #define _ANIMAL_H_
 
 #include "main.h"
 #include "object.h"
 
-//=====================================
-//	マクロ定義
-//=====================================
-#define MAX_ANIMAL (4)			// パーツ数
-
-//=====================================
-//	構造体
-//=====================================
-// 動物の構造体
-typedef struct
+// ドラゴンの種類
+typedef enum
 {
-	D3DXVECTOR3 pos;			// 位置
-	D3DXVECTOR3 rot;			// 向き
-	D3DXMATRIX	mtxWorld;		// ワールドマトリックス
-	int nType;					// モデルの種類
-	Model aModel[4];			// モデル(パーツ)
-	int nNumModel;				// モデル(パーツ)の総数
-	bool bUse;					// 使用状態
-}Animal;
-
-// モデルの構造体
-typedef struct
-{
-	LPDIRECT3DTEXTURE9 apTexture;
-	LPD3DXMESH pMesh;
-	LPD3DXBUFFER pBuffMat;
-	DWORD dwNumMat;
-	D3DXVECTOR3 vtxMin, vtxMax;
-}AnimalModel;
+	DRAGONTYPE_NONE = 0,	// 何もしていない状態
+	DRAGONTYPE_FLYING,		// 飛行状態
+	DRAGONTYPE_FIRE,		// 火竜状態
+	DRAGONTYPE_MAX
+}DRAGONTYPE;
 
 //=====================================
 //	プロトタイプ宣言
 //=====================================
-
 void InitAnimal(void);
 void UninitAnimal(void);
 void UpdateAnimal(void);
 void DrawAnimal(void);
-void SetAnimal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType);
+void SetDragon(int nIdx);
+void SetDragonType(int nCntDragon, DRAGONTYPE type);
+void UpdateFlyDragon(int nCntDragon);
 
 #endif

@@ -17,6 +17,7 @@
 #include "brickwall.h"
 #include "debugproc.h"
 #include "color.h"
+#include "animal.h"
 //#include"sound.h"
 
 // グローバル変数
@@ -28,8 +29,8 @@ LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffResult = NULL;    // 頂点バッファへのポインタ
 //=======================================================
 void InitResult(void)
 {
-    
-
+    // ドラゴンのタイプを決定
+    SetDragonType(0, DRAGONTYPE_FLYING);
 }
 //=======================================================
 // リザルトの終了処理
@@ -45,6 +46,9 @@ void UpdateResult(void)
 {
     PrintDebugProc("ここはリザルト画面\n");
     FADE* pFade = GetFade();
+
+    // 動物の更新処理
+    UpdateAnimal();
 
     if (GetKeyboardTrigger(DIK_RETURN) == true && *pFade == FADE_NONE || GetJoypadTrigger(JOYKEY_A, 0) == true && *pFade == FADE_NONE)
     {
@@ -63,6 +67,9 @@ void DrawResult(void)
 
     // パーティクルの描画処理
     DrawParticle();
+
+    // 動物の描画処理
+    DrawAnimal();
 
     // オブジェクトの描画処理（仮）
     DrawObject();

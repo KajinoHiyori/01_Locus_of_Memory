@@ -38,6 +38,7 @@
 #include "sparkle.h"
 #include "goal.h"
 #include "custommesh.h"
+#include "animal.h"
 
 // マクロ定義
 #define GAMEPOS_1P		(D3DXVECTOR3(-950.0f, 0.0f, -2800.0f))	// 1Pの位置[GAME]
@@ -118,6 +119,8 @@ void InitGame(void)
 		break;
 	}
 
+	// ドラゴンの状態を設定
+	SetDragonType(0, DRAGONTYPE_FIRE);
 }
 //=======================================================
 // ゲームの終了処理
@@ -168,6 +171,9 @@ void UpdateGame(void)
 	// プレイヤーの更新処理
 	UpdatePlayer();
 
+	// 動物の更新処理
+	UpdateAnimal();
+
 	// ゴールの更新処理
 	UpdateGoal();
 
@@ -192,7 +198,7 @@ void UpdateGame(void)
 	// 3D空間UIの更新処理
 	UpdateUIManager();
 
-	// 
+	// 吹き出しの更新処理
 	UpdateMagicBubble();
 
 	// 時計の更新処理
@@ -279,6 +285,9 @@ void DrawGame(void)
 
 	// 塀の描画処理
 	DrawBrickWall();
+
+	// 動物の描画処理
+	DrawAnimal();
 
 	// オブジェクトの描画処理（仮）
 	DrawObject();
