@@ -31,6 +31,7 @@
 //*****************************************************************************
 LPDIRECT3DTEXTURE9 g_pTextureBuffGrain = {};		// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffGrain = NULL;		// 頂点バッファへのポインタ
+LPDIRECT3DINDEXBUFFER9 g_pIdxBuffGrain = NULL;
 Grain g_aGrain[MAX_GRAIN];							// 文字の情報
 int g_aNumGrainIdx[MAX_GRAIN];						// 使用している文字のインデックス
 int g_nNumGrain;									// 使用している文字の数
@@ -45,8 +46,8 @@ void InitGrain(void)
 	Grain* pGrain = &g_aGrain[0];
 
 	// テクスチャ読み込み
-	D3DXCreateTextureFromFile(pDevice, 
-		"data/TEXTURE/grain.jpg", 
+	D3DXCreateTextureFromFile(pDevice,
+		"data/TEXTURE/grain.jpg",
 		&g_pTextureBuffGrain);
 
 	// 初期化
@@ -55,10 +56,10 @@ void InitGrain(void)
 	g_nNumGrain = 0;
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * MAX_GRAIN * 4, 
-		D3DUSAGE_WRITEONLY, 
-		FVF_VERTEX_3D, 
-		D3DPOOL_MANAGED, 
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * MAX_GRAIN * 4,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
 		&g_pVtxBuffGrain, NULL);
 
 	VERTEX_3D* pVtx;    // 頂点情報の設定
@@ -96,6 +97,34 @@ void InitGrain(void)
 	}
 
 	g_pVtxBuffGrain->Unlock();
+
+	// インデックスバッファの設定
+	pDevice->CreateIndexBuffer(sizeof(WORD) * (MAX_GRAIN * (4 + 2)),
+		D3DUSAGE_WRITEONLY,
+		D3DFMT_INDEX16,
+		D3DPOOL_MANAGED,
+		&g_pIdxBuffGrain,
+		NULL);
+
+	WORD* pIdx;		// インデックス情報へのポインタ
+
+	// インデックスバッファをロックし、頂点情報へのポインタを取得
+	g_pIdxBuffGrain->Lock(0, 0, (void**)&pIdx, 0);
+
+	for (int nCntIdx = 0; nCntIdx < MAX_GRAIN * 4; nCntIdx += 4)
+	{
+		pIdx[0] = nCntIdx + 2;
+		pIdx[1] = nCntIdx;
+		pIdx[2] = nCntIdx + 1;
+		pIdx[3] = nCntIdx + 2;
+		pIdx[4] = nCntIdx + 1;
+		pIdx[5] = nCntIdx + 3;
+
+		pIdx += 6;
+	}
+
+	// インデックスバッファをアンロックする
+	g_pIdxBuffGrain->Unlock();
 }
 
 //======================================================================================
@@ -125,6 +154,11 @@ void UninitGrain(void)
 void UpdateGrain(void)
 {
 	Grain* pGrain = &g_aGrain[0];					// 文字へのポインタ
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	D3DXMATRIX mtxTrans, mtxView;
+
+	// ビューマトリックスを取得
+	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
 	for (; g_nNumGrain < MAX_GRAIN;)
 	{// 常に最大数を維持する
@@ -182,11 +216,31 @@ void UpdateGrain(void)
 			continue;
 		}
 
+		//ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&pGrain->mtxWorld);
+
+		// 文字をカメラに対して正面に向ける
+		D3DXMatrixInverse(&pGrain->mtxWorld, NULL, &mtxView);	//逆行列を求める
+
+		pGrain->mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
+		pGrain->mtxWorld._42 = 0.0f;
+		pGrain->mtxWorld._43 = 0.0f;
+
+		//位置を反映
+		D3DXMatrixTranslation(&mtxTrans, pGrain->pos.x, pGrain->pos.y, pGrain->pos.z);
+		D3DXMatrixMultiply(&pGrain->mtxWorld, &pGrain->mtxWorld, &mtxTrans);
+
 		//頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3(-pGrain->fRadius, pGrain->fRadius, 0.0f);
 		pVtx[1].pos = D3DXVECTOR3(pGrain->fRadius, pGrain->fRadius, 0.0f);
 		pVtx[2].pos = D3DXVECTOR3(-pGrain->fRadius, -pGrain->fRadius, 0.0f);
 		pVtx[3].pos = D3DXVECTOR3(pGrain->fRadius, -pGrain->fRadius, 0.0f);
+
+		//頂点座標の設定
+		pVtx[0].pos = *D3DXVec3TransformCoord(&pVtx[0].pos, &pVtx[0].pos, &pGrain->mtxWorld);
+		pVtx[1].pos = *D3DXVec3TransformCoord(&pVtx[1].pos, &pVtx[1].pos, &pGrain->mtxWorld);
+		pVtx[2].pos = *D3DXVec3TransformCoord(&pVtx[2].pos, &pVtx[2].pos, &pGrain->mtxWorld);
+		pVtx[3].pos = *D3DXVec3TransformCoord(&pVtx[3].pos, &pVtx[3].pos, &pGrain->mtxWorld);
 
 		//頂点カラーの設定
 		pVtx[0].col = pGrain->col;
@@ -217,6 +271,7 @@ void DrawGrain(void)
 
 	Grain* pGrain = &g_aGrain[0];					// 文字へのポインタ
 	D3DXMATRIX mtxRot, mtxTrans;					// 計算用マトリックス
+	D3DXMATRIX mtx;
 	D3DXMATRIX mtxView;								// ビューマトリックス
 
 	SetFogEnable(false);		// 霧を消す
@@ -231,45 +286,41 @@ void DrawGrain(void)
 	// Zテストを無効にする
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);		// Zバッファ更新の有効/無効の設定
 
-	for (int nCntGrain = 0; nCntGrain < g_nNumGrain; nCntGrain++, pGrain++)
-	{
-		if (pGrain->bUse == false)
-		{
-			PrintDebugProc("データ異常発生中 : grain\n");
-		}
+	//ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&mtx);
 
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&pGrain->mtxWorld);
+	////ビューマトリックスを取得
+	//pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
-		// ビューマトリックスを取得
-		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+	////エフェクトをカメラに対して正面に向ける
+	//D3DXMatrixInverse(&mtx, NULL, &mtxView);	//逆行列を求める
 
-		// 文字をカメラに対して正面に向ける
-		D3DXMatrixInverse(&pGrain->mtxWorld, NULL, &mtxView);	//逆行列を求める
+	//mtx._41 = 0.0f;		//マトリックス(行列)の内容
+	//mtx._42 = 0.0f;
+	//mtx._43 = 0.0f;
 
-		pGrain->mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
-		pGrain->mtxWorld._42 = 0.0f;
-		pGrain->mtxWorld._43 = 0.0f;
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &mtx);
 
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, pGrain->pos.x, pGrain->pos.y, pGrain->pos.z);
-		D3DXMatrixMultiply(&pGrain->mtxWorld, &pGrain->mtxWorld, &mtxTrans);
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, g_pVtxBuffGrain, 0, sizeof(VERTEX_3D));
 
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &pGrain->mtxWorld);
+	// インデックスバッファをデータストリームに設定
+	pDevice->SetIndices(g_pIdxBuffGrain);
 
-		// 頂点バッファをデータストリームに設定
-		pDevice->SetStreamSource(0, g_pVtxBuffGrain, 0, sizeof(VERTEX_3D));
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
 
-		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_3D);
+	// テクスチャの設定
+	pDevice->SetTexture(0, g_pTextureBuffGrain);
 
-		// テクスチャの設定
-		pDevice->SetTexture(0, g_pTextureBuffGrain);
-
-		// 文字の描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntGrain * 4, 2);
-	}
+	// 文字の描画
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+		0,
+		0,
+		g_nNumGrain * 4,
+		0,
+		g_nNumGrain * 2);
 
 	// Zテストを有効にする
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
