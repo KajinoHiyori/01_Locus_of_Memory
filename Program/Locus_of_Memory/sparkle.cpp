@@ -31,6 +31,7 @@
 //*****************************************************************************
 LPDIRECT3DTEXTURE9 g_pTextureBuffSparkle = {};		// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffSparkle = NULL;	// 頂点バッファへのポインタ
+LPDIRECT3DINDEXBUFFER9 g_pIdxBuffSparkle = NULL;
 Sparkle g_aSparkle[MAX_SPARKLE];					// 粒の情報
 int g_aNumSparkleIdx[MAX_SPARKLE];					// 使用している粒のインデックス
 int g_nNumSparkle;									// 使用している粒の数
@@ -45,8 +46,8 @@ void InitSparkle(void)
 	Sparkle* pSparkle = &g_aSparkle[0];
 
 	// テクスチャ読み込み
-	D3DXCreateTextureFromFile(pDevice, 
-		"data/TEXTURE/EFFECT/effect000.jpg", 
+	D3DXCreateTextureFromFile(pDevice,
+		"data/TEXTURE/EFFECT/effect000.jpg",
 		&g_pTextureBuffSparkle);
 
 	// 初期化
@@ -55,10 +56,10 @@ void InitSparkle(void)
 	g_nNumSparkle = 0;
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * MAX_SPARKLE * 4, 
-		D3DUSAGE_WRITEONLY, 
-		FVF_VERTEX_3D, 
-		D3DPOOL_MANAGED, 
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * MAX_SPARKLE * 4,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_3D,
+		D3DPOOL_MANAGED,
 		&g_pVtxBuffSparkle, NULL);
 
 	VERTEX_3D* pVtx;    // 頂点情報の設定
@@ -96,6 +97,34 @@ void InitSparkle(void)
 	}
 
 	g_pVtxBuffSparkle->Unlock();
+
+	// インデックスバッファの設定
+	pDevice->CreateIndexBuffer(sizeof(WORD) * (MAX_SPARKLE * (4 + 2)),
+		D3DUSAGE_WRITEONLY,
+		D3DFMT_INDEX16,
+		D3DPOOL_MANAGED,
+		&g_pIdxBuffSparkle,
+		NULL);
+
+	WORD* pIdx;		// インデックス情報へのポインタ
+
+	// インデックスバッファをロックし、頂点情報へのポインタを取得
+	g_pIdxBuffSparkle->Lock(0, 0, (void**)&pIdx, 0);
+
+	for (int nCntIdx = 0; nCntIdx < MAX_SPARKLE * 4; nCntIdx += 4)
+	{
+		pIdx[0] = nCntIdx + 2;
+		pIdx[1] = nCntIdx;
+		pIdx[2] = nCntIdx + 1;
+		pIdx[3] = nCntIdx + 2;
+		pIdx[4] = nCntIdx + 1;
+		pIdx[5] = nCntIdx + 3;
+
+		pIdx += 6;
+	}
+
+	// インデックスバッファをアンロックする
+	g_pIdxBuffSparkle->Unlock();
 }
 
 //=============================================================================
@@ -125,6 +154,11 @@ void UninitSparkle(void)
 void UpdateSparkle(void)
 {
 	Sparkle* pSparkle = &g_aSparkle[0];					// 粒へのポインタ
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
+	D3DXMATRIX mtxTrans, mtxView;
+
+	// ビューマトリックスを取得
+	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
 	for (; g_nNumSparkle < MAX_SPARKLE;)
 	{// 常に最大数を維持する
@@ -182,11 +216,31 @@ void UpdateSparkle(void)
 			continue;
 		}
 
+		//ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&pSparkle->mtxWorld);
+
+		// 粒をカメラに対して正面に向ける
+		D3DXMatrixInverse(&pSparkle->mtxWorld, NULL, &mtxView);	// 逆行列を求める
+
+		pSparkle->mtxWorld._41 = 0.0f;		// マトリックス(行列)の内容
+		pSparkle->mtxWorld._42 = 0.0f;
+		pSparkle->mtxWorld._43 = 0.0f;
+
+		//位置を反映
+		D3DXMatrixTranslation(&mtxTrans, pSparkle->pos.x, pSparkle->pos.y, pSparkle->pos.z);
+		D3DXMatrixMultiply(&pSparkle->mtxWorld, &pSparkle->mtxWorld, &mtxTrans);
+
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3(-pSparkle->fRadius, pSparkle->fRadius, 0.0f);
 		pVtx[1].pos = D3DXVECTOR3(pSparkle->fRadius, pSparkle->fRadius, 0.0f);
 		pVtx[2].pos = D3DXVECTOR3(-pSparkle->fRadius, -pSparkle->fRadius, 0.0f);
 		pVtx[3].pos = D3DXVECTOR3(pSparkle->fRadius, -pSparkle->fRadius, 0.0f);
+
+		//頂点座標の設定
+		pVtx[0].pos = *D3DXVec3TransformCoord(&pVtx[0].pos, &pVtx[0].pos, &pSparkle->mtxWorld);
+		pVtx[1].pos = *D3DXVec3TransformCoord(&pVtx[1].pos, &pVtx[1].pos, &pSparkle->mtxWorld);
+		pVtx[2].pos = *D3DXVec3TransformCoord(&pVtx[2].pos, &pVtx[2].pos, &pSparkle->mtxWorld);
+		pVtx[3].pos = *D3DXVec3TransformCoord(&pVtx[3].pos, &pVtx[3].pos, &pSparkle->mtxWorld);
 
 		// 頂点カラーの設定
 		pVtx[0].col = pSparkle->col;
@@ -211,6 +265,7 @@ void DrawSparkle(void)
 
 	Sparkle* pSparkle = &g_aSparkle[0];				// 粒へのポインタ
 	D3DXMATRIX mtxRot, mtxTrans;					// 計算用マトリックス
+	D3DXMATRIX mtx;
 	D3DXMATRIX mtxView;								// ビューマトリックス
 
 	SetFogEnable(false);		// 霧を消す
@@ -225,45 +280,41 @@ void DrawSparkle(void)
 	//// Zテストを無効にする
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);		// Zバッファ更新の有効/無効の設定
 
-	for (int nCntSparkle = 0; nCntSparkle < g_nNumSparkle; nCntSparkle++, pSparkle++)
-	{
-		if (pSparkle->bUse == false)
-		{
-			PrintDebugProc("データ異常発生中 : sparkle\n");
-		}
+	//ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&mtx);
 
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&pSparkle->mtxWorld);
+	////ビューマトリックスを取得
+	//pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
-		// ビューマトリックスを取得
-		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+	////エフェクトをカメラに対して正面に向ける
+	//D3DXMatrixInverse(&mtx, NULL, &mtxView);	//逆行列を求める
 
-		// 粒をカメラに対して正面に向ける
-		D3DXMatrixInverse(&pSparkle->mtxWorld, NULL, &mtxView);	// 逆行列を求める
+	//mtx._41 = 0.0f;		//マトリックス(行列)の内容
+	//mtx._42 = 0.0f;
+	//mtx._43 = 0.0f;
 
-		pSparkle->mtxWorld._41 = 0.0f;		// マトリックス(行列)の内容
-		pSparkle->mtxWorld._42 = 0.0f;
-		pSparkle->mtxWorld._43 = 0.0f;
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &mtx);
 
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, pSparkle->pos.x, pSparkle->pos.y, pSparkle->pos.z);
-		D3DXMatrixMultiply(&pSparkle->mtxWorld, &pSparkle->mtxWorld, &mtxTrans);
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, g_pVtxBuffSparkle, 0, sizeof(VERTEX_3D));
 
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &pSparkle->mtxWorld);
+	// インデックスバッファをデータストリームに設定
+	pDevice->SetIndices(g_pIdxBuffSparkle);
 
-		// 頂点バッファをデータストリームに設定
-		pDevice->SetStreamSource(0, g_pVtxBuffSparkle, 0, sizeof(VERTEX_3D));
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
 
-		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_3D);
+	// テクスチャの設定
+	pDevice->SetTexture(0, g_pTextureBuffSparkle);
 
-		// テクスチャの設定
-		pDevice->SetTexture(0, g_pTextureBuffSparkle);
-
-		// 粒の描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntSparkle * 4, 2);
-	}
+	// 粒の描画
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+		0,
+		0,
+		g_nNumSparkle * 4,
+		0,
+		g_nNumSparkle * 2);
 
 	// Zテストを有効にする
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
