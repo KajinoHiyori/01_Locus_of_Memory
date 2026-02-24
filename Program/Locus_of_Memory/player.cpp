@@ -34,7 +34,6 @@
 #define LENGTH			(50.0f)				// フィールドの範囲
 #define BLENDFRAME		(10)				// モーションブレンドのフレーム数
 #define POS				(D3DXVECTOR3(0.0f, 50.0f, 0.0f))	// プレイヤーの位置
-#define DEFALT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// xyzが0.0fの場合
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 基本の法線
 #define INERTIA			(0.1f)								// 慣性
 #define FLOATSPEED		(0.7625f)							// 浮遊速度
@@ -69,16 +68,21 @@ void InitPlayer(void)
 	// 初期化
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		g_aPlayer[nCntPlayer].pos = DEFALT;
-		g_aPlayer[nCntPlayer].posOld = DEFALT;
-		g_aPlayer[nCntPlayer].rot = DEFALT;
-		g_aPlayer[nCntPlayer].rotDest = DEFALT;
-		g_aPlayer[nCntPlayer].move = DEFALT;
-		g_aPlayer[nCntPlayer].nIdxShadow = -1;
-		g_aPlayer[nCntPlayer].fSpeed = MOVE;
-		g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
-		g_aPlayer[nCntPlayer].bUse = false;
-		g_aPlayer[nCntPlayer].bJump = false;
+		g_aPlayer[nCntPlayer].pos			= INIT_D3DXVEC3;
+		g_aPlayer[nCntPlayer].posOld		= INIT_D3DXVEC3;
+		g_aPlayer[nCntPlayer].rot			= INIT_D3DXVEC3;
+		g_aPlayer[nCntPlayer].rotDest		= INIT_D3DXVEC3;
+		g_aPlayer[nCntPlayer].move			= INIT_D3DXVEC3;
+		g_aPlayer[nCntPlayer].nIdxShadow	= -1;
+		g_aPlayer[nCntPlayer].fSpeed		= MOVE;
+		g_aPlayer[nCntPlayer].state			= PLAYERSTATE_NORMAL;
+		g_aPlayer[nCntPlayer].bKey1			= false;
+		g_aPlayer[nCntPlayer].bKey2			= false;
+		g_aPlayer[nCntPlayer].bKey3			= false;
+		g_aPlayer[nCntPlayer].bUse			= false;
+		g_aPlayer[nCntPlayer].bJump			= false;
+		g_aPlayer[nCntPlayer].motion.motionTypeBlend = (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL;
+		g_aPlayer[nCntPlayer].motion.motionType = (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL;
 	}
 }
 
@@ -347,6 +351,12 @@ void UpdatePlayer(void)
 		g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * fInertia;
 		g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * fInertia;
 
+		// ジャンプモーションから着地モーションへの切り替え
+		if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING && g_aPlayer[nCntPlayer].motion.nKey + 1 >= g_aPlayer[nCntPlayer].motion.nNumKey)
+		{
+			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+		}
+
 		// モーションの更新処理
 		UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData);
 
@@ -381,164 +391,6 @@ void DrawPlayer(void)
 	D3DXMATERIAL*		pMat;						// マテリアルデータへのポインタ
 	Player*				pPlayer = &g_aPlayer[0];	// プレイヤーのポインタを取得
 
-#if 0
-	// 影の描画用変数
-	D3DXMATRIX	mtxShadow;		// シャドウマトリックス
-	D3DLIGHT9	light;			// ライト情報
-	D3DXVECTOR4	posLight;		// ライトの位置
-	D3DXVECTOR3	pos, normal;	// 平面上の任意の点(playerの原点)、法線ベクトル
-	D3DXPLANE	plane;			// 平面情報
-
-	// ライトの位置を設定
-	pDevice->GetLight(0, &light);
-	posLight = D3DXVECTOR4(-light.Direction.x, -light.Direction.y, -light.Direction.z, 0.0f);
-
-	// 平面情報を設定
-	pos = pPlayer->pos;
-	normal = NORMAL_PLANE;
-
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
-	{
-		if (pPlayer->bUse == false)
-		{
-			continue;
-		}
-
-		// 影の描画
-		{
-			// 全モデル(パーツ)の描画
-			for (int nCntOffSetModel = 0; nCntOffSetModel < pPlayer->pModelData->nNumModel; nCntOffSetModel++)
-			{
-				D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
-				D3DXMATRIX mtxParent;								// 親のマトリックス
-
-				// シャドウマトリックスの初期化
-				D3DXMatrixIdentity(&mtxShadow);
-
-				// シャドウマトリックスの作成
-				D3DXMatrixShadow(&mtxShadow, &posLight, &plane);
-				D3DXMatrixMultiply(&mtxShadow, &pPlayer->mtxWorld, &mtxShadow);
-
-				// ワールドマトリックスの設定
-				pDevice->SetTransform(D3DTS_WORLD, &mtxShadow);
-
-				// 現在のマテリアルを取得
-				pDevice->GetMaterial(&matDef);
-
-				// パーツの「親のマトリックス」を設定
-				if (pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent != -1)
-				{// 親モデルがある場合
-					mtxParent = pPlayer->pModelData->aModel[pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent].mtxWorld;
-				}
-				else
-				{// 親モデルがない場合
-					mtxParent = pPlayer->mtxWorld;
-				}
-
-				// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
-				D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
-					&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
-					&mtxShadow);
-
-				// パーツのワールドマトリックスを設定
-				pDevice->SetTransform(D3DTS_WORLD, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
-
-				// マテリアルデータへのポインタを取得
-				pMat = (D3DXMATERIAL*)pPlayer->pModelData->aModel[nCntOffSetModel].pBuffMat->GetBufferPointer();
-
-				for (int nCntMat = 0; nCntMat < (int)pPlayer->pModelData->aModel[nCntOffSetModel].dwNumMat; nCntMat++)
-				{
-					// マテリアルの設定
-					pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
-
-					// テクスチャの設定
-					pDevice->SetTexture(0, pPlayer->pModelData->aModel[nCntOffSetModel].apTexture[nCntMat]);
-
-					// プレイヤー(パーツ)の描画
-					pPlayer->pModelData->aModel[nCntOffSetModel].pMesh->DrawSubset(nCntMat);
-				}
-			}
-
-			// 保存していたマテリアルを戻す
-			pDevice->SetMaterial(&matDef);
-		}
-
-		// プレイヤーの描画
-		{
-			// ワールドマトリックスの初期化
-			D3DXMatrixIdentity(&pPlayer->mtxWorld);
-
-			// 向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, pPlayer->rot.y, pPlayer->rot.x, pPlayer->rot.z);
-			D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxRot);
-
-			// 位置を反映
-			D3DXMatrixTranslation(&mtxTrans, pPlayer->pos.x, pPlayer->pos.y, pPlayer->pos.z);
-			D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxTrans);
-
-			// ワールドマトリックスの設定
-			pDevice->SetTransform(D3DTS_WORLD, &pPlayer->mtxWorld);
-
-			// 現在のマテリアルを取得
-			pDevice->GetMaterial(&matDef);
-
-			// 全モデル(パーツ)の描画
-			for (int nCntOffSetModel = 0; nCntOffSetModel < pPlayer->pModelData->nNumModel; nCntOffSetModel++)
-			{
-				D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
-				D3DXMATRIX mtxParent;								// 親のマトリックス
-
-				// パーツのワールドマトリックスを初期化
-				D3DXMatrixIdentity(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
-
-				// パーツの向きを反映
-				D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].rot.y, pPlayer->pModelData->aModel[nCntOffSetModel].rot.x, pPlayer->pModelData->aModel[nCntOffSetModel].rot.z);
-				D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxRotOffSetModel);
-
-				// パーツの位置を反映(オフセット)
-				D3DXMatrixTranslation(&mtxTransOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].pos.x, pPlayer->pModelData->aModel[nCntOffSetModel].pos.y, pPlayer->pModelData->aModel[nCntOffSetModel].pos.z);
-				D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxTransOffSetModel);
-
-				// パーツの「親のマトリックス」を設定
-				if (pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent != -1)
-				{// 親モデルがある場合
-					mtxParent = pPlayer->pModelData->aModel[pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent].mtxWorld;
-				}
-				else
-				{// 親モデルがない場合
-					mtxParent = pPlayer->mtxWorld;
-				}
-
-				// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
-				D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
-					&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
-					&mtxParent);
-
-				// パーツのワールドマトリックスを設定
-				pDevice->SetTransform(D3DTS_WORLD, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
-
-				// マテリアルデータへのポインタを取得
-				pMat = (D3DXMATERIAL*)pPlayer->pModelData->aModel[nCntOffSetModel].pBuffMat->GetBufferPointer();
-
-				for (int nCntMat = 0; nCntMat < (int)pPlayer->pModelData->aModel[nCntOffSetModel].dwNumMat; nCntMat++)
-				{
-					// マテリアルの設定
-					pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
-
-					// テクスチャの設定
-					pDevice->SetTexture(0, pPlayer->pModelData->aModel[nCntOffSetModel].apTexture[nCntMat]);
-
-					// プレイヤー(パーツ)の描画
-					pPlayer->pModelData->aModel[nCntOffSetModel].pMesh->DrawSubset(nCntMat);
-				}
-			}
-
-			// 保存していたマテリアルを戻す
-			pDevice->SetMaterial(&matDef);
-		}
-	}
-#endif // 0
-
 	// 影の描画用変数
 	D3DXMATRIX mtxShadow;		// シャドウマトリックス
 	D3DLIGHT9 light;			// ライトの情報
@@ -556,10 +408,6 @@ void DrawPlayer(void)
 	pos = D3DXVECTOR3(0.0f, 0.05f, 0.0f);		// 高さが0ならなんでもいい
 	normal = NORMAL_PLANE;
 	D3DXPlaneFromPointNormal(&plane, &pos, &normal);
-
-	//// Zテストを無効にする
-	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
@@ -613,10 +461,6 @@ void DrawPlayer(void)
 		pDevice->SetMaterial(&matDef);
 	}
 
-	//// Zテストを有効にする
-	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-
 	pPlayer = &g_aPlayer[0];
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
@@ -628,77 +472,6 @@ void DrawPlayer(void)
 
 		// 描画関数
 		DrawParentModel(&pPlayer->pos, &pPlayer->rot, &pPlayer->mtxWorld, pPlayer->pModelData, &pPlayer->OffSetData);
-
-		//// ワールドマトリックスの初期化
-		//D3DXMatrixIdentity(&pPlayer->mtxWorld);
-
-		//// 向きを反映
-		//D3DXMatrixRotationYawPitchRoll(&mtxRot, pPlayer->rot.y, pPlayer->rot.x, pPlayer->rot.z);
-		//D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxRot);
-
-		//// 位置を反映
-		//D3DXMatrixTranslation(&mtxTrans, pPlayer->pos.x, pPlayer->pos.y, pPlayer->pos.z);
-		//D3DXMatrixMultiply(&pPlayer->mtxWorld, &pPlayer->mtxWorld, &mtxTrans);
-
-		//// ワールドマトリックスの設定
-		//pDevice->SetTransform(D3DTS_WORLD, &pPlayer->mtxWorld);
-
-		//// 現在のマテリアルを取得
-		//pDevice->GetMaterial(&matDef);
-
-		//// 全モデル(パーツ)の描画
-		//for (int nCntOffSetModel = 0; nCntOffSetModel < pPlayer->pModelData->nNumModel; nCntOffSetModel++)
-		//{
-		//	D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
-		//	D3DXMATRIX mtxParent;								// 親のマトリックス
-
-		//	// パーツのワールドマトリックスを初期化
-		//	D3DXMatrixIdentity(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
-
-		//	// パーツの向きを反映
-		//	D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].rot.y, pPlayer->pModelData->aModel[nCntOffSetModel].rot.x, pPlayer->pModelData->aModel[nCntOffSetModel].rot.z);
-		//	D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxRotOffSetModel);
-
-		//	// パーツの位置を反映(オフセット)
-		//	D3DXMatrixTranslation(&mtxTransOffSetModel, pPlayer->pModelData->aModel[nCntOffSetModel].pos.x, pPlayer->pModelData->aModel[nCntOffSetModel].pos.y, pPlayer->pModelData->aModel[nCntOffSetModel].pos.z);
-		//	D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld, &mtxTransOffSetModel);
-
-		//	// パーツの「親のマトリックス」を設定
-		//	if (pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent != -1)
-		//	{// 親モデルがある場合
-		//		mtxParent = pPlayer->pModelData->aModel[pPlayer->pModelData->aModel[nCntOffSetModel].nIdxModelParent].mtxWorld;
-		//	}
-		//	else
-		//	{// 親モデルがない場合
-		//		mtxParent = pPlayer->mtxWorld;
-		//	}
-
-		//	// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
-		//	D3DXMatrixMultiply(&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
-		//		&pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld,
-		//		&mtxParent);
-
-		//	// パーツのワールドマトリックスを設定
-		//	pDevice->SetTransform(D3DTS_WORLD, &pPlayer->pModelData->aModel[nCntOffSetModel].mtxWorld);
-
-		//	// マテリアルデータへのポインタを取得
-		//	pMat = (D3DXMATERIAL*)pPlayer->pModelData->aModel[nCntOffSetModel].pBuffMat->GetBufferPointer();
-
-		//	for (int nCntMat = 0; nCntMat < (int)pPlayer->pModelData->aModel[nCntOffSetModel].dwNumMat; nCntMat++)
-		//	{
-		//		// マテリアルの設定
-		//		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
-
-		//		// テクスチャの設定
-		//		pDevice->SetTexture(0, pPlayer->pModelData->aModel[nCntOffSetModel].apTexture[nCntMat]);
-
-		//		// プレイヤー(パーツ)の描画
-		//		pPlayer->pModelData->aModel[nCntOffSetModel].pMesh->DrawSubset(nCntMat);
-		//	}
-		//}
-
-		//// 保存していたマテリアルを戻す
-		//pDevice->SetMaterial(&matDef);
 	}
 }
 
