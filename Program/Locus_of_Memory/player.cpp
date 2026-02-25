@@ -20,6 +20,7 @@
 #include "goal.h"
 
 // マクロ定義
+#define MAX_SHADOW		(1)					// 影テクスチャの最大数
 #define MAX_MODEL		(1)					// モデルの最大数
 #define MOVE			(0.5f)				// 移動量
 #define ROTATE			(0.9f)				// 回転量
@@ -42,7 +43,14 @@
 #define ACCELEMOVE		(0.175f)							// 加速中移動量
 #define ACCELEINERTIA	(0.025f)							// 加速中
 
-// グローバル変数
+// テクスチャの読み込み
+const char* c_apFilenamePlayer[MAX_SHADOW] =
+{
+	"data\\TEXTURE\\shadow_col.png",
+};
+
+//グローバル変数
+LPDIRECT3DTEXTURE9	g_apTextureBuffPlayer[MAX_SHADOW] = {};
 LPD3DXMESH			g_pMeshPlayer[MAX_PLAYER] = {};				// メッシュ(頂点情報)へのポインタ
 LPD3DXBUFFER		g_pBuffMatPlayer[MAX_PLAYER] = {};			// マテリアルへのポインタ
 DWORD				g_dwNumMatPlayer[MAX_PLAYER] = {0, 0};		// マテリアルの数
@@ -56,6 +64,12 @@ void InitPlayer(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	MODE mode = GetMode();	// 現在のモードを取得
+
+	//テクスチャ読み込み
+	for (int nCntShadow = 0; nCntShadow < MAX_SHADOW; nCntShadow++)
+	{
+		D3DXCreateTextureFromFile(pDevice, c_apFilenamePlayer[nCntShadow], &g_apTextureBuffPlayer[nCntShadow]);
+	}
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
@@ -442,15 +456,15 @@ void DrawPlayer(void)
 			{
 				mat = pMat[nCntMat];
 
-				mat.MatD3D.Diffuse.r = 0.0f;
-				mat.MatD3D.Diffuse.g = 0.0f;
-				mat.MatD3D.Diffuse.b = 0.0f;
+				//mat.MatD3D.Diffuse.r = 0.0f;
+				//mat.MatD3D.Diffuse.g = 0.0f;
+				//mat.MatD3D.Diffuse.b = 0.0f;
 
 				// マテリアルの設定
 				pDevice->SetMaterial(&mat.MatD3D);
 
 				// テクスチャの設定
-				pDevice->SetTexture(0, pPlayer->pModelData->aModel[nCntOffSetModel].apTexture[nCntMat]);
+				pDevice->SetTexture(0, g_apTextureBuffPlayer[0]);
 
 				// プレイヤー(パーツ)の描画
 				pPlayer->pModelData->aModel[nCntOffSetModel].pMesh->DrawSubset(nCntMat);
