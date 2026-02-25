@@ -1084,11 +1084,11 @@ CUSTOMMESHSET
 	ROT = 0.0 0.0 0.0
 END_CUSTOMMESHSET
 
-CUSTOMMESHSET
+FIELDSET
 	CUSTOMMESH_FILENAME = data/SCRIPTS/MESH/Field.bin
 	POS = -5800.0 0.0 6000.0
 	ROT = 0.0 0.0 0.0
-END_CUSTOMMESHSET
+END_FIELDSET
 
 #------------------------------------------------------------------------------
 # ÉvÉåÉCÉÑÅ[èÓïÒ

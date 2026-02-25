@@ -37,6 +37,7 @@
 #include "grain.h"
 #include "sparkle.h"
 #include "animal.h"
+#include "field.h"
 
 // UI関連の初期化
 #include "uimanager.h"
@@ -203,6 +204,9 @@ void UpdateTutorial(void)
 
 	UpdateMeshField();
 
+	// フィールドの更新処理
+	UpdateField();
+
 	UpdateCustomMesh();
 
 	//UpdateMashwall();
@@ -301,6 +305,9 @@ void DrawTutorial(void)
 	//DrawMeshsky();
 
 	DrawMeshField();
+
+	// フィールドの描画処理
+	DrawField();
 
 	DrawCustomMesh();
 

@@ -36,6 +36,7 @@
 #include "custommesh.h"
 #include "vibration.h"
 #include "goal.h"
+#include "field.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -371,6 +372,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// メッシュフィールドの初期化処理
 	InitMeshField();
 
+	// フィールドの初期化処理
+	InitField();
+
 	// カスタムメッシュの初期化処理
 	InitCustomMesh();
 
@@ -446,6 +450,9 @@ void Uninit(void)
 
 	// メッシュフィールドの終了処理
 	UninitMeshField();
+
+	// フィールドの終了処理
+	UninitField();
 
 	// カスタムメッシュの終了処理
 	UninitCustomMesh();

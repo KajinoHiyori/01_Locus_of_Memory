@@ -39,6 +39,7 @@
 #include "goal.h"
 #include "custommesh.h"
 #include "animal.h"
+#include "field.h"
 
 // マクロ定義
 #define GAMEPOS_1P		(D3DXVECTOR3(-950.0f, 0.0f, -2800.0f))	// 1Pの位置[GAME]
@@ -162,6 +163,9 @@ void UpdateGame(void)
 	// メッシュフィールドの更新処理
 	UpdateMeshField();
 
+	// フィールドの更新処理
+	UpdateField();
+
 	// カスタムメッシュの更新処理
 	UpdateCustomMesh();
 
@@ -273,6 +277,9 @@ void DrawGame(void)
 {
 	// メッシュフィールドの描画処理
 	DrawMeshField();
+
+	// フィールドの描画処理
+	DrawField();
 
 	// カスタムメッシュの描画処理
 	DrawCustomMesh();

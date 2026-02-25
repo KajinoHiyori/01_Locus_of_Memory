@@ -12,6 +12,7 @@
 #include "magic.h"
 #include "custommesh.h"
 #include "goal.h"
+#include "field.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -60,6 +61,8 @@
 #define LOAD_ENDDROPMAGIC	"END_DROPMAGICSET"			// フィールド上魔法の情報読み込み終了
 #define LOAD_CUSTOMMESH		"CUSTOMMESHSET"				// カスタムメッシュの情報読み込み
 #define LOAD_ENDCUSTOMMESH	"END_CUSTOMMESHSET"			// カスタムメッシュの情報読み込み終了
+#define LOAD_FIELD			"FIELDSET"					// フィールドの情報読み込み
+#define LOAD_ENDFIELD		"END_FIELDSET"				// フィールドの情報読み込み終了
 
 //*****************************************************************************
 // グローバル変数
@@ -718,6 +721,60 @@ HRESULT LoadModel(const char* pModelFileName)
 				if (strcmp(aStrCpy, LOAD_ENDCUSTOMMESH) == 0)
 				{// END_CUSTOMMESHSETを読み込んだ
 					LoadCustomMesh(aMeshPath, pos, rot);
+
+					memset(aMeshPath, NULL, sizeof(aMeshPath));		// 文字列クリア
+					break;
+				}
+			}
+		}
+
+		if (strcmp(aStrCpy, LOAD_FIELD) == 0)
+		{// FIELDSETを読み込んだ
+			while (true)
+			{
+				memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+				memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+				(void)fgets(aStr, sizeof(aStr), pStageFile);	// 一列読み込み
+				LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+
+				if (strstr(aStr, LOAD_CUSTOMMESHFILE))
+				{// CUSTOMMESH_FILENAMEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%s", &aMeshPath);
+
+				}
+
+				if (strstr(aStr, LOAD_POS))
+				{// POSを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+
+					continue;
+				}
+
+				if (strstr(aStr, LOAD_ROT))
+				{// ROTを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
+
+					continue;
+				}
+
+				if (strcmp(aStrCpy, LOAD_ENDFIELD) == 0)
+				{// END_FIELDSETを読み込んだ
+					LoadFieldMesh(aMeshPath, pos, rot);
 
 					memset(aMeshPath, NULL, sizeof(aMeshPath));		// 文字列クリア
 					break;
