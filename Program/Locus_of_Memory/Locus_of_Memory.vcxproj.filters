@@ -231,6 +231,9 @@
     <ClCompile Include="startui.cpp">
       <Filter>start\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="field.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -370,6 +373,9 @@
     </ClInclude>
     <ClInclude Include="startui.h">
       <Filter>start\h</Filter>
+    </ClInclude>
+    <ClInclude Include="field.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
