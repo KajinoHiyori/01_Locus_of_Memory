@@ -7,12 +7,14 @@
 #include "animal.h"
 #include "debugproc.h"
 #include "motion.h"
+#include "input.h"
 
 // マクロ定義
 #define MAX_DRAGON	(10)	// ドラゴンの最大数
-#define FLY_POS		(D3DXVECTOR3(0.0f, 3000.0f, 3500.0f))	// ドラゴンの位置[飛竜]
-#define MOVERADIUS	(3000.0f)								// ドラゴンの移動周期[飛竜]
-#define FIRE_POS	(D3DXVECTOR3(690.0f, 0.0f, -5000.0f))	// ドラゴンの位置[火竜]
+#define FLY_POS		(D3DXVECTOR3(0.0f, 3000.0f, 3500.0f))		// ドラゴンの位置[飛竜]
+#define MOVERADIUS	(3000.0f)									// ドラゴンの移動周期[飛竜]
+#define FIRE_POS	(D3DXVECTOR3(2476.0f, 349.0f, -4812.0f))	// ドラゴンの位置[火竜]
+#define FIRE_ROT	(D3DXVECTOR3(0.0f, 2.60f, 0.0f))			// ドラゴンの角度[火竜]
 
 // ドラゴンの構造体
 typedef struct
@@ -66,13 +68,18 @@ void UpdateAnimal(void)
 		case DRAGONTYPE_FLYING:	// 飛竜
 			UpdateFlyDragon(nCntDragon);
 			break;
+
+		case DRAGONTYPE_FIRE:	// 火竜
+			UpdateFireDragon(nCntDragon);
+			break;
 		}
 
 		ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
 
 		// モーションの更新
-		UpdateMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData);
+		//UpdateMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData);
 		PrintDebugProc("ドラゴンの位置 : [%f, %f, %f]", pParentObject->pos.x, pParentObject->pos.y, pParentObject->pos.z);
+		PrintDebugProc("ドラゴンの角度 : [%f, %f, %f]\n", pParentObject->rot.x, pParentObject->rot.y, pParentObject->rot.z);
 	}
 }
 
@@ -105,17 +112,18 @@ void SetDragonType(int nCntDragon, DRAGONTYPE type)
 	if (g_aDragon[nCntDragon].type == DRAGONTYPE_FLYING)
 	{
 		pParentObject->pos = FLY_POS;
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
+		//SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_ACTION, true, false, 10);
 	}
 	else
 	{
 		pParentObject->pos = FIRE_POS;
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, false, true, 10);
+		pParentObject->rot = FIRE_ROT;
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, false, 10);
 	}
 }
 
 //===============================
-//	飛翔ドラゴンの更新
+//	飛竜の更新
 //===============================
 void UpdateFlyDragon(int nCntDragon)
 {
@@ -138,4 +146,45 @@ void UpdateFlyDragon(int nCntDragon)
 	pParentObject->rot.y = AngleNormalize(pParentObject->rot.y);
 
 	pParentObject->pos = posDest;
+}
+
+//===============================
+//	火竜の更新
+//===============================
+void UpdateFireDragon(int nCntDragon)
+{
+	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
+
+	if (GetKeyboardPress(DIK_F) == true)
+	{
+		pParentObject->pos.y += 0.5f;
+	}
+	if (GetKeyboardPress(DIK_G) == true)
+	{
+		pParentObject->pos.y -= 0.5f;
+	}
+	if (GetKeyboardPress(DIK_H) == true)
+	{
+		pParentObject->pos.x += 0.5f;
+	}
+	if (GetKeyboardPress(DIK_J) == true)
+	{
+		pParentObject->pos.x -= 0.5f;
+	}
+	if (GetKeyboardPress(DIK_K) == true)
+	{
+		pParentObject->pos.z += 0.5f;
+	}
+	if (GetKeyboardPress(DIK_L) == true)
+	{
+		pParentObject->pos.z -= 0.5f;
+	}
+	if (GetKeyboardPress(DIK_UPARROW) == true)
+	{
+		pParentObject->rot.y += 0.05f;
+	}
+	if (GetKeyboardPress(DIK_DOWNARROW) == true)
+	{
+		pParentObject->rot.y -= 0.05f;
+	}
 }

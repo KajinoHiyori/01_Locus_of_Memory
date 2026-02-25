@@ -29,5 +29,6 @@ void DrawAnimal(void);
 void SetDragon(int nIdx);
 void SetDragonType(int nCntDragon, DRAGONTYPE type);
 void UpdateFlyDragon(int nCntDragon);
+void UpdateFireDragon(int nCntDragon);
 
 #endif
