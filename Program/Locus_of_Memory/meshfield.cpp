@@ -64,7 +64,7 @@ void InitMeshField(void)
 	}
 
 	// ‚¢‚Á‚½‚ñ’¼
-	SetMeshField(D3DXVECTOR3(-5000.1f, 0.0f, 5000.1f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 500.0f, 500.0f, 20, 20, MESHFIELDTYPE_000);
+	//SetMeshField(D3DXVECTOR3(-5000.1f, 0.0f, 5000.1f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 500.0f, 500.0f, 20, 20, MESHFIELDTYPE_000);
 }
 
 //=============================================================================
