@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="2deffect.cpp" />
     <ClCompile Include="animal.cpp" />
     <ClCompile Include="battery.cpp" />
     <ClCompile Include="brickwall.cpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="vibration.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="2deffect.h" />
     <ClInclude Include="animal.h" />
     <ClInclude Include="battery.h" />
     <ClInclude Include="brickwall.h" />

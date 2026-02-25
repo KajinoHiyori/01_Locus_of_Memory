@@ -55,7 +55,7 @@ typedef struct
 // マクロ定義
 #define NUM_TITLEUI			(TITLEUITYPE_MAX)	// タイトルUIのレイヤー数
 #define SELECT_NUM			(3)			// 操作方法選択数
-#define LOGO_POS			(D3DXVECTOR3(350.0f, 200.0f, 0.0f))	// ロゴの位置
+#define LOGO_POS			(D3DXVECTOR3(350.0f, 100.0f, 0.0f))	// ロゴの位置
 #define LOGO_WIDTH			(300.0f)	// ロゴの横幅
 #define LOGO_HEIGHT			(75.0f)	// ロゴの縦幅
 #define SELECT_POS			(D3DXVECTOR3(1000.0f, 400.0f, 0.0f))	// セレクトボタンの開始位置
@@ -66,10 +66,10 @@ typedef struct
 // テクスチャの読み込み
 const char* c_apFilenameTitleUI[TITLEUITYPE_MAX] =
 {
-	"data\\TEXTURE\\title\\title_000.png",	// [TITLETEXT_TYPE_BG]
-	"data\\TEXTURE\\title\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
-	"data\\TEXTURE\\title\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
-	"data\\TEXTURE\\title\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
+	"data\\TEXTURE\\title\\title_000.png",	// [TITLEUITYPE_LOGO]
+	"data\\TEXTURE\\title\\title_001.png",	// [TITLEUITYPE_1PPLAY]
+	"data\\TEXTURE\\title\\title_002.png",	// [TITLEUITYPE_2PPLAY]
+	"data\\TEXTURE\\title\\title_003.png",	// [TITLEUITYPE_KEYBOARD]
 };
 
 // グローバル変数

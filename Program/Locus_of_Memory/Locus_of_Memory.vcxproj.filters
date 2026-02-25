@@ -234,6 +234,9 @@
     <ClCompile Include="field.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="2deffect.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -375,6 +378,9 @@
       <Filter>start\h</Filter>
     </ClInclude>
     <ClInclude Include="field.h">
+      <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="2deffect.h">
       <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
