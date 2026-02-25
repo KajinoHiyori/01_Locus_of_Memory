@@ -297,8 +297,10 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetDat
 		{
 			// キーを進める
 			pMotion->nCounterMotion = 0;	// カウンターリセット
-			if ((pMotion->nKey = (pMotion->nKey + 1) % pMotion->nNumKey) == 0 && pMotion->bLoopMotion == false)
-			{// キーが終着点まで来たかつループ状態じゃなければ
+			pMotion->nKey = (pMotion->nKey + 1) % pMotion->nNumKey;
+
+			if (pMotion->nKey == pMotion->nNumKey - 1 && pMotion->bLoopMotion == false)
+			{// 最後のキーに到達していたら
 				pMotion->bFinishMotion = true;					// 終了フラグ
 			}
 		}
