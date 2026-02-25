@@ -1024,7 +1024,7 @@ MODELSET
 END_MODELSET
 
 MAGICEVENTSET
-	POS = 0.0 0.0 -1000.0
+	POS = 690.0 0.0 -5000.0
 	RADIUS = 500.0
 	EVENT = 1
 END_MAGICEVENTSET
@@ -1050,6 +1050,12 @@ MODELSET
 	SHADOW = 1
 	COLLISION = 1
 END_MODELSET
+
+MAGICEVENTSET
+	POS = -130 0 -2400
+	RADIUS = 500.0
+	EVENT = 2
+END_MAGICEVENTSET
 
 #------------------------------------------------------------------------------
 # カスタムメッシュ

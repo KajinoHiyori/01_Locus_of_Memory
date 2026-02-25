@@ -772,6 +772,22 @@ HRESULT LoadModel(const char* pModelFileName)
 
 				if (strcmp(aStrCpy, LOAD_ENDMAGICEVENT) == 0)
 				{// END_MAGICEVENTSETを読み込んだ
+					
+					switch (nEvent)
+					{
+					case 1:	// HOUSE関連
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						break;
+
+					case 2:	// 橋関連
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						break;
+
+					default:	// イベント無し
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
+						break;
+					}
+#if 0
 					if (nEvent == 1)
 					{
 						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
@@ -780,6 +796,7 @@ HRESULT LoadModel(const char* pModelFileName)
 					{
 						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
 					}
+#endif
 					break;
 				}
 			}

@@ -46,7 +46,7 @@ bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type, int nIdx)
 }
 
 //========================================================================
-// 各魔法イベント処理
+// 各魔法イベント処理[HOUSE_000のイベント]
 //========================================================================
 bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 {
@@ -70,12 +70,19 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 	}
 }
 
+//========================================================================
+// 各魔法イベント処理[BRIDGEのイベント]
+//========================================================================
 bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 {
+	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+
 	switch (type)
 	{
 	case MAGICTYPE_TIMEREVERT:
-
+		pParentObject->EventType = EVENTTYPE_002_0;
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, false, 10);
 		return true;
 
 	case MAGICTYPE_COMBUSTION:
