@@ -42,8 +42,8 @@
 #include "field.h"
 
 // マクロ定義
-#define GAMEPOS_1P		(D3DXVECTOR3(-950.0f, 0.0f, -2800.0f))	// 1Pの位置[GAME]
-#define GAMEPOS_2P		(D3DXVECTOR3(-950.0f, 0.0f, -2770.0f))	// 2Pの位置[GAME]
+#define GAMEPOS_1P		(D3DXVECTOR3(-745.0f, 0.0f, -3427.0f))	// 1Pの位置[GAME]
+#define GAMEPOS_2P		(D3DXVECTOR3(-775.0f, 0.0f, -3427.0f))	// 2Pの位置[GAME]
 #define PLAYER_ROT		(D3DXVECTOR3(0.0f, -1.57f, 0.0f))	// プレイヤーの向き
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態

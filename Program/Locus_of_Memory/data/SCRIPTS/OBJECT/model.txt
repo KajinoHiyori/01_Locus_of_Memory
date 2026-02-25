@@ -1062,14 +1062,14 @@ END_MAGICEVENTSET
 #------------------------------------------------------------------------------
 MODELSET
 	PARENTTYPE = 7
-	POS = -3560.0 0.0 -2500.0
+	POS = -3000.0 0.0 -3235.0
 	ROT = 0 0 0
 	SHADOW = 1
 	COLLISION = 1
 END_MODELSET
 
 MAGICEVENTSET
-	POS = -3560.0 0.0 -2500.0
+	POS = -3000.0 0.0 -3235.0
 	RADIUS = 500.0
 	EVENT = 3
 END_MAGICEVENTSET

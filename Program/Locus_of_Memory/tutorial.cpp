@@ -49,8 +49,8 @@
 #include "battery.h"
 
 // マクロ定義
-#define TUTORIALPOS_1P	(D3DXVECTOR3(-3560.0f, 0.0f, -2500.0f))	// 1Pの位置[TUTORIAL]			
-#define TUTORIALPOS_2P	(D3DXVECTOR3(-3530.0f, 0.0f, -2500.0f))	// 2Pの位置[TUTORIAL]
+#define TUTORIALPOS_1P	(D3DXVECTOR3(-3185.0f, 0.0f, -3235.0f))	// 1Pの位置[TUTORIAL]			
+#define TUTORIALPOS_2P	(D3DXVECTOR3(-3555.0f, 0.0f, -3235.0f))	// 2Pの位置[TUTORIAL]
 
 TUTORIALSTATE g_TutorialState = TUTORIALSTATE_NONE;		// ゲームの状態
 int g_nCounterTutorialState = 0;				// 状態管理カウンター
