@@ -131,6 +131,7 @@ typedef struct
 	ModelData*		pModelData;	// モデルの情報
 	OffSetData		OffSetData;	// モーション中の階層構造情報
 	EVENTTYPE		EventType;	// イベントの種類
+	int				nEventIdx;	// イベントのインデックス
 	bool			bUse;		// 使用状態
 }ParentObject;
 

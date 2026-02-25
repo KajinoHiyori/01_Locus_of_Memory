@@ -95,10 +95,10 @@ typedef enum
 typedef enum MAGICEVENT
 {
 	MAGICEVENT_NONE = 0,		// ‚È‚É‚à‚È‚¢
-	MAGICEVENT_001,				// –¼Ì–¢’è
-	MAGICEVENT_002,				// –¼Ì–¢’è
-	MAGICEVENT_003,				// –¼Ì–¢’è
-	MAGICEVENT_004,				// –¼Ì–¢’è
+	MAGICEVENT_001,				// ‰Æ
+	MAGICEVENT_002,				// ‹´
+	MAGICEVENT_003,				// A•¨[¬’·/”RÄ]
+	MAGICEVENT_004,				// A•¨[Šª‚«–ß‚µ]
 	MAGICEVENT_005,				// –¼Ì–¢’è
 	MAGICEVENT_006,				// –¼Ì–¢’è
 	MAGICEVENT_007,				// –¼Ì–¢’è

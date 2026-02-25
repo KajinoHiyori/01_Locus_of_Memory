@@ -772,19 +772,33 @@ HRESULT LoadModel(const char* pModelFileName)
 
 				if (strcmp(aStrCpy, LOAD_ENDMAGICEVENT) == 0)
 				{// END_MAGICEVENTSETを読み込んだ
-					
+					ParentObject* pPalentObject = GetParentObjectInfo(nCntParentModel);
+
 					switch (nEvent)
 					{
 					case 1:	// HOUSE関連
 						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						pPalentObject->nEventIdx = nCntParentModel;
 						break;
 
 					case 2:	// 橋関連
 						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						pPalentObject->nEventIdx = nCntParentModel;
+						break;
+
+					case 3:	// 植物関連[燃焼/成長]
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						pPalentObject->nEventIdx = nCntParentModel;
+						break;
+
+					case 4:	// 植物関連[時戻し]
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						pPalentObject->nEventIdx = nCntParentModel;
 						break;
 
 					default:	// イベント無し
 						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
+						pPalentObject->nEventIdx = -1;
 						break;
 					}
 #if 0

@@ -4,11 +4,11 @@
 //	Author : SHUMA AIZU
 // 
 //=============================================================================
-
 #include "event.h"
 #include "object.h"
 #include "particle.h"
 #include "motion.h"
+#include "magic.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -98,24 +98,48 @@ bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 	}
 }
 
+//========================================================================
+// 各魔法イベント処理[PLANTのイベント][燃焼/成長]
+//========================================================================
 bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 {
+	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+
 	switch (type)
 	{
-	case MAGICTYPE_TIMEREVERT:
+#if 0
+	case MAGICTYPE_TIMEREVERT:	// 成長前に戻る
+		pParentObject->EventType = EVENTTYPE_003_0;
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
+		SetMagicLocus(MAGICEVENT_004, pParentObject->pos, 500.0f, pParentObject->nEventIdx);
+		return true;
+#endif
 
+	case MAGICTYPE_GROWTH:	// 成長させる
+		pParentObject->EventType = EVENTTYPE_003_1;
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
+		SetMagicLocus(MAGICEVENT_004, pParentObject->pos, 500.0f, pParentObject->nEventIdx);
 		return true;
 
-	case MAGICTYPE_GROWTH:
-
+	case MAGICTYPE_RAINPRAY:	// 成長させる
+		pParentObject->EventType = EVENTTYPE_003_1;
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
+		SetMagicLocus(MAGICEVENT_004, pParentObject->pos, 500.0f, pParentObject->nEventIdx);
 		return true;
 
-	case MAGICTYPE_COMBUSTION:
-		
+	case MAGICTYPE_COMBUSTION:	// 燃焼させる
+		pParentObject->EventType = EVENTTYPE_003_2;
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_RUN, false, false, 10);
 		return true;
 
-	case MAGICTYPE_FIREBALL:
-
+	case MAGICTYPE_FIREBALL:	// 燃焼させる
+		pParentObject->EventType = EVENTTYPE_003_2;
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_RUN, false, false, 10);
 		return true;
 
 	default:
@@ -123,20 +147,20 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 	}
 }
 
+//========================================================================
+// 各魔法イベント処理[PLANTのイベント][時戻し]
+//========================================================================
 bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 {
+	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+
 	switch (type)
 	{
-	case MAGICTYPE_FLASH:
-
-		return true;
-
-	case MAGICTYPE_COMBUSTION:
-
-		return true;
-
-	case MAGICTYPE_FIREBALL:
-
+	case MAGICTYPE_TIMEREVERT:	// 成長前に戻る
+		pParentObject->EventType = EVENTTYPE_003_0;
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_ACTION, false, false, 10);
+		SetMagicLocus(MAGICEVENT_003, pParentObject->pos, 500.0f, pParentObject->nEventIdx); 
 		return true;
 
 	default:
@@ -197,4 +221,14 @@ bool SetMagicEvent007(MAGICTYPE type, int nIdx)
 	default:
 		return false;
 	}
+}
+
+//========================================================================
+// イベントの設置
+//========================================================================
+void SetEvent(EVENTTYPE type, int nIdx)
+{
+	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+
+	pParentObject->EventType = type;
 }
