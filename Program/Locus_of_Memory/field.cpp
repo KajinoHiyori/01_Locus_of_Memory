@@ -241,7 +241,7 @@ void SetFieldMesh(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int nN
 		for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
 		{// ’¸“_î•ñ‚ðÝ’è
 			pVtx[nCntVtx].pos = *pVtxPos;
-			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+			D3DXVec3Normalize(&pVtx[nCntVtx].nor, pVtxPos);
 			pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			pVtx[nCntVtx].tex = D3DXVECTOR2(1.0f * nCntVtx, 1.0f * nCntVtx);
 			pVtx[nCntVtx].texM = D3DXVECTOR2(1.0f * nCntVtx, 1.0f * nCntVtx);
