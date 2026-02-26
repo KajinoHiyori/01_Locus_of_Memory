@@ -93,8 +93,7 @@ void SetBoxCollider(int nIdx, BoxCollider BoxColliderInfo, D3DXVECTOR3 pos, D3DX
 	// 各値代入
 	g_aCollider[g_nNumCollider].pos = pos;
 	g_aCollider[g_nNumCollider].rot = rot;
-	g_aCollider[g_nNumCollider].ColliderType.box = BoxColliderInfo;
-	g_aCollider[g_nNumCollider].type = COLLIDERTYPE_BOX;
+	g_aCollider[g_nNumCollider].type.box = BoxColliderInfo;
 
 	// コライダー使用数を当たり判定でも全体でも増やす
 	g_aCollision[nIdx].nNumCollider++;
