@@ -13,6 +13,7 @@
 #include "color.h"
 #include "input.h"
 
+
 // マクロ定義
 #define NUM_KEY			(KEYTYPE_MAX)	// モデルの数
 #define SHADOW			(10.0f)			// 影の大きさ

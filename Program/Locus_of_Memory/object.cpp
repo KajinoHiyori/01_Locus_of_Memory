@@ -171,6 +171,12 @@ void UpdateObject(void)
 
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
+
+		if ((D3DXMATERIAL*)g_aObjectModel[g_aObject[nCntObject].type].pBuffMat == NULL)
+		{
+			g_aObject[nCntObject].bUse = false;
+		}
+
 		if (g_aObject[nCntObject].bUse == true)
 		{
 			for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
@@ -267,11 +273,10 @@ void DrawObject(void)
 				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
 				pDevice->SetTexture(0, g_aObjectModel[g_aObject[nCntObject].type].apTexture[nCntMat]);
-				
+
 				// オブジェクトパーツの描画
 				g_aObjectModel[g_aObject[nCntObject].type].pMesh->DrawSubset(nCntMat);	// ここでモデルの形を指定しているため、g_aObjectModelの中身を設定する必要がある
 			}
-
 			// 保存していたマテリアルに戻す
 			pDevice->SetMaterial(&matDef);
 		}
@@ -636,6 +641,12 @@ void LoadObjectModel(const char* pModelPath)
 
 	D3DXLoadMeshFromX(pModelPath, D3DXMESH_SYSTEMMEM, pDevice, NULL, &g_aObjectModel[g_nNumObjectModel].pBuffMat, NULL, &g_aObjectModel[g_nNumObjectModel].dwNumMat, &g_aObjectModel[g_nNumObjectModel].pMesh);
 
+	if (g_aObjectModel[g_nNumObjectModel].pMesh == NULL)
+	{ // ファイルが読み込めなかった場合、処理を抜ける
+		g_nNumObjectModel++;	// 読み込んだモデル数加算
+		return;
+	}
+
 	// 頂点数を取得
 	nNumVtx = g_aObjectModel[g_nNumObjectModel].pMesh->GetNumVertices();
 
@@ -705,6 +716,7 @@ void LoadObjectModel(const char* pModelPath)
 	}
 
 	g_nNumObjectModel++;	// 読み込んだモデル数加算
+
 }
 
 //======================================================================================
