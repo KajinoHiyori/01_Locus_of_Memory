@@ -5,74 +5,79 @@
 // 
 //=============================================================================
 #include "2deffect.h"
+#include "fog.h"
+#include "color.h"
+#include "input.h"
 #include "main.h"
 
-#if 0
 // マクロ定義
-#define EFFECTLIFE_DIS		(2)				// 寿命の減少量
-#define EFFECTRADIUS_DIS	(0.1f)			// エフェクト半径の減少量
-#define EFFECTALPHA_DIS		(0.08f)			// エフェクトアルファ値の減少量
-#define EFFECTALPHA_ADD		(0.06f)			// エフェクトアルファ値の増加量
+#define EFFECT2DLIFE_DIS	(1)				// 寿命の減少量
+#define EFFECT2DRADIUS_DIS	(0.1f)			// エフェクト半径の減少量
+#define EFFECT2DALPHA_DIS	(0.08f)			// エフェクトアルファ値の減少量
+#define EFFECT2DALPHA_ADD	(0.06f)			// エフェクトアルファ値の増加量
 #define	REVISION_PI_2X		(D3DX_PI * 2)	// 角度補正
 #define COEFFICIENT_ROT		(0.05f)			// 角度の補正係数
 #define MAX_ALPHA			(1.0f)			// アルファ値の最大数
 #define MIN_ALPHA			(0.0f)			// アルファ値の最小数
+#define TEXTURE_DIVISION	(5)				// テクスチャの分割数
+#define TEXTURE_SIZE		(0.2f)			// テクスチャのサイズ
+#define SPELLTEX_SIZE		(50.0f)			// 文字テクスチャの大きさ
 
 // グローバル変数
-LPDIRECT3DTEXTURE9 g_pTextureEffect = NULL;			// テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffEffect = NULL;	// 頂点バッファのへのポインタ
-Effect g_aEffect[MAX_EFFECT];
+LPDIRECT3DTEXTURE9 g_pTexture2DEffect = NULL;			// テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuff2DEffect = NULL;	// 頂点バッファのへのポインタ
+Effect2D g_a2DEffect[MAX_EFFECT2D];
 
 //========================================================================
 // エフェクトの初期化処理
 //========================================================================
-void InitEffect(void)
+void Init2DEffect(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;
 
 	// デバイスの取得
 	pDevice = GetDevice();
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice,"data\\TEXTURE\\effect000.jpg", &g_pTextureEffect);
+	D3DXCreateTextureFromFile(pDevice,"data\\TEXTURE\\grain.jpg", &g_pTexture2DEffect);
 
 	// エフェクトの情報の初期化処理
-	for (int nCntEffect = RESET_DATA; nCntEffect < MAX_EFFECT; nCntEffect++)
+	for (int nCnt2DEffect = 0; nCnt2DEffect < MAX_EFFECT2D; nCnt2DEffect++)
 	{
-		g_aEffect[nCntEffect].type = EFFECTTYPE_NONE;
-		g_aEffect[nCntEffect].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aEffect[nCntEffect].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aEffect[nCntEffect].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		g_aEffect[nCntEffect].fRadius = EFFECT_RADIUS;
-		g_aEffect[nCntEffect].nLife = EFFECT_LIFE;
-		g_aEffect[nCntEffect].bUse = false;	// 使用していない状態にする
+		g_a2DEffect[nCnt2DEffect].type = EFFECTTYPE2D_NONE;
+		g_a2DEffect[nCnt2DEffect].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_a2DEffect[nCnt2DEffect].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_a2DEffect[nCnt2DEffect].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		g_a2DEffect[nCnt2DEffect].fRadius = EFFECT2D_RADIUS;
+		g_a2DEffect[nCnt2DEffect].nLife = EFFECT2D_LIFE;
+		g_a2DEffect[nCnt2DEffect].bUse = false;	// 使用していない状態にする
 	}
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * MAX_EFFECT,
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * MAX_EFFECT2D,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
-		&g_pVtxBuffEffect,
+		&g_pVtxBuff2DEffect,
 		NULL);
 
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffEffect->Lock(0, 0, (void**)&pVtx, 0);
+	g_pVtxBuff2DEffect->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntEffect = RESET_DATA; nCntEffect < MAX_EFFECT; nCntEffect++)
+	for (int nCnt2DEffect = 0; nCnt2DEffect < MAX_EFFECT2D; nCnt2DEffect++)
 	{
 		// 位置の設定
-		pVtx[0].pos.x = g_aEffect[nCntEffect].pos.x - g_aEffect[nCntEffect].fRadius;
-		pVtx[0].pos.y = g_aEffect[nCntEffect].pos.y - g_aEffect[nCntEffect].fRadius;
-		pVtx[0].pos.z = g_aEffect[nCntEffect].pos.z;
-		pVtx[1].pos.x = g_aEffect[nCntEffect].pos.x + g_aEffect[nCntEffect].fRadius;
-		pVtx[1].pos.y = g_aEffect[nCntEffect].pos.y - g_aEffect[nCntEffect].fRadius;
-		pVtx[1].pos.z = g_aEffect[nCntEffect].pos.z;
-		pVtx[2].pos.x = g_aEffect[nCntEffect].pos.x - g_aEffect[nCntEffect].fRadius;
-		pVtx[2].pos.y = g_aEffect[nCntEffect].pos.y + g_aEffect[nCntEffect].fRadius;
-		pVtx[2].pos.z = g_aEffect[nCntEffect].pos.z;
-		pVtx[3].pos.x = g_aEffect[nCntEffect].pos.x + g_aEffect[nCntEffect].fRadius;
-		pVtx[3].pos.y = g_aEffect[nCntEffect].pos.y + g_aEffect[nCntEffect].fRadius;
-		pVtx[3].pos.z = g_aEffect[nCntEffect].pos.z;
+		pVtx[0].pos.x = g_a2DEffect[nCnt2DEffect].pos.x - g_a2DEffect[nCnt2DEffect].fRadius;
+		pVtx[0].pos.y = g_a2DEffect[nCnt2DEffect].pos.y - g_a2DEffect[nCnt2DEffect].fRadius;
+		pVtx[0].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+		pVtx[1].pos.x = g_a2DEffect[nCnt2DEffect].pos.x + g_a2DEffect[nCnt2DEffect].fRadius;
+		pVtx[1].pos.y = g_a2DEffect[nCnt2DEffect].pos.y - g_a2DEffect[nCnt2DEffect].fRadius;
+		pVtx[1].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+		pVtx[2].pos.x = g_a2DEffect[nCnt2DEffect].pos.x - g_a2DEffect[nCnt2DEffect].fRadius;
+		pVtx[2].pos.y = g_a2DEffect[nCnt2DEffect].pos.y + g_a2DEffect[nCnt2DEffect].fRadius;
+		pVtx[2].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+		pVtx[3].pos.x = g_a2DEffect[nCnt2DEffect].pos.x + g_a2DEffect[nCnt2DEffect].fRadius;
+		pVtx[3].pos.y = g_a2DEffect[nCnt2DEffect].pos.y + g_a2DEffect[nCnt2DEffect].fRadius;
+		pVtx[3].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
 
 		// rhwの設定
 		pVtx[0].rhw = 1.0f;
@@ -81,75 +86,72 @@ void InitEffect(void)
 		pVtx[3].rhw = 1.0f;
 
 		// 色の設定
-		pVtx[0].col = g_aEffect[nCntEffect].col;
-		pVtx[1].col = g_aEffect[nCntEffect].col;
-		pVtx[2].col = g_aEffect[nCntEffect].col;
-		pVtx[3].col = g_aEffect[nCntEffect].col;
+		pVtx[0].col = g_a2DEffect[nCnt2DEffect].col;
+		pVtx[1].col = g_a2DEffect[nCnt2DEffect].col;
+		pVtx[2].col = g_a2DEffect[nCnt2DEffect].col;
+		pVtx[3].col = g_a2DEffect[nCnt2DEffect].col;
 
 		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+		pVtx[1].tex = D3DXVECTOR2(TEXTURE_SIZE, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, TEXTURE_SIZE);
+		pVtx[3].tex = D3DXVECTOR2(TEXTURE_SIZE, TEXTURE_SIZE);
 
 		pVtx += 4;
 	}
 	// 頂点バッファをアンロック
-	g_pVtxBuffEffect->Unlock();
+	g_pVtxBuff2DEffect->Unlock();
 }
 
 //========================================================================
 // エフェクトの終了処理
 //========================================================================
-void UninitEffect(void)
+void Uninit2DEffect(void)
 {
 	// テクスチャの破棄
-	if (g_pTextureEffect != NULL)
+	if (g_pTexture2DEffect != NULL)
 	{
-		g_pTextureEffect->Release();
-		g_pTextureEffect = NULL;
+		g_pTexture2DEffect->Release();
+		g_pTexture2DEffect = NULL;
 	}
 
 	// 頂点バッファの破棄
-	if (g_pVtxBuffEffect != NULL)
+	if (g_pVtxBuff2DEffect != NULL)
 	{
-		g_pVtxBuffEffect->Release();
-		g_pVtxBuffEffect = NULL;
+		g_pVtxBuff2DEffect->Release();
+		g_pVtxBuff2DEffect = NULL;
 	}
 }
 
 //========================================================================
 // エフェクトの更新処理
 //========================================================================
-void UpdateEffect(void)
+void Update2DEffect(void)
 {
 	// 吸収エフェクトの変数を格納
-	float fRotMove = RESET_DATA;	// 現在の移動方向
-	float fRotDest = RESET_DATA;	// 目標の移動方向
-	float fRotDiff = RESET_DATA;	// 目標の移動方向までの差分
-
-	// プレイヤー情報の取得
-	Player* pPlayer = GetPlayer();
+	float fRotMove = 0;	// 現在の移動方向
+	float fRotDest = 0;	// 目標の移動方向
+	float fRotDiff = 0;	// 目標の移動方向までの差分
 
 	// 頂点座標の更新
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffEffect->Lock(0, 0, (void**)&pVtx, 0);
+	g_pVtxBuff2DEffect->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
+	for (int nCnt2DEffect = 0; nCnt2DEffect < MAX_EFFECT2D; nCnt2DEffect++)
 	{
-		if (g_aEffect[nCntEffect].bUse == true)
+		if (g_a2DEffect[nCnt2DEffect].bUse == true)
 		{ // エフェクトが使用されている場合
 #if 0
-			switch (g_aEffect[nCntEffect].type)
+			switch (g_a2DEffect[nCnt2DEffect].type)
 			{
-			case EFFECTTYPE_NORMAL:	// 通常状態の場合
+			case EFFECTTYPE2D_NORMAL:	// 通常状態の場合
 				
 				break;
 
-			case EFFECTTYPE_ABSORPTION:	// 吸収状態のとき、角度の補正を行う
-				fRotMove = atan2f(g_aEffect[nCntEffect].move.x, g_aEffect[nCntEffect].move.y);	// 現在の移動方向
-				fRotDest = atan2f(g_aEffect[nCntEffect].dest.x - g_aEffect[nCntEffect].pos.x, g_aEffect[nCntEffect].dest.y - g_aEffect[nCntEffect].pos.y);	// 目標の移動方向
+			case EFFECTTYPE2D_ABSORPTION:	// 吸収状態のとき、角度の補正を行う
+				fRotMove = atan2f(g_a2DEffect[nCnt2DEffect].move.x, g_a2DEffect[nCnt2DEffect].move.y);	// 現在の移動方向
+				fRotDest = atan2f(g_a2DEffect[nCnt2DEffect].dest.x - g_a2DEffect[nCnt2DEffect].pos.x, g_a2DEffect[nCnt2DEffect].dest.y - g_a2DEffect[nCnt2DEffect].pos.y);	// 目標の移動方向
 				fRotDiff = fRotDest - fRotMove;	// 目標の移動方向までの差分
 				// 角度の補正を行う
 				if (fRotDiff > D3DX_PI)
@@ -170,156 +172,162 @@ void UpdateEffect(void)
 				{
 					fRotMove += REVISION_PI_2X;
 				}
-				g_aEffect[nCntEffect].move.x = sinf(fRotMove) *1;
-				g_aEffect[nCntEffect].move.y = cosf(fRotMove) *1;
-				g_aEffect[nCntEffect].move.z = 0.0f;
+				g_a2DEffect[nCnt2DEffect].move.x = sinf(fRotMove) *1;
+				g_a2DEffect[nCnt2DEffect].move.y = cosf(fRotMove) *1;
+				g_a2DEffect[nCnt2DEffect].move.z = 0.0f;
 				
 				break;
 			}
 #endif			
 			// 各種更新
-			g_aEffect[nCntEffect].pos += g_aEffect[nCntEffect].move;
-			g_aEffect[nCntEffect].nLife -= EFFECTLIFE_DIS;
-
-			// エフェクトも重力に従う
-			g_aEffect[nCntEffect].move.y += GRAVITY;
+			g_a2DEffect[nCnt2DEffect].pos += g_a2DEffect[nCnt2DEffect].move;
+			g_a2DEffect[nCnt2DEffect].nLife -= EFFECT2DLIFE_DIS;
 
 			// 位置の設定
-			pVtx[0].pos.x = g_aEffect[nCntEffect].pos.x - g_aEffect[nCntEffect].fRadius;
-			pVtx[0].pos.y = g_aEffect[nCntEffect].pos.y - g_aEffect[nCntEffect].fRadius;
-			pVtx[0].pos.z = g_aEffect[nCntEffect].pos.z;
-			pVtx[1].pos.x = g_aEffect[nCntEffect].pos.x + g_aEffect[nCntEffect].fRadius;
-			pVtx[1].pos.y = g_aEffect[nCntEffect].pos.y - g_aEffect[nCntEffect].fRadius;
-			pVtx[1].pos.z = g_aEffect[nCntEffect].pos.z;
-			pVtx[2].pos.x = g_aEffect[nCntEffect].pos.x - g_aEffect[nCntEffect].fRadius;
-			pVtx[2].pos.y = g_aEffect[nCntEffect].pos.y + g_aEffect[nCntEffect].fRadius;
-			pVtx[2].pos.z = g_aEffect[nCntEffect].pos.z;
-			pVtx[3].pos.x = g_aEffect[nCntEffect].pos.x + g_aEffect[nCntEffect].fRadius;
-			pVtx[3].pos.y = g_aEffect[nCntEffect].pos.y + g_aEffect[nCntEffect].fRadius;
-			pVtx[3].pos.z = g_aEffect[nCntEffect].pos.z;
+			pVtx[0].pos.x = g_a2DEffect[nCnt2DEffect].pos.x - g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[0].pos.y = g_a2DEffect[nCnt2DEffect].pos.y - g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[0].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+			pVtx[1].pos.x = g_a2DEffect[nCnt2DEffect].pos.x + g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[1].pos.y = g_a2DEffect[nCnt2DEffect].pos.y - g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[1].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+			pVtx[2].pos.x = g_a2DEffect[nCnt2DEffect].pos.x - g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[2].pos.y = g_a2DEffect[nCnt2DEffect].pos.y + g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[2].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+			pVtx[3].pos.x = g_a2DEffect[nCnt2DEffect].pos.x + g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[3].pos.y = g_a2DEffect[nCnt2DEffect].pos.y + g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[3].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
 
 			// 色の設定
-			pVtx[0].col = g_aEffect[nCntEffect].col;
-			pVtx[1].col = g_aEffect[nCntEffect].col;
-			pVtx[2].col = g_aEffect[nCntEffect].col;
-			pVtx[3].col = g_aEffect[nCntEffect].col;
+			pVtx[0].col = g_a2DEffect[nCnt2DEffect].col;
+			pVtx[1].col = g_a2DEffect[nCnt2DEffect].col;
+			pVtx[2].col = g_a2DEffect[nCnt2DEffect].col;
+			pVtx[3].col = g_a2DEffect[nCnt2DEffect].col;
 			// 画面外にエフェクトが出た場合
-			if (g_aEffect[nCntEffect].pos.x < 0 || g_aEffect[nCntEffect].pos.x > SCREEN_WIDTH || g_aEffect[nCntEffect].pos.y < 0 || g_aEffect[nCntEffect].pos.y > SCREEN_HEIGHT)
+			if (g_a2DEffect[nCnt2DEffect].pos.x < 0 || g_a2DEffect[nCnt2DEffect].pos.x > SCREEN_WIDTH || g_a2DEffect[nCnt2DEffect].pos.y < 0 || g_a2DEffect[nCnt2DEffect].pos.y > SCREEN_HEIGHT)
 			{
-				g_aEffect[nCntEffect].bUse = false;
+				g_a2DEffect[nCnt2DEffect].bUse = false;
 			}
 			// エフェクトの寿命が尽きた時
-			if (g_aEffect[nCntEffect].nLife <= 0)
+			if (g_a2DEffect[nCnt2DEffect].nLife <= 0)
 			{
-				g_aEffect[nCntEffect].bUse = false;
+				g_a2DEffect[nCnt2DEffect].bUse = false;
 			}
 		}
 		pVtx += 4;
 	}
 
 	// 頂点バッファをアンロック
-	g_pVtxBuffEffect->Unlock();
+	g_pVtxBuff2DEffect->Unlock();
 }
 
 //========================================================================
 // エフェクトの描画処理
 //========================================================================
-void DrawEffect(void)
+void Draw2DEffect(void)
 {
-	int nCntEffect;
+	int nCnt2DEffect;
 
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
 	// デバイスの取得
 	pDevice = GetDevice();
 
 	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, g_pVtxBuffEffect, 0, sizeof(VERTEX_2D));
+	pDevice->SetStreamSource(0, g_pVtxBuff2DEffect, 0, sizeof(VERTEX_2D));
 
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 	
-#if 0
-	// アルファブレンディングを加算合成に設定
+	//αブレンディングを加算合成して設定
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-#endif
 
-	for (nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
+	SetFogEnable(false);		// 霧を消す
+
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);		// ライトを無効にする
+
+	for (nCnt2DEffect = 0; nCnt2DEffect < MAX_EFFECT2D; nCnt2DEffect++)
 	{ // エフェクトが使用されている場合
-		if (g_aEffect[nCntEffect].bUse == true)
+		if (g_a2DEffect[nCnt2DEffect].bUse == true)
 		{
 			// テクスチャの設定
-			pDevice->SetTexture(0, NULL);
+			pDevice->SetTexture(0, g_pTexture2DEffect);
 			// ポリゴンの描画
-			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntEffect * 4, 2);
+			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCnt2DEffect * 4, 2);
 		}
 	}
 
-#if 0
-	// アルファブレンディングを元に戻す
+	//αブレンディングを戻す
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-#endif
+
+	SetFogEnable(true);		// 霧を戻す
+
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);		// ライトを有効にする
 }
 
 //========================================================================
 // エフェクトの設定処理
 //========================================================================
-void SetEffect(EFFECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXVECTOR3 dest, D3DXCOLOR col, float fRadius, int nLife)
+void Set2DEffect(EFFECTTYPE2D type, D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXVECTOR3 dest, D3DXCOLOR col, float fRadius, int nLife)
 {
 	// 頂点座標の更新
 	VERTEX_2D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffEffect->Lock(0, 0, (void**)&pVtx, 0);
+	g_pVtxBuff2DEffect->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntEffect = 0; nCntEffect < MAX_EFFECT; nCntEffect++)
+	// ランダム位置をローカルで設定
+	float fWidth, fHeight = 0.0f;
+
+	for (int nCnt2DEffect = 0; nCnt2DEffect < MAX_EFFECT2D; nCnt2DEffect++)
 	{
-		if (g_aEffect[nCntEffect].bUse == false)
+		if (g_a2DEffect[nCnt2DEffect].bUse == false)
 		{ // エフェクトが使用されていない場合
-			g_aEffect[nCntEffect].type = type;
-			g_aEffect[nCntEffect].pos = pos;
-			g_aEffect[nCntEffect].move = move;
-			g_aEffect[nCntEffect].dest = dest;
-			g_aEffect[nCntEffect].col = col;
-			g_aEffect[nCntEffect].nLife = nLife;
-			g_aEffect[nCntEffect].fRadius = fRadius;
+			g_a2DEffect[nCnt2DEffect].type = type;
+			g_a2DEffect[nCnt2DEffect].pos = pos;
+			g_a2DEffect[nCnt2DEffect].move = move;
+			g_a2DEffect[nCnt2DEffect].dest = dest;
+			g_a2DEffect[nCnt2DEffect].col = COLOR_YELLOW;
+			g_a2DEffect[nCnt2DEffect].nLife = nLife;
+			g_a2DEffect[nCnt2DEffect].fRadius = fRadius;
 
-			pVtx += (nCntEffect * 4);
+			// エフェクトの読み込み位置をランダムにする
+			fWidth = (float)(rand() % TEXTURE_DIVISION) * 0.2f;
+			fHeight = (float)(rand() % TEXTURE_DIVISION) * 0.2f;
+
+			pVtx += (nCnt2DEffect * 4);
+
 			// 位置の設定
-			pVtx[0].pos.x = g_aEffect[nCntEffect].pos.x - g_aEffect[nCntEffect].fRadius;
-			pVtx[0].pos.y = g_aEffect[nCntEffect].pos.y - g_aEffect[nCntEffect].fRadius;
-			pVtx[0].pos.z = g_aEffect[nCntEffect].pos.z;
-			pVtx[1].pos.x = g_aEffect[nCntEffect].pos.x + g_aEffect[nCntEffect].fRadius;
-			pVtx[1].pos.y = g_aEffect[nCntEffect].pos.y - g_aEffect[nCntEffect].fRadius;
-			pVtx[1].pos.z = g_aEffect[nCntEffect].pos.z;
-			pVtx[2].pos.x = g_aEffect[nCntEffect].pos.x - g_aEffect[nCntEffect].fRadius;
-			pVtx[2].pos.y = g_aEffect[nCntEffect].pos.y + g_aEffect[nCntEffect].fRadius;
-			pVtx[2].pos.z = g_aEffect[nCntEffect].pos.z;
-			pVtx[3].pos.x = g_aEffect[nCntEffect].pos.x + g_aEffect[nCntEffect].fRadius;
-			pVtx[3].pos.y = g_aEffect[nCntEffect].pos.y + g_aEffect[nCntEffect].fRadius;
-			pVtx[3].pos.z = g_aEffect[nCntEffect].pos.z;
+			pVtx[0].pos.x = g_a2DEffect[nCnt2DEffect].pos.x - g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[0].pos.y = g_a2DEffect[nCnt2DEffect].pos.y - g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[0].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+			pVtx[1].pos.x = g_a2DEffect[nCnt2DEffect].pos.x + g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[1].pos.y = g_a2DEffect[nCnt2DEffect].pos.y - g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[1].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+			pVtx[2].pos.x = g_a2DEffect[nCnt2DEffect].pos.x - g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[2].pos.y = g_a2DEffect[nCnt2DEffect].pos.y + g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[2].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
+			pVtx[3].pos.x = g_a2DEffect[nCnt2DEffect].pos.x + g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[3].pos.y = g_a2DEffect[nCnt2DEffect].pos.y + g_a2DEffect[nCnt2DEffect].fRadius;
+			pVtx[3].pos.z = g_a2DEffect[nCnt2DEffect].pos.z;
 
 			// 色の設定
-			pVtx[0].col = g_aEffect[nCntEffect].col;
-			pVtx[1].col = g_aEffect[nCntEffect].col;
-			pVtx[2].col = g_aEffect[nCntEffect].col;
-			pVtx[3].col = g_aEffect[nCntEffect].col;
+			pVtx[0].col = g_a2DEffect[nCnt2DEffect].col;
+			pVtx[1].col = g_a2DEffect[nCnt2DEffect].col;
+			pVtx[2].col = g_a2DEffect[nCnt2DEffect].col;
+			pVtx[3].col = g_a2DEffect[nCnt2DEffect].col;
 
-			g_aEffect[nCntEffect].bUse = true; // 使用している状態にする
+			// テクスチャの読み込みをランダム化
+			pVtx[0].tex = D3DXVECTOR2(fWidth,					fHeight);
+			pVtx[1].tex = D3DXVECTOR2(fWidth + TEXTURE_SIZE,	fHeight);
+			pVtx[2].tex = D3DXVECTOR2(fWidth,					fHeight + TEXTURE_SIZE);
+			pVtx[3].tex = D3DXVECTOR2(fWidth + TEXTURE_SIZE,	fHeight + TEXTURE_SIZE);
+
+			g_a2DEffect[nCnt2DEffect].bUse = true; // 使用している状態にする
 			break;
 		}
 	}
 	// 頂点バッファをアンロック
-	g_pVtxBuffEffect->Unlock();
+	g_pVtxBuff2DEffect->Unlock();
 }
-
-//========================================================================
-// エフェクトの取得
-//========================================================================
-Effect* GetEffect(void)
-{
-	return &g_aEffect[RESET_DATA];	// エフェクト情報の先頭アドレスを渡す
-}
-#endif

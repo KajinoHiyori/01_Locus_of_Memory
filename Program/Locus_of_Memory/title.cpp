@@ -21,6 +21,7 @@
 #include "grain.h"
 #include "sparkle.h"
 #include "animal.h"
+#include "2deffect.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
@@ -70,6 +71,9 @@ void InitTitle(void)
 	// タイトルUIの表示
 	InitTitleUI();
 
+	// 2Dエフェクトの初期化処理
+	Init2DEffect();
+
 	g_operationType = OPERATIONTYPE_1P;
 
 	// ドラゴンのタイプを決定
@@ -87,6 +91,9 @@ void UninitTitle(void)
 
 	// タイトルUIの終了処理
 	UninitTitleUI();
+
+	// 2Dエフェクトの終了処理
+	Uninit2DEffect();
 }
 
 //======================================================================================
@@ -107,6 +114,9 @@ void UpdateTitle(void)
 
 	// タイトルUIの更新処理
 	UpdateTitleUI();
+
+	// 2Dエフェクトの更新処理
+	Update2DEffect();
 
 	// 霧の演出のテスト
 #ifdef _DEBUG
@@ -170,6 +180,9 @@ void DrawTitle(void)
 
 	// タイトルUIの描画処理
 	DrawTitleUI();
+
+	// 2Dエフェクトの描画処理
+	Draw2DEffect();
 }
 
 //======================================================================================
