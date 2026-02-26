@@ -242,7 +242,10 @@ void UpdatePlayer(void)
 			break;
 
 		case PLAYERSTATE_SPELL:
-			InputCommand = PressCommand(nCntPlayer);	// 呪文の入力を受け付ける
+			if (g_aPlayer[nCntPlayer].bJump == false) // 設置中のみ受け付ける
+			{
+				InputCommand = PressCommand(nCntPlayer);	// 呪文の入力を受け付ける
+			}
 			break;
 
 		case PLAYERSTATE_MAGIC:
@@ -327,8 +330,10 @@ void UpdatePlayer(void)
 			{// ジャンプしている状態で判定があったら
 				// 着地モーション
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
+				g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
 			}
 			g_aPlayer[nCntPlayer].pos.y = 0.0f;
+			g_aPlayer[nCntPlayer].move.y = 0.0f;
 			g_aPlayer[nCntPlayer].bJump = false;
 		}
 
@@ -339,6 +344,8 @@ void UpdatePlayer(void)
 			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
 			g_aPlayer[nCntPlayer].bJump = false;
 		}
+
+		
 
 		// ゴールとの当たり判定
 		if (CollisionGoal(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius) && GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)

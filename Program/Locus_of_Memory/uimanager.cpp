@@ -6,6 +6,7 @@
 //======================================================================================
 #include "uimanager.h"
 #include "spellui.h"
+#include "magicui.h"
 #include "clock.h"
 #include "battery.h"
 #include "player.h"
@@ -820,6 +821,7 @@ void SetUINonDisp(int nIdx)
 	if (((GetKeyboardPress(DIK_TAB) == true && nIdx == 0) || GetJoypadRightTriggePress(nIdx) == true || GetJoypadLeftTriggePress(nIdx) == true))
 	{
 		SetSpellUIAppear(nIdx);
+		SetMagicUIAppear(nIdx);
 	}
 }
 

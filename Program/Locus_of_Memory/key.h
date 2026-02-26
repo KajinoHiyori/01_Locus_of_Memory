@@ -61,6 +61,6 @@ void UninitKey(void);
 void UpdateKey(void);
 void DrawKey(void);
 void SetKey(D3DXVECTOR3 pos, D3DXVECTOR3 rot, KEYTYPE type);
-void CollisionKey(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fCollision);
+void CollisionKey(int nIdx, D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove);
 KeyItem* GetKeyItem(void);
 #endif

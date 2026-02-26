@@ -12,7 +12,7 @@
 #include "shadow.h"
 #include "color.h"
 #include "input.h"
-
+#include "debugproc.h"
 
 // マクロ定義
 #define NUM_KEY			(KEYTYPE_MAX)	// モデルの数
@@ -22,10 +22,13 @@
 #define ANGLE_DOUBLE	(629)			// 角度の最大数(*2)
 #define MAX_ANGLE		(314)			// 角度の最大数
 #define ANGLE_ADJUST	(100.0f)		// 角度の値を指定
-#define DEFALT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))					// xyzが0.0fの場合
-#define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))					// 基本の法線
-#define VTX_MIN			(D3DXVECTOR3(10000.0f, 10000.0f, 10000.0f))		// カギの大きさの初期化値(最小)
-#define VTX_MAX			(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// カギの大きさの初期化値(最大)
+#define COLLISION		(50.0f)			// 鍵との当たり判定の大きさ
+#define SCALE			(1.0f)			// 大きさの比率を管理
+#define INIT_D3DXVEC3	(D3DXVECTOR3(0.0f, 0.0f, 0.0f))		// xyzが0.0fの場合
+#define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 基本の法線
+#define KEY001_POS		(D3DXVECTOR3(-50.0f, 0.0f, 10.0f))	// 鍵の位置
+#define KEY002_POS		(D3DXVECTOR3(0.0f, 0.0f, 10.0f))	// 鍵の位置
+#define KEY003_POS		(D3DXVECTOR3(50.0f, 0.0f, 10.0f))	// 鍵の位置
 
 // モデルの読み込み
 const char* c_apFilenameKey[NUM_KEY] =
@@ -37,7 +40,7 @@ const char* c_apFilenameKey[NUM_KEY] =
 
 // グローバル変数
 KeyModel g_aKeyModel[NUM_KEY];		// モデルの種類を管理
-KeyItem g_aKey[MAX_KEYITEM];	// カギの情報を格納
+KeyItem g_aKey[NUM_KEY];	// カギの情報を格納
 
 //======================================================================================
 // カギの初期化処理
@@ -61,13 +64,16 @@ void InitKey(void)
 	// Key情報の初期化
 	for (int nCntKey = 0; nCntKey < MAX_KEYITEM; nCntKey++)
 	{
-		g_aKey[nCntKey].pos = DEFALT;
-		g_aKey[nCntKey].posOld = DEFALT;
-		g_aKey[nCntKey].rot = DEFALT;
-		g_aKey[nCntKey].move = DEFALT;
-		g_aKey[nCntKey].type = KEYTYPE_ONE;
-		g_aKey[nCntKey].nIdxShadow = -1;
-		g_aKey[nCntKey].bUse = false;
+		g_aKey[nCntKey].pos			= INIT_D3DXVEC3;	// カギの位置
+		g_aKey[nCntKey].posOld		= INIT_D3DXVEC3;;	// カギの位置
+		g_aKey[nCntKey].rot			= INIT_D3DXVEC3;	// カギの向き
+		g_aKey[nCntKey].move		= INIT_D3DXVEC3;;	// カギの移動量
+		g_aKey[nCntKey].type		= KEYTYPE_ONE;		// モデルの種類
+		g_aKey[nCntKey].state		= KEYSTATE_NORMAL;	// 鍵の状態
+		g_aKey[nCntKey].fCollision	= COLLISION;		// 当たり判定の半径
+		g_aKey[nCntKey].fScale		= SCALE;			// 大きさ管理
+		g_aKey[nCntKey].nIdxShadow	= -1;				// 影のインデックス
+		g_aKey[nCntKey].bUse		= false;			// 使用状態
 	}
 
 	// Xファイルの読み込み
@@ -99,6 +105,11 @@ void InitKey(void)
 			}
 		}
 	}
+
+	// 鍵の設置
+	SetKey(KEY001_POS, INIT_D3DXVEC3, KEYTYPE_ONE);
+	SetKey(KEY002_POS, INIT_D3DXVEC3, KEYTYPE_TWO);
+	SetKey(KEY003_POS, INIT_D3DXVEC3, KEYTYPE_THREE);
 }
 
 //======================================================================================
@@ -147,26 +158,40 @@ void UpdateKey(void)
 {
 	Player* pPlayer = GetPlayer();
 
-	for (int nCntKey = 0; nCntKey < MAX_KEYITEM; nCntKey++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		if (g_aKey[nCntKey].bUse == true)
+		if (pPlayer->bUse == false)
 		{
-			// 位置の更新
-			g_aKey[nCntKey].pos += g_aKey[nCntKey].move;
+			continue;
+		}
 
+		// 鍵との当たり判定
+		CollisionKey(nCntPlayer, &pPlayer[nCntPlayer].pos, &pPlayer[nCntPlayer].posOld, &pPlayer[nCntPlayer].move);
 
-			// 最低高度に到達したとき
-			if (g_aKey[nCntKey].pos.y < 0.0f)
+		for (int nCntKey = 0; nCntKey < MAX_KEYITEM; nCntKey++)
+		{
+			if (g_aKey[nCntKey].bUse == true)
 			{
-				g_aKey[nCntKey].pos.y = 0.0f;
-				g_aKey[nCntKey].move.y = 0.0f;
+				// 位置の更新
+				g_aKey[nCntKey].pos += g_aKey[nCntKey].move;
+
+				// 鍵の位置
+				PrintDebugProc("鍵の位置[%d] : (%f, %f, %f)\n", nCntKey, g_aKey[nCntKey].pos.x, g_aKey[nCntKey].pos.y, g_aKey[nCntKey].pos.z);
+
+
+				// 最低高度に到達したとき
+				if (g_aKey[nCntKey].pos.y < 0.0f)
+				{
+					g_aKey[nCntKey].pos.y = 0.0f;
+					g_aKey[nCntKey].move.y = 0.0f;
+				}
+
+				// 影の位置を更新
+				SetPositionShadow(g_aKey[nCntKey].nIdxShadow, D3DXVECTOR3(g_aKey[nCntKey].pos.x, 0.0f, g_aKey[nCntKey].pos.z));
+
+				// カギを自動回転
+				g_aKey[nCntKey].rot.y += 0.05f;
 			}
-			
-			// 影の位置を更新
-			SetPositionShadow(g_aKey[nCntKey].nIdxShadow, D3DXVECTOR3(g_aKey[nCntKey].pos.x, 0.0f, g_aKey[nCntKey].pos.z));
-		
-			// カギを自動回転
-			g_aKey[nCntKey].rot.y += 0.05f;
 		}
 	}
 }
@@ -237,7 +262,7 @@ void SetKey(D3DXVECTOR3 pos, D3DXVECTOR3 rot, KEYTYPE type)
 			g_aKey[nCntKey].posOld = pos;
 			g_aKey[nCntKey].rot = rot;
 			g_aKey[nCntKey].rot.y = (float)((rand() % ANGLE_DOUBLE - MAX_ANGLE) / ANGLE_ADJUST);	// 回転の開始位置をランダムにする
-			g_aKey[nCntKey].move = DEFALT;
+			g_aKey[nCntKey].move = INIT_D3DXVEC3;
 			g_aKey[nCntKey].type = type;
 			g_aKey[nCntKey].bUse = true;
 			// 影のIDを設定
@@ -259,20 +284,32 @@ KeyItem* GetKeyItem(void)
 //======================================================================================
 // カギとの当たり判定
 //======================================================================================
-void CollisionKey(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fCollision)
+void CollisionKey(int nIdx, D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove)
 {
-	Player* pPlayer = GetPlayer();
-
 	for (int nCntKey = 0; nCntKey < MAX_KEYITEM; nCntKey++)
 	{
+		if (g_aKey[nCntKey].bUse == false)
+		{
+			continue;
+		}
+
 		// カギの高度の範囲に収まっているとき、XZ方向の当たり判定を行う
 		if (pPos->x >= g_aKey[nCntKey].pos.x - g_aKey[nCntKey].fCollision &&	// ブロックの左端より右にいる
 			pPos->x <= g_aKey[nCntKey].pos.x + g_aKey[nCntKey].fCollision &&	// ブロックの右端より左にいる
 			pPos->z >= g_aKey[nCntKey].pos.z - g_aKey[nCntKey].fCollision &&	// ブロックの手前より奥にいる
-			pPos->z <= g_aKey[nCntKey].pos.z + g_aKey[nCntKey].fCollision)	// ブロックの奥より手前にいる
+			pPos->z <= g_aKey[nCntKey].pos.z + g_aKey[nCntKey].fCollision)		// ブロックの奥より手前にいる
 		{
 			//PlaySound(SE_KEY);
 			//SetMotion(MOTIONTYPE_ACTION, true, 1);
+			if ((GetKeyboardTrigger(DIK_RETURN) == true && nIdx == 0) || GetJoypadTrigger(JOYKEY_X, nIdx) == true)
+			{
+				g_aKey[nCntKey].bUse = false;
+			}
+			PrintDebugProc("カギに当たっている\n");
+		}
+		else
+		{
+			PrintDebugProc("カギに当たってない\n");
 		}
 	}
 }

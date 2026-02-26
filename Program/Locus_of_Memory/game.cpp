@@ -40,6 +40,7 @@
 #include "custommesh.h"
 #include "animal.h"
 #include "field.h"
+#include "key.h"
 
 // マクロ定義
 #define GAMEPOS_1P		(D3DXVECTOR3(-745.0f, 0.0f, -3427.0f))	// 1Pの位置[GAME]
@@ -86,8 +87,11 @@ void InitGame(void)
 	// 3D空間UIの初期化処理
 	InitUIManager();
 
-	// 
+	// 吹き出しの初期化処理
 	InitMagicBubble();
+
+	// 鍵の初期化処理
+	InitKey();
 
 	// エフェクトの初期化処理
 	InitEffect();
@@ -142,6 +146,9 @@ void UninitGame(void)
 
 	// 魔法陣の終了処理
 	UninitMagicCircle();
+
+	// 鍵の終了処理
+	UninitKey();
 
 	// BGM終了
 	StopSound();
@@ -211,6 +218,8 @@ void UpdateGame(void)
 	// バッテリーの更新処理
 	UpdateBattery();
 
+	// 鍵の更新処理
+	UpdateKey();
 
 	switch (g_gameState)
 	{
@@ -299,6 +308,9 @@ void DrawGame(void)
 	// オブジェクトの描画処理（仮）
 	DrawObject();
 
+	// 鍵の描画処理
+	DrawKey();
+
 	// ゴールの描画処理
 	DrawGoal();
 
@@ -332,9 +344,10 @@ void DrawGame(void)
 
 	SetFogEnable(false);		// 霧を無効
 
+	// UIの統括管理の描画処理
 	DrawUIManager();
 
-	// 
+	// 吹き出しの描画処理
 	DrawMagicBubble();
 
 	// 魔法発動状態表示の描画処理
