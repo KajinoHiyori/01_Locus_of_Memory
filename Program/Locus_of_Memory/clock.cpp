@@ -196,9 +196,11 @@ void UpdateClock(void)
 	}
 	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
 
+	PrintDebugProc("現在時刻 %d\n", g_time.nTime);
+
 	if (g_time.nTime >= END_TIME)
 	{// 一定時間を超えたらゲーム終了
-		SetGameState(GAMESTATE_TIMEOVER, 0);
+		//SetGameState(GAMESTATE_TIMEOVER, 0);
 	}
 
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納

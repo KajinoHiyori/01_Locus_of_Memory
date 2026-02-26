@@ -39,5 +39,5 @@ void UninitSkyBox(void);
 void UpdateSkyBox(void);
 void DrawSkyBox(void);
 void SetSkyBox(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius, int nVertical, int nHorizontal);
-
+D3DXCOLOR ChangeSkyColor(void);
 #endif

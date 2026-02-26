@@ -8,6 +8,9 @@
 #include "main.h"
 #include "skybox.h"
 #include "input.h"
+#include "color.h"
+#include "clock.h"
+#include "debugproc.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -23,6 +26,7 @@
 //*****************************************************************************
 LPDIRECT3DTEXTURE9 g_pTextureSkyBox = NULL;				// テクスチャへのポインタ
 SkyBox g_aSkyBox[MAX_SKYBOX];							// スカイボックスの情報
+D3DXCOLOR g_col, g_colNext;	// 色を管理
 
 //=============================================================================
 //	スカイボックスの初期化処理
@@ -42,6 +46,10 @@ void InitSkyBox(void)
 	memset(pSkyBox, NULL, sizeof(SkyBox) * MAX_SKYBOX);
 
 	SetSkyBox(D3DXVECTOR3(0.0f, -50.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), SKYBOX_RADIUS, SKYBOX_VERTICAL, SKYBOX_HORIZONTAL);
+
+	// 色の初期化
+	g_col = COLOR_WHITE;
+	g_colNext = COLOR_WHITE;
 }
 
 //=============================================================================
@@ -169,6 +177,7 @@ void UpdateSkyBox(void)
 			{
 				// テクスチャ座標の設定
 				pVtx[nCntVtxHorizontal].tex = D3DXVECTOR2((1.0f / (pSkyBox->nHorizontal / 2)) * nCntVtxHorizontal + pSkyBox->tex.x, (pSkyBox->tex.y / pSkyBox->nVertical) * nCntVtxVertical);
+				pVtx[nCntVtxHorizontal].col = ChangeSkyColor();
 			}
 
 			// ポインタを進める
@@ -247,7 +256,7 @@ void SetSkyBox(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius, int nVertical, i
 				pVtx[nCntVtxHorizontal].nor = vecDir;
 
 				// 頂点カラーの設定
-				pVtx[nCntVtxHorizontal].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+				pVtx[nCntVtxHorizontal].col = ChangeSkyColor();
 
 				// テクスチャ座標の設定
 				pVtx[nCntVtxHorizontal].tex = D3DXVECTOR2((1.0f / (nHorizontal / 2)) * nCntVtxHorizontal, (1.0f / nVertical) * nCntVtxVertical);
@@ -310,4 +319,88 @@ void SetSkyBox(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius, int nVertical, i
 		pSkyBox->bUse = true;
 		break;
 	}
+}
+
+//=============================================================================
+//	スカイボックスの色を変える
+//=============================================================================
+D3DXCOLOR ChangeSkyColor(void)
+{
+	int nTime = GetTime();
+	MODE mode = GetMode();
+	D3DXCOLOR colLocal = COLOR_WHITE;	// ローカルで色の値を保存
+
+	switch (mode)
+	{
+	case MODE_TITLE:	// タイトル
+		colLocal = COLOR_SKY_NIGHT;	// 夜空
+		break;
+
+	case MODE_TUTORIAL:	// チュートリアル
+		colLocal = COLOR_SKY_NOON;	// 青空
+		break;
+
+	case MODE_GAME:	// ゲーム
+		if (nTime >= 0 && nTime <= 559)	// 0:00~5:59
+		{
+			colLocal = COLOR_SKY007;
+		}
+		else if (nTime >= 600 && nTime <= 759)	// 6:00~7:59
+		{
+			colLocal = COLOR_SKY000;
+		}
+		else if (nTime >= 800 && nTime <= 1059)	// 8:00~10:59
+		{
+			colLocal = COLOR_SKY000;
+		}
+		else if (nTime >= 1100 && nTime <= 1359)	// 11:00~13:59
+		{
+			colLocal = COLOR_SKY001;
+		}
+		else if (nTime >= 1400 && nTime <= 1559)	// 14:00~15:59
+		{
+			colLocal = COLOR_SKY002;
+		}
+		else if (nTime >= 1600 && nTime <= 1659)	// 16:00~16:59
+		{
+			colLocal = COLOR_SKY003;
+		}
+		else if (nTime >= 1700 && nTime <= 1759)	// 17:00~17:59
+		{
+			colLocal = COLOR_SKY004;
+		}
+		else if (nTime >= 1800 && nTime <= 1859)	// 18:00~18:59
+		{
+			colLocal = COLOR_SKY005;
+		}
+		else if (nTime >= 1900 && nTime <= 1959)	// 19:00~19:59
+		{
+			colLocal = COLOR_SKY006;
+		}
+		else if (nTime >= 2000)	// 20:00以降
+		{
+			colLocal = COLOR_SKY007;
+		}
+		break;
+
+	case MODE_RESULT:	// リザルト
+		colLocal = COLOR_SKY_NIGHT;	// 夜空
+		break;
+
+	case MODE_DIAGNOSIS:	// 診断結果
+		colLocal = COLOR_SKY_NIGHT;	// 夜空
+		break;
+
+	case MODE_START:	// ロゴ画面
+		colLocal = COLOR_SKY_NOON;	// 青空
+		break;
+
+	default:	// エラー
+		colLocal = COLOR_SKY_NOON;
+		break;
+	}
+
+
+
+	return colLocal;
 }
