@@ -176,6 +176,7 @@
     <ClCompile Include="field.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="grain.cpp" />
+    <ClCompile Include="key.cpp" />
     <ClCompile Include="loadscript.cpp" />
     <ClCompile Include="magicbubble.cpp" />
     <ClCompile Include="magiccircle.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="grain.h" />
+    <ClInclude Include="key.h" />
     <ClInclude Include="loadscript.h" />
     <ClInclude Include="magicbubble.h" />
     <ClInclude Include="magiccircle.h" />

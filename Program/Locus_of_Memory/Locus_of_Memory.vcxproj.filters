@@ -240,6 +240,9 @@
     <ClCompile Include="2dparticle.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="key.cpp">
+      <Filter>game\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -388,6 +391,9 @@
     </ClInclude>
     <ClInclude Include="2dparticle.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="key.h">
+      <Filter>game\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
