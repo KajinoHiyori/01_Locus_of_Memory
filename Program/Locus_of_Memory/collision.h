@@ -63,6 +63,13 @@ typedef struct CapsuleCollider
 	float fHeight;		// 高さ
 }CapsuleCollider;
 
+union ColliderType
+{// コライダーの種類
+	BoxCollider box;			// 矩形
+	SphereCollider sphere;		// 球
+	CapsuleCollider capsule;	// カプセル
+}ColliderType;
+
 //*****************************************************************************
 // コライダーの構造体定義
 //*****************************************************************************
@@ -70,13 +77,8 @@ typedef struct Collider
 {
 	D3DXVECTOR3 pos;				// 原点
 	D3DXVECTOR3 rot;				// 向き
-	union ColliderType
-	{// コライダーの種類
-		BoxCollider box;			// 矩形
-		SphereCollider sphere;		// 球
-		CapsuleCollider capsule;	// カプセル
-	}ColliderType;
-	COLLIDERTYPE type;				// 種類
+	//COLLIDERTYPE type;				// 種類
+	union ColliderType type;
 	D3DXMATRIX mtxWorld;			// ワールドマトリックス
 	D3DXMATRIX *mtxParent;			// 親マトリックス
 }Collider;
