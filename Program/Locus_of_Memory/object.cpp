@@ -94,6 +94,7 @@ void UninitObject(void)
 		}
 	}
 
+	// 階層構造モデルのメッシュ破棄
 	for (int nCntModelData = 0; nCntModelData < MAX_PARENTMODEL; nCntModelData++)
 	{
 		for (int nCntModel = 0; nCntModel < MAX_PARTS; nCntModel++)
@@ -119,6 +120,7 @@ void UninitObject(void)
 		}
 	}
 
+	// 階層構造モデルのテクスチャ破棄
 	for (int nCntModelData = 0; nCntModelData < MAX_PARENTMODEL; nCntModelData++)
 	{
 		for (int nCntModel = 0; nCntModel < MAX_PARTS; nCntModel++)
@@ -144,6 +146,7 @@ void UninitObject(void)
 		}
 	}
 
+	// 階層構造モデルのマテリアル破棄
 	for (int nCntModelData = 0; nCntModelData < MAX_PARENTMODEL; nCntModelData++)
 	{
 		for (int nCntModel = 0; nCntModel < MAX_PARTS; nCntModel++)
@@ -200,6 +203,7 @@ void UpdateObject(void)
 
 		switch (pParentObject->EventType)
 		{
+			// 燃焼イベント後のフェードアウト
 		case EVENTTYPE_001_1:
 			UpdateObjectEvent001(pParentObject);
 			break;
@@ -439,6 +443,7 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 
 		ObjectModel* pObjectModel = &g_aObjectModel[pObject->type];	// モデルタイプ
 
+		// 各頂点位置を代入
 		posA = D3DXVECTOR3(pObjectModel->vtxMin.x, 0.0f, pObjectModel->vtxMax.z);
 		posB = D3DXVECTOR3(pObjectModel->vtxMax.x, 0.0f, pObjectModel->vtxMax.z);
 		posC = D3DXVECTOR3(pObjectModel->vtxMax.x, 0.0f, pObjectModel->vtxMin.z);
@@ -478,7 +483,7 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 			if (pPosOld->y + fRadius >= pObject->pos.y + pObjectModel->vtxMax.y)
 			{
 				pPos->y = pObject->pos.y + pObjectModel->vtxMax.y - fRadius;
-				isRand = true;
+				isRand = true;		// なにかに着地した
 			}
 
 			// 下から
@@ -489,7 +494,7 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 		}
 	}
 
-	return isRand;
+	return isRand;	// 着地したかどうかを返す
 }
 
 //======================================================================================
@@ -506,6 +511,7 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 			rot.y = DegreeToRadian(rot.y);
 			rot.z = DegreeToRadian(rot.z);
 
+			// 各種変数設定
 			g_aObject[nCntObject].pos = pos;
 			g_aObject[nCntObject].rot = rot;
 			g_aObject[nCntObject].type = type;
@@ -514,6 +520,7 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 
 			if (isRandObj == true)
 			{// ランダムオブジェクトだったら番号を記録
+				// インデックス格納用配列にランダムオブジェクトがオブジェクト配列の番号何番かを記録しておく
 				g_nIdxRandObj[g_nNumRandObj] = nCntObject;
 				g_nNumRandObj++;
 			}
