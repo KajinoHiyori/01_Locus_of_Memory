@@ -1066,6 +1066,10 @@ void ResetTextureStageStateAlpha(int nNumIdx)
 
 //==================================================================================
 //	テクスチャステージステートのカラーの設定
+//  nIdx  : 設定するテクスチャステージのインデックス
+//  Stage : 合成に使用する色 (何で)
+//  Type  : どういう合成方法か
+//  Value : 合成に使用する色 (何に)
 //==================================================================================
 void SetTextureStageStateColor(int nIdx, DWORD Stage, D3DTEXTUREOP Type, DWORD Value)
 {

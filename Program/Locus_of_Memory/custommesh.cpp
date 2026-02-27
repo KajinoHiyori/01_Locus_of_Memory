@@ -143,6 +143,8 @@ void DrawCustomMesh(void)
 		// 頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_3D_MULTI);
 
+		// マルチテクスチャの方(第1引数, nIdx 1)のテクスチャ色(第2引数)で
+		// 今描画してる色(第4引数, Idx 0のポリゴン色 * テクスチャ色)にアルファブレンド(第3引数)
 		SetTextureStageStateColor(1, D3DTA_TEXTURE, D3DTOP_BLENDTEXTUREALPHA, D3DTA_CURRENT);
 
 		// テクスチャの設定
@@ -157,6 +159,7 @@ void DrawCustomMesh(void)
 			0,
 			pCustomMesh->nNumIdx - 2);
 
+		// 基準のステートに戻す
 		ResetTextureStageStateColor(2);
 
 	}
