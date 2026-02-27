@@ -247,7 +247,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\rezar.jpg";
+    "data\\TEXTURE\\rezar.jpg";
    }
   }
   Material {
@@ -256,7 +256,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\bookfront.png";
+    "data\\TEXTURE\\bookfront.png";
    }
   }
   Material {
@@ -265,7 +265,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\bookback.png";
+    "data\\TEXTURE\\bookback.png";
    }
   }
   Material {
@@ -274,7 +274,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Pictures\\bookfront001.png";
+    "data\\TEXTURE\\bookfront001.png";
    }
   }
   Material {
