@@ -38,7 +38,7 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 0					# 時計本体
 		PARENT = -1					# (親)NULL
-		POS = 0.0 40.0 0.0
+		POS = 0.0 80.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
@@ -73,35 +73,35 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 5					# 歯車１
 		PARENT = 0					# (親)体
-		POS = -12.02 3.62 0.0
+		POS = -15.52 10.5 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 6					# 歯車2
 		PARENT = 0					# (親)体
-		POS = 17.0 6.4 0.0
+		POS = 28.0 10.5 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 7					# 歯車3
 		PARENT = 0					# (親)体
-		POS = 6.2 -14.4 0.0
+		POS = 10.3 -24.1 -0.2
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 8					# 歯車4
 		PARENT = 0					# (親)体
-		POS = 7.2 13.0 0.0
+		POS = 12.3 21.2 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 9					# 歯車5
 		PARENT = 0					# (親)体
-		POS = 14.8 -5.8 0.0
+		POS = 24.1 -10.3 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
