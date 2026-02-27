@@ -478,7 +478,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\teamlogo.jpg";
+    "data\\TEXTURE\\teamlogo.jpg";
    }
   }
   Material {
@@ -487,7 +487,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\teamlogo.jpg";
+    "data\\TEXTURE\\teamlogo.jpg";
    }
   }
   Material {
@@ -514,7 +514,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\teamlogo.jpg";
+    "data\\TEXTURE\\teamlogo.jpg";
    }
   }
   Material {

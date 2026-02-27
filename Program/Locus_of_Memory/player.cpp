@@ -345,7 +345,12 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].bJump = false;
 		}
 
-		
+		// プレイヤーの魔法発動モーション終了時
+		if (g_aPlayer[nCntPlayer].motion.motionType == MOTIONTYPE_ACTION && g_aPlayer[nCntPlayer].motion.bFinishMotion == true)
+		{
+			// 待機モーションに切り替え
+			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+		}
 
 		// ゴールとの当たり判定
 		if (CollisionGoal(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius) && GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
