@@ -98,7 +98,7 @@ void UpdateStart(void)
 
 	if (g_bStartFade == false)	// フェードをしていない場合
 	{
-		//g_nModeTitle++;
+		g_nModeTitle++;
 
 		if (g_nModeTitle == 180 && *pfade == FADE_NONE)
 		{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移

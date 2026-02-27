@@ -15,11 +15,12 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_SKYBOX			(1)							// スカイボックスの最大数
-#define SKYBOX_VERTICAL		(64 - 1)					// 縦の分割数
-#define SKYBOX_HORIZONTAL	(64 - 1)					// 横の分割数
-#define SKYBOX_RADIUS		(10000.0f)					// 半径
-#define MOVE_SKY			(0.00025f)					// 空の移動量
+#define MAX_SKYBOX			(1)				// スカイボックスの最大数
+#define SKYBOX_VERTICAL		(64 - 1)		// 縦の分割数
+#define SKYBOX_HORIZONTAL	(64 - 1)		// 横の分割数
+#define SKYBOX_RADIUS		(10000.0f)		// 半径
+#define MOVE_SKY			(0.00025f)		// 空の移動量
+#define MAX_MINUTE			(60)			// 最大分数
 
 //*****************************************************************************
 // グローバル変数
@@ -39,9 +40,7 @@ void InitSkyBox(void)
 	SkyBox* pSkyBox = &g_aSkyBox[0];
 
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice,
-		"data\\TEXTURE\\sky001.jpg",
-		&g_pTextureSkyBox);
+	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\sky001.jpg", &g_pTextureSkyBox);
 
 	memset(pSkyBox, NULL, sizeof(SkyBox) * MAX_SKYBOX);
 
@@ -341,46 +340,109 @@ D3DXCOLOR ChangeSkyColor(void)
 		break;
 
 	case MODE_GAME:	// ゲーム
-		if (nTime >= 0 && nTime <= 559)	// 0:00~5:59
+		switch (nTime)
 		{
-			colLocal = COLOR_SKY007;
+		case 0:	// 0:00
+			g_colNext = COLOR_SKY01;
+			break;
+
+		case 100:	// 1:00
+			g_colNext = COLOR_SKY02;
+			break;
+
+		case 200:	// 2:00
+			g_colNext = COLOR_SKY03;
+			break;
+
+		case 300:	// 3:00
+			g_colNext = COLOR_SKY04;
+			break;
+
+		case 400:	// 4:00
+			g_colNext = COLOR_SKY05;
+			break;
+
+		case 500:	// 5:00
+			g_colNext = COLOR_SKY06;
+			break;
+
+		case 600:	// 6:00
+			g_colNext = COLOR_SKY07;
+			break;
+
+		case 700:	// 7:00
+			g_colNext = COLOR_SKY08;
+			break;
+
+		case 800:	// 8:00
+			g_colNext = COLOR_SKY09;
+			break;
+
+		case 900:	// 9:00
+			g_colNext = COLOR_SKY10;
+			break;
+
+		case 1000:	// 10:00
+			g_colNext = COLOR_SKY11;
+			break;
+
+		case 1100:	// 11:00
+			g_colNext = COLOR_SKY12;
+			break;
+
+		case 1200:	// 12:00
+			g_colNext = COLOR_SKY13;
+			break;
+
+		case 1300:	// 13:00
+			g_colNext = COLOR_SKY14;
+			break;
+
+		case 1400:	// 14:00
+			g_colNext = COLOR_SKY15;
+			break;
+
+		case 1500:	// 15:00
+			g_colNext = COLOR_SKY16;
+			break;
+
+		case 1600:	// 16:00
+			g_colNext = COLOR_SKY17;
+			break;
+
+		case 1700:	// 17:00
+			g_colNext = COLOR_SKY18;
+			break;
+
+		case 1800:	// 18:00
+			g_colNext = COLOR_SKY19;
+			break;
+
+		case 1900:	// 19:00
+			g_colNext = COLOR_SKY20;
+			break;
+
+		case 2000:	// 20:00
+			g_colNext = COLOR_SKY21;
+			break;
+
+		case 2100:	// 21:00
+			g_colNext = COLOR_SKY22;
+			break;
+
+		case 2200:	// 22:00
+			g_colNext = COLOR_SKY23;
+			break;
+
+		case 2300:	// 23:00
+			g_colNext = COLOR_SKY00;
+			break;
+
+		default:
+			break;
 		}
-		else if (nTime >= 600 && nTime <= 759)	// 6:00~7:59
-		{
-			colLocal = COLOR_SKY000;
-		}
-		else if (nTime >= 800 && nTime <= 1059)	// 8:00~10:59
-		{
-			colLocal = COLOR_SKY000;
-		}
-		else if (nTime >= 1100 && nTime <= 1359)	// 11:00~13:59
-		{
-			colLocal = COLOR_SKY001;
-		}
-		else if (nTime >= 1400 && nTime <= 1559)	// 14:00~15:59
-		{
-			colLocal = COLOR_SKY002;
-		}
-		else if (nTime >= 1600 && nTime <= 1659)	// 16:00~16:59
-		{
-			colLocal = COLOR_SKY003;
-		}
-		else if (nTime >= 1700 && nTime <= 1759)	// 17:00~17:59
-		{
-			colLocal = COLOR_SKY004;
-		}
-		else if (nTime >= 1800 && nTime <= 1859)	// 18:00~18:59
-		{
-			colLocal = COLOR_SKY005;
-		}
-		else if (nTime >= 1900 && nTime <= 1959)	// 19:00~19:59
-		{
-			colLocal = COLOR_SKY006;
-		}
-		else if (nTime >= 2000)	// 20:00以降
-		{
-			colLocal = COLOR_SKY007;
-		}
+
+		colLocal = UpdateSkyColor();
 		break;
 
 	case MODE_RESULT:	// リザルト
@@ -400,7 +462,21 @@ D3DXCOLOR ChangeSkyColor(void)
 		break;
 	}
 
+	return colLocal;
+}
 
+//=============================================================================
+//	色の差分で変化させる
+//=============================================================================
+D3DXCOLOR UpdateSkyColor(void)
+{
+	D3DXCOLOR colLocal;	// ローカルで色を保存
+	int nMinute = GetMinute();
+	float fRateMinute = 0.0f;
+	// 次の色と現在の色の差分を求める
+	colLocal = g_colNext - g_col;
+	fRateMinute = (float)nMinute / (float)MAX_MINUTE;
+	colLocal = colLocal * fRateMinute;
 
 	return colLocal;
 }

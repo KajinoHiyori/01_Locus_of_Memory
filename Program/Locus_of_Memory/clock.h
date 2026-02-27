@@ -26,4 +26,5 @@ void DisappearClock(int nIdx);
 CLOCKSTATE GetClockState(void);
 void SetClockState(CLOCKSTATE clockState);
 int GetTime(void);
+int GetMinute(void);
 #endif
