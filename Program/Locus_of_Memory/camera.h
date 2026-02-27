@@ -40,6 +40,11 @@
 #define INIT_TITLECAMERA_POSR	(D3DXVECTOR3(3375.0f, 605.0f, -2125.0f))	// タイトルカメラの注視点
 #define INIT_TITLECAMERA_ROT	(D3DXVECTOR3(0.0f, 2.44f, 0.0f))			// タイトルカメラの向き
 
+// ロゴ
+#define INIT_LOGOCAMERA_POSV	(D3DXVECTOR3(10000.0f, 0.0f, -10000.0f))	// タイトルカメラの視点
+#define INIT_LOGOCAMERA_POSR	(D3DXVECTOR3(10000.0f, 100.0f, -10300.0f))		// タイトルカメラの注視点
+#define INIT_LOGOCAMERA_ROT		(D3DXVECTOR3(0.0f, 0.00f, 0.0f))				// タイトルカメラの向き
+
 // ビューポート生成用マクロ
 #define DEFAULT_VEIWPORT		(SetViewPort((DWORD)0.0f, (DWORD)0.0f, (DWORD)SCREEN_WIDTH, (DWORD)SCREEN_HEIGHT))
 #define INIT_1PVEIWPORT			(SetViewPort((DWORD)0.0f, (DWORD)0.0f, (DWORD)(SCREEN_WIDTH / 2), (DWORD)SCREEN_HEIGHT))

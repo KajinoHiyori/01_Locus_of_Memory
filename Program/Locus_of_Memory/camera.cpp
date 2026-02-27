@@ -473,23 +473,23 @@ void SetModeCamera(MODE mode)
 	switch (mode)
 	{
 	case MODE_START:
-		pCamera->posV = INIT_TITLECAMERA_POSV;
-		pCamera->posVDest = INIT_TITLECAMERA_POSV;
-		pCamera->posR = INIT_TITLECAMERA_POSR;
-		pCamera->posRDest = INIT_TITLECAMERA_POSR;
-		pCamera->vecU = INIT_VECU;
-		pCamera->rot = INIT_TITLECAMERA_ROT;
-		pCamera->rotDest = INIT_TITLECAMERA_ROT;
+		pCamera->posV		= INIT_LOGOCAMERA_POSV;
+		pCamera->posVDest	= INIT_LOGOCAMERA_POSV;
+		pCamera->posR		= INIT_LOGOCAMERA_POSR;
+		pCamera->posRDest	= INIT_LOGOCAMERA_POSR;
+		pCamera->vecU		= INIT_VECU;
+		pCamera->rot		= INIT_LOGOCAMERA_ROT;
+		pCamera->rotDest	= INIT_LOGOCAMERA_ROT;
 		break;
 
 	case MODE_TITLE:
-		pCamera->posV = INIT_TITLECAMERA_POSV;
-		pCamera->posVDest = INIT_TITLECAMERA_POSV;
-		pCamera->posR = INIT_TITLECAMERA_POSR;
-		pCamera->posRDest = INIT_TITLECAMERA_POSR;
-		pCamera->vecU = INIT_VECU;
-		pCamera->rot = INIT_TITLECAMERA_ROT;
-		pCamera->rotDest = INIT_TITLECAMERA_ROT;
+		pCamera->posV		= INIT_TITLECAMERA_POSV;
+		pCamera->posVDest	= INIT_TITLECAMERA_POSV;
+		pCamera->posR		= INIT_TITLECAMERA_POSR;
+		pCamera->posRDest	= INIT_TITLECAMERA_POSR;
+		pCamera->vecU		= INIT_VECU;
+		pCamera->rot		= INIT_TITLECAMERA_ROT;
+		pCamera->rotDest	= INIT_TITLECAMERA_ROT;
 		break;
 
 	case MODE_TUTORIAL:
