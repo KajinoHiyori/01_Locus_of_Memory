@@ -243,6 +243,9 @@
     <ClCompile Include="key.cpp">
       <Filter>game\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="tutorualui.cpp">
+      <Filter>tutorial\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -394,6 +397,9 @@
     </ClInclude>
     <ClInclude Include="key.h">
       <Filter>game\h</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorualui.h">
+      <Filter>tutorial\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
