@@ -20,7 +20,7 @@
 #define SKYBOX_HORIZONTAL	(64 - 1)		// 横の分割数
 #define SKYBOX_RADIUS		(10000.0f)		// 半径
 #define MOVE_SKY			(0.00025f)		// 空の移動量
-#define MAX_MINUTE			(60)			// 最大分数
+#define MAX_MINUTE			(60.0f)			// 最大分数
 
 //*****************************************************************************
 // グローバル変数
@@ -40,7 +40,7 @@ void InitSkyBox(void)
 	SkyBox* pSkyBox = &g_aSkyBox[0];
 
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\sky001.jpg", &g_pTextureSkyBox);
+	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\sky_000.png", &g_pTextureSkyBox);
 
 	memset(pSkyBox, NULL, sizeof(SkyBox) * MAX_SKYBOX);
 
@@ -115,17 +115,22 @@ void DrawSkyBox(void)
 		pDevice->SetTransform(D3DTS_WORLD, &pSkyBox->mtxWorld);
 
 		// 頂点バッファをデータストリームに設定
-		pDevice->SetStreamSource(0, pSkyBox->pVtxBuff, 0, sizeof(VERTEX_3D));
+		pDevice->SetStreamSource(0, pSkyBox->pVtxBuff, 0, sizeof(VERTEX_3D_MULTI));
 
 		// インデックスバッファをデータストリームに設定
 		pDevice->SetIndices(pSkyBox->pIdxBuff);
 
 		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_3D);
+		pDevice->SetFVF(FVF_VERTEX_3D_MULTI);
+
+		// マルチテクスチャの方(第1引数, nIdx 1)のテクスチャ色(第2引数)で
+		// 今描画してる色(第4引数, Idx 0のポリゴン色 * テクスチャ色)にアルファブレンド(第3引数)
+		SetTextureStageStateColor(1, D3DTA_TEXTURE, D3DTOP_SELECTARG1, D3DBLENDOP_ADD);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, g_pTextureSkyBox);
-
+		pDevice->SetTexture(0, NULL);
+		pDevice->SetTexture(1, g_pTextureSkyBox);
+		
 		if (pSkyBox->bUse == true)
 		{
 			// スカイボックスの描画
@@ -145,6 +150,8 @@ void DrawSkyBox(void)
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);		// アルファテストを無効化
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法(すべて描画)
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 255);				// 基準値を設定(すべてを描画している)
+
+	ResetTextureStageStateColor(2);
 }
 
 //=============================================================================
@@ -163,7 +170,7 @@ void UpdateSkyBox(void)
 
 		pSkyBox->tex.x += MOVE_SKY;
 
-		VERTEX_3D* pVtx;			// 頂点情報へのポインタ
+		VERTEX_3D_MULTI* pVtx;			// 頂点情報へのポインタ
 
 		// 頂点バッファをロックし,頂点情報へのポインタを取得
 		pSkyBox->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -176,6 +183,7 @@ void UpdateSkyBox(void)
 			{
 				// テクスチャ座標の設定
 				pVtx[nCntVtxHorizontal].tex = D3DXVECTOR2((1.0f / (pSkyBox->nHorizontal / 2)) * nCntVtxHorizontal + pSkyBox->tex.x, (pSkyBox->tex.y / pSkyBox->nVertical) * nCntVtxVertical);
+				pVtx[nCntVtxHorizontal].texM = D3DXVECTOR2((1.0f / (pSkyBox->nHorizontal / 2)) * nCntVtxHorizontal + pSkyBox->tex.x, (pSkyBox->tex.y / pSkyBox->nVertical) * nCntVtxVertical);
 				pVtx[nCntVtxHorizontal].col = ChangeSkyColor();
 			}
 
@@ -218,15 +226,15 @@ void SetSkyBox(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius, int nVertical, i
 		pSkyBox->nHorizontal = nHorizontal;
 
 		// 頂点バッファの生成
-		pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * (nVertical - 1) * nHorizontal,
+		pDevice->CreateVertexBuffer(sizeof(VERTEX_3D_MULTI) * (nVertical - 1) * nHorizontal,
 			D3DUSAGE_WRITEONLY,
-			FVF_VERTEX_3D,
+			FVF_VERTEX_3D_MULTI,
 			D3DPOOL_MANAGED,
 			&pSkyBox->pVtxBuff,
 			NULL);
 
 		// 初期化
-		VERTEX_3D* pVtx;			// 頂点情報へのポインタ
+		VERTEX_3D_MULTI* pVtx;			// 頂点情報へのポインタ
 
 		// 頂点バッファをロックし,頂点情報へのポインタを取得
 		pSkyBox->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -259,6 +267,7 @@ void SetSkyBox(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius, int nVertical, i
 
 				// テクスチャ座標の設定
 				pVtx[nCntVtxHorizontal].tex = D3DXVECTOR2((1.0f / (nHorizontal / 2)) * nCntVtxHorizontal, (1.0f / nVertical) * nCntVtxVertical);
+				pVtx[nCntVtxHorizontal].texM = D3DXVECTOR2((1.0f / (nHorizontal / 2)) * nCntVtxHorizontal, (1.0f / nVertical) * nCntVtxVertical);
 
 				// 角度を加算
 				fAngleHorizontal += (D3DX_PI / (nHorizontal - 1)) * 2.0f;	// 合計6.28加算したいので倍にする
@@ -325,7 +334,6 @@ void SetSkyBox(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fRadius, int nVertical, i
 //=============================================================================
 D3DXCOLOR ChangeSkyColor(void)
 {
-	int nTime = GetTime();
 	MODE mode = GetMode();
 	D3DXCOLOR colLocal = COLOR_WHITE;	// ローカルで色の値を保存
 
@@ -340,108 +348,6 @@ D3DXCOLOR ChangeSkyColor(void)
 		break;
 
 	case MODE_GAME:	// ゲーム
-		switch (nTime)
-		{
-		case 0:	// 0:00
-			g_colNext = COLOR_SKY01;
-			break;
-
-		case 100:	// 1:00
-			g_colNext = COLOR_SKY02;
-			break;
-
-		case 200:	// 2:00
-			g_colNext = COLOR_SKY03;
-			break;
-
-		case 300:	// 3:00
-			g_colNext = COLOR_SKY04;
-			break;
-
-		case 400:	// 4:00
-			g_colNext = COLOR_SKY05;
-			break;
-
-		case 500:	// 5:00
-			g_colNext = COLOR_SKY06;
-			break;
-
-		case 600:	// 6:00
-			g_colNext = COLOR_SKY07;
-			break;
-
-		case 700:	// 7:00
-			g_colNext = COLOR_SKY08;
-			break;
-
-		case 800:	// 8:00
-			g_colNext = COLOR_SKY09;
-			break;
-
-		case 900:	// 9:00
-			g_colNext = COLOR_SKY10;
-			break;
-
-		case 1000:	// 10:00
-			g_colNext = COLOR_SKY11;
-			break;
-
-		case 1100:	// 11:00
-			g_colNext = COLOR_SKY12;
-			break;
-
-		case 1200:	// 12:00
-			g_colNext = COLOR_SKY13;
-			break;
-
-		case 1300:	// 13:00
-			g_colNext = COLOR_SKY14;
-			break;
-
-		case 1400:	// 14:00
-			g_colNext = COLOR_SKY15;
-			break;
-
-		case 1500:	// 15:00
-			g_colNext = COLOR_SKY16;
-			break;
-
-		case 1600:	// 16:00
-			g_colNext = COLOR_SKY17;
-			break;
-
-		case 1700:	// 17:00
-			g_colNext = COLOR_SKY18;
-			break;
-
-		case 1800:	// 18:00
-			g_colNext = COLOR_SKY19;
-			break;
-
-		case 1900:	// 19:00
-			g_colNext = COLOR_SKY20;
-			break;
-
-		case 2000:	// 20:00
-			g_colNext = COLOR_SKY21;
-			break;
-
-		case 2100:	// 21:00
-			g_colNext = COLOR_SKY22;
-			break;
-
-		case 2200:	// 22:00
-			g_colNext = COLOR_SKY23;
-			break;
-
-		case 2300:	// 23:00
-			g_colNext = COLOR_SKY00;
-			break;
-
-		default:
-			break;
-		}
-
 		colLocal = UpdateSkyColor();
 		break;
 
@@ -470,13 +376,150 @@ D3DXCOLOR ChangeSkyColor(void)
 //=============================================================================
 D3DXCOLOR UpdateSkyColor(void)
 {
-	D3DXCOLOR colLocal;	// ローカルで色を保存
-	int nMinute = GetMinute();
-	float fRateMinute = 0.0f;
-	// 次の色と現在の色の差分を求める
-	colLocal = g_colNext - g_col;
-	fRateMinute = (float)nMinute / (float)MAX_MINUTE;
-	colLocal = colLocal * fRateMinute;
+	D3DXCOLOR colLocal = COLOR_WHITE;		// ローカルで色を保存
+	int nMinute = GetMinute();				// 時間を取得
+	int nTime = GetTime();					// 分を取得
+	float fRed, fGreen, fBlue, fDiffCol;	// 色を保存
+	float fRateTime = (float)nMinute / MAX_MINUTE;	// 時間の経過割合
+
+	// 経過時間に応じて次の色を指定しなおす
+	switch (nTime)
+	{
+	case 0:	// 0:00
+		g_col = COLOR_SKY00;
+		g_colNext = COLOR_SKY01;
+		break;
+
+	case 100:	// 1:00
+		g_col = COLOR_SKY01;
+		g_colNext = COLOR_SKY02;
+		break;
+
+	case 200:	// 2:00
+		g_col = COLOR_SKY02;
+		g_colNext = COLOR_SKY03;
+		break;
+
+	case 300:	// 3:00
+		g_col = COLOR_SKY03;
+		g_colNext = COLOR_SKY04;
+		break;
+
+	case 400:	// 4:00
+		g_col = COLOR_SKY04;
+		g_colNext = COLOR_SKY05;
+		break;
+
+	case 500:	// 5:00
+		g_col = COLOR_SKY05;
+		g_colNext = COLOR_SKY06;
+		break;
+
+	case 600:	// 6:00
+		g_col = COLOR_SKY06;
+		g_colNext = COLOR_SKY07;
+		break;
+
+	case 700:	// 7:00
+		g_col = COLOR_SKY07;
+		g_colNext = COLOR_SKY08;
+		break;
+
+	case 800:	// 8:00
+		g_col = COLOR_SKY08;
+		g_colNext = COLOR_SKY09;
+		break;
+
+	case 900:	// 9:00
+		g_col = COLOR_SKY09;
+		g_colNext = COLOR_SKY10;
+		break;
+
+	case 1000:	// 10:00
+		g_col = COLOR_SKY10;
+		g_colNext = COLOR_SKY11;
+		break;
+
+	case 1100:	// 11:00
+		g_col = COLOR_SKY11;
+		g_colNext = COLOR_SKY12;
+		break;
+
+	case 1200:	// 12:00
+		g_col = COLOR_SKY12;
+		g_colNext = COLOR_SKY13;
+		break;
+
+	case 1300:	// 13:00
+		g_col = COLOR_SKY13;
+		g_colNext = COLOR_SKY14;
+		break;
+
+	case 1400:	// 14:00
+		g_col = COLOR_SKY14;
+		g_colNext = COLOR_SKY15;
+		break;
+
+	case 1500:	// 15:00
+		g_col = COLOR_SKY15;
+		g_colNext = COLOR_SKY16;
+		break;
+
+	case 1600:	// 16:00
+		g_col = COLOR_SKY16;
+		g_colNext = COLOR_SKY17;
+		break;
+
+	case 1700:	// 17:00
+		g_col = COLOR_SKY17;
+		g_colNext = COLOR_SKY18;
+		break;
+
+	case 1800:	// 18:00
+		g_col = COLOR_SKY18;
+		g_colNext = COLOR_SKY19;
+		break;
+
+	case 1900:	// 19:00
+		g_col = COLOR_SKY19;
+		g_colNext = COLOR_SKY20;
+		break;
+
+	case 2000:	// 20:00
+		g_col = COLOR_SKY20;
+		g_colNext = COLOR_SKY21;
+		break;
+
+	case 2100:	// 21:00
+		g_col = COLOR_SKY21;
+		g_colNext = COLOR_SKY22;
+		break;
+
+	case 2200:	// 22:00
+		g_col = COLOR_SKY22;
+		g_colNext = COLOR_SKY23;
+		break;
+
+	case 2300:	// 23:00
+		g_col = COLOR_SKY23;
+		g_colNext = COLOR_SKY00;
+		break;
+
+	default:
+		break;
+	}
+
+	// 赤色の管理
+	fDiffCol = g_colNext.r - g_col.r;
+	fRed = g_col.r + fDiffCol * fRateTime;
+	// 緑色の管理
+	fDiffCol = g_colNext.g - g_col.g;
+	fGreen = g_col.g + fDiffCol * fRateTime;
+	// 青色の管理
+	fDiffCol = g_colNext.b - g_col.b;
+	fBlue = g_col.b + fDiffCol * fRateTime;
+
+	colLocal = D3DXCOLOR(fRed, fGreen, fBlue, 1.0f);
 
 	return colLocal;
 }
