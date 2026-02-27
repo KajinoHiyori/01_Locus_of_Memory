@@ -21,11 +21,12 @@
 #define SKYBOX_RADIUS		(10000.0f)		// 半径
 #define MOVE_SKY			(0.00025f)		// 空の移動量
 #define MAX_MINUTE			(60.0f)			// 最大分数
+#define MAX_SKYTEX			(2)				// 最大テクスチャ数
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-LPDIRECT3DTEXTURE9 g_pTextureSkyBox = NULL;				// テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_apTextureSkyBox[MAX_SKYTEX] = {};	// テクスチャへのポインタ
 SkyBox g_aSkyBox[MAX_SKYBOX];							// スカイボックスの情報
 D3DXCOLOR g_col, g_colNext;	// 色を管理
 
@@ -40,7 +41,9 @@ void InitSkyBox(void)
 	SkyBox* pSkyBox = &g_aSkyBox[0];
 
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\sky_000.png", &g_pTextureSkyBox);
+	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\white.jpg", &g_apTextureSkyBox[0]);
+
+	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\sky_000.png", &g_apTextureSkyBox[1]);
 
 	memset(pSkyBox, NULL, sizeof(SkyBox) * MAX_SKYBOX);
 
@@ -57,10 +60,13 @@ void InitSkyBox(void)
 void UninitSkyBox(void)
 {
 	// テクスチャの破棄
-	if (g_pTextureSkyBox != NULL)
+	for (int nCntTex = 0; nCntTex < MAX_SKYTEX; nCntTex++)
 	{
-		g_pTextureSkyBox->Release();
-		g_pTextureSkyBox = NULL;
+		if (g_apTextureSkyBox[nCntTex] != NULL)
+		{
+			g_apTextureSkyBox[nCntTex]->Release();
+			g_apTextureSkyBox[nCntTex] = NULL;
+		}
 	}
 	
 	for (int nCntSkyBox = 0; nCntSkyBox < MAX_SKYBOX; nCntSkyBox++)
@@ -93,11 +99,6 @@ void DrawSkyBox(void)
 
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);		// ライトを無効にする
 
-	// アルファテストを有効にする
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);		// アルファテストを有効にする
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法(基準値より大きければ描画)
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);					// アルファテストの参照値を設定(～以上で描画, intで設定)
-
 	for (int nCntSkyBox = 0; nCntSkyBox < MAX_SKYBOX; nCntSkyBox++, pSkyBox++)
 	{
 		// ワールドマトリックスの初期化
@@ -125,11 +126,11 @@ void DrawSkyBox(void)
 
 		// マルチテクスチャの方(第1引数, nIdx 1)のテクスチャ色(第2引数)で
 		// 今描画してる色(第4引数, Idx 0のポリゴン色 * テクスチャ色)にアルファブレンド(第3引数)
-		SetTextureStageStateColor(1, D3DTA_TEXTURE, D3DTOP_SELECTARG1, D3DBLENDOP_ADD);
+		SetTextureStageStateColor(1, D3DTA_TEXTURE, D3DTOP_BLENDTEXTUREALPHA, D3DTA_CURRENT);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, NULL);
-		pDevice->SetTexture(1, g_pTextureSkyBox);
+		pDevice->SetTexture(0, g_apTextureSkyBox[0]);
+		pDevice->SetTexture(1, g_apTextureSkyBox[1]);
 		
 		if (pSkyBox->bUse == true)
 		{
@@ -146,12 +147,8 @@ void DrawSkyBox(void)
 
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);		// ライトを有効にする
 
-	// アルファテストを無効にする
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);		// アルファテストを無効化
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法(すべて描画)
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 255);				// 基準値を設定(すべてを描画している)
-
-	ResetTextureStageStateColor(2);
+	// テクスチャステージステートを基準値に
+	ResetTextureStageStateColor(MAX_SKYTEX);
 }
 
 //=============================================================================
