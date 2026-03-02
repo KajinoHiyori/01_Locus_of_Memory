@@ -598,6 +598,9 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		case PARENTMODELTYPE_PLANT:
 			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLANT);		// モーションデータ設定
 			break;
+		case PARENTMODELTYPE_CLOCKTOWER:
+			pParentObject->motion.pMotionData = NULL;
+			break;
 		}
 
 		// 各種設定

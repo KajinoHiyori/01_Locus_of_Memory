@@ -29,6 +29,10 @@ void InitMotion(void)
 //=============================================================================
 void SetMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetData, MOTIONTYPE motiontype, bool bLoopMotion, bool bBlendMotion, int nFrameBlend)
 {
+	if (pMotion->pMotionData == NULL)
+	{
+		return;
+	}
 	if (bBlendMotion == true)
 	{
 		pMotion->bBlendMotion = true;
@@ -79,6 +83,10 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetDat
 {
 	if (pMotion == NULL)
 	{// ƒ‚[ƒVƒ‡ƒ“‚ª‘¶Ý‚µ‚È‚¯‚ê‚Î•Ô‚·
+		return;
+	}
+	if (pMotion->pMotionData == NULL)
+	{
 		return;
 	}
 

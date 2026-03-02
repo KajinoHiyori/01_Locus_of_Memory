@@ -276,9 +276,9 @@ void UpdateGameCamera(void)
 			pCamera->rot.y += move.x * pCamera->fSpeed;
 
 			// Šp“x§ŒÀ
-			if (pCamera->rot.x < -D3DX_PI * CAMERAROT_RESTRICTION)
+			if (pCamera->rot.x < -D3DX_PI * 0.05f)
 			{
-				pCamera->rot.x = -D3DX_PI * CAMERAROT_RESTRICTION;
+				pCamera->rot.x = -D3DX_PI * 0.05f;
 			}
 
 			if (pCamera->rot.x > D3DX_PI * CAMERAROT_RESTRICTION)
