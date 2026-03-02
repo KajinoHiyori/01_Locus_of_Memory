@@ -26,6 +26,10 @@ int g_nNumCollision;							// 使用している当たり判定の数
 //*****************************************************************************
 // 関数ポインタの定義
 //*****************************************************************************
+
+//=============================================================================
+//	矩形の当たり判定
+//=============================================================================
 bool(*BoxCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider) =
 {
 	CollisionBoxToBox,
@@ -34,6 +38,9 @@ bool(*BoxCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderTyp
 	CollisionBoxToCapsule,
 };
 
+//=============================================================================
+//	筒の当たり判定
+//=============================================================================
 bool(*CylinderCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider) =
 {
 	CollisionCylinderToBox,
@@ -42,6 +49,9 @@ bool(*CylinderCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, Collid
 	CollisionCylinderToCapsule,
 };
 
+//=============================================================================
+//	球の当たり判定
+//=============================================================================
 bool(*SphereCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider) =
 {
 	CollisionSphereToBox,
@@ -50,7 +60,10 @@ bool(*SphereCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, Collider
 	CollisionSphereToCapsule,
 };
 
-#if 0	// こんなものなかった
+//=============================================================================
+//	カプセルの当たり判定
+//=============================================================================
+#if 0	// 未実装
 bool(*CapsuleCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider) =
 {
 
@@ -328,7 +341,7 @@ void SetCapsuleCollider(int nIdx, CapsuleCollider CapsuleColliderInfo)
 //=============================================================================
 bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// 分離軸判定ってなんですか？？？
+	// 未実装
 	return false;
 }
 
@@ -337,7 +350,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 //=============================================================================
 bool CollisionBoxToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// から
+	// 未実装
 	return false;
 }
 
@@ -346,7 +359,7 @@ bool CollisionBoxToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollid
 //=============================================================================
 bool CollisionBoxToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// 使いどころはありそう
+	// 未実装
 	return false;
 }
 
@@ -355,7 +368,7 @@ bool CollisionBoxToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 //=============================================================================
 bool CollisionBoxToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// できたほうがいい
+	// 未実装
 	return false;
 }
 
@@ -364,7 +377,7 @@ bool CollisionBoxToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollide
 //=============================================================================
 bool CollisionCylinderToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// 今はいらないもの
+	// 未実装
 	return false;
 }
 
@@ -400,8 +413,6 @@ bool CollisionCylinderToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyC
 //=============================================================================
 bool CollisionCylinderToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// 誰も上に登ろうなんて思わないでほしい
-
 	// 各距離を二乗したものをすべて足す
 	float fDiff = powf(MyCollider.cylinder.pos.x - TargetCollider.cylinder.pos.x, 2) +
 		powf(MyCollider.cylinder.pos.z - TargetCollider.cylinder.pos.z, 2);
@@ -429,7 +440,7 @@ bool CollisionCylinderToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCol
 //=============================================================================
 bool CollisionCylinderToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// カプセルってなんだろう
+	// 未実装
 	return false;
 }
 
@@ -438,7 +449,7 @@ bool CollisionCylinderToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCo
 //=============================================================================
 bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// できればやりたいね
+	// 未実装
 	return false;
 }
 
@@ -447,8 +458,6 @@ bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 //=============================================================================
 bool CollisionSphereToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// 誰も上に登ろうなんて思わないでほしい
-
 	// 各距離を二乗したものをすべて足す
 	float fDiff = powf(MyCollider.sphere.pos.x - TargetCollider.cylinder.pos.x, 2) +
 		powf(MyCollider.sphere.pos.z - TargetCollider.cylinder.pos.z, 2);
@@ -503,41 +512,6 @@ bool CollisionSphereToSphere(CollisionInfo& _CollisionInfo, ColliderType MyColli
 //=============================================================================
 bool CollisionSphereToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
 {
-	// カプセルいらないのでは？
+	// 未実装
 	return false;
-}
-
-void testCollison(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius)
-{
-	// ここ筒と筒らしい
-#if 0
-	D3DXVECTOR3 pos = INIT_D3DXVEC3;
-	float ftestRadius = 1000.0f;
-
-	float fDiff = powf(pPos->x - pos.x, 2) + powf(pPos->z - pos.z, 2);
-
-	if (fDiff <= powf(ftestRadius + fRadius, 2))
-	{
-		float fAngle = atan2f(pPos->x - pos.x, pPos->z - pos.z);
-
-		pPos->x = pos.x + sinf(fAngle) * (ftestRadius + fRadius);
-		pPos->z = pos.z + cosf(fAngle) * (ftestRadius + fRadius);
-	}
-#endif
-
-	// これ球と球ね
-#if 0
-	// 各距離を二乗したものをすべて足す
-	float fDiff = powf(pos.x - pPos->x, 2) + powf(pos.y - pPos->y, 2) + powf(pos.z - pPos->z, 2);
-
-	if (fDiff <= powf(fRadius + ftestRadius, 2))
-	{// 当たっていたら
-		D3DXVECTOR3 postest = (*pPos - pos);
-		D3DXVECTOR3 postesst;
-		D3DXVec3Normalize(&postesst, &postest);
-
-		*pPos = (pos + (postesst * (ftestRadius + fRadius)));
-
-	}
-#endif
 }
