@@ -411,6 +411,7 @@ void UpdateSpellUI(void)
 				SetSpellUIAppear(nCntPlayer);
 				g_aSpellUI[nCntPlayer].bSpell = true;
 				pPlayer->state = PLAYERSTATE_SPELL;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
 			}
 		}
 		else
@@ -423,6 +424,7 @@ void UpdateSpellUI(void)
 				SetSpellUIDisappear(nCntPlayer);
 				ResetCommand(nCntPlayer);
 				pPlayer->state = PLAYERSTATE_NORMAL;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 			}
 		}
 

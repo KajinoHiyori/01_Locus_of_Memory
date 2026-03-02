@@ -9,6 +9,7 @@
 #include "particle.h"
 #include "motion.h"
 #include "magic.h"
+#include "debugproc.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`

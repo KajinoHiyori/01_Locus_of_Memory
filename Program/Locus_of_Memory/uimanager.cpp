@@ -10,6 +10,7 @@
 #include "clock.h"
 #include "battery.h"
 #include "player.h"
+#include "motion.h"
 #include "camera.h"
 #include "main.h"
 #include "input.h"
@@ -377,9 +378,10 @@ void UpdateUIManager(void)
 			{
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;
 			}
-			if ((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true)
+			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && pPlayer->bJump == false)
 			{
 				SetUIAppear(nCntPlayer);	// UI‚ðoŒ»ó‘Ô‚É‚·‚é
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
 			}
 			break;
 
@@ -396,6 +398,7 @@ void UpdateUIManager(void)
 			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
 			{
 				SetUIDissapear(nCntPlayer);	// UI‚Ì•\Ž¦ó‘Ô‚ðÁ–Åó‘Ô‚É‚·‚é
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 			}
 			else
 			{

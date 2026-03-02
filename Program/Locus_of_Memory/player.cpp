@@ -20,7 +20,6 @@
 #include "goal.h"
 
 // マクロ定義
-#define MAX_SHADOW		(1)					// 影テクスチャの最大数
 #define MAX_MODEL		(1)					// モデルの最大数
 #define MOVE			(0.5f)				// 移動量
 #define ROTATE			(0.9f)				// 回転量
@@ -33,7 +32,6 @@
 #define BACK			(D3DX_PI)			// 後ろを向く
 #define FRONT			(0.0f)				// 正面を向く
 #define LENGTH			(50.0f)				// フィールドの範囲
-#define BLENDFRAME		(10)				// モーションブレンドのフレーム数
 #define POS				(D3DXVECTOR3(0.0f, 50.0f, 0.0f))	// プレイヤーの位置
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 基本の法線
 #define INERTIA			(0.1f)								// 慣性
@@ -366,7 +364,6 @@ void UpdatePlayer(void)
 			{// コマンドを所有していたら
 				// 魔法を使用する (モーションセット, 魔法セット)
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_MAGIC;
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_ACTION, false, true, BLENDFRAME);
 				SetMagic(ChangeMagic(InputCommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
 				break;
 			}
@@ -377,8 +374,12 @@ void UpdatePlayer(void)
 		g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * fInertia;
 		g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * fInertia;
 
-		// ジャンプモーションから着地モーションへの切り替え
-		if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING && g_aPlayer[nCntPlayer].motion.nKey + 1 >= g_aPlayer[nCntPlayer].motion.nNumKey)
+		// 特定のモーションから着地モーションへの切り替え
+		if ((g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING ||		// 着地
+			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION ||		// 静止魔法
+			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION ||	// 空に魔法
+			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING)		// しゃがんで魔法
+			&& g_aPlayer[nCntPlayer].motion.nKey + 1 >= g_aPlayer[nCntPlayer].motion.nNumKey)
 		{
 			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 		}

@@ -18,6 +18,7 @@
 #define MAX_PLAYERTEXTURE	(16)	// テクスチャの最大数
 #define MAX_KEY				(16)	// キーの最大数
 #define MAX_OWNCOMMAND		(4)		// 所有できるコマンドの最大数
+#define BLENDFRAME			(10)	// モーションブレンドのフレーム数
 
 // モーションの種類
 typedef enum
@@ -25,9 +26,13 @@ typedef enum
 	PLAYERMOTIONTYPE_NEUTRAL = 0,	// 待機モーション[0]
 	PLAYERMOTIONTYPE_MOVE,			// 移動モーション[1]
 	PLAYERMOTIONTYPE_RUNNING,		// 移動(速)モーション[2]
-	PLAYERMOTIONTYPE_ACTION,		// アクションモーション[3]
-	PLAYERMOTIONTYPE_JUMP,			// ジャンプモーション[4]
-	PLAYERMOTIONTYPE_LANDING,		// 着地モーション[5]
+	PLAYERMOTIONTYPE_STOPACTION,	// 静止魔法モーション[3]
+	PLAYERMOTIONTYPE_TOSKYACTION,	// 空に向けて魔法モーション[4]
+	PLAYERMOTIONTYPE_CROUCHING,		// しゃがみ魔法モーション[5]
+	PLAYERMOTIONTYPE_FLOATONG,		// 浮遊モーション[6]
+	PLAYERMOTIONTYPE_COMMAND,		// コマンド入力モーション[7]
+	PLAYERMOTIONTYPE_JUMP,			// ジャンプモーション[8]
+	PLAYERMOTIONTYPE_LANDING,		// 着地モーション[9]
 	PLAYERMOTIONTYPE_MAX
 }PLAYERMOTIONTYPE;
 

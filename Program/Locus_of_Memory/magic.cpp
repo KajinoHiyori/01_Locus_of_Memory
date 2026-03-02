@@ -469,24 +469,28 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			case MAGICTYPE_LEVITATION:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_LEVITATION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 3;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FLOATONG, false, true, BLENDFRAME);
 				break;
 
 				//燃焼
 			case MAGICTYPE_COMBUSTION:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_COMBUSTION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R] += 3;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 
 				//洪水、氾濫
 			case MAGICTYPE_FLOOD:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FLOOD]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B] += 3;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 
 				//フラッシュ
 			case MAGICTYPE_FLASH:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FLASH]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 3;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
 				break;
 
 				//火球
@@ -494,6 +498,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FIREBALL]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 
 				//太陽の動きを遅延する
@@ -501,6 +506,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_SUNSETDELAY]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R]++;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
 				break;
 
 				//雨乞い
@@ -508,6 +514,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_RAINPRAY]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
 				break;
 
 				//凍結
@@ -515,6 +522,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FREEZE]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING, false, true, BLENDFRAME);
 				break;
 
 				//成長(植物など)
@@ -522,6 +530,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_GROWTH]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 
 				//加速
@@ -529,6 +538,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_ACCELERATION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y]++;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, false, true, BLENDFRAME);
 				break;
 
 				//時間の巻き戻し(回帰)
@@ -537,6 +547,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 			}
 
@@ -620,6 +631,8 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 
 		if (fDiff <= powf(fRadius + pMagicLocus->fRadius, 2))
 		{// 当たっていたら
+			PrintDebugProc("============================================判定アリ");
+
 			if (SetMagicEvent(pMagicLocus->MagicEvent, type, pMagicLocus->nIdxObject) == true)
 			{// 魔法と対応するイベントかどうかチェック
 				pMagicLocus->bUse = false;
