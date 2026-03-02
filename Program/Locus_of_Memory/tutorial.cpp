@@ -47,6 +47,7 @@
 #include "spellui.h"
 #include "clock.h"
 #include "battery.h"
+#include "tutorialui.h"
 
 // マクロ定義
 #define TUTORIALPOS_1P	(D3DXVECTOR3(-3185.0f, 0.0f, -3235.0f))	// 1Pの位置[TUTORIAL]			
@@ -98,14 +99,19 @@ void InitTutorial(void)
 	// 吹き出しの初期化処理
 	InitMagicBubble();
 
+	// チュートリアルUIの初期化処理
+	InitTutorialUI();
+
 	//InitMashwall();
 
 	//InitBullet();
 
 	//InitBillboard();
 
+	// 影の初期化処理
 	InitShadow();
 
+	// プレイヤーの初期化処理
 	InitPlayer();
 
 	//InitModel();
@@ -146,6 +152,7 @@ void UninitTutorial(void)
 	// プレイヤーの終了処理
 	//UninitPause();
 
+	// ライトの終了処理
 	UninitLight();
 
 	// 魔法の終了処理
@@ -161,11 +168,16 @@ void UninitTutorial(void)
 
 	//UninitBullet();
 
+	// 影の終了処理
 	UninitShadow();
 
 	//UninitBillboard();
 
+	// プレイヤーの終了処理
 	UninitPlayer();
+
+	// チュートリアルUIの終了処理
+	UninitTutorialUI();
 
 	//UninitModel();
 
@@ -190,6 +202,7 @@ void UpdateTutorial(void)
 	// プレイヤーの更新処理
 	//UpdateBG();
 
+	// ライトの更新処理
 	UpdateLight();
 
 	// 魔法の更新処理
@@ -202,23 +215,28 @@ void UpdateTutorial(void)
 
 	//UpdateMeshsky();
 
+	// メッシュフィールドの更新処理
 	UpdateMeshField();
 
 	// フィールドの更新処理
 	UpdateField();
 
+	// カスタムメッシュの更新処理
 	UpdateCustomMesh();
 
 	//UpdateMashwall();
 
 	//UpdateBullet();
 
+	// 影の更新処理
 	UpdateShadow();
 
 	//UpdateBillboard();
 
+	// プレイヤーの更新処理
 	UpdatePlayer();
 
+	// 魔法陣の更新処理
 	UpdateMagicCircle();
 
 	// 魔法発動状態表示の更新処理
@@ -230,7 +248,7 @@ void UpdateTutorial(void)
 	// 3D空間UIの更新処理
 	UpdateUIManager();
 
-	// 
+	// 吹き出しの更新処理
 	UpdateMagicBubble();
 
 	// 時計の更新処理
@@ -238,6 +256,9 @@ void UpdateTutorial(void)
 
 	// バッテリーの更新処理
 	UpdateBattery();
+
+	// チュートリアルUIの更新処理
+	UpdateTutorialUI();
 
 	//UpdateMotion();
 
@@ -304,11 +325,13 @@ void DrawTutorial(void)
 
 	//DrawMeshsky();
 
+	// メッシュフィールドの描画処理
 	DrawMeshField();
 
 	// フィールドの描画処理
 	DrawField();
 
+	// カスタムメッシュの描画処理
 	DrawCustomMesh();
 
 	// 魔法の描画処理
@@ -318,6 +341,7 @@ void DrawTutorial(void)
 
 	//DrawBullet();
 
+	// 影の描画処理
 	DrawShadow();
 
 	//DrawBillboard();
@@ -328,6 +352,7 @@ void DrawTutorial(void)
 	// オブジェクトの描画処理（仮）
 	DrawObject();
 
+	// プレイヤーの描画処理
 	DrawPlayer();
 
 	// スカイボックスの描画処理
@@ -348,13 +373,29 @@ void DrawTutorial(void)
 	// 粒の描画処理
 	DrawSparkle();
 
+	// ポーズ管理UIの描画処理
 	DrawUIManager();
+
+	// 魔導書の描画処理
 	DrawMagicUI();
+
+	// 吹き出しの描画処理
 	DrawMagicBubble();
+
+	// 魔法陣の描画処理
 	DrawMagicCircle();
+
+	// spellの描画処理
 	DrawSpellUI();
+
+	// 時計の描画処理
 	DrawClock();
+
+	// バッテリーの描画処理
 	DrawBattery();
+
+	// チュートリアルUIの描画処理
+	DrawTutorialUI();
 
 	//DrawModel();
 

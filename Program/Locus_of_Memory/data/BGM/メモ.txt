@@ -8,3 +8,10 @@
 "思い出を辿りながら"ってやつループするって書いてあったけど
 ラスト１分切ってから、空洞音みたいなのあるし、
 ループ感ないから使うならその部分カットしないと変な感じに聞こえるかも。
+
+クリスタルコア		tutorial.wav
+雨の花				diagnosis.wav
+思い出を巡りながら	faildresult.wav
+水の導き			goalresult.wav
+氷雨				game.wav
+夢見る世界			title.wav
