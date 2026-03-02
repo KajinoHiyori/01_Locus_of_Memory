@@ -100,16 +100,16 @@ typedef enum PARENTMODELTYPE
 // オブジェクトの構造体
 typedef struct
 {
-	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
-	D3DXVECTOR3		pos;		// オブジェクトの位置
-	D3DXVECTOR3		rot;		// オブジェクトの向き
-	OBJECTTYPE		type;		// モデルの種類
-	float			fAlpha;		// アルファ値
-	int				nIdxShadow;	// 影のインデックス
-	float			fSize;		// 大きさ
-	EVENTTYPE		EventType;	// イベントの種類
-	bool			bCollision;	// 当たり判定するか
-	bool			bUse;		// 使用状態
+	D3DXMATRIX		mtxWorld;		// ワールドマトリックス
+	D3DXVECTOR3		pos;			// オブジェクトの位置
+	D3DXVECTOR3		rot;			// オブジェクトの向き
+	OBJECTTYPE		type;			// モデルの種類
+	float			fAlpha;			// アルファ値
+	int				nIdxShadow;		// 影のインデックス
+	float			fSize;			// 大きさ
+	EVENTTYPE		EventType;		// イベントの種類
+	int				nCollisionIdx;	// 当たり判定のインデックス
+	bool			bUse;			// 使用状態
 }Object;
 
 // モーション中のデータの構造体定義
@@ -122,17 +122,18 @@ typedef struct OffSetData
 // 階層構造オブジェクトの構造体定義
 typedef struct
 {
-	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
-	D3DXVECTOR3		pos;		// オブジェクトの位置
-	D3DXVECTOR3		rot;		// オブジェクトの向き
-	PARENTMODELTYPE	type;		// 階層構造オブジェクトの種類
-	float			fAlpha;		// アルファ値
-	Motion			motion;		// モーション情報
-	ModelData*		pModelData;	// モデルの情報
-	OffSetData		OffSetData;	// モーション中の階層構造情報
-	EVENTTYPE		EventType;	// イベントの種類
-	int				nEventIdx;	// イベントのインデックス
-	bool			bUse;		// 使用状態
+	D3DXMATRIX		mtxWorld;		// ワールドマトリックス
+	D3DXVECTOR3		pos;			// オブジェクトの位置
+	D3DXVECTOR3		rot;			// オブジェクトの向き
+	PARENTMODELTYPE	type;			// 階層構造オブジェクトの種類
+	float			fAlpha;			// アルファ値
+	Motion			motion;			// モーション情報
+	ModelData*		pModelData;		// モデルの情報
+	OffSetData		OffSetData;		// モーション中の階層構造情報
+	EVENTTYPE		EventType;		// イベントの種類
+	int				nEventIdx;		// イベントのインデックス
+	int				nCollisionIdx;	// 当たり判定のインデックス
+	bool			bUse;			// 使用状態
 }ParentObject;
 
 // モデルの構造体定義
@@ -166,7 +167,9 @@ void UpdateObject(void);
 void DrawObject(void);
 bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius);
 void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, bool isRandObj = false);
-void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype);
+void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, bool isCollision);
+//void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, ColliderInfo* pColliderInfo, int nNumCollider, bool isRandObj = false);
+//void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision);
 void LoadObjectModel(const char* pModelPath);
 ModelData* SetModelData(PARENTMODELTYPE type);
 void LoadParentModel(const char* pModelPath, int nNumParentModel);

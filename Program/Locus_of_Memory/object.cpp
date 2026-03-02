@@ -12,6 +12,7 @@
 #include "shadow.h"
 #include "player.h"
 #include "loadscript.h"
+#include "collision.h"
 
 #include "input.h"
 
@@ -441,11 +442,6 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 			continue;
 		}
 
-		if (pObject->bCollision == false)
-		{// 当たり判定しないなら戻る
-			continue;
-		}
-
 		ObjectModel* pObjectModel = &g_aObjectModel[pObject->type];	// モデルタイプ
 
 		// 各頂点位置を代入
@@ -520,7 +516,6 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 			g_aObject[nCntObject].pos = pos;
 			g_aObject[nCntObject].rot = rot;
 			g_aObject[nCntObject].type = type;
-			g_aObject[nCntObject].bCollision = isCollision;
 			g_aObject[nCntObject].bUse = true;
 
 			if (isRandObj == true)
@@ -529,6 +524,23 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 				g_nIdxRandObj[g_nNumRandObj] = nCntObject;
 				g_nNumRandObj++;
 			}
+
+#if 0
+			// 当たり判定
+			if (isCollision == true)
+			{
+				g_aObject[nCntObject].nCollisionIdx = SetCollision();
+
+				for (int nCntCollider = 0; nCntCollider < nNumCollider; nCntCollider++, pColliderInfo++)
+				{
+					SetCollider(g_aObject[nCntObject].nCollisionIdx, *pColliderInfo);
+				}
+			}
+			else
+			{
+				g_aObject[nCntObject].nCollisionIdx = -1;
+			}
+#endif
 
 			// 影のIDを設定
 			g_aObject[nCntObject].nIdxShadow = SetShadow(SHADOWTYPE_SQUARE, 180.0f, 180.0f);
@@ -541,7 +553,7 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 //======================================================================================
 // 階層構造オブジェクトを配置
 //======================================================================================
-void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype)
+void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, bool isCollision)
 {
 	ParentObject* pParentObject = &g_aParentObject[0];		// 先頭アドレス
 
@@ -592,6 +604,23 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		pParentObject->pos = pos;
 		pParentObject->rot = rot;
 		pParentObject->bUse = true;
+
+#if 0
+		// 当たり判定
+		if (isCollision == true)
+		{
+			pParentObject->nCollisionIdx = SetCollision();
+
+			for (int nCntCollider = 0; nCntCollider < nNumCollider; nCntCollider++, pColliderInfo++)
+			{
+				SetCollider(pParentObject->nCollisionIdx, *pColliderInfo);
+			}
+		}
+		else
+		{
+			pParentObject->nCollisionIdx = -1;
+		}
+#endif
 
 		// ニュートラルモーションで開始
 		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, false, 10);

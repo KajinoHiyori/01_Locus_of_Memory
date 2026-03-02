@@ -107,10 +107,13 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx)
 	CollisionInfo CollisionInfo = {};							// 衝突情報
 	bool isCollision = false;									// 衝突したかどうか
 
+	// 自分のコライダーから
 	for (int nCntMyCollider = 0; nCntMyCollider < pMyCollision->nNumCollider; nCntMyCollider++)
 	{
+		// 相手のコライダー
 		for (int nCntTargetCollider = 0; nCntTargetCollider < pTargetCollision->nNumCollider; nCntTargetCollider++)
 		{
+			// 対応する当たり判定を呼ぶ
 			switch (g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].type)
 			{
 				// 矩形の当たり判定
@@ -158,6 +161,7 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx)
 //=============================================================================
 void UpdateCollider(int nIdx, D3DXVECTOR3 pos)
 {
+	// 位置を合わせる
 	g_aCollider[g_aCollision[nIdx].nColliderIdx[0]].Collidertype.pos = pos;
 }
 
@@ -180,17 +184,16 @@ int SetCollision(void)
 	for (nCntCollision = 0; nCntCollision < MAX_COLLISION; nCntCollision++, pCollision++)
 	{
 		if (pCollision->bUse == true)
-		{
+		{// 使ってたら弾く
 			continue;
 		}
 
-		pCollision->bUse = true;
-		g_nNumCollision++;
+		pCollision->bUse = true;	// 使用状態に
+		g_nNumCollision++;			// 全体の数を増やす
 		break;
 	}
 
-	return nCntCollision;
-
+	return nCntCollision;			// 使用状態にした当たり判定の番号を返す
 
 	//// 今使ってる最大数をインデックスとして指定
 	//g_aCollision[g_nNumCollider].bUse = true;
@@ -213,9 +216,9 @@ void ResetCollision(int nIdx)
 }
 
 //=============================================================================
-//	矩形のコライダーの設定処理
+//	コライダーの設定処理
 //=============================================================================
-void SetBoxCollider(int nIdx, BoxCollider BoxColliderInfo)
+void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 {
 	Collider* pCollider = &g_aCollider[0];	// コライダーへのポインタ
 	int nCntCollider = 0;					// カウント用変数
@@ -223,7 +226,7 @@ void SetBoxCollider(int nIdx, BoxCollider BoxColliderInfo)
 	for (nCntCollider = 0; nCntCollider < MAX_COLLIDER; nCntCollider++, pCollider++)
 	{
 		if (pCollider->bUse == true)
-		{
+		{// 使ってたら弾く
 			continue;
 		}
 
@@ -231,101 +234,8 @@ void SetBoxCollider(int nIdx, BoxCollider BoxColliderInfo)
 		g_aCollision[nIdx].nColliderIdx[g_aCollision[nIdx].nNumCollider] = nCntCollider;
 
 		// 各値代入
-		pCollider->Collidertype.box = BoxColliderInfo;
-		pCollider->type = COLLIDERTYPE_BOX;
-		pCollider->bUse = true;
-
-		// コライダー使用数を当たり判定でも全体でも増やす
-		g_aCollision[nIdx].nNumCollider++;
-		g_nNumCollider++;
-
-		break;
-	}
-}
-
-//=============================================================================
-//	筒のコライダーの設定処理
-//=============================================================================
-void SetCylinderCollider(int nIdx, CylinderCollider ClinderColliderInfo)
-{
-	Collider* pCollider = &g_aCollider[0];	// コライダーへのポインタ
-	int nCntCollider = 0;					// カウント用変数
-
-	for (nCntCollider = 0; nCntCollider < MAX_COLLIDER; nCntCollider++, pCollider++)
-	{
-		if (pCollider->bUse == true)
-		{
-			continue;
-		}
-
-		// 指定された当たり判定にコライダーのインデックスを追加
-		g_aCollision[nIdx].nColliderIdx[g_aCollision[nIdx].nNumCollider] = nCntCollider;
-
-		// 各値代入
-		pCollider->Collidertype.cylinder = ClinderColliderInfo;
-		pCollider->type = COLLIDERTYPE_CYLINDER;
-		pCollider->bUse = true;
-
-		// コライダー使用数を当たり判定でも全体でも増やす
-		g_aCollision[nIdx].nNumCollider++;
-		g_nNumCollider++;
-
-		break;
-	}
-}
-
-//=============================================================================
-//	球のコライダーの設定処理
-//=============================================================================
-void SetSphereCollider(int nIdx, SphereCollider SphereColliderInfo)
-{
-	Collider* pCollider = &g_aCollider[0];	// コライダーへのポインタ
-	int nCntCollider = 0;					// カウント用変数
-
-	for (nCntCollider = 0; nCntCollider < MAX_COLLIDER; nCntCollider++, pCollider++)
-	{
-		if (pCollider->bUse == true)
-		{
-			continue;
-		}
-
-		// 指定された当たり判定にコライダーのインデックスを追加
-		g_aCollision[nIdx].nColliderIdx[g_aCollision[nIdx].nNumCollider] = nCntCollider;
-
-		// 各値代入
-		pCollider->Collidertype.sphere = SphereColliderInfo;
-		pCollider->type = COLLIDERTYPE_SPHERE;
-		pCollider->bUse = true;
-
-		// コライダー使用数を当たり判定でも全体でも増やす
-		g_aCollision[nIdx].nNumCollider++;
-		g_nNumCollider++;
-
-		break;
-	}
-}
-
-//=============================================================================
-//	カプセルのコライダーの設定処理
-//=============================================================================
-void SetCapsuleCollider(int nIdx, CapsuleCollider CapsuleColliderInfo)
-{
-	Collider* pCollider = &g_aCollider[0];	// コライダーへのポインタ
-	int nCntCollider = 0;					// カウント用変数
-
-	for (nCntCollider = 0; nCntCollider < MAX_COLLIDER; nCntCollider++, pCollider++)
-	{
-		if (pCollider->bUse == true)
-		{
-			continue;
-		}
-
-		// 指定された当たり判定にコライダーを追加
-		g_aCollision[nIdx].nColliderIdx[g_aCollision[nIdx].nNumCollider] = nCntCollider;
-
-		// 各値代入
-		pCollider->Collidertype.capsule = CapsuleColliderInfo;
-		pCollider->type = COLLIDERTYPE_CAPSULE;
+		pCollider->Collidertype = ColliderInfo.Collidertype;
+		pCollider->type = ColliderInfo.type;
 		pCollider->bUse = true;
 
 		// コライダー使用数を当たり判定でも全体でも増やす

@@ -647,7 +647,7 @@ HRESULT LoadModel(const char* pModelFileName)
 
 					if (Parenttype != -1)
 					{
-						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype);
+						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype, (bool)nCollision);
 						nCntParentModel++;
 					}
 					else

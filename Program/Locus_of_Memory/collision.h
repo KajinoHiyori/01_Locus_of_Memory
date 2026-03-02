@@ -96,10 +96,19 @@ union ColliderType
 //*****************************************************************************
 typedef struct Collider
 {
-	COLLIDERTYPE type;					// 種類
-	ColliderType Collidertype;			// 種類指定
-	bool bUse;							// 使用状態
+	COLLIDERTYPE type;				// 種類
+	ColliderType Collidertype;		// 種類指定
+	bool bUse;						// 使用状態
 }Collider;
+
+//*****************************************************************************
+// コライダー情報の構造体定義
+//*****************************************************************************
+typedef struct ColliderInfo
+{
+	COLLIDERTYPE type;				// 種類
+	ColliderType Collidertype;		// 種類指定
+}ColliderInfo;
 
 //*****************************************************************************
 // 当たり判定の構造体定義
@@ -132,11 +141,7 @@ void UpdateCollider(int nIdx, D3DXVECTOR3 pos);
 void DrawCollision(void);
 int SetCollision(void);
 void ResetCollision(int nIdx);
-void SetBoxCollider(int nIdx, BoxCollider BoxColliderInfo);
-void SetCylinderCollider(int nIdx, CylinderCollider ClinderColliderInfo);
-void SetSphereCollider(int nIdx, SphereCollider SphereColliderInfo);
-void SetCapsuleCollider(int nIdx, CapsuleCollider CapsuleColliderInfo);
-void testCollison(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius);
+void SetCollider(int nIdx, ColliderInfo ColliderInfo);
 
 //*****************************************************************************
 // 総当たりの当たり判定 (最適化の余裕なし)
