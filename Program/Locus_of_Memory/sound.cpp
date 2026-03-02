@@ -34,7 +34,7 @@ DWORD g_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
 // サウンドの情報
 SOUNDINFO g_aSoundInfo[SOUND_LABEL_MAX] =
 {
-	{"data/BGM/ks039.wav", -1},		// BGM
+	{"data/BGM/game.wav", -1},		// BGM
 };
 
 //=============================================================================

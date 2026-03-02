@@ -78,7 +78,6 @@ void InitTutorialUI(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 	// 操作人数の取得
 	OPERATIONTYPE operationType = GetOperationType();
-	// プレイヤーの情報を取得
 
 	// テクスチャの読み込み
 	for (int nCntUI = 0; nCntUI < MAX_TUTORIALUI; nCntUI++)
