@@ -75,7 +75,7 @@ MODEL_FILENAME = data/MODEL/Shrine/Shrine000.x				# [41]祠
 MODEL_FILENAME = data/MODEL/magicobj/shovel000.x			# [42]シャベル
 MODEL_FILENAME = data/MODEL/landmark/x/landmark001.x		# [43]風車
 MODEL_FILENAME = data/MODEL/landmark/x/landmark002.x		# [44]灯台
-MODEL_FILENAME = data/MODEL/landmark/x/landmark000.x		# [45]煙突
+MODEL_FILENAME = data/MODEL/blacksmith/blacksmith.x		# [45]煙突
 MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall000.x	# [46]チュートリアル分断壁
 MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall001.x	# [47]チュートリアル分断壁
 
@@ -326,7 +326,7 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 43
-	POS = 2000 0 -3465
+	POS = 2150 0 -3754
 	ROT = 0 160 0
 	SHADOW = 0
 	COLLISION = 1
@@ -514,7 +514,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 29
+	TYPE = 13
 	POS = 175 0 -940
 	ROT = 0 90 0
 	SHADOW = 0
@@ -530,7 +530,7 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 29
+	TYPE = 13
 	POS = -267 0 -1544
 	ROT = 0 90 0
 	SHADOW = 0
@@ -855,6 +855,31 @@ MODELSET
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
+
+MODELSET
+	TYPE = 31
+	POS = -2710 0 -83
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 31
+	POS = -4499 0 -478
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 31
+	POS = -3682 0 336
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 #------------------------------------------------------------------------------
 # バケツ
 #------------------------------------------------------------------------------
@@ -871,7 +896,7 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 35
-	POS = 215 34 -3221
+	POS = 0 0 -4920
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -880,6 +905,14 @@ END_MODELSET
 MODELSET
 	TYPE = 35
 	POS = 999 34 -3106
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 35
+	POS = 2400 0 -4118
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -914,7 +947,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 37
-	POS = 954 0 555
+	POS = 1167 0 1053
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
@@ -1076,7 +1109,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 42
-	POS = 2653 35 635
+	POS = 2673 35 635
 	ROT = -110 -90 0
 	SHADOW = 0
 	COLLISION = 1
@@ -1089,6 +1122,23 @@ MODELSET
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
+
+MODELSET
+	TYPE = 34
+	POS = 3895 0 1350
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 42
+	POS = 3895 35 1350
+	ROT = -110 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 #------------------------------------------------------------------------------
 # チュートリアル壁
 #------------------------------------------------------------------------------
