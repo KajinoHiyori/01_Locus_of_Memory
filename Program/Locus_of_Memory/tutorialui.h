@@ -28,4 +28,6 @@ void SetTutorialUI(TUTORIALUITYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 void SetTutorialUIAppear(int nIdx);
 void SetTutorialUIDisp(int nIdx);
+void SetTutorialUIDisappear(int nIdx);
+void SetTutorialUINonDisp(int nIdx);
 #endif

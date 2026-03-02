@@ -13,6 +13,7 @@
 #include "input.h"
 #include "fog.h"
 #include "player.h"
+#include "debugproc.h"
 
 // チュートリアルUI演出の管理
 typedef enum
@@ -52,7 +53,7 @@ typedef struct
 #define MAGIC_POS			(D3DXVECTOR3(-3080.0f, 120.0f, -3000.0f))	// 魔法の使い方の表示位置
 #define LIMIT_POS			(D3DXVECTOR3(-2680.0f, 120.0f, -3000.0f))	// 制限時間の表示位置
 #define BOOK_POS			(D3DXVECTOR3(-2280.0f, 120.0f, -3000.0f))	// 魔導書の表示位置
-#define APPEAR_SIZE			(500.0f)	// 出現の当たり判定を管理するサイズ
+#define APPEAR_SIZE			(250.0f)	// 出現の当たり判定を管理するサイズ
 
 // テクスチャの読み込み
 const char* c_apFilenameTutorialUI[MAX_TUTORIALUI] =
@@ -99,6 +100,8 @@ void InitTutorialUI(void)
 		g_aTutorialUI[nCntUI].nNumKey		= UI_KEY;						// 浮遊感をカウントするキー数
 		g_aTutorialUI[nCntUI].nKey			= 0;							// 現在のキー数
 		g_aTutorialUI[nCntUI].bDisp			= false;						// 表示状態
+
+		SetTutorialUINonDisp(nCntUI);
 	}
 
 	// 頂点バッファの生成
@@ -186,17 +189,36 @@ void UpdateTutorialUI(void)
 {
 	Player* pPlayer = GetPlayer();	// プレイヤーの情報を取得
 	float fDiffKey, fRateKey = 0.0f;
+	bool bDisp[NUM_TUTORIALUI] = { false, false, false, false};
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
+		if (pPlayer->bUse == false)
+		{
+			continue;
+		}
 		for (int nCntUI = 0; nCntUI < NUM_TUTORIALUI; nCntUI++)
 		{
 			// プレイヤーが設置位置に近づいた場合展開する
 			if (pPlayer->pos.x >= g_aTutorialUI[nCntUI].pos.x - APPEAR_SIZE &&	// 一定範囲より右にある
 				pPlayer->pos.x <= g_aTutorialUI[nCntUI].pos.x + APPEAR_SIZE &&	// 一定範囲より左にある
-				pPlayer->pos.z <= g_aTutorialUI[nCntUI].pos.z - APPEAR_SIZE &&	// 一定範囲より奥にある
-				pPlayer->pos.z <= g_aTutorialUI[nCntUI].pos.z + APPEAR_SIZE)	// 一定範囲より手前にある
+				pPlayer->pos.z >= g_aTutorialUI[nCntUI].pos.z - APPEAR_SIZE &&	// 一定範囲より奥にある
+				pPlayer->pos.z <= g_aTutorialUI[nCntUI].pos.z + APPEAR_SIZE)
 			{
-
+				PrintDebugProc("%dが当たってる\n", nCntPlayer);
+				bDisp[nCntUI] = true;
+				if (g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_NONDISPLAY)
+				{
+					SetTutorialUIAppear(nCntUI);
+				}
+			}
+			else
+			{
+				if ((g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_APPEAR || // 出現状態
+					g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_DISPLAY) &&	// 表示状態
+					(nCntPlayer == 1 && bDisp[nCntUI] == false))
+				{
+					SetTutorialUIDisappear(nCntUI);
+				}
 			}
 		}
 	}
@@ -223,8 +245,61 @@ void UpdateTutorialUI(void)
 				SetTutorialUIDisp(nCntUI);
 			}
 			break;
+
+		case TUTORIALUISTATE_DISPLAY:	// 表示
+			g_aTutorialUI[nCntUI].bDisp = true;
+			break;
+
+		case TUTORIALUISTATE_DISAPPEAR:	// 収縮
+			// 背景の高度変更
+			fRateKey = (float)g_aTutorialUI[nCntUI].nKey / (float)g_aTutorialUI[nCntUI].nNumKey;
+			fDiffKey = g_aTutorialUI[nCntUI].fHeightDest - g_aTutorialUI[nCntUI].fHeight;
+			g_aTutorialUI[nCntUI].fHeight = g_aTutorialUI[nCntUI].fHeight + fDiffKey * fRateKey;
+
+			// 中心位置からの位置を求める
+			g_aTutorialUI[nCntUI].nKey++;
+
+			if (g_aTutorialUI[nCntUI].nKey > g_aTutorialUI[nCntUI].nNumKey)
+			{
+				SetTutorialUINonDisp(nCntUI);
+			}
+			break;
 		}
 	}
+
+	VERTEX_3D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffTutorialUI->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntUI = 0; nCntUI < NUM_TUTORIALUI; nCntUI++, pVtx += 4)
+	{
+		// 頂点座標の設定
+		pVtx[0].pos = D3DXVECTOR3(-g_aTutorialUI[nCntUI].fWidth,	 g_aTutorialUI[nCntUI].fHeight, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3( g_aTutorialUI[nCntUI].fWidth,	 g_aTutorialUI[nCntUI].fHeight, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(-g_aTutorialUI[nCntUI].fWidth,	-g_aTutorialUI[nCntUI].fHeight, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3( g_aTutorialUI[nCntUI].fWidth,	-g_aTutorialUI[nCntUI].fHeight, 0.0f);
+
+		// rhwの設定
+		pVtx[0].nor = NORMAL;
+		pVtx[1].nor = NORMAL;
+		pVtx[2].nor = NORMAL;
+		pVtx[3].nor = NORMAL;
+
+		// 頂点カラーの設定
+		pVtx[0].col = COLOR_UIBUBBLE;
+		pVtx[1].col = COLOR_UIBUBBLE;
+		pVtx[2].col = COLOR_UIBUBBLE;
+		pVtx[3].col = COLOR_UIBUBBLE;
+
+		// テクスチャ座標の設定
+		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+
+	}
+	// 頂点バッファをアンロック
+	g_pVtxBuffTutorialUI->Unlock();
 }
 
 //======================================================================================
@@ -325,24 +400,50 @@ void SetTutorialUI(TUTORIALUITYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 void SetTutorialUIAppear(int nIdx)
 {
 	g_aTutorialUI[nIdx].state		= TUTORIALUISTATE_APPEAR;
-	g_aTutorialUI[nIdx].fWidth		= 0.0f;		// 幅
+	g_aTutorialUI[nIdx].fWidth		= WIDTH;		// 幅
 	g_aTutorialUI[nIdx].fWidthDest	= WIDTH;	// 幅の目的値
-	g_aTutorialUI[nIdx].fHeight		= HEIGHT;	// 高さ
 	g_aTutorialUI[nIdx].fHeightDest = HEIGHT;	// 高さの目的値
 	g_aTutorialUI[nIdx].nKey		= 0;		// 現在のキー数
 	g_aTutorialUI[nIdx].bDisp		= true;		// 表示状態
 }
 
 //======================================================================================
-// TutorialUIを出現状態にする
+// TutorialUIを表示状態にする
 //======================================================================================
 void SetTutorialUIDisp(int nIdx)
 {
 	g_aTutorialUI[nIdx].state		= TUTORIALUISTATE_DISPLAY;
 	g_aTutorialUI[nIdx].fWidth		= WIDTH;	// 幅
 	g_aTutorialUI[nIdx].fWidthDest	= WIDTH;	// 幅の目的値
-	g_aTutorialUI[nIdx].fHeight		= HEIGHT;	// 高さ
+	g_aTutorialUI[nIdx].fHeight		= HEIGHT;	// 高さの目的値
 	g_aTutorialUI[nIdx].fHeightDest = HEIGHT;	// 高さの目的値
 	g_aTutorialUI[nIdx].nKey		= 0;		// 現在のキー数
 	g_aTutorialUI[nIdx].bDisp		= true;		// 表示状態
+}
+
+//======================================================================================
+// TutorialUIを収縮状態にする
+//======================================================================================
+void SetTutorialUIDisappear(int nIdx)
+{
+	g_aTutorialUI[nIdx].state		= TUTORIALUISTATE_DISAPPEAR;
+	g_aTutorialUI[nIdx].fWidth		= WIDTH;	// 幅
+	g_aTutorialUI[nIdx].fWidthDest	= WIDTH;	// 幅の目的値
+	g_aTutorialUI[nIdx].fHeightDest = 0.0f;		// 高さの目的値
+	g_aTutorialUI[nIdx].nKey		= 0;		// 現在のキー数
+	g_aTutorialUI[nIdx].bDisp		= true;		// 表示状態
+}
+
+//======================================================================================
+// TutorialUIを非表示状態にする
+//======================================================================================
+void SetTutorialUINonDisp(int nIdx)
+{
+	g_aTutorialUI[nIdx].state = TUTORIALUISTATE_NONDISPLAY;
+	g_aTutorialUI[nIdx].fWidth = WIDTH;			// 幅
+	g_aTutorialUI[nIdx].fWidthDest = WIDTH;		// 幅の目的値
+	g_aTutorialUI[nIdx].fHeight = 0.0f;			// 高さ
+	g_aTutorialUI[nIdx].fHeightDest = HEIGHT;	// 高さの目的値
+	g_aTutorialUI[nIdx].nKey = 0;				// 現在のキー数
+	g_aTutorialUI[nIdx].bDisp = false;			// 表示状態
 }
