@@ -337,7 +337,6 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 					(vecLineB.z * vecToPosB.x) - (vecLineB.x * vecToPosB.z) < 0 &&
 					(vecLineC.z * vecToPosC.x) - (vecLineC.x * vecToPosC.z) < 0)
 				{// もし全ての境界線ベクトルの内側にいたら
-
 					// 面の法線
 					D3DXVECTOR3 vecNor = { (-vecLineA.y * vecLineB.z) - (-vecLineA.z * vecLineB.y), (-vecLineA.z * vecLineB.x) - (-vecLineA.x * vecLineB.z), (-vecLineA.x * vecLineB.y) - (-vecLineA.y * vecLineB.x) };
 
@@ -384,7 +383,6 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 					(vecLineB.z * vecToPosB.x) - (vecLineB.x * vecToPosB.z) > 0 &&
 					(vecLineC.z * vecToPosC.x) - (vecLineC.x * vecToPosC.z) > 0)
 				{// もし全ての境界線ベクトルの内側にいたら
-
 					D3DXVECTOR3 vecNor = { (vecLineB.y * -vecLineA.z) - (vecLineB.z * -vecLineA.y), (vecLineB.z * -vecLineA.x) - (vecLineB.x * -vecLineA.z), (vecLineB.x * -vecLineA.y) - (vecLineB.y * -vecLineA.x) };
 					
 					D3DXVec3Normalize(&vecNor, &vecNor);

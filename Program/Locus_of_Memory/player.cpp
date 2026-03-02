@@ -18,6 +18,7 @@
 #include "uimanager.h"
 #include "particle.h"
 #include "goal.h"
+#include "collision.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -356,6 +357,9 @@ void UpdatePlayer(void)
 			// クリア状態にする
 			SetGameState(GAMESTATE_CLEAR, 0);
 		}
+
+		// 当たり判定の位置の更新
+		UpdateCollider(g_aPlayer[nCntPlayer].nIdxCollision, g_aPlayer[nCntPlayer].pos);
 
 		// 使用したコマンドと所持コマンドを判定
 		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)

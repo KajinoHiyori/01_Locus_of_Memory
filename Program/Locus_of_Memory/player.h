@@ -56,25 +56,26 @@ typedef struct
 // モデルの構造体
 typedef struct
 {
-	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
-	D3DXVECTOR3		pos;		// プレイヤーの位置
-	D3DXVECTOR3		posOld;		// プレイヤーの過去の位置
-	D3DXVECTOR3		move;		// プレイヤーの移動量
-	D3DXVECTOR3		rot;		// プレイヤーの向き
-	D3DXVECTOR3		rotDest;	// プレイヤーの目的の向き
-	Motion			motion;		// プレイヤーのモーション情報
-	ModelData*		pModelData;	// モデルの情報
-	OffSetData		OffSetData;	// モーション中の階層構造情報
-	PLAYERSTATE		state;		// プレイヤーの状態
-	MagicBook		magicbook;	// 魔法の種類
-	int				nIdxShadow;	// 影のインデックス
-	float			fRadius;	// 半径
-	float			fSpeed;		// 移動量
-	bool			bJump;		// ジャンプ状態
-	bool			bKey1;		// 鍵の取得状態
-	bool			bKey2;		// 鍵の取得状態
-	bool			bKey3;		// 鍵の取得状態
-	bool			bUse;		// 使用状態
+	D3DXMATRIX		mtxWorld;		// ワールドマトリックス
+	D3DXVECTOR3		pos;			// プレイヤーの位置
+	D3DXVECTOR3		posOld;			// プレイヤーの過去の位置
+	D3DXVECTOR3		move;			// プレイヤーの移動量
+	D3DXVECTOR3		rot;			// プレイヤーの向き
+	D3DXVECTOR3		rotDest;		// プレイヤーの目的の向き
+	Motion			motion;			// プレイヤーのモーション情報
+	ModelData*		pModelData;		// モデルの情報
+	OffSetData		OffSetData;		// モーション中の階層構造情報
+	PLAYERSTATE		state;			// プレイヤーの状態
+	MagicBook		magicbook;		// 魔法の種類
+	int				nIdxShadow;		// 影のインデックス
+	int				nIdxCollision;	// 当たり判定のインデックス
+	float			fRadius;		// 半径
+	float			fSpeed;			// 移動量
+	bool			bJump;			// ジャンプ状態
+	bool			bKey1;			// 鍵の取得状態
+	bool			bKey2;			// 鍵の取得状態
+	bool			bKey3;			// 鍵の取得状態
+	bool			bUse;			// 使用状態
 }Player;
 
 // プロトタイプ宣言

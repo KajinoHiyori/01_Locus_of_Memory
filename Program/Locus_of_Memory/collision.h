@@ -20,8 +20,8 @@
 //*****************************************************************************
 typedef enum TAGTYPE
 {
-	TAGTYPE_PLAYER = 0,
-	TAGTYPE_OBJECT,
+	TAGTYPE_PLAYER = 0,			// プレイヤー
+	TAGTYPE_OBJECT,				// オブジェクト
 	TAGTYPE_MAX
 }TAGTYPE;
 
@@ -30,9 +30,10 @@ typedef enum TAGTYPE
 //*****************************************************************************
 typedef enum COLLIDERTYPE
 {
-	COLLIDERTYPE_BOX = 0,
-	COLLIDERTYPE_SPHERE,
-	COLLIDERTYPE_CAPSULE,
+	COLLIDERTYPE_BOX = 0,		// 矩形
+	COLLIDERTYPE_CYLINDER,		// 筒
+	COLLIDERTYPE_SPHERE,		// 球
+	COLLIDERTYPE_CAPSULE,		// カプセル
 	COLLIDERTYPE_MAX
 }COLLIDERTYPE;
 
@@ -41,16 +42,29 @@ typedef enum COLLIDERTYPE
 //*****************************************************************************
 typedef struct BoxCollider
 {
+	D3DXVECTOR3 pos;	// 原点
+	D3DXVECTOR3 rot;	// 向き
 	float fWidth;		// 幅
 	float fHeight;		// 高さ
 	float fDepth;		// 奥行き
 }BoxCollider;
 
 //*****************************************************************************
+// 筒のコライダーの構造体定義
+//*****************************************************************************
+typedef struct CylinderCollider
+{
+	D3DXVECTOR3 pos;	// 原点
+	D3DXVECTOR3 rot;	// 向き
+	float fRadius;		// 半径
+}CylinderCollider;
+
+//*****************************************************************************
 // 球のコライダーの構造体定義
 //*****************************************************************************
 typedef struct SphereCollider
 {
+	D3DXVECTOR3 pos;	// 原点
 	float fRadius;		// 半径
 }SphereCollider;
 
@@ -59,28 +73,32 @@ typedef struct SphereCollider
 //*****************************************************************************
 typedef struct CapsuleCollider
 {
+	D3DXVECTOR3 pos;	// 原点
+	D3DXVECTOR3 rot;	// 向き
 	float fRadius;		// 半径
 	float fHeight;		// 高さ
 }CapsuleCollider;
 
+//*****************************************************************************
+// コライダーの共用体定義
+//*****************************************************************************
 union ColliderType
-{// コライダーの種類
+{
 	BoxCollider box;			// 矩形
+	CylinderCollider cylinder;	// 筒
 	SphereCollider sphere;		// 球
 	CapsuleCollider capsule;	// カプセル
-}ColliderType;
+	D3DXVECTOR3 pos;			// 位置だけ設定したいときのため
+};
 
 //*****************************************************************************
 // コライダーの構造体定義
 //*****************************************************************************
 typedef struct Collider
 {
-	D3DXVECTOR3 pos;				// 原点
-	D3DXVECTOR3 rot;				// 向き
-	//COLLIDERTYPE type;				// 種類
-	union ColliderType type;
-	D3DXMATRIX mtxWorld;			// ワールドマトリックス
-	D3DXMATRIX *mtxParent;			// 親マトリックス
+	COLLIDERTYPE type;					// 種類
+	ColliderType Collidertype;			// 種類指定
+	bool bUse;							// 使用状態
 }Collider;
 
 //*****************************************************************************
@@ -92,17 +110,64 @@ typedef struct Collision
 	int nColliderIdx[MAX_ONECOLLIDER];		// 使用するコライダーの番号
 	int nNumCollider;						// 使用しているコライダーの数
 	bool bUse;								// 使用状態
-	UINT tag;								// タグ
+	unsigned int tag;						// タグ
 }Collision;
+
+//*****************************************************************************
+// 当たり判定情報の構造体定義
+//*****************************************************************************
+typedef struct CollisionInfo
+{
+	D3DXVECTOR3 Intersection;		// 交点
+	bool isCollision;				// 衝突したかどうか
+}CollisionInfo;
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
 void InitCollision(void);
 void UninitCollision(void);
-void UpdateCollision(int nIdx, UINT TargetTag);
+CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx);
+void UpdateCollider(int nIdx, D3DXVECTOR3 pos);
 void DrawCollision(void);
 int SetCollision(void);
-void SetBoxCollider(int nIdx);
+void ResetCollision(int nIdx);
+void SetBoxCollider(int nIdx, BoxCollider BoxColliderInfo);
+void SetCylinderCollider(int nIdx, CylinderCollider ClinderColliderInfo);
+void SetSphereCollider(int nIdx, SphereCollider SphereColliderInfo);
+void SetCapsuleCollider(int nIdx, CapsuleCollider CapsuleColliderInfo);
+void testCollison(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius);
+
+//*****************************************************************************
+// 総当たりの当たり判定 (最適化の余裕なし)
+//*****************************************************************************
+
+//=============================================================================
+//	矩形の当たり判定
+//=============================================================================
+bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionBoxToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionBoxToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionBoxToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+
+//=============================================================================
+//	筒の当たり判定
+//=============================================================================
+bool CollisionCylinderToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionCylinderToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionCylinderToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionCylinderToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+
+//=============================================================================
+//	球の当たり判定
+//=============================================================================
+bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionSphereToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionSphereToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+bool CollisionSphereToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider);
+
+//=============================================================================
+//	カプセルの当たり判定 (ない)
+//=============================================================================
 
 #endif // !_COLLISION_H_
