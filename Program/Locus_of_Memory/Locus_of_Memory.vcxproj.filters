@@ -243,7 +243,7 @@
     <ClCompile Include="key.cpp">
       <Filter>game\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="tutorualui.cpp">
+    <ClCompile Include="tutorialui.cpp">
       <Filter>tutorial\cpp</Filter>
     </ClCompile>
   </ItemGroup>
@@ -398,7 +398,7 @@
     <ClInclude Include="key.h">
       <Filter>game\h</Filter>
     </ClInclude>
-    <ClInclude Include="tutorualui.h">
+    <ClInclude Include="tutorialui.h">
       <Filter>tutorial\h</Filter>
     </ClInclude>
   </ItemGroup>

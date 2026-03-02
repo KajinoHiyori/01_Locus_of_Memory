@@ -1,27 +1,28 @@
 //======================================================================================
 // 
-// タイトルの2DUI処理[titleui.h]
+// チュートリアルの2DUI処理[tutorialui.h]
 // Author : Kajino Hiyori
 //
 //======================================================================================
 #include "main.h"
 #include "fade.h"
-#include "titleui.h"
-#include "title.h"
+#include "tutorialui.h"
+#include "tutorial.h"
 #include "input.h"
 #include "fog.h"
 
-// タイトルUIの種類
+#if 0
+// チュートリアルUIの種類
 typedef enum
 {
-	TITLEUITYPE_LOGO = 0,	// タイトルロゴ
+	TITLEUITYPE_LOGO = 0,	// チュートリアルロゴ
 	TITLEUITYPE_1PPLAY,		// 1PPALY
 	TITLEUITYPE_2PPLAY,		// 2PPALY
 	TITLEUITYPE_KEYBOARD,	// KEYBOARD
 	TITLEUITYPE_MAX
 }TITLEUITYPE;
 
-// タイトルUI演出の管理
+// チュートリアルUI演出の管理
 typedef enum
 {
 	TITLETEXT_MODE_NONE = 0,	// 通常
@@ -32,7 +33,7 @@ typedef enum
 	TITLETEXT_MODE_MAX
 }TITLETEXT_MODE;
 
-// タイトルUIの状態
+// チュートリアルUIの状態
 typedef enum
 {
 	TITLETEXTSTATE_APPEAR = 0,	// ロゴ出現状態
@@ -41,7 +42,7 @@ typedef enum
 	TITLETEXTSTATE_MAX
 }TITLETEXTSTATE;
 
-// タイトルUIの構造体
+// チュートリアルUIの構造体
 typedef struct
 {
 	TITLEUITYPE		type;	// 種類
@@ -54,7 +55,7 @@ typedef struct
 }TitleText;
 
 // マクロ定義
-#define NUM_TITLEUI			(TITLEUITYPE_MAX)	// タイトルUIのレイヤー数
+#define NUM_TITLEUI			(TITLEUITYPE_MAX)	// チュートリアルUIのレイヤー数
 #define SELECT_NUM			(3)			// 操作方法選択数
 #define LOGO_POS			(D3DXVECTOR3(350.0f, 100.0f, 0.0f))	// ロゴの位置
 #define LOGO_WIDTH			(300.0f)	// ロゴの横幅
@@ -67,10 +68,10 @@ typedef struct
 // テクスチャの読み込み
 const char* c_apFilenameTitleUI[TITLEUITYPE_MAX] =
 {
-	"data\\TEXTURE\\title\\title_000.png",	// [TITLEUITYPE_LOGO]
-	"data\\TEXTURE\\title\\title_001.png",	// [TITLEUITYPE_1PPLAY]
-	"data\\TEXTURE\\title\\title_002.png",	// [TITLEUITYPE_2PPLAY]
-	"data\\TEXTURE\\title\\title_003.png",	// [TITLEUITYPE_KEYBOARD]
+	"data\\TEXTURE\\tutorial\\tutorial_000.png",	// [TITLEUITYPE_LOGO]
+	"data\\TEXTURE\\tutorial\\tutorial_001.png",	// [TITLEUITYPE_1PPLAY]
+	"data\\TEXTURE\\tutorial\\tutorial_002.png",	// [TITLEUITYPE_2PPLAY]
+	"data\\TEXTURE\\tutorial\\tutorial_003.png",	// [TITLEUITYPE_KEYBOARD]
 };
 
 // グローバル変数
@@ -80,7 +81,7 @@ TitleText g_aTitleUI[NUM_TITLEUI];	// 構造体
 int g_nSelectOperation;	// 選択されている操作方法
 
 //========================================================================
-// タイトルUIの初期化処理
+// チュートリアルUIの初期化処理
 //========================================================================
 void InitTitleUI(void)
 {
@@ -105,7 +106,7 @@ void InitTitleUI(void)
 	{
 		switch (nCntTitle)
 		{
-		case TITLEUITYPE_LOGO:	// タイトルロゴ
+		case TITLEUITYPE_LOGO:	// チュートリアルロゴ
 			// 頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(LOGO_POS.x - LOGO_WIDTH, LOGO_POS.y - LOGO_HEIGHT, 0.0f);
 			pVtx[1].pos = D3DXVECTOR3(LOGO_POS.x + LOGO_WIDTH, LOGO_POS.y - LOGO_HEIGHT, 0.0f);
@@ -179,7 +180,7 @@ void InitTitleUI(void)
 }
 
 //========================================================================
-// タイトルUIの終了処理
+// チュートリアルUIの終了処理
 //========================================================================
 void UninitTitleUI(void)
 {
@@ -202,12 +203,13 @@ void UninitTitleUI(void)
 }
 
 //========================================================================
-// タイトルUIの更新処理
+// チュートリアルUIの更新処理
 //========================================================================
 void UpdateTitleUI(void)
 {
+	#
 	// 現在のフェードの状態を管理
-	FADE *pfade = GetFade();
+	FADE* pfade = GetFade();
 
 	// 選択状態の変更(Repeat)
 	if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true)
@@ -268,13 +270,13 @@ void UpdateTitleUI(void)
 			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
 		}
 	}
-	
+
 	// 頂点バッファをアンロック
 	g_pVtxBuffTitleUI->Unlock();
 }
 
 //========================================================================
-// タイトルUIの描画処理
+// チュートリアルUIの描画処理
 //========================================================================
 void DrawTitleUI(void)
 {
@@ -301,3 +303,4 @@ void DrawTitleUI(void)
 	}
 	SetFogEnable(true);
 }
+#endif

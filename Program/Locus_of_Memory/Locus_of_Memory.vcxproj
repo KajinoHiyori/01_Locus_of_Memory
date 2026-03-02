@@ -213,7 +213,7 @@
     <ClCompile Include="title.cpp" />
     <ClCompile Include="titleui.cpp" />
     <ClCompile Include="tutorial.cpp" />
-    <ClCompile Include="tutorualui.cpp" />
+    <ClCompile Include="tutorialui.cpp" />
     <ClCompile Include="uimanager.cpp" />
     <ClCompile Include="vibration.cpp" />
   </ItemGroup>
@@ -266,7 +266,7 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="titleui.h" />
     <ClInclude Include="tutorial.h" />
-    <ClInclude Include="tutorualui.h" />
+    <ClInclude Include="tutorialui.h" />
     <ClInclude Include="uimanager.h" />
     <ClInclude Include="vibration.h" />
   </ItemGroup>
