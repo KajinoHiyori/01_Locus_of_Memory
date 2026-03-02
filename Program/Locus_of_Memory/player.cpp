@@ -428,23 +428,23 @@ void UpdatePlayer(void)
 		// モーションの更新処理
 		UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData);
 
-		//// デバッグ表示
-		//PrintDebugProc("%dプレイヤーのステート : %d [0 NORMAL / 1 PAUSE / 2 SPELL / 3 MAGIC]\n", nCntPlayer, g_aPlayer[nCntPlayer].state);
-		//PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
-		//PrintDebugProc("プレイヤー[%d]の移動量 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].move.x, g_aPlayer[nCntPlayer].move.y, g_aPlayer[nCntPlayer].move.z);
-		//PrintDebugProc("プレイヤー[%d]の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rot.x, g_aPlayer[nCntPlayer].rot.y, g_aPlayer[nCntPlayer].rot.z);
-		//PrintDebugProc("プレイヤー[%d]の目的の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rotDest.x, g_aPlayer[nCntPlayer].rotDest.y, g_aPlayer[nCntPlayer].rotDest.z);
-		//
-		//PrintDebugProc("入力コマンド : %d\n", InputCommand);
-		//
-		//PrintDebugProc("コマンドタイプ : %d\n", nDropMagicIdx);
-		//
-		//for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
-		//{
-		//	PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
-		//}
-		//PrintDebugProc("コマンド数 : %d\n", g_aPlayer[nCntPlayer].magicbook.nCntOwn);
-		//PrintDebugProc("使用状態 : %d\n", g_aPlayer[nCntPlayer].bUse);
+		// デバッグ表示
+		PrintDebugProc("%dプレイヤーのステート : %d [0 NORMAL / 1 PAUSE / 2 SPELL / 3 MAGIC]\n", nCntPlayer, g_aPlayer[nCntPlayer].state);
+		PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
+		PrintDebugProc("プレイヤー[%d]の移動量 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].move.x, g_aPlayer[nCntPlayer].move.y, g_aPlayer[nCntPlayer].move.z);
+		PrintDebugProc("プレイヤー[%d]の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rot.x, g_aPlayer[nCntPlayer].rot.y, g_aPlayer[nCntPlayer].rot.z);
+		PrintDebugProc("プレイヤー[%d]の目的の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rotDest.x, g_aPlayer[nCntPlayer].rotDest.y, g_aPlayer[nCntPlayer].rotDest.z);
+		
+		PrintDebugProc("入力コマンド : %d\n", InputCommand);
+		
+		PrintDebugProc("コマンドタイプ : %d\n", nDropMagicIdx);
+		
+		for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
+		{
+			PrintDebugProc("[%d]所有コマンド : %d\n", nCntCommand, g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand]);
+		}
+		PrintDebugProc("コマンド数 : %d\n", g_aPlayer[nCntPlayer].magicbook.nCntOwn);
+		PrintDebugProc("使用状態 : %d\n", g_aPlayer[nCntPlayer].bUse);
 	
 	}
 }

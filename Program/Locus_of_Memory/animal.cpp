@@ -5,7 +5,6 @@
 //
 //========================================================================
 #include "animal.h"
-#include "debugproc.h"
 #include "motion.h"
 #include "input.h"
 
@@ -76,10 +75,6 @@ void UpdateAnimal(void)
 
 		ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
 
-		// モーションの更新
-		//UpdateMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData);
-		PrintDebugProc("ドラゴンの位置 : [%f, %f, %f]", pParentObject->pos.x, pParentObject->pos.y, pParentObject->pos.z);
-		PrintDebugProc("ドラゴンの角度 : [%f, %f, %f]\n", pParentObject->rot.x, pParentObject->rot.y, pParentObject->rot.z);
 	}
 }
 
@@ -112,7 +107,6 @@ void SetDragonType(int nCntDragon, DRAGONTYPE type)
 	if (g_aDragon[nCntDragon].type == DRAGONTYPE_FLYING)
 	{
 		pParentObject->pos = FLY_POS;
-		//SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_ACTION, true, false, 10);
 	}
 	else
 	{
