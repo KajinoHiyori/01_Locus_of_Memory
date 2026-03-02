@@ -96,17 +96,17 @@ void UpdateStart(void)
 	// タイトルUIの更新処理
 	UpdateStartUI();
 
-	if (g_bStartFade == false)	// フェードをしていない場合
-	{
-		g_nModeTitle++;
-
-		if (g_nModeTitle == 180 && *pfade == FADE_NONE)
-		{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
-			g_nModeTitle = 0;
-			g_bStartFade = true;
-			SetFade(MODE_TITLE, COLOR_WHITE);
-		}
-	}
+	//if (g_bStartFade == false)	// フェードをしていない場合
+	//{
+	//	g_nModeTitle++;
+	//
+	//	if (g_nModeTitle == 180 && *pfade == FADE_NONE)
+	//	{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
+	//		g_nModeTitle = 0;
+	//		g_bStartFade = true;
+	//		SetFade(MODE_TITLE, COLOR_WHITE);
+	//	}
+	//}
 }
 
 //======================================================================================

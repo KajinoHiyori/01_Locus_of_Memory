@@ -10,7 +10,7 @@
 // マクロ定義
 #define LOGO_MAT		(16)	// ロゴテクスチャの最大数
 #define LOGOMODEL_MAX	(1)		// ロゴモデルのパーツ数
-#define LOGOKEY_MAX		(16)	// ロゴのキー最大数
+#define LOGOKEY_MAX		(32)	// ロゴのキー最大数
 
 // モデル構造体
 typedef struct
@@ -55,6 +55,7 @@ typedef struct
 typedef enum
 {
 	LOGOMOTIONTYPE_ACTION = 0,	// アクション
+	LOGOMOTIONTYPE_NEUTRAL,	// 待機
 	LOGOMOTIONTYPE_MAX
 }LOGOMOTIONTYPE;
 
