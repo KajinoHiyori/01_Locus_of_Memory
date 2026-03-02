@@ -272,7 +272,7 @@ void UpdateGameCamera(void)
 			//PrintDebugProc("move = { %.2f, %.2f }\n", move.x, move.y);
 
 			// íºê⁄ì¸ÇÍÇÈ
-			pCamera->rot.x += move.y * pCamera->fSpeed;
+			pCamera->rot.x -= move.y * pCamera->fSpeed;
 			pCamera->rot.y += move.x * pCamera->fSpeed;
 
 			// äpìxêßå¿

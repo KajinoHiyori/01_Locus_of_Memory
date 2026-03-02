@@ -25,4 +25,7 @@ void UninitTutorialUI(void);
 void UpdateTutorialUI(void);
 void DrawTutorialUI(void);
 void SetTutorialUI(TUTORIALUITYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+
+void SetTutorialUIAppear(int nIdx);
+void SetTutorialUIDisp(int nIdx);
 #endif

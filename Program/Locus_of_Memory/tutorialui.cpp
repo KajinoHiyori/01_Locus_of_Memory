@@ -12,6 +12,7 @@
 #include "title.h"
 #include "input.h"
 #include "fog.h"
+#include "player.h"
 
 // チュートリアルUI演出の管理
 typedef enum
@@ -21,7 +22,6 @@ typedef enum
 	TUTORIALUISTATE_DISPLAY,		// 表示
 	TUTORIALUISTATE_DISAPPEAR,		// 収縮
 }TUTORIALUISTATE;
-
 
 // チュートリアルUIの構造体
 typedef struct
@@ -52,6 +52,7 @@ typedef struct
 #define MAGIC_POS			(D3DXVECTOR3(-3080.0f, 120.0f, -3000.0f))	// 魔法の使い方の表示位置
 #define LIMIT_POS			(D3DXVECTOR3(-2680.0f, 120.0f, -3000.0f))	// 制限時間の表示位置
 #define BOOK_POS			(D3DXVECTOR3(-2280.0f, 120.0f, -3000.0f))	// 魔導書の表示位置
+#define APPEAR_SIZE			(500.0f)	// 出現の当たり判定を管理するサイズ
 
 // テクスチャの読み込み
 const char* c_apFilenameTutorialUI[MAX_TUTORIALUI] =
@@ -87,16 +88,17 @@ void InitTutorialUI(void)
 
 	for (int nCntUI = 0; nCntUI < NUM_TUTORIALUI; nCntUI++)
 	{
-		g_aTutorialUI[nCntUI].pos			= INIT_D3DXVEC3;			// 位置
-		g_aTutorialUI[nCntUI].rot			= UI_ROT;					// 向き
-		g_aTutorialUI[nCntUI].type			= TUTORIALUITYPE_PLAYPAD;	// 種類
-		g_aTutorialUI[nCntUI].fWidth		= WIDTH;					// 幅
-		g_aTutorialUI[nCntUI].fWidthDest	= WIDTH;					// 幅の目的値
-		g_aTutorialUI[nCntUI].fHeight		= HEIGHT;					// 高さ
-		g_aTutorialUI[nCntUI].fHeightDest	= HEIGHT;					// 高さの目的値
-		g_aTutorialUI[nCntUI].nNumKey		= UI_KEY;					// 浮遊感をカウントするキー数
-		g_aTutorialUI[nCntUI].nKey			= 0;						// 現在のキー数
-		g_aTutorialUI[nCntUI].bDisp			= false;					// 表示状態
+		g_aTutorialUI[nCntUI].pos			= INIT_D3DXVEC3;				// 位置
+		g_aTutorialUI[nCntUI].rot			= UI_ROT;						// 向き
+		g_aTutorialUI[nCntUI].type			= TUTORIALUITYPE_PLAYPAD;		// 種類
+		g_aTutorialUI[nCntUI].state			= TUTORIALUISTATE_NONDISPLAY;	// 出現モード
+		g_aTutorialUI[nCntUI].fWidth		= WIDTH;						// 幅
+		g_aTutorialUI[nCntUI].fWidthDest	= WIDTH;						// 幅の目的値
+		g_aTutorialUI[nCntUI].fHeight		= HEIGHT;						// 高さ
+		g_aTutorialUI[nCntUI].fHeightDest	= HEIGHT;						// 高さの目的値
+		g_aTutorialUI[nCntUI].nNumKey		= UI_KEY;						// 浮遊感をカウントするキー数
+		g_aTutorialUI[nCntUI].nKey			= 0;							// 現在のキー数
+		g_aTutorialUI[nCntUI].bDisp			= false;						// 表示状態
 	}
 
 	// 頂点バッファの生成
@@ -182,7 +184,47 @@ void UninitTutorialUI(void)
 //======================================================================================
 void UpdateTutorialUI(void)
 {
-	
+	Player* pPlayer = GetPlayer();	// プレイヤーの情報を取得
+	float fDiffKey, fRateKey = 0.0f;
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	{
+		for (int nCntUI = 0; nCntUI < NUM_TUTORIALUI; nCntUI++)
+		{
+			// プレイヤーが設置位置に近づいた場合展開する
+			if (pPlayer->pos.x >= g_aTutorialUI[nCntUI].pos.x - APPEAR_SIZE &&	// 一定範囲より右にある
+				pPlayer->pos.x <= g_aTutorialUI[nCntUI].pos.x + APPEAR_SIZE &&	// 一定範囲より左にある
+				pPlayer->pos.z <= g_aTutorialUI[nCntUI].pos.z - APPEAR_SIZE &&	// 一定範囲より奥にある
+				pPlayer->pos.z <= g_aTutorialUI[nCntUI].pos.z + APPEAR_SIZE)	// 一定範囲より手前にある
+			{
+
+			}
+		}
+	}
+
+	for (int nCntUI = 0; nCntUI < NUM_TUTORIALUI; nCntUI++)
+	{
+		switch (g_aTutorialUI[nCntUI].state)
+		{
+		case TUTORIALUISTATE_NONDISPLAY:	// 非表示
+			g_aTutorialUI[nCntUI].bDisp = false;
+			break;
+
+		case TUTORIALUISTATE_APPEAR:	// 出現
+			// 背景の高度変更
+			fRateKey = (float)g_aTutorialUI[nCntUI].nKey / (float)g_aTutorialUI[nCntUI].nNumKey;
+			fDiffKey = g_aTutorialUI[nCntUI].fHeightDest - g_aTutorialUI[nCntUI].fHeight;
+			g_aTutorialUI[nCntUI].fHeight = g_aTutorialUI[nCntUI].fHeight + fDiffKey * fRateKey;
+
+			// 中心位置からの位置を求める
+			g_aTutorialUI[nCntUI].nKey++;
+
+			if (g_aTutorialUI[nCntUI].nKey > g_aTutorialUI[nCntUI].nNumKey)
+			{
+				SetTutorialUIDisp(nCntUI);
+			}
+			break;
+		}
+	}
 }
 
 //======================================================================================
@@ -275,4 +317,32 @@ void SetTutorialUI(TUTORIALUITYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			break;
 		}
 	}
+}
+
+//======================================================================================
+// TutorialUIを出現状態にする
+//======================================================================================
+void SetTutorialUIAppear(int nIdx)
+{
+	g_aTutorialUI[nIdx].state		= TUTORIALUISTATE_APPEAR;
+	g_aTutorialUI[nIdx].fWidth		= 0.0f;		// 幅
+	g_aTutorialUI[nIdx].fWidthDest	= WIDTH;	// 幅の目的値
+	g_aTutorialUI[nIdx].fHeight		= HEIGHT;	// 高さ
+	g_aTutorialUI[nIdx].fHeightDest = HEIGHT;	// 高さの目的値
+	g_aTutorialUI[nIdx].nKey		= 0;		// 現在のキー数
+	g_aTutorialUI[nIdx].bDisp		= true;		// 表示状態
+}
+
+//======================================================================================
+// TutorialUIを出現状態にする
+//======================================================================================
+void SetTutorialUIDisp(int nIdx)
+{
+	g_aTutorialUI[nIdx].state		= TUTORIALUISTATE_DISPLAY;
+	g_aTutorialUI[nIdx].fWidth		= WIDTH;	// 幅
+	g_aTutorialUI[nIdx].fWidthDest	= WIDTH;	// 幅の目的値
+	g_aTutorialUI[nIdx].fHeight		= HEIGHT;	// 高さ
+	g_aTutorialUI[nIdx].fHeightDest = HEIGHT;	// 高さの目的値
+	g_aTutorialUI[nIdx].nKey		= 0;		// 現在のキー数
+	g_aTutorialUI[nIdx].bDisp		= true;		// 表示状態
 }

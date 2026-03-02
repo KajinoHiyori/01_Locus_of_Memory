@@ -293,8 +293,6 @@ void UpdateTutorial(void)
 		}
 	}
 
-	
-
 	if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
 	{// 0ˆÈ‰º‚É‚È‚Á‚½
 		g_TutorialState = TUTORIALSTATE_NONE;
