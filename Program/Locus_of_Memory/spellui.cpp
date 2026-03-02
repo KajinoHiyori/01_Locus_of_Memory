@@ -417,7 +417,8 @@ void UpdateSpellUI(void)
 		else
 		{
 			if (bSpell == false && ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-				&& (g_aSpellUI[nCntPlayer].state == SPELLUISTATE_DISPLAY || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_APPEAR || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_SETMAGIC))
+				&& (g_aSpellUI[nCntPlayer].state == SPELLUISTATE_DISPLAY || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_APPEAR || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_SETMAGIC)
+				&& pPlayer->bJump == false)
 			{
 				g_aSpellUI[nCntPlayer].state = SPELLUISTATE_DISAPPEAR;
 				SetSpellUIDisplay(nCntPlayer);

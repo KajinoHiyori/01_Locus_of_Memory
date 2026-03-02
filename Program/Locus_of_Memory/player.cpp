@@ -248,7 +248,46 @@ void UpdatePlayer(void)
 			break;
 
 		case PLAYERSTATE_MAGIC:
+			// キー入力を受け付ける====================================
+					// 移動方向を管理
+			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+			{
+				moveDir.x -= 1.0f;
+			}
+			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+			{
+				moveDir.x += 1.0f;
+			}
+			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+			{
+				moveDir.z += 1.0f;
+			}
+			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+			{
+				moveDir.z -= 1.0f;
+			}
 
+			// ジャンプ処理
+			if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
+			{
+				g_aPlayer[nCntPlayer].move.y = JUMP;
+				g_aPlayer[nCntPlayer].bJump = true;
+				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
+			}
+
+			if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
+			{// Xボタンを押したかつ何かしらのコマンドが近くにある
+				OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
+			}
+
+			// 移動方向の正規化
+			D3DXVec3Normalize(&moveDir, &moveDir);
+
+			// スティックの入力方向を利用
+			GetJoypadStickLeft(&moveDir.x, &moveDir.z, nCntPlayer);
+
+			// 移動状態を求める(fMoveDir == 0は移動していない)
+			fMoveDir = SQRTF(moveDir.x, moveDir.z);
 			break;
 		}
 
@@ -273,8 +312,8 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].rotDest.y = fRotDest;
 			fRotDest = AngleNormalize(fRotDest);
 
-			if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
-			{// ジャンプ状態じゃないかつ移動モーション中じゃない
+			if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_FLOATONG)
+			{// ジャンプ状態じゃないかつ移動モーション / 浮遊モーション中じゃない
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
 			}
 		}

@@ -501,6 +501,7 @@ void UpdateUIManager(void)
 			{
 				SetClockDissapear(nCntPlayer);
 				g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 			}
 			break;
 
