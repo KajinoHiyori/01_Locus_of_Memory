@@ -6,6 +6,7 @@
 //========================================================
 #include "main.h"
 #include "questionmark.h"
+#include "debugproc.h"
 #include "magic.h"
 #include "player.h"
 #include "game.h"
@@ -17,14 +18,14 @@
 
 // マクロ定義
 #define QUESTIONMARK_TYPE	(1)	// テクスチャの最大数
-#define BUBBLE_WIDTH		(28.0f)					// 吹き出しの幅
-#define BUBBLE_HEIGHT		(10.0f)					// 吹き出しの高さ
-#define BUBBLE_X			(30.0f)					// 吹き出しのX軸
-#define BUBBLE_Y			(85.0f)					// 吹き出しのY高度
+#define MARK_WIDTH		(15.0f)					// 吹き出しの幅
+#define MARK_HEIGHT		(15.0f)					// 吹き出しの高さ
+#define MARK_X			(30.0f)					// 吹き出しのX軸
+#define MARK_Y			(95.0f)					// 吹き出しのY高度
 #define NUM_KEY				(30)					// 処理を行うキー数
 #define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 
-// MAGICBUBBLEの構造体
+// MAGICMARKの構造体
 typedef struct
 {
 	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
@@ -43,7 +44,7 @@ typedef struct
 // グローバル変数
 LPDIRECT3DTEXTURE9	g_apTextureQuestionMark[QUESTIONMARK_TYPE] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffQuestionMark = NULL;			// 頂点バッファへのポインタ
-QuestionMark g_aQuestionMark[MAX_PLAYER];		// MAGICBUBBLEの全体管理
+QuestionMark g_aQuestionMark[MAX_PLAYER];		// MAGICMARKの全体管理
 
 // テクスチャの読み込み
 const char* c_apFilenameQuestionMark[QUESTIONMARK_TYPE] =
@@ -75,17 +76,19 @@ void InitQuestionMark(void)
 	// 初期化
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		g_aQuestionMark[nCntPlayer].pos = D3DXVECTOR3(BUBBLE_X, BUBBLE_Y, BUBBLE_X);	// 位置
+		g_aQuestionMark[nCntPlayer].pos = D3DXVECTOR3(0.0f, MARK_Y, 0.0f);	// 位置
 		g_aQuestionMark[nCntPlayer].rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 向き
 		g_aQuestionMark[nCntPlayer].col = COLOR_WHITE;	// 種類
-		g_aQuestionMark[nCntPlayer].fWidth = BUBBLE_WIDTH;			// 幅
-		g_aQuestionMark[nCntPlayer].fWidthDest = BUBBLE_WIDTH;			// 幅の目的値
-		g_aQuestionMark[nCntPlayer].fHeight = BUBBLE_HEIGHT;		// 高さ
-		g_aQuestionMark[nCntPlayer].fHeightDest = BUBBLE_HEIGHT;		// 高さの目的値
+		g_aQuestionMark[nCntPlayer].fWidth = MARK_WIDTH;			// 幅
+		g_aQuestionMark[nCntPlayer].fWidthDest = MARK_WIDTH;			// 幅の目的値
+		g_aQuestionMark[nCntPlayer].fHeight = MARK_HEIGHT;		// 高さ
+		g_aQuestionMark[nCntPlayer].fHeightDest = MARK_HEIGHT;		// 高さの目的値
 		g_aQuestionMark[nCntPlayer].nNumKey = NUM_KEY;				// 浮遊感をカウントするキー数
 		g_aQuestionMark[nCntPlayer].nKey = 0;					// 現在のキー数
 		g_aQuestionMark[nCntPlayer].bDisp = false;				// 表示状態
 	}
+	g_aQuestionMark[0].bDisp = true;				// 表示状態
+	g_aQuestionMark[1].bDisp = false;				// 表示状態
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffQuestionMark, NULL);
@@ -109,10 +112,10 @@ void InitQuestionMark(void)
 		pVtx[3].nor = NORMAL;
 
 		// 頂点カラーの設定
-		pVtx[0].col = COLOR_UIBUBBLE;
-		pVtx[1].col = COLOR_UIBUBBLE;
-		pVtx[2].col = COLOR_UIBUBBLE;
-		pVtx[3].col = COLOR_UIBUBBLE;
+		pVtx[0].col = COLOR_WHITE;
+		pVtx[1].col = COLOR_WHITE;
+		pVtx[2].col = COLOR_WHITE;
+		pVtx[3].col = COLOR_WHITE;
 
 		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -154,8 +157,29 @@ void UninitQuestionMark(void)
 //======================================================================================
 void UpdateQuestionMark(void)
 {
+	Player* pPlayer = GetPlayer();
+	g_aQuestionMark[0].rot = pPlayer->rot;
+	g_aQuestionMark[0].pos = pPlayer->pos;
+	g_aQuestionMark[0].pos.y += 90.0f;
 
-	
+	if (GetKeyboardPress(DIK_T) == true)
+	{
+		g_aQuestionMark[0].pos.x += 0.1f;
+	}
+	if (GetKeyboardPress(DIK_Y) == true)
+	{
+		g_aQuestionMark[0].pos.x -= 0.1f;
+	}
+	if (GetKeyboardPress(DIK_U) == true)
+	{
+		g_aQuestionMark[0].pos.z += 0.1f;
+	}
+	if (GetKeyboardPress(DIK_I) == true)
+	{
+		g_aQuestionMark[0].pos.z -= 0.1f;
+	}
+
+	PrintDebugProc("?の位置 : (%f, %f, %f)\n", g_aQuestionMark[0].pos.x, g_aQuestionMark[0].pos.y, g_aQuestionMark[0].pos.z);
 }
 
 //======================================================================================
@@ -164,11 +188,8 @@ void UpdateQuestionMark(void)
 void DrawQuestionMark(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX UIMatrix, mtxRot;	// UIのマトリックス情報を取得
+	D3DXMATRIX mtxRot;	// UIのマトリックス情報を取得
 	Player* pPlayer = GetPlayer();
-
-	// ワールドマトリックスの初期化(デフォルトの値にする)
-	D3DXMatrixIdentity(&UIMatrix);
 
 	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
@@ -185,13 +206,8 @@ void DrawQuestionMark(void)
 	{
 		if (g_aQuestionMark[nCntPlayer].bDisp == false)
 		{
-			//continue;
+			continue;
 		}
-		// UIのマトリックス情報を取得
-		UIMatrix = pPlayer->mtxWorld;
-
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &UIMatrix);
 
 		D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
 		D3DXMATRIX	mtxParent;					// 親のマトリックス
@@ -199,19 +215,13 @@ void DrawQuestionMark(void)
 		// ポリゴンのワールドマトリックスを初期化
 		D3DXMatrixIdentity(&g_aQuestionMark[nCntPlayer].mtxWorld);
 
-		// パーツの位置を反映
-		D3DXMatrixTranslation(&mtxTransModel, g_aQuestionMark[nCntPlayer].pos.x, g_aQuestionMark[nCntPlayer].pos.y, g_aQuestionMark[nCntPlayer].pos.z);
-		D3DXMatrixMultiply(&g_aQuestionMark[nCntPlayer].mtxWorld, &g_aQuestionMark[nCntPlayer].mtxWorld, &mtxTransModel);
-
 		// 向きを反映
 		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aQuestionMark[nCntPlayer].rot.y, g_aQuestionMark[nCntPlayer].rot.x, g_aQuestionMark[nCntPlayer].rot.z);
 		D3DXMatrixMultiply(&g_aQuestionMark[nCntPlayer].mtxWorld, &g_aQuestionMark[nCntPlayer].mtxWorld, &mtxRot);
 
-		// 親マトリックスを設定
-		mtxParent = UIMatrix;
-
-		// 算出したパーツのワールドマトリックスと親モデルのマトリックスを掛け合わせる
-		D3DXMatrixMultiply(&g_aQuestionMark[nCntPlayer].mtxWorld, &g_aQuestionMark[nCntPlayer].mtxWorld, &mtxParent);
+		// パーツの位置を反映
+		D3DXMatrixTranslation(&mtxTransModel, g_aQuestionMark[nCntPlayer].pos.x, g_aQuestionMark[nCntPlayer].pos.y, g_aQuestionMark[nCntPlayer].pos.z);
+		D3DXMatrixMultiply(&g_aQuestionMark[nCntPlayer].mtxWorld, &g_aQuestionMark[nCntPlayer].mtxWorld, &mtxTransModel);
 
 		// パーツのワールドマトリックスを設定
 		pDevice->SetTransform(D3DTS_WORLD, &g_aQuestionMark[nCntPlayer].mtxWorld);

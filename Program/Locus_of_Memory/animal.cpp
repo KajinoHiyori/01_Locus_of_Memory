@@ -148,37 +148,4 @@ void UpdateFlyDragon(int nCntDragon)
 void UpdateFireDragon(int nCntDragon)
 {
 	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
-
-	if (GetKeyboardPress(DIK_F) == true)
-	{
-		pParentObject->pos.y += 0.5f;
-	}
-	if (GetKeyboardPress(DIK_G) == true)
-	{
-		pParentObject->pos.y -= 0.5f;
-	}
-	if (GetKeyboardPress(DIK_H) == true)
-	{
-		pParentObject->pos.x += 0.5f;
-	}
-	if (GetKeyboardPress(DIK_J) == true)
-	{
-		pParentObject->pos.x -= 0.5f;
-	}
-	if (GetKeyboardPress(DIK_K) == true)
-	{
-		pParentObject->pos.z += 0.5f;
-	}
-	if (GetKeyboardPress(DIK_L) == true)
-	{
-		pParentObject->pos.z -= 0.5f;
-	}
-	if (GetKeyboardPress(DIK_UPARROW) == true)
-	{
-		pParentObject->rot.y += 0.05f;
-	}
-	if (GetKeyboardPress(DIK_DOWNARROW) == true)
-	{
-		pParentObject->rot.y -= 0.05f;
-	}
 }
