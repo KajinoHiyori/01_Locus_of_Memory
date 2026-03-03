@@ -41,6 +41,7 @@
 #include "animal.h"
 #include "field.h"
 #include "key.h"
+#include "riverwall.h"
 
 // マクロ定義
 #define GAMEPOS_1P		(D3DXVECTOR3(-745.0f, 0.0f, -3427.0f))	// 1Pの位置[GAME]
@@ -173,6 +174,9 @@ void UpdateGame(void)
 	// フィールドの更新処理
 	UpdateField();
 
+	// 川の壁の更新処理
+	UpdateRiverWall();
+
 	// カスタムメッシュの更新処理
 	UpdateCustomMesh();
 
@@ -289,6 +293,9 @@ void DrawGame(void)
 
 	// フィールドの描画処理
 	DrawField();
+
+	// 川の壁の描画処理
+	DrawRiverWall();
 
 	// カスタムメッシュの描画処理
 	DrawCustomMesh();

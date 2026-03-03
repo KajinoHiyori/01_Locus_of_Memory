@@ -189,21 +189,18 @@ void UpdateCustomMesh(void)
 		// 頂点バッファをロックし,頂点情報へのポインタを取得
 		pCustomMesh->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-		for (int nCntCustomMesh = 0; nCntCustomMesh < MAX_CUSTOMMESH; nCntCustomMesh++)
+		for (int nCntVtx = 0; nCntVtx < pCustomMesh->nNumVtx; nCntVtx++)
 		{
-			for (int nCntVtx = 0; nCntVtx < pCustomMesh->nNumVtx; nCntVtx++)
-			{
-				pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-				pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+			pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
-				// 全体の大きさから現在頂点の位置する割合を算出
-				float fDestX = pVtx[nCntVtx].pos.x / (pCustomMesh->fWidth);
-				float fDestZ = pVtx[nCntVtx].pos.z / (pCustomMesh->fDepth);
+			// 全体の大きさから現在頂点の位置する割合を算出
+			float fDestX = pVtx[nCntVtx].pos.x / (pCustomMesh->fWidth);
+			float fDestZ = pVtx[nCntVtx].pos.z / (pCustomMesh->fDepth);
 
-				// 対応したテクスチャ座標を設定
-				pVtx[nCntVtx].tex = D3DXVECTOR2(fDestX * TEX_SPLIT, -fDestZ * TEX_SPLIT);
-				pVtx[nCntVtx].texM = D3DXVECTOR2(fDestX * TEX_SPLIT + pCustomMesh->tex.x, -fDestZ * TEX_SPLIT + pCustomMesh->tex.y);
-			}
+			// 対応したテクスチャ座標を設定
+			pVtx[nCntVtx].tex = D3DXVECTOR2(fDestX * TEX_SPLIT, -fDestZ * TEX_SPLIT);
+			pVtx[nCntVtx].texM = D3DXVECTOR2(fDestX * TEX_SPLIT + pCustomMesh->tex.x, -fDestZ * TEX_SPLIT + pCustomMesh->tex.y);
 		}
 
 		// 頂点バッファをアンロックする

@@ -50,7 +50,7 @@ void InitRiverWall(void)
 		pRiverWall->bUse = false;
 	}
 
-	LoadRiverWall("data\\SCRIPTS\\MESH\\riverwall000.bin", D3DXVECTOR3(0.0f, 50.0f, 0.0f), INIT_D3DXVEC3);
+	LoadRiverWall("data\\SCRIPTS\\MESH\\riverwall000.bin", D3DXVECTOR3(1800.0f, 0.0f, 3500.0f), INIT_D3DXVEC3);
 }
 
 //=============================================================================
@@ -177,12 +177,21 @@ void SetRiverWall(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3* pVtxPos, int nN
 	// 頂点バッファをロックし,頂点情報へのポインタを取得
 	pRiverWall->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
+	for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++, pVtxPos++)
 	{// 頂点情報を設定
 		pVtx[nCntVtx].pos = *pVtxPos;
 		D3DXVec3Normalize(&pVtx[nCntVtx].nor, pVtxPos);
 		pVtx[nCntVtx].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[nCntVtx].tex = D3DXVECTOR2(1.0f * nCntVtx, 1.0f * nCntVtx);
+
+		// (メッシュ構造を上下にちょうど割ってるので半々でテクスチャ設定)
+		if (nCntVtx < nNumVtx / 2)
+		{
+			pVtx[nCntVtx].tex = D3DXVECTOR2(1.0f * nCntVtx, 0.0f);
+		}
+		else
+		{
+			pVtx[nCntVtx].tex = D3DXVECTOR2(1.0f * (nCntVtx - nNumVtx / 2), 1.0f);
+		}
 	}
 
 	// 頂点バッファをアンロックする

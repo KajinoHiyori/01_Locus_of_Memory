@@ -37,6 +37,7 @@
 #include "vibration.h"
 #include "goal.h"
 #include "field.h"
+#include "riverwall.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -375,6 +376,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// フィールドの初期化処理
 	InitField();
 
+	// 川の壁の初期化処理
+	InitRiverWall();
+
 	// カスタムメッシュの初期化処理
 	InitCustomMesh();
 
@@ -453,6 +457,9 @@ void Uninit(void)
 
 	// フィールドの終了処理
 	UninitField();
+
+	// 川の壁の終了処理
+	UninitRiverWall();
 
 	// カスタムメッシュの終了処理
 	UninitCustomMesh();
