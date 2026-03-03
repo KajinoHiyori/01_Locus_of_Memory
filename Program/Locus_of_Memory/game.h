@@ -20,6 +20,14 @@ typedef enum
 	GAMESTATE_MAX
 }GAMESTATE;
 
+typedef enum
+{
+	EVENTSTATE_NONE = 0,
+	EVENTSTATE_LOOKDOWN,	// 見下ろし状態
+	EVENTSTATE_BOOK,		// 本を見る状態
+	EVENTSTATE_MAX
+}EVENTSTATE;
+
 // プロトタイプ宣言
 void InitGame(void);
 void UninitGame(void);
@@ -27,5 +35,6 @@ void UpdateGame(void);
 void DrawGame(void);
 void SetGameState(GAMESTATE state, int nCounter);
 GAMESTATE GetGameState(void);
+EVENTSTATE *GetEventState(void);
 
 #endif
