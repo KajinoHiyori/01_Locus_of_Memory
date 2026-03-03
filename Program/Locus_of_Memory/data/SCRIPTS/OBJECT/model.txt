@@ -729,6 +729,21 @@ MODELSET
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 22
+	POS = 3496 0 -1608
+	ROT = 0 11 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 22
+	POS = 2081 0 -2772
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
 #------------------------------------------------------------------------------
 # 鍵
 #------------------------------------------------------------------------------
@@ -868,13 +883,7 @@ END_MODELSET
 #------------------------------------------------------------------------------
 # バケツ
 #------------------------------------------------------------------------------
-MODELSET
-	TYPE = 33
-	POS = 2081 0 -2772
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
+
 
 #------------------------------------------------------------------------------
 # 時計
@@ -1423,8 +1432,24 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 49
-	POS = 4500 0 1300
+	POS = 4694 0 1304
 	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 49
+	POS =  3216 0 355
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 49
+	POS =  3308 0 1485
+	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
