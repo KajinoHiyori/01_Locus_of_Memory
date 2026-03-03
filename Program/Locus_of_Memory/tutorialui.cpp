@@ -190,6 +190,8 @@ void UpdateTutorialUI(void)
 	Player* pPlayer = GetPlayer();	// プレイヤーの情報を取得
 	float fDiffKey, fRateKey = 0.0f;
 	bool bDisp[NUM_TUTORIALUI] = { false, false, false, false};
+	OPERATIONTYPE operationType = GetOperationType();
+
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
 		if (pPlayer->bUse == false)
@@ -211,15 +213,26 @@ void UpdateTutorialUI(void)
 					SetTutorialUIAppear(nCntUI);
 				}
 			}
-			else
-			{
-				if ((g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_APPEAR || // 出現状態
-					g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_DISPLAY) &&	// 表示状態
-					(nCntPlayer == 1 && bDisp[nCntUI] == false))
+			else if (g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_APPEAR || // 出現状態
+					g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_DISPLAY)	// 表示状態
+					
+			{ // 2人プレイの場合の非表示処理
+
+				switch (operationType)
 				{
+				case OPERATIONTYPE_2P:	// 2人操作
+					if (bDisp[nCntUI] == false && nCntPlayer == 1)
+					{
+						SetTutorialUIDisappear(nCntUI);
+					}
+					break;
+
+				default:
 					SetTutorialUIDisappear(nCntUI);
+					break;
 				}
 			}
+			
 		}
 	}
 
