@@ -136,7 +136,19 @@ END_DROPMAGICSET
 #------------------------------------------------------------------------------
 DROPMAGICSET
 	TYPE = 13
-	POS = 0 0 -3500
+	POS = 4644 0 1304
+	RADIUS = 100.0
+END_DROPMAGICSET
+
+DROPMAGICSET
+	TYPE = 13
+	POS = 3216 0 395
+	RADIUS = 100.0
+END_DROPMAGICSET
+
+DROPMAGICSET
+	TYPE = 13
+	POS = 3308 0 1445
 	RADIUS = 100.0
 END_DROPMAGICSET
 
@@ -160,7 +172,13 @@ END_DROPMAGICSET
 #------------------------------------------------------------------------------
 DROPMAGICSET
 	TYPE = 19
-	POS = 0 0 -4200
+	POS = 77 0 -2950
+	RADIUS = 100.0
+END_DROPMAGICSET
+
+DROPMAGICSET
+	TYPE = 19
+	POS = -964 0 -3215
 	RADIUS = 100.0
 END_DROPMAGICSET
 
