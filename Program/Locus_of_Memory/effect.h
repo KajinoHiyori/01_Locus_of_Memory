@@ -12,6 +12,7 @@
 typedef enum
 {
 	EFFECT_TYPE_NORMAL = 0,	// 通常のエフェクト
+	EFFECT_TYPE_GROWTH,
 	EFFECT_TYPE_MAX
 }EFFECT_TYPE;
 

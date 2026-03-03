@@ -356,13 +356,28 @@ void UpdateParticle(void)
 
 				//成長(植物など)===================================================================
 			case PARTICLETYPE_GROWTH:
-				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 2; nCntAppear++)
 				{
-					pos[0] = g_aParticle[nCntParticle].pos;
-					move[0][PARTICLETYPE_GROWTH].x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_GROWTH].y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_GROWTH].z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_GROWTH], COLOR_RED, 100, 25);
+					//位置の設(
+					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 50;
+					pos[0].y = g_aParticle[nCntParticle].pos.y;
+					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 50;
+
+					fSpeed = (float)(rand() % 2 + 1);
+
+					//移動量						　　　
+					rot.z = ((float)(rand() % 629 - 314) / 100);
+					rot.y = ((float)(rand() % 629 - 314) / 500);
+
+					move[0][PARTICLETYPE_GROWTH].x = sinf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_GROWTH].z = cosf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_GROWTH].y = (float)(rand() % 2 + 1) * 1.2f;
+					//move[0][PARTICLETYPE_COMBUSTION].y = cosf(rot.y) * fSpeed;
+
+					//半径の設定
+					fRadius = g_aParticle[nCntParticle].fRadius;
+
+					SetEffect(EFFECT_TYPE_GROWTH, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_GROWTH], COLOR_GREEN, 60, 30);
 				}
 				break;
 
