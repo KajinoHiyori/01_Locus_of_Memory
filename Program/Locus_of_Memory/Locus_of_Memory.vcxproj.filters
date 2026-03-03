@@ -249,6 +249,9 @@
     <ClCompile Include="riverwall.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="aura.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -405,6 +408,9 @@
       <Filter>tutorial\h</Filter>
     </ClInclude>
     <ClInclude Include="riverwall.h">
+      <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="aura.h">
       <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
