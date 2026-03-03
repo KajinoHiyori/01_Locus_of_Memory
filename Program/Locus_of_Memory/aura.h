@@ -15,20 +15,22 @@
 //*****************************************************************************
 #define AURA_RADIUS			(300.0f)			// オーラの半径
 #define AURA_HEIGHT			(300.0f)			// オーラの高さ
+#define AURA_SPLIT_WIDHT	(32 + 1)			// 横の分割数
+#define AURA_SPLIT_HEIGTH	(1 + 1)				// 縦の分割数
 #define MAX_AURA			(4)					// オーラの最大数
 
 //*****************************************************************************
 // オーラの構造体定義
 //*****************************************************************************
-typedef struct
+typedef struct Aura
 {
 	LPDIRECT3DVERTEXBUFFER9 pVtxBuff;			// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9 pIdxBuff;			// インデックスバッファへのポインタ
 	D3DXVECTOR3 pos;							// 位置
 	D3DXVECTOR3 rot;							// 向き
 	D3DXMATRIX mtxWorld;						// ワールドマトリックス
-	float fAngle;								// 角度らしい
-	float fRadius;								// 半径
+	float fAngle;								// 角度
+	float fRadius[AURA_SPLIT_HEIGTH];			// 半径
 	bool bUse;									// 使用状態
 }Aura;
 

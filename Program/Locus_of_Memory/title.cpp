@@ -125,7 +125,7 @@ void UpdateTitle(void)
 		g_fTitleFogEnd += (50000.0f * 0.00075f);
 	}
 
-	SetFog(COLOR_WHITE, 0.0f, g_fTitleFogEnd);
+	SetFog(COLOR_SKY_NIGHT, 0.0f, g_fTitleFogEnd);
 #endif // _DEBUG
 
 	if (g_bFade == false)	// フェードをしていない場合

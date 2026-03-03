@@ -9,6 +9,7 @@
 #define _LOADSCRIPT_H_
 
 #include "main.h"
+#include "collision.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -26,6 +27,7 @@ HRESULT LoadMotionInfo(const char* pMotionFileName);
 HRESULT LoadModel(const char* pModelFileName);
 HRESULT LoadMagicObject(const char* pMagicObjectFileName);
 HRESULT LoadMagicObject(const char* pMagicObjectFileName);
+ColliderInfo LoadCollider(FILE* pFile);
 void LoadEnableString(char* aStrCpy, char* pStart);
 
 #endif	_LOADSCRIPT_H_

@@ -12,7 +12,6 @@
 #include "shadow.h"
 #include "player.h"
 #include "loadscript.h"
-#include "collision.h"
 #include "clock.h"
 #include "input.h"
 
@@ -433,7 +432,7 @@ void DrawObject(void)
 //=============================================================================
 //	オブジェクトの当たり判定処理
 //=============================================================================
-bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius)
+bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius, int nCollisionIdx)
 {
 	Object* pObject = &g_aObject[0];				// 先頭アドレス
 	D3DXMATRIX mtxRot, mtxTrans, mtxScale;			// 計算用マトリックス
@@ -448,55 +447,68 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 			continue;
 		}
 
-		ObjectModel* pObjectModel = &g_aObjectModel[pObject->type];	// モデルタイプ
+		if (pObject->nCollisionIdx != -1)
+		{// 当たり判定が設定されていれば
+			CollisionInfo CollisionInfo = UpdateCollision(nCollisionIdx, pObject->nCollisionIdx);
 
-		// 各頂点位置を代入
-		posA = D3DXVECTOR3(pObjectModel->vtxMin.x, 0.0f, pObjectModel->vtxMax.z);
-		posB = D3DXVECTOR3(pObjectModel->vtxMax.x, 0.0f, pObjectModel->vtxMax.z);
-		posC = D3DXVECTOR3(pObjectModel->vtxMax.x, 0.0f, pObjectModel->vtxMin.z);
-		posD = D3DXVECTOR3(pObjectModel->vtxMin.x, 0.0f, pObjectModel->vtxMin.z);
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&pObject->mtxWorld);
-
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, pObject->rot.y, pObject->rot.x, pObject->rot.z);
-		D3DXMatrixMultiply(&pObject->mtxWorld, &pObject->mtxWorld, &mtxRot);
-
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, pObject->pos.x, pObject->pos.y, pObject->pos.z);
-		D3DXMatrixMultiply(&pObject->mtxWorld, &pObject->mtxWorld, &mtxTrans);
-
-		// 位置と向きを反映した頂点座標を入れる
-		D3DXVec3TransformCoord(&posA, &posA, &pObject->mtxWorld);
-		D3DXVec3TransformCoord(&posB, &posB, &pObject->mtxWorld);
-		D3DXVec3TransformCoord(&posC, &posC, &pObject->mtxWorld);
-		D3DXVec3TransformCoord(&posD, &posD, &pObject->mtxWorld);
-
-		if (pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius < pObject->pos.y + pObjectModel->vtxMax.y)
-		{// 当たり判定
-			CrossCollision(pPos, pPosOld, posB, posA, true, false);
-			CrossCollision(pPos, pPosOld, posC, posB, true, false);
-			CrossCollision(pPos, pPosOld, posD, posC, true, false);
-			CrossCollision(pPos, pPosOld, posA, posD, true, false);
-		}
-
-		// モデルの範囲内か判定
-		if (pPos->x + fRadius > pObject->pos.x + pObjectModel->vtxMin.x && pPos->x + fRadius < pObject->pos.x + pObjectModel->vtxMax.x &&
-			pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius < pObject->pos.y + pObjectModel->vtxMax.y &&
-			pPos->z + fRadius > pObject->pos.z + pObjectModel->vtxMin.z && pPos->z + fRadius < pObject->pos.z + pObjectModel->vtxMax.z)
-		{
-			// 上から
-			if (pPosOld->y + fRadius >= pObject->pos.y + pObjectModel->vtxMax.y)
+			if (CollisionInfo.isCollision)
 			{
-				pPos->y = pObject->pos.y + pObjectModel->vtxMax.y - fRadius;
-				isRand = true;		// なにかに着地した
+				*pPos = CollisionInfo.Intersection;
+				break;
+			}
+		}
+		else
+		{
+			ObjectModel* pObjectModel = &g_aObjectModel[pObject->type];	// モデルタイプ
+
+			// 各頂点位置を代入
+			posA = D3DXVECTOR3(pObjectModel->vtxMin.x, 0.0f, pObjectModel->vtxMax.z);
+			posB = D3DXVECTOR3(pObjectModel->vtxMax.x, 0.0f, pObjectModel->vtxMax.z);
+			posC = D3DXVECTOR3(pObjectModel->vtxMax.x, 0.0f, pObjectModel->vtxMin.z);
+			posD = D3DXVECTOR3(pObjectModel->vtxMin.x, 0.0f, pObjectModel->vtxMin.z);
+
+			// ワールドマトリックスの初期化
+			D3DXMatrixIdentity(&pObject->mtxWorld);
+
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, pObject->rot.y, pObject->rot.x, pObject->rot.z);
+			D3DXMatrixMultiply(&pObject->mtxWorld, &pObject->mtxWorld, &mtxRot);
+
+			// 位置を反映
+			D3DXMatrixTranslation(&mtxTrans, pObject->pos.x, pObject->pos.y, pObject->pos.z);
+			D3DXMatrixMultiply(&pObject->mtxWorld, &pObject->mtxWorld, &mtxTrans);
+
+			// 位置と向きを反映した頂点座標を入れる
+			D3DXVec3TransformCoord(&posA, &posA, &pObject->mtxWorld);
+			D3DXVec3TransformCoord(&posB, &posB, &pObject->mtxWorld);
+			D3DXVec3TransformCoord(&posC, &posC, &pObject->mtxWorld);
+			D3DXVec3TransformCoord(&posD, &posD, &pObject->mtxWorld);
+
+			if (pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius < pObject->pos.y + pObjectModel->vtxMax.y)
+			{// 当たり判定
+				CrossCollision(pPos, pPosOld, posB, posA, true, false);
+				CrossCollision(pPos, pPosOld, posC, posB, true, false);
+				CrossCollision(pPos, pPosOld, posD, posC, true, false);
+				CrossCollision(pPos, pPosOld, posA, posD, true, false);
 			}
 
-			// 下から
-			if (pPosOld->y + fRadius <= pObject->pos.y + pObjectModel->vtxMin.y)
+			// モデルの範囲内か判定
+			if (pPos->x + fRadius > pObject->pos.x + pObjectModel->vtxMin.x && pPos->x + fRadius < pObject->pos.x + pObjectModel->vtxMax.x &&
+				pPos->y + fRadius > pObject->pos.y + pObjectModel->vtxMin.y && pPos->y + fRadius < pObject->pos.y + pObjectModel->vtxMax.y &&
+				pPos->z + fRadius > pObject->pos.z + pObjectModel->vtxMin.z && pPos->z + fRadius < pObject->pos.z + pObjectModel->vtxMax.z)
 			{
-				pPos->y = pObject->pos.y + pObjectModel->vtxMin.y - fRadius;
+				// 上から
+				if (pPosOld->y + fRadius >= pObject->pos.y + pObjectModel->vtxMax.y)
+				{
+					pPos->y = pObject->pos.y + pObjectModel->vtxMax.y - fRadius;
+					isRand = true;		// なにかに着地した
+				}
+
+				// 下から
+				if (pPosOld->y + fRadius <= pObject->pos.y + pObjectModel->vtxMin.y)
+				{
+					pPos->y = pObject->pos.y + pObjectModel->vtxMin.y - fRadius;
+				}
 			}
 		}
 	}
@@ -507,7 +519,7 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 //======================================================================================
 // オブジェクトを配置
 //======================================================================================
-void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, bool isRandObj)
+void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, bool isCollider, ColliderInfo* pColliderInfo, int nNumCollider, bool isRandObj)
 {
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
@@ -531,9 +543,11 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 				g_nNumRandObj++;
 			}
 
-#if 0
+			pColliderInfo->Collidertype.pos = pos;
+
+#if 1
 			// 当たり判定
-			if (isCollision == true)
+			if (isCollider == true)
 			{
 				g_aObject[nCntObject].nCollisionIdx = SetCollision();
 
@@ -559,7 +573,7 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 //======================================================================================
 // 階層構造オブジェクトを配置
 //======================================================================================
-void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, bool isCollision)
+void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision, bool isCollider)
 {
 	ParentObject* pParentObject = &g_aParentObject[0];		// 先頭アドレス
 
@@ -626,9 +640,9 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 			*pOffSetRot += pModel->rotLocal;
 		}
 
-#if 0
+#if 1
 		// 当たり判定
-		if (isCollision == true)
+		if (isCollider == true)
 		{
 			pParentObject->nCollisionIdx = SetCollision();
 

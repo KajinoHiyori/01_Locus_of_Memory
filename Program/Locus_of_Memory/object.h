@@ -10,6 +10,7 @@
 
 #include "motion.h"
 #include "event.h"
+#include "collision.h"
 
 // マクロ定義
 #define MAX_OBJECTMAT		(32)	// マテリアルの最大数
@@ -168,11 +169,11 @@ void InitObject(void);
 void UninitObject(void);
 void UpdateObject(void);
 void DrawObject(void);
-bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius);
-void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, bool isRandObj = false);
-void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, bool isCollision);
-//void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, ColliderInfo* pColliderInfo, int nNumCollider, bool isRandObj = false);
-//void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision);
+bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius, int nCollisionIdx);
+//void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, bool isRandObj = false);
+//void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, bool isCollision);
+void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow, bool isCollision, bool isCollider, ColliderInfo* pColliderInfo, int nNumCollider, bool isRandObj = false);
+void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision, bool isCollider);
 void LoadObjectModel(const char* pModelPath);
 ModelData* SetModelData(PARENTMODELTYPE type);
 void LoadParentModel(const char* pModelPath, int nNumParentModel);

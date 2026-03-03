@@ -373,8 +373,11 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].bJump = false;
 		}
 
+		// 当たり判定の位置の更新
+		UpdateCollider(g_aPlayer[nCntPlayer].nIdxCollision, g_aPlayer[nCntPlayer].pos);
+
 		// オブジェクトとの当たり判定
-		if (CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius) && g_aPlayer[nCntPlayer].bJump == true)
+		if (CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
 		{
 			// 着地モーション
 			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
@@ -394,9 +397,6 @@ void UpdatePlayer(void)
 			// クリア状態にする
 			SetGameState(GAMESTATE_CLEAR, 0);
 		}
-
-		// 当たり判定の位置の更新
-		UpdateCollider(g_aPlayer[nCntPlayer].nIdxCollision, g_aPlayer[nCntPlayer].pos);
 
 		// 使用したコマンドと所持コマンドを判定
 		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
@@ -557,6 +557,8 @@ Player* GetPlayer(void)
 //========================================================================
 void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype)
 {
+	ColliderInfo ColliderInfo = {};
+
 	g_aPlayer[nIdx].pModelData = SetModelData(parentmodeltype);					// モデルデータを設定
 	g_aPlayer[nIdx].motion.pMotionData = SetMotionData(MOTIONDATATYPE_PLAYER);	// モーションデータを設定
 
@@ -566,6 +568,14 @@ void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE paren
 	g_aPlayer[nIdx].posOld = pos;
 	g_aPlayer[nIdx].rot = rot;
 	g_aPlayer[nIdx].nIdxShadow = SetShadow(SHADOWTYPE_CIRCLE, SHADOｗ, SHADOｗ);
+
+	// 当たり判定設定
+	g_aPlayer[nIdx].nIdxCollision = SetCollision();
+
+	ColliderInfo.type = COLLIDERTYPE_SPHERE;
+	ColliderInfo.Collidertype.sphere.fRadius = 0.0f;
+
+	SetCollider(g_aPlayer[nIdx].nIdxCollision, ColliderInfo);
 
 	// モーションを設定
 	SetMotion(&g_aPlayer[nIdx].motion, g_aPlayer[nIdx].pModelData, &g_aPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);

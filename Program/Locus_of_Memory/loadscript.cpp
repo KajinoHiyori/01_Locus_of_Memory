@@ -45,6 +45,9 @@
 #define LOAD_MODE			"MODE"						// モード読み込み
 #define LOAD_POS			"POS"						// 位置読み込み
 #define LOAD_ROT			"ROT"						// 向き読み込み
+#define LOAD_WIDTH			"WIDTH"						// 幅読み込み
+#define LOAD_HEIGHT			"HEIGHT"					// 高さ読み込み
+#define LOAD_DEPTH			"DEPTH"						// 奥行き読み込み
 #define LOAD_TYPE			"TYPE"						// 種類読み込み
 #define LOAD_PARENTTYPE		"PARENTTYPE"				// 階層構造モデルの種類読み込み
 #define LOAD_MESHTYPE		"MESHTYPE"					// メッシュの種類読み込み
@@ -63,6 +66,8 @@
 #define LOAD_ENDCUSTOMMESH	"END_CUSTOMMESHSET"			// カスタムメッシュの情報読み込み終了
 #define LOAD_FIELD			"FIELDSET"					// フィールドの情報読み込み
 #define LOAD_ENDFIELD		"END_FIELDSET"				// フィールドの情報読み込み終了
+#define LOAD_COLLIDER		"COLLIDERSET"				// コライダーの情報読み込み
+#define LOAD_ENDCOLLIDER	"END_COLLIDERSET"			// コライダーの情報読み込み終了
 
 //*****************************************************************************
 // グローバル変数
@@ -524,9 +529,13 @@ HRESULT LoadModel(const char* pModelFileName)
 	int Parenttype = -1;				   // 階層構造モデルの種類読み込み
 	int nShadow = 0;					   // 影をつけるか
 	int nCollision = true;				   // 当たり判定するか
+	int nCollider = false;				   // コライダーを使うか
 	int nNumModel = 0;					   // モデル数読み込み
+	int nNumCollider = 0;				   // コライダー数
 	int nCntModel = -1;					   // 直前に読み込んだモデル
 	int nCntParentModel = -1;			   // 直前に読み込んだ階層構造モデル
+
+	ColliderInfo aColliderInfo[10] = {};   // コライダー情報読み込み
 
 	while (true)
 	{
@@ -642,20 +651,29 @@ HRESULT LoadModel(const char* pModelFileName)
 					continue;
 				}
 
+				if (strcmp(aStrCpy, LOAD_COLLIDER) == 0)
+				{// COLLIDERSETを読み込んだ
+					aColliderInfo[nNumCollider] = LoadCollider(pStageFile);
+					nNumCollider++;
+					nCollider = true;
+				}
+
 				if (strcmp(aStrCpy, LOAD_ENDMODELINFO) == 0)
 				{// END_MODELSETを読み込んだ
 
 					if (Parenttype != -1)
 					{
-						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype, (bool)nCollision);
+						SetParentObject(pos, rot, (PARENTMODELTYPE)Parenttype, &aColliderInfo[0], nNumCollider, (bool)nCollision, (bool)nCollider);
 						nCntParentModel++;
 					}
 					else
 					{
-						SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision);
+						SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision, (bool)nCollider, &aColliderInfo[0], nNumCollider);
 						nCntModel++;
 					}
 					
+					nNumCollider = 0;
+					nCollider = false;
 					Parenttype = -1;
 					break;
 				}
@@ -908,7 +926,11 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 	int type = -1;												   // 種類読み込み
 	int nShadow = 0;											   // 影をつけるか
 	int nCollision = true;										   // 当たり判定するか
+	int nCollider = false;										   // コライダーを使うか
 	int nCntMagicObjectPath = 0;								   // 読み込んだパスのカウント
+	int nNumCollider = 0;										   // コライダー数
+
+	ColliderInfo aColliderInfo[10] = {};						   // コライダー情報読み込み
 
 	while (true)
 	{
@@ -1094,7 +1116,7 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 
 				if (strcmp(aStrCpy, LOAD_ENDMODELINFO) == 0)
 				{// END_MODELSETを読み込んだ
-					SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision, true);
+					SetObject((OBJECTTYPE)type, pos, rot, (bool)nShadow, (bool)nCollision, (bool)nCollider, &aColliderInfo[0], nNumCollider);
 					break;
 				}
 			}
@@ -1109,6 +1131,152 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 	}
 
 	return S_OK;
+}
+
+//=============================================================================
+//	当たり判定情報読み込み処理
+//=============================================================================
+ColliderInfo LoadCollider(FILE *pFile)
+{
+	ColliderInfo ColliderInfo = {};
+
+	char aStr[MAX_STRING] = {};								// 文字列読み込み
+	char aStrCpy[MAX_STRING] = {};							// 文字列複製(整理)
+	char* pStart = NULL;									// 文字列開始位置
+	D3DXVECTOR3 pos = {};									// 位置読み込み
+	D3DXVECTOR3 rot = {};									// 向き読み込み
+	float fRadius = 0.0f;									// 半径読み込み
+	int type = -1;											// 種類読み込み
+	float fWidth, fHeight, fDepth;							// 大きさ読み込み
+
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+		(void)fgets(aStr, sizeof(aStr), pFile);			// 一列読み込み
+		LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+
+		if (strncmp(aStrCpy, LOAD_TYPE, sizeof(LOAD_TYPE + 1)) == 0)
+		{// TYPEを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
+
+			(void)sscanf(pStart + 1, "%d", &type);
+
+			continue;
+		}
+
+		if (strstr(aStr, LOAD_POS))
+		{// POSを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
+
+			(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+
+			continue;
+		}
+
+		if (strstr(aStr, LOAD_ROT))
+		{// ROTを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
+
+			(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
+
+			continue;
+		}
+
+		if (strstr(aStr, LOAD_RADIUS))
+		{// RADIUSを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
+
+			(void)sscanf(pStart + 1, "%f", &fRadius);
+
+			continue;
+		}
+
+		if (strstr(aStr, LOAD_WIDTH))
+		{// WIDTHを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
+
+			(void)sscanf(pStart + 1, "%f", &fWidth);
+
+			continue;
+		}
+
+		if (strstr(aStr, LOAD_HEIGHT))
+		{// HEIGHTを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
+
+			(void)sscanf(pStart + 1, "%f", &fHeight);
+
+			continue;
+		}
+
+		if (strstr(aStr, LOAD_DEPTH))
+		{// DEPTHを読み込んだ
+			if ((pStart = strchr(aStr, '=')) == NULL)
+			{
+				continue;
+			}
+
+			(void)sscanf(pStart + 1, "%f", &fDepth);
+
+			continue;
+		}
+
+		if (strcmp(aStrCpy, LOAD_ENDCOLLIDER) == 0)
+		{// END_COLLIDERSETを読み込んだ
+			ColliderInfo.type = (COLLIDERTYPE)type;
+
+			switch (ColliderInfo.type)
+			{
+				// 矩形
+			case COLLIDERTYPE_BOX:
+				ColliderInfo.Collidertype.box.pos = pos;
+				ColliderInfo.Collidertype.box.rot = rot;
+				ColliderInfo.Collidertype.box.fWidth = fWidth;
+				ColliderInfo.Collidertype.box.fHeight = fHeight;
+				ColliderInfo.Collidertype.box.fDepth = fDepth;
+				break;
+
+				// 筒
+			case COLLIDERTYPE_CYLINDER:
+				ColliderInfo.Collidertype.cylinder.pos = pos;
+				ColliderInfo.Collidertype.cylinder.rot = rot;
+				ColliderInfo.Collidertype.cylinder.fRadius = fRadius;
+				break;
+
+				// 球
+			case COLLIDERTYPE_SPHERE:
+				ColliderInfo.Collidertype.sphere.pos = pos;
+				ColliderInfo.Collidertype.sphere.fRadius = fRadius;
+				break;
+
+				// カプセル
+			case COLLIDERTYPE_CAPSULE:
+
+				break;
+			}
+
+			return ColliderInfo;
+		}
+	}
 }
 
 //=============================================================================
