@@ -42,6 +42,7 @@
 #include "field.h"
 #include "key.h"
 #include "riverwall.h"
+#include "questionmark.h"
 
 // マクロ定義
 #define GAMEPOS_1P		(D3DXVECTOR3(-745.0f, 0.0f, -3427.0f))	// 1Pの位置[GAME]
@@ -88,6 +89,9 @@ void InitGame(void)
 
 	// 吹き出しの初期化処理
 	InitMagicBubble();
+
+	// ?の初期化処理
+	InitQuestionMark();
 
 	// 鍵の初期化処理
 	InitKey();
@@ -148,6 +152,9 @@ void UninitGame(void)
 
 	// 魔法陣の終了処理
 	UninitMagicCircle();
+
+	// ?の終了処理
+	UninitQuestionMark();
 
 	// 鍵の終了処理
 	UninitKey();
@@ -216,6 +223,9 @@ void UpdateGame(void)
 
 	// 吹き出しの更新処理
 	UpdateMagicBubble();
+
+	// ?の更新処理
+	UpdateQuestionMark();
 
 	// バッテリーの更新処理
 	UpdateBattery();
@@ -381,6 +391,9 @@ void DrawGame(void)
 
 	// バッテリーの描画処理
 	DrawBattery();
+
+	// ?の描画処理
+	DrawQuestionMark();
 
 	SetFogEnable(true);			// 霧を有効
 

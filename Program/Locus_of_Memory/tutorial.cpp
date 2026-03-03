@@ -48,6 +48,7 @@
 #include "clock.h"
 #include "battery.h"
 #include "tutorialui.h"
+#include "questionmark.h"
 
 // マクロ定義
 #define TUTORIALPOS_1P	(D3DXVECTOR3(-3185.0f, 0.0f, -3235.0f))	// 1Pの位置[TUTORIAL]			
@@ -95,6 +96,9 @@ void InitTutorial(void)
 
 	// 吹き出しの初期化処理
 	InitMagicBubble();
+
+	// ?の初期化処理
+	InitQuestionMark();
 
 	// チュートリアルUIの初期化処理
 	InitTutorialUI();
@@ -176,6 +180,9 @@ void UninitTutorial(void)
 	// チュートリアルUIの終了処理
 	UninitTutorialUI();
 
+	// ?の終了処理
+	UninitQuestionMark();
+
 	//UninitModel();
 
 	//UninitBlock();
@@ -250,6 +257,9 @@ void UpdateTutorial(void)
 
 	// バッテリーの更新処理
 	UpdateBattery();
+
+	// ?の更新処理
+	UpdateQuestionMark();
 
 	// チュートリアルUIの更新処理
 	UpdateTutorialUI();
@@ -388,6 +398,9 @@ void DrawTutorial(void)
 
 	// チュートリアルUIの描画処理
 	DrawTutorialUI();
+
+	// ?の描画処理
+	DrawQuestionMark();
 
 	//DrawModel();
 
