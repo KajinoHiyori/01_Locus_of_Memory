@@ -203,6 +203,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="resultui.cpp" />
+    <ClCompile Include="riverwall.cpp" />
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="skybox.cpp" />
     <ClCompile Include="sound.cpp" />
@@ -256,6 +257,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="resultui.h" />
+    <ClInclude Include="riverwall.h" />
     <ClInclude Include="shadow.h" />
     <ClInclude Include="skybox.h" />
     <ClInclude Include="sound.h" />

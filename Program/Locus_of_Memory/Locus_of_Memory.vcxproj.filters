@@ -246,6 +246,9 @@
     <ClCompile Include="tutorialui.cpp">
       <Filter>tutorial\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="riverwall.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -400,6 +403,9 @@
     </ClInclude>
     <ClInclude Include="tutorialui.h">
       <Filter>tutorial\h</Filter>
+    </ClInclude>
+    <ClInclude Include="riverwall.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
