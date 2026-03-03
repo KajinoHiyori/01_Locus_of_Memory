@@ -614,6 +614,17 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		pParentObject->rot = rot;
 		pParentObject->bUse = true;
 
+		// オフセット情報を格納するメンバ変数へのポインタを取得
+		Model* pModel = &pParentObject->pModelData->aModel[0];			// モデル情報
+		D3DXVECTOR3* pOffSetPos = &pParentObject->OffSetData.pos[0];	// オブジェクトのオフセット座標
+		D3DXVECTOR3* pOffSetRot = &pParentObject->OffSetData.rot[0];	// オブジェクトのオフセット向き
+
+		for (int nCntModel = 0; nCntModel < pParentObject->pModelData->nNumParts; nCntModel++, pOffSetPos++, pOffSetRot++, pModel++)
+		{// ローカル座標を設定
+			*pOffSetPos += pModel->posLocal;
+			*pOffSetRot += pModel->rotLocal;
+		}
+
 #if 0
 		// 当たり判定
 		if (isCollision == true)
