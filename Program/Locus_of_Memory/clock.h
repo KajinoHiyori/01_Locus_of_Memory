@@ -13,6 +13,7 @@ typedef enum
 	CLOCKSTATE_NONE = -1,	// ‰½‚à‚µ‚Ä‚¢‚È‚¢ó‘Ô
 	CLOCKSTATE_OPERATION,	// ‰Ò“­’†
 	CLOCKSTATE_STOP,		// ’âŽ~’†
+	CLOCKSTATE_MAGIC,		// –‚–@‚É‚æ‚é’âŽ~’†
 	CLOCKSTATE_MAX
 }CLOCKSTATE;
 

@@ -5,6 +5,7 @@
 //
 //========================================================================
 #include "clock.h"
+#include "object.h"
 #include "uimanager.h"
 #include "player.h"
 #include "main.h"
@@ -30,6 +31,7 @@
 #define MAX_MIN			(60)	// 分の最大値
 #define INTERVAL_TIME	(15)	// どのくらいの間隔で1分進むのか
 #define END_TIME		(2000)	// ゲーム終了時間
+#define MAGIC_TIME		(840)	// 時間停止魔法継続時間
 
 // 時計の構造体定義
 typedef struct
@@ -43,6 +45,7 @@ typedef struct
 typedef struct
 {
 	int nCounter;		// 経過時間の間隔をカウント
+	int nMagicCounter;	// 魔法の継続時間をカウント
 	int nHour;			// 時
 	int nMinute;		// 分
 	int nTime;			// 時間[4桁表示]
@@ -93,6 +96,7 @@ void InitClock(void)
 
 	// 時間構造体
 	g_time.nCounter = 0;
+	g_time.nMagicCounter = 0;
 	g_time.nHour = START_HOUR;
 	g_time.nMinute = START_MIN;
 	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
@@ -126,7 +130,6 @@ void InitClock(void)
 			pVtx[1].col = g_aClock[nCntPlayer].col;
 			pVtx[2].col = g_aClock[nCntPlayer].col;
 			pVtx[3].col = g_aClock[nCntPlayer].col;
-
 
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(0.1f, 0.0f);
@@ -173,9 +176,13 @@ void UpdateClock(void)
 		g_time.state = CLOCKSTATE_STOP;
 	}
 
-	// 時間管理
-	if (g_time.state == CLOCKSTATE_OPERATION)	// タイマーが稼働中の場合
+	switch (g_time.state)
 	{
+	case CLOCKSTATE_NONE:	// 何もしていない状態
+
+		break;
+
+	case CLOCKSTATE_OPERATION:	// 稼働中
 		g_time.nCounter++;
 		// 一定フレーム経過すると1分進む
 		if (g_time.nCounter >= INTERVAL_TIME)
@@ -193,7 +200,19 @@ void UpdateClock(void)
 		{
 			g_time.nHour = 0;
 		}
+		break;
+
+	case CLOCKSTATE_STOP:	// 停止中
+
+		break;
+
+	case CLOCKSTATE_MAGIC:	// 魔法による停止中
+
+		break;
 	}
+
+
+	// 時間管理
 	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
 
 	PrintDebugProc("現在時刻 %d\n", g_time.nTime);

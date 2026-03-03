@@ -471,7 +471,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_LEVITATION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 3;
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FLOATONG, true, true, BLENDFRAME);
-				//SetSpellUIDisappear(nIdx);
+				SetSpellUIDisappear(nIdx);
 				break;
 
 				//îRèƒ

@@ -25,7 +25,7 @@
 #define MOVE			(0.5f)				// 移動量
 #define ROTATE			(0.9f)				// 回転量
 #define GRAVITY			(0.75f)				// 重力
-#define JUMP			(17.0f)				// ジャンプ
+#define JUMP			(15.0f)				// ジャンプ
 #define SHADOｗ			(10.0f)				// 影の大きさ
 #define CORRECTION_ROT	(0.075f)			// 回転の減衰係数
 #define RIGHT			(D3DX_PI / 2)		// 右を向く
