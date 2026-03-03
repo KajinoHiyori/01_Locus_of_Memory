@@ -25,7 +25,7 @@ TEXTURE_FILENAME = data/TEXTURE/miti.jpg			# [6]道テクスチャ
 #------------------------------------------------------------------------------
 # モデル数
 #------------------------------------------------------------------------------
-NUM_MODEL = 50
+NUM_MODEL = 51
 
 #------------------------------------------------------------------------------
 # モデルファイル名
@@ -79,6 +79,7 @@ MODEL_FILENAME = data/MODEL/blacksmith/blacksmith.x			# [45]煙突
 MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall000.x	# [46]チュートリアル分断壁
 MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall001.x	# [47]チュートリアル分断壁
 MODEL_FILENAME = data/MODEL/fence/fence.x					# [48]川を囲うフェンス
+MODEL_FILENAME = data/MODEL/sled/sled000.x					# [49]そり
 
 #------------------------------------------------------------------------------
 # モデル配置情報
@@ -1365,6 +1366,54 @@ MODELSET
 	TYPE = 48
 	POS = 2372 0 -1428
 	ROT = 0 140 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2422 0 -1384
+	ROT = 0 140 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2475 0 -1340
+	ROT = 0 140 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2530 0 -1293
+	ROT = 0 140 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2550 0 -1243
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2550 0 -1173
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2550 0 -1113
+	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
