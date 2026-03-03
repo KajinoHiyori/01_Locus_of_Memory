@@ -29,6 +29,8 @@
 #define END_HOUR		(20)	// 終了時刻[時]
 #define END_MIN			(0)		// 終了時刻[分]
 #define MAX_MIN			(60)	// 分の最大値
+#define MAX_HOUR		(24)	// 時間の最大値
+#define HALF_HOUR		(MAX_HOUR / 2)	// 12時間
 #define INTERVAL_TIME	(15)	// どのくらいの間隔で1分進むのか
 #define END_TIME		(2000)	// ゲーム終了時間
 #define MAGIC_TIME		(840)	// 時間停止魔法継続時間
@@ -262,16 +264,25 @@ void UpdateClock(void)
 	// 時計塔のモデルを動かす========================================================
 	ParentObject* pParentObject = GetParentObjectInfo(g_nIdxClockTower);
 	// 分針を更新する
-	float fMin = 0.0f;	// 分針の角度管理を行う
-	fMin = ((float)g_time.nMinute / MAX_MIN);
-	fMin = fMin * (-MAX_ANGLE);
-
+	float fMin = ((float)g_time.nMinute / MAX_MIN) * (-MAX_ANGLE);
 	for (int nMin = 0; nMin < NUM_TOWER; nMin++)
 	{
 		pParentObject->OffSetData.rot[nMin * 2 + 2].z = fMin;
 	}
+	// 時針を更新する
+	float fHour = (float)g_time.nHour;
+	//if (fHour >= (float)HALF_HOUR)	// 12時を越えたら整理する
+	//{
+	//	fHour -= (float)HALF_HOUR;
+	//}
+	fHour = fHour / HALF_HOUR * (-MAX_ANGLE);
+	fMin = ((float)g_time.nMinute / MAX_MIN) * (-MAX_ANGLE / HALF_HOUR);
+	for (int nHour = 0; nHour < NUM_TOWER; nHour++)
+	{
+		pParentObject->OffSetData.rot[nHour * 2 + 1].z = fHour + fMin;
+	}
 
-	for (int nCntModel = 0; nCntModel < pParentObject->pModelData->nNumParts; nCntModel++)
+	for (int nCntModel = 1; nCntModel < pParentObject->pModelData->nNumParts; nCntModel++)
 	{
 		pParentObject->OffSetData.rot[nCntModel].z = AngleNormalize(pParentObject->OffSetData.rot[nCntModel].z);
 	}
