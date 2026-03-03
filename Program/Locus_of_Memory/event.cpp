@@ -119,14 +119,14 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_GROWTH:	// ¬’·‚³‚¹‚é
 		pParentObject->EventType = EVENTTYPE_003_1;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_GROWTH);
 		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
 		SetMagicLocus(MAGICEVENT_004, pParentObject->pos, 500.0f, pParentObject->nEventIdx);
 		return true;
 
 	case MAGICTYPE_RAINPRAY:	// ¬’·‚³‚¹‚é
 		pParentObject->EventType = EVENTTYPE_003_1;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pParentObject->pos, 150, PARTICLETYPE_GROWTH);
 		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
 		SetMagicLocus(MAGICEVENT_004, pParentObject->pos, 500.0f, pParentObject->nEventIdx);
 		return true;
