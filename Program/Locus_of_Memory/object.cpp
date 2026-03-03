@@ -291,7 +291,8 @@ void DrawObject(void)
 			continue;
 		}
 
-		if (pParentObject->type == PARENTMODELTYPE_DRAGON)	// ドラゴンの場合
+		// ドラゴンの場合
+		if (pParentObject->type == PARENTMODELTYPE_DRAGON)
 		{
 			// ライトの位置を設定
 			pDevice->GetLight(0, &light);
@@ -362,6 +363,11 @@ void DrawObject(void)
 
 		// 現在のマテリアルを取得
 		pDevice->GetMaterial(&matDef);
+
+		if (pParentObject->type == PARENTMODELTYPE_CLOCKTOWER)
+		{
+			int nData = 100;
+		}
 
 		// 全モデル(パーツ)の描画
 		for (int nCntParentModel = 0; nCntParentModel < pParentObject->pModelData->nNumParts; nCntParentModel++)

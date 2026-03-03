@@ -16,7 +16,7 @@
 #define MAX_OBJECT			(1024)	// オブジェクトの最大数
 #define MAX_PARENTOBJECT	(128)	// 階層構造オブジェクトの最大数
 #define MAX_PARTS			(32)	// パーツの最大数
-#define MAX_PARENTMODEL		(8)		// 階層構造をもったモデルの最大数
+#define MAX_PARENTMODEL		(16)	// 階層構造をもったモデルの最大数
 
 // モデルの種類
 typedef struct
