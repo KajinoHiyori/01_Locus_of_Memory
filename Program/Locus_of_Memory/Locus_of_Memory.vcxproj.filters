@@ -252,6 +252,9 @@
     <ClCompile Include="aura.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="questionmark.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -412,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="aura.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="questionmark.h">
+      <Filter>UI\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
