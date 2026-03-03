@@ -1644,6 +1644,19 @@ MAGICEVENTSET
 	EVENT = 3
 END_MAGICEVENTSET
 
+MODELSET
+	PARENTTYPE = 7
+	POS = -741.0 0.0 -3319.0
+	ROT = 0 0 0
+	SHADOW = 1
+	COLLISION = 1
+END_MODELSET
+
+MAGICEVENTSET
+	POS = -741.0 0.0 -3319.0
+	RADIUS = 500.0
+	EVENT = 3
+END_MAGICEVENTSET
 #------------------------------------------------------------------------------
 # äKëwç\ë¢ÇÃÇ†ÇÈéûåvìÉ
 #------------------------------------------------------------------------------
