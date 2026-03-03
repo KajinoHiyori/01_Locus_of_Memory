@@ -38,6 +38,7 @@
 #include "goal.h"
 #include "field.h"
 #include "riverwall.h"
+#include "clock.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -421,6 +422,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// 動物の初期化処理
 	InitAnimal();
 
+	// 時計の初期化処理
+	InitClock();
+
 #ifndef _DEBUG
 	// マウスカーソルを非表示
 	ShowCursor(false);
@@ -432,6 +436,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	return S_OK;
 }
+
 //===============================================================================
 // 終了処理
 //===============================================================================
@@ -518,6 +523,9 @@ void Uninit(void)
 	// サウンドの終了処理
 	UninitSound();
 
+	// 時計の終了処理
+	UninitClock();
+
 	// Direct3Dデバイスの破棄
 	if (g_pD3DDevice != NULL)
 	{
@@ -571,6 +579,9 @@ void Update(void)
 
 	// 塀の更新処理
 	UpdateBrickWall();
+
+	// 時計の更新処理
+	UpdateClock();
 
 	switch (g_mode)
 	{
@@ -793,6 +804,9 @@ void SetMode(MODE mode)
 
 	// モードの更新
 	g_mode = mode;
+
+	// 時計の初期化処理
+	InitTimer();
 }
 
 //==================================================================================

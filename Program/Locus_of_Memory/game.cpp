@@ -80,9 +80,6 @@ void InitGame(void)
 	// 魔導書表示の初期化処理
 	InitMagicUI();
 
-	// 時計の初期化処理
-	InitClock();
-
 	// バッテリーの初期化処理
 	InitBattery();
 
@@ -219,9 +216,6 @@ void UpdateGame(void)
 
 	// 吹き出しの更新処理
 	UpdateMagicBubble();
-
-	// 時計の更新処理
-	UpdateClock();
 
 	// バッテリーの更新処理
 	UpdateBattery();

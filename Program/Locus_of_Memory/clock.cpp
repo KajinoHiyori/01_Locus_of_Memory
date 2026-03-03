@@ -85,7 +85,10 @@ void InitClock(void)
 	// テクスチャの読み込み
 	for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
 	{
-		D3DXCreateTextureFromFile(pDevice, c_pFilenameclock[nCntClock], &g_apTextureClock[nCntClock]);
+		if (g_apTextureClock[nCntClock] == NULL)
+		{
+			D3DXCreateTextureFromFile(pDevice, c_pFilenameclock[nCntClock], &g_apTextureClock[nCntClock]);
+		}
 	}
 	// 初期化
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
@@ -175,12 +178,6 @@ void UninitClock(void)
 //======================================================================================
 void UpdateClock(void)
 {
-	MODE mode = GetMode();
-	if (mode == MODE_TUTORIAL)
-	{
-		g_time.state = CLOCKSTATE_STOP;
-	}
-
 	switch (g_time.state)
 	{
 	case CLOCKSTATE_NONE:	// 何もしていない状態
@@ -219,8 +216,27 @@ void UpdateClock(void)
 			SetClockState(CLOCKSTATE_OPERATION);
 		}
 		break;
-	}
 
+	case CLOCKSTATE_REVERSE:	// 時間の巻き戻り演出
+		g_time.nCounter++;
+		// 一定フレーム経過すると1分進む
+		if (g_time.nCounter >= INTERVAL_TIME)
+		{
+			g_time.nMinute--;
+			g_time.nCounter = 0;
+		}
+		// 60分を越えると1時間追加される
+		if (g_time.nMinute < 0)
+		{
+			g_time.nHour--;
+			g_time.nMinute = 59;
+		}
+		if (g_time.nHour < 0)
+		{
+			g_time.nHour = 23;
+		}
+		break;
+	}
 
 	// 時間管理
 	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
@@ -395,6 +411,16 @@ CLOCKSTATE GetClockState(void)
 }
 
 //======================================================================================
+// 時間を設定する
+//======================================================================================
+void SetTime(int nHour, int nMinute)
+{
+	g_time.nHour = nHour;
+	g_time.nMinute = nMinute;
+	g_time.nTime = g_time.nHour * 100 + g_time.nMinute;
+}
+
+//======================================================================================
 // 時計を非表示にする
 //======================================================================================
 void DisappearClock(int nIdx)
@@ -424,4 +450,45 @@ int GetMinute(void)
 void SetClockTowerIdx(int nIdx)
 {
 	g_nIdxClockTower = nIdx;
+}
+
+//======================================================================================
+// 時計の初期化
+//======================================================================================
+void InitTimer(void)
+{
+	MODE mode = GetMode();
+
+	switch (mode)
+	{
+	case MODE_START:	// 開始画面
+		SetClockState(CLOCKSTATE_REVERSE);
+		SetTime(8, 0);
+		break;
+
+	case MODE_TITLE:	// タイトル画面
+		SetClockState(CLOCKSTATE_REVERSE);
+		SetTime(8, 0);
+		break;
+
+	case MODE_TUTORIAL:	// チュートリアル
+		SetClockState(CLOCKSTATE_STOP);
+		SetTime(7, 59);
+		break;
+
+	case MODE_GAME:	// ゲーム
+		SetClockState(CLOCKSTATE_OPERATION);
+		SetTime(8, 0);
+		break;
+
+	case MODE_RESULT:	// リザルト
+		SetClockState(CLOCKSTATE_STOP);
+		SetTime(20, 0);
+		break;
+
+	case MODE_DIAGNOSIS:	// 診断結果
+		SetClockState(CLOCKSTATE_STOP);
+		SetTime(20, 0);
+		break;
+	}
 }
