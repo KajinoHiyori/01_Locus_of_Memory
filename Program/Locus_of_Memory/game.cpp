@@ -49,6 +49,7 @@
 #define PLAYER_ROT		(D3DXVECTOR3(0.0f, -1.57f, 0.0f))	// プレイヤーの向き
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
+EVENTSTATE g_eventState;
 int g_nCounterGameState = 0;				// 状態管理カウンター
 
 //=======================================================
@@ -110,6 +111,9 @@ void InitGame(void)
 
 	// ゲームの状態を通常状態に
 	g_gameState = GAMESTATE_NORMAL;
+
+	//俯瞰状態に
+	g_eventState = EVENTSTATE_LOOKDOWN;
 
 	// プレイヤーの設置
 	OPERATIONTYPE operationtyoe = GetOperationType();
@@ -225,10 +229,25 @@ void UpdateGame(void)
 	// 鍵の更新処理
 	UpdateKey();
 
+	switch (g_eventState)
+	{
+	case EVENTSTATE_NONE:
+		break;
+
+	case EVENTSTATE_LOOKDOWN:
+		//俯瞰状態の時
+
+		break;
+
+	case EVENTSTATE_BOOK:
+		break;
+
+	}
+
 	switch (g_gameState)
 	{
 	case GAMESTATE_NORMAL:		// 通常状態
-
+	
 		break;
 
 	case GAMESTATE_CLEAR:			// 終了状態
@@ -388,4 +407,12 @@ void SetGameState(GAMESTATE state, int nCounter)
 GAMESTATE GetGameState(void)
 {
 	return g_gameState;
+}
+
+//=======================================================
+// ゲームのイベント状態取得処理
+//=======================================================
+EVENTSTATE *GetEventState(void)
+{
+	return &g_eventState;
 }
