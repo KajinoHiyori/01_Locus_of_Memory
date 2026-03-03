@@ -1,6 +1,6 @@
 #==============================================================================
 #
-# 『モーションビューワ』スクリプトファイル [motion_clock_tower.txt]
+# 『モーションビューワ』スクリプトファイル [clocktower_model.txt]
 # Author : KAIRI MANABE
 #
 #==============================================================================
@@ -17,15 +17,12 @@ NUM_MODEL = 3
 MODEL_FILENAME = data/MODEL/clock_tower/clock_tower000.x		# [0]時計台
 MODEL_FILENAME = data/MODEL/clock_tower/clock_tower001.x		# [1]時針
 MODEL_FILENAME = data/MODEL/clock_tower/clock_tower002.x		# [2]分針
+
 #------------------------------------------------------------------------------
 # キャラクター情報
 #------------------------------------------------------------------------------
 CHARACTERSET
 	NUM_PARTS = 9					# パーツ数
-	MOVE = 3.0						# 移動量
-	JUMP = 11.75					# ジャンプ量
-	RADIUS = 20.0					# 半径
-	HEIGHT = 0.0					# 高さ
 
 	PARTSSET
 		INDEX = 0					# 時計台
@@ -37,59 +34,58 @@ CHARACTERSET
 	PARTSSET
 		INDEX = 1					# 時針正面
 		PARENT = 0					# (親)体
-		POS = -0.2 580.0 -109.5
+		POS = -0.15 820.5 -116.2
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET
 		INDEX = 2					# 分針正面
 		PARENT = 0					# (親)体
-		POS = -0.2 580.0 -108.5
+		POS = -0.15 820.5 -115.2
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 1					# 時針裏
 		PARENT = 0					# (親)体
-		POS = 0.2 580.0 109.5
+		POS = 0.15 820.5 116.2
 		ROT = 0.0 3.14 0.0
 	END_PARTSSET
 
 	PARTSSET
 		INDEX = 2					# 分針裏
 		PARENT = 0					# (親)体
-		POS = 0.2 580.0 108.5
+		POS = 0.15 820.5 115.2
 		ROT = 0.0 3.14 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 1					# 時針左
 		PARENT = 0					# (親)体
-		POS = -109.5 580.0 -0.2
+		POS = -116.2 820.5 -0.15
 		ROT = 0.0 1.57 0.0
 	END_PARTSSET
 
 	PARTSSET
 		INDEX = 2					# 分針左
 		PARENT = 0					# (親)体
-		POS = -108.5 580.0 -0.2
+		POS = -115.2 820.5 -0.15
 		ROT = 0.0 1.57 0.0
 	END_PARTSSET
 	
 	PARTSSET
 		INDEX = 1					# 時針右
 		PARENT = 0					# (親)体
-		POS = 109.5 580.0 0.2
+		POS = 116.2 820.5 0.15
 		ROT = 0.0 -1.57 0.0
 	END_PARTSSET
 
 	PARTSSET
 		INDEX = 2					# 分針右
 		PARENT = 0					# (親)体
-		POS = 108.5 580.0 0.2
+		POS = 115.2 820.5 0.15
 		ROT = 0.0 -1.57 0.0
-	END_PARTSSET
-	
+	END_PARTSSET	
 END_CHARACTERSET
 
 END_SCRIPT		# この行は絶対消さないこと！
