@@ -67,6 +67,7 @@ typedef struct Camera
 	float fSpeed;					// 移動スピード
 	float fRadiusVertical;			// 縦軸距離(基本)
 	float fRadiusHorizonttal;		// 横軸距離
+	float fieldView;				// 視野角
 	int nRollCounter;				// 回り込みカウント
 	Player* pPlayer;				// 追従してるプレイヤーのポインタ
 	D3DXMATRIX mtxProjection;		// プロジェクションマトリックス

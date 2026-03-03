@@ -11,6 +11,7 @@
 #include "debugproc.h"
 #include "game.h"
 #include "clock.h"
+#include "color.h"
 
 #include "fog.h"
 
@@ -83,6 +84,8 @@ void InitCamera(void)
 		// 距離を離す
 		pCamera->posVDest.z = pCamera->posRDest.z + cosf(pCamera->rot.y) * CAMERAPOSR_DIS;
 		pCamera->posVDest.x = pCamera->posRDest.x + sinf(pCamera->rot.y) * CAMERAPOSR_DIS;
+
+		pCamera->fieldView = 45.0f;
 	}
 
 	g_nNumCamera = INIT_NUMCAMERA;
@@ -227,7 +230,7 @@ void UpdateGameCamera(void)
 
 	for (int nCntCamera = 0; nCntCamera < g_nNumCamera; nCntCamera++, pCamera++, pPlayer++)
 	{
-		if (*pEventState == EVENTSTATE_NONE)
+		if (*pEventState == EVENTSTATE_NORMAL)
 		{
 			//if (GetJoypadAny(nCntCamera) == false)
 			//{// 何もしていなければ
@@ -407,22 +410,45 @@ void UpdateGameCamera(void)
 		{
 			g_EventStateCounter--;
 
+			//fogの位置を変更
+			SetFog(D3DXCOLOR(COLOR_WHITE), 1000.0f, 12000.0f);
+
+			//視野角を90にする
+			pCamera->fieldView = 45.0f;
+
+			//視点
 			pCamera->posV.x = -350.0f;
 			pCamera->posV.y = 8050.0f;
 			pCamera->posV.z = -5000.0f;
 
-			pCamera->posV.x = -350.0f;
-			pCamera->posV.y = 7723.0f;
-			pCamera->posV.z = -4800.0f;
+			//注視点
+			pCamera->posR.x = -350.0f;
+			pCamera->posR.y = 7723.0f;
+			pCamera->posR.z = -4800.0f;
 
+			//プレイヤーをポーズ状態に
 			pPlayer->state = PLAYERSTATE_PAUSE;
+
+			//時計を停止
 			SetClockState(CLOCKSTATE_STOP);
 
 			if (g_EventStateCounter <= 0)
 			{
-				*pEventState = EVENTSTATE_NONE;
+				//fogの位置を戻す
+				SetFog(D3DXCOLOR(0.84f, 0.86f, 0.87f, 1.0f), FOGSTART, FOGEND);
+
+				//イベント状態ノーマル
+				*pEventState = EVENTSTATE_NORMAL;
+
+				//プレイヤーをノーマル状態に
 				pPlayer->state = PLAYERSTATE_NORMAL;
+
+				//時計を稼働
 				SetClockState(CLOCKSTATE_OPERATION);
+
+				//視野角を45にする
+				pCamera->fieldView = 45.0f;
+
 				g_EventStateCounter = 300;
 			}
 		}
@@ -463,7 +489,7 @@ void SetCamera(int nIdx)
 
 	// プロジェクションマトリックスを作成
 	D3DXMatrixPerspectiveFovLH(&pCamera->mtxProjection,
-							D3DXToRadian(45.0f),
+							D3DXToRadian(pCamera->fieldView),
 							(float)pCamera->viewport.Width / (float)pCamera->viewport.Height,
 							10.0f,
 							15000.0f);

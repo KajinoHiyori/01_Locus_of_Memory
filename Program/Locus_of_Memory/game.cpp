@@ -231,7 +231,7 @@ void UpdateGame(void)
 
 	switch (g_eventState)
 	{
-	case EVENTSTATE_NONE:
+	case EVENTSTATE_NORMAL:
 		break;
 
 	case EVENTSTATE_LOOKDOWN:

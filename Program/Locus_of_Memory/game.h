@@ -22,7 +22,7 @@ typedef enum
 
 typedef enum
 {
-	EVENTSTATE_NONE = 0,
+	EVENTSTATE_NORMAL = 0,
 	EVENTSTATE_LOOKDOWN,	// Œ©‰º‚ë‚µó‘Ô
 	EVENTSTATE_BOOK,		// –{‚ðŒ©‚éó‘Ô
 	EVENTSTATE_MAX
