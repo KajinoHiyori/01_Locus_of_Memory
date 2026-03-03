@@ -32,6 +32,8 @@
 #define INTERVAL_TIME	(15)	// どのくらいの間隔で1分進むのか
 #define END_TIME		(2000)	// ゲーム終了時間
 #define MAGIC_TIME		(840)	// 時間停止魔法継続時間
+#define MAX_ANGLE		(D3DX_PI * 2)	// 角度の最大数
+#define NUM_TOWER		(4)				// 時計塔の側面にある時計数
 
 // 時計の構造体定義
 typedef struct
@@ -62,6 +64,7 @@ LPDIRECT3DTEXTURE9 g_apTextureClock[NUM_PLACE] = {};
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffClock = NULL;
 Clock g_aClock[MAX_PLAYER];
 Time g_time;
+int g_nIdxClockTower;
 
 //======================================================================================
 // 時計の初期化処理
@@ -207,7 +210,12 @@ void UpdateClock(void)
 		break;
 
 	case CLOCKSTATE_MAGIC:	// 魔法による停止中
-
+		g_time.nMagicCounter++;	// カウンターを加算
+		if (g_time.nMagicCounter >= MAGIC_TIME)
+		{
+			g_time.nMagicCounter = 0;
+			SetClockState(CLOCKSTATE_OPERATION);
+		}
 		break;
 	}
 
@@ -250,6 +258,23 @@ void UpdateClock(void)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffClock->Unlock();
+
+	// 時計塔のモデルを動かす========================================================
+	ParentObject* pParentObject = GetParentObjectInfo(g_nIdxClockTower);
+	// 分針を更新する
+	float fMin = 0.0f;	// 分針の角度管理を行う
+	fMin = ((float)g_time.nMinute / MAX_MIN);
+	fMin = fMin * (-MAX_ANGLE);
+
+	for (int nMin = 0; nMin < NUM_TOWER; nMin++)
+	{
+		pParentObject->OffSetData.rot[nMin * 2 + 2].z = fMin;
+	}
+
+	for (int nCntModel = 0; nCntModel < pParentObject->pModelData->nNumParts; nCntModel++)
+	{
+		pParentObject->OffSetData.rot[nCntModel].z = AngleNormalize(pParentObject->OffSetData.rot[nCntModel].z);
+	}
 }
 
 //======================================================================================
@@ -380,4 +405,12 @@ int GetTime(void)
 int GetMinute(void)
 {
 	return g_time.nMinute;
+}
+
+//======================================================================================
+// 時計塔のインデックスを取得
+//======================================================================================
+void SetClockTowerIdx(int nIdx)
+{
+	g_nIdxClockTower = nIdx;
 }

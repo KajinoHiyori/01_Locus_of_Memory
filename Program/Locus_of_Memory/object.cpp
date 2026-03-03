@@ -13,7 +13,7 @@
 #include "player.h"
 #include "loadscript.h"
 #include "collision.h"
-
+#include "clock.h"
 #include "input.h"
 
 // マクロ定義
@@ -606,6 +606,7 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 			break;
 		case PARENTMODELTYPE_CLOCKTOWER:
 			pParentObject->motion.pMotionData = NULL;
+			SetClockTowerIdx(nCntParentObject);		// 時計塔のインデックスを渡す
 			break;
 		}
 
