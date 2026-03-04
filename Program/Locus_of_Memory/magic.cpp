@@ -618,6 +618,12 @@ Magic* GetMagic(int nIdx)
 }
 
 //–‚–@î•ñ‚Ìæ“¾==============================
+MagicLocus* GetMagicLucus()
+{
+	return &g_aMagicLocus[0];
+}
+
+//–‚–@î•ñ‚Ìæ“¾==============================
 MagicLocus* GetResetMagicLucus()
 {
 	return &g_aResetMagicLocus[0];

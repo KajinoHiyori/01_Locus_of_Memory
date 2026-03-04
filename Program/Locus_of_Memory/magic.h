@@ -152,6 +152,7 @@ void UninitMagic(void);
 void UpdateMagic(void);
 void DrawMagic(void);
 Magic* GetMagic(int nIdx);
+MagicLocus* GetMagicLucus();
 MagicLocus* GetResetMagicLucus();
 
 //g—p’†–‚–@î•ñ‚Ìæ“¾==============================

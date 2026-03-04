@@ -947,6 +947,21 @@ void ResetObject(void)
 	bool isCollision = false;
 	ColliderInfo aColliderInfo[10] = {};   // コライダー情報読み込み
 
+	// 全てのオブジェクトを使用していない状態にする
+	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
+	{
+		g_aObject[nCntObject].bUse = false;
+	}
+	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++)
+	{
+		g_aParentObject[nCntParentObject].bUse = false;
+	}
+	MagicLocus* pMagicLucus = GetMagicLucus();
+	for (int nCntMagicLucus = 0; nCntMagicLucus < MAX_MAGICLOCUS; nCntMagicLucus++, pMagicLucus++)
+	{
+		pMagicLucus->bUse = false;
+	}
+
 	// オブジェクトの再配置
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
@@ -997,13 +1012,13 @@ void ResetObject(void)
 		}
 	}
 
-	MagicLocus* pMagicLucus = GetResetMagicLucus();
+	MagicLocus* pMagicResetLucus = GetResetMagicLucus();
 	// イベントの再設置
-	for (int nCntMagicLucus = 0; nCntMagicLucus < MAX_MAGICLOCUS; nCntMagicLucus++, pMagicLucus++)
+	for (int nCntMagicLucus = 0; nCntMagicLucus < MAX_MAGICLOCUS; nCntMagicLucus++, pMagicResetLucus++)
 	{
-		if (pMagicLucus->bUse == true)
+		if (pMagicResetLucus->bUse == true)
 		{
-			SetMagicLocus(pMagicLucus->MagicEvent, pMagicLucus->pos, pMagicLucus->fRadius, pMagicLucus->nIdxObject);
+			SetMagicLocus(pMagicResetLucus->MagicEvent, pMagicResetLucus->pos, pMagicResetLucus->fRadius, pMagicResetLucus->nIdxObject);
 		}
 	}
 }
