@@ -175,6 +175,7 @@
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="event.cpp" />
     <ClCompile Include="field.cpp" />
+    <ClCompile Include="flash.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="grain.cpp" />
     <ClCompile Include="key.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="effect.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="field.h" />
+    <ClInclude Include="flash.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="grain.h" />
     <ClInclude Include="key.h" />

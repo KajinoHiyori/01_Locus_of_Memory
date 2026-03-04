@@ -1,0 +1,337 @@
+//=============================================================================
+//
+//	Locus of Memory [flash.cpp]
+//	Author : HAYATO NAMBA
+// 
+//=============================================================================
+#include"main.h"
+#include"flash.h"
+#include"game.h"
+#include "color.h"
+
+#if 0
+//======================================================================================
+// 
+// 3Dアクションゲーム_MASTER KEY[fade.cpp]
+//
+//======================================================================================
+#include "fade.h"
+#include "color.h"
+
+// マクロ定義
+#define	FADE_SPEED	(0.025f)	// フェードの移り変わりの速さ
+
+// グローバル変数
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffFlash = NULL; // 頂点バッファへのポインタ
+FADE g_fade;			// フェードの状態
+MODE g_modeNext;		// 次の画面(モード)
+D3DXCOLOR g_colorFlash;	// ポリゴン(フェード)の色
+
+//======================================================================================
+// フェードの初期化処理
+//======================================================================================
+void InitFlash(MODE modeNext)
+{
+    LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
+    // デバイスの取得
+    pDevice = GetDevice();
+
+    g_fade = FADE_IN;		// フェードイン状態
+    g_modeNext = modeNext;	// 次のモードの設定
+    g_colorFlash = COLOR_BLACK;	// ポリゴンの用意
+
+    // 頂点バッファの生成
+    pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+        D3DUSAGE_WRITEONLY,
+        FVF_VERTEX_2D,
+        D3DPOOL_MANAGED,
+        &g_pVtxBuffFlash,
+        NULL);
+
+    VERTEX_2D* pVtx;
+    // 頂点バッファをロックし、頂点情報へのポインタを取得
+    g_pVtxBuffFlash->Lock(0, 0, (void**)&pVtx, 0);
+
+    // 頂点座標の設定
+    pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH, 0.0f, 0.0f);
+    pVtx[2].pos = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
+    pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+
+    // rhwの設定
+    pVtx[0].rhw = 1.0f;
+    pVtx[1].rhw = 1.0f;
+    pVtx[2].rhw = 1.0f;
+    pVtx[3].rhw = 1.0f;
+
+    // 頂点カラーの設定
+    pVtx[0].col = g_colorFlash;
+    pVtx[1].col = g_colorFlash;
+    pVtx[2].col = g_colorFlash;
+    pVtx[3].col = g_colorFlash;
+
+    // 頂点バッファをアンロック
+    g_pVtxBuffFlash->Unlock();
+
+    // モードの設定
+    SetMode(g_modeNext);
+}
+
+//======================================================================================
+// フェードの終了処理
+//======================================================================================
+void UninitFlash(void)
+{
+    // 頂点バッファの破棄
+    if (g_pVtxBuffFlash != NULL)
+    {
+        g_pVtxBuffFlash->Release();
+        g_pVtxBuffFlash = NULL;
+    }
+}
+
+//======================================================================================
+// フェードの更新処理
+//======================================================================================
+void UpdateFlash(void)
+{
+    MODE pMode = GetMode();
+    if (g_fade != FADE_NONE)
+    {
+        if (g_fade == FADE_IN)
+        { // フェードイン状態のとき
+            g_colorFlash.a -= FADE_SPEED; // ポリゴンを透明にする
+            if (g_colorFlash.a <= 0.0f)
+            {
+                g_colorFlash.a = 0.0f;
+                g_fade = FADE_NONE;
+            }
+        }
+        else if (g_fade == FADE_OUT)
+        { // フェードアウト状態のとき
+            g_colorFlash.a += FADE_SPEED;	// ポリゴンを不透明にする
+            if (g_colorFlash.a >= 1.0f)
+            {
+                g_colorFlash.a = 1.0f;
+                g_fade = FADE_IN;
+                // モードの設定
+                SetMode(g_modeNext);
+            }
+        }
+        VERTEX_2D* pVtx;
+        // 頂点バッファをロックし、頂点情報へのポインタを取得
+        g_pVtxBuffFlash->Lock(0, 0, (void**)&pVtx, 0);
+        // 頂点カラーの設定
+        pVtx[0].col = g_colorFlash;
+        pVtx[1].col = g_colorFlash;
+        pVtx[2].col = g_colorFlash;
+        pVtx[3].col = g_colorFlash;
+
+        // 頂点バッファをアンロック
+        g_pVtxBuffFlash->Unlock();
+    }
+}
+
+//======================================================================================
+// フェードの描画処理
+//======================================================================================
+void DrawFlash(void)
+{
+    LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポインタ
+    // デバイスの取得
+    pDevice = GetDevice();
+
+    // 頂点バッファをデータストリームに設定
+    pDevice->SetStreamSource(0, g_pVtxBuffFlash, 0, sizeof(VERTEX_2D));
+    // 頂点フォーマットの設定
+    pDevice->SetFVF(FVF_VERTEX_2D);
+    // テクスチャの設定(テクスチャがない状態であっても、テクスチャを使わない = NULLをプログラムに伝える必要がある)
+    pDevice->SetTexture(0, NULL);
+    // ポリゴンの描画
+    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+}
+
+//======================================================================================
+// フェードの設定
+//======================================================================================
+void SetFlash(MODE modeNext)
+{
+    g_fade = FADE_OUT;		// フェードアウト状態
+    g_modeNext = modeNext;	// 次の画面を設定
+    g_colorFlash = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);	// ポリゴンを透明
+}
+
+//======================================================================================
+// フェードの取得
+//======================================================================================
+FADE *GetFlash(void)
+{
+    return &g_fade;
+}
+#endif
+//
+//// グローバル変数
+//LPDIRECT3DTEXTURE9    g_pTextureFlash = NULL;        // テクスチャへのポインタ
+//LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffFlash = NULL;    // 頂点バッファへのポインタ
+//FADE g_fade;
+//MODE g_modeNext;
+//D3DXCOLOR g_colorFlash = COLOR_BLACK;
+//
+////=======================================================
+//// プレイヤーの初期化処理
+////=======================================================
+//void InitFlash(MODE modeNext, D3DXCOLOR col)
+//{
+//    LPDIRECT3DDEVICE9 pDevice;        // デバイスへのポインタ
+//    VERTEX_2D* pVtx;                // 頂点情報へのポインタ
+//
+//    // デバイスの取得
+//    pDevice = GetDevice();
+//
+//    g_fade = FADE_IN;
+//    g_modeNext = g_modeNext;
+//    g_colorFlash = col;
+//
+//    // 頂点バッファの生成
+//    pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+//        D3DUSAGE_WRITEONLY,
+//        FVF_VERTEX_2D,
+//        D3DPOOL_MANAGED,
+//        &g_pVtxBuffFlash,
+//        NULL);
+//
+//    // 頂点バッファをロックし、頂点情報へのポインタ取得
+//    g_pVtxBuffFlash->Lock(0, 0, (void**)&pVtx, 0);
+//
+//    // 頂点座標の設定
+//    pVtx[0].pos = D3DXVECTOR3(SCREEN_ZERO, SCREEN_ZERO, 0.0f);
+//    pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_ZERO, 0.0f);
+//    pVtx[2].pos = D3DXVECTOR3(SCREEN_ZERO, SCREEN_HEIGHT, 0.0f);
+//    pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+//
+//    // rhwの設定
+//    pVtx[0].rhw = 1.0f;
+//    pVtx[1].rhw = 1.0f;
+//    pVtx[2].rhw = 1.0f;
+//    pVtx[3].rhw = 1.0f;
+//
+//    // 頂点カラーの設定
+//    pVtx[0].col = g_colorFlash;
+//    pVtx[1].col = g_colorFlash;
+//    pVtx[2].col = g_colorFlash;
+//    pVtx[3].col = g_colorFlash;
+//
+//    // テクスチャ座標の指定
+//    pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+//    pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+//    pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+//    pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+//
+//    SetMode(g_modeNext);
+//
+//    // 頂点バッファをアンロック
+//    g_pVtxBuffFlash->Unlock();
+//}
+////=======================================================
+//// プレイヤーの終了処理
+////=======================================================
+//void UninitFlash(void)
+//{
+//    // テクスチャの破棄
+//    if (g_pTextureFlash != NULL)
+//    {
+//        g_pTextureFlash->Release();
+//        g_pTextureFlash = NULL;
+//    }
+//
+//    // 頂点バッファの破棄
+//    if (g_pVtxBuffFlash != NULL)
+//    {
+//        g_pVtxBuffFlash->Release();
+//        g_pVtxBuffFlash = NULL;
+//    }
+//}
+//
+////=======================================================
+//// プレイヤーの更新処理
+////=======================================================
+//void UpdateFlash(void)
+//{   
+//    VERTEX_2D* pVtx;                // 頂点情報へのポインタ
+//    
+//
+//    if (g_fade != FADE_NONE)
+//    {
+//        if (g_fade == FADE_IN)
+//        {
+//            g_colorFlash.a -= 0.03;
+//
+//            if (g_colorFlash.a <= 0.0f)
+//            {
+//                g_colorFlash.a = 0.0f;
+//                g_fade = FADE_NONE;
+//            }
+//        }
+//        else if (g_fade == FADE_OUT)
+//        {
+//            g_colorFlash.a += 0.03;
+//
+//            if (g_colorFlash.a >= 1.0f)
+//            {
+//                g_colorFlash.a = 1.0f;
+//                g_fade = FADE_IN;
+//
+//                SetMode(g_modeNext);
+//            }
+//        }
+//
+//        // 頂点バッファをロックし、頂点情報へのポインタ取得
+//        g_pVtxBuffFlash->Lock(0, 0, (void**)&pVtx, 0);
+//
+//        // 頂点カラーの設定
+//        pVtx[0].col = g_colorFlash;
+//        pVtx[1].col = g_colorFlash;
+//        pVtx[2].col = g_colorFlash;
+//        pVtx[3].col = g_colorFlash;
+//
+//
+//        // 頂点バッファをアンロック
+//        g_pVtxBuffFlash->Unlock();
+//    }
+//}
+//
+////=======================================================
+//// プレイヤーの描画処理
+////=======================================================
+//void DrawFlash(void)
+//{
+//    LPDIRECT3DDEVICE9 pDevice;        // デバイスへのポインタ
+//
+//    // デバイスの取得
+//    pDevice = GetDevice();
+//
+//    // 頂点バッファをデータストリームに設定
+//    pDevice->SetStreamSource(0, g_pVtxBuffFlash, 0, sizeof(VERTEX_2D));
+//
+//    // 頂点フォーマットの設定
+//    pDevice->SetFVF(FVF_VERTEX_2D);
+//
+//    // テクスチャの設定
+//    pDevice->SetTexture(0, NULL);
+//
+//    // ポリゴンの描写
+//    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+//}
+//
+//void SetFlash(MODE modeNext, D3DXCOLOR col)
+//{
+//    g_fade = FADE_OUT;
+//    g_modeNext = modeNext;
+//    g_colorFlash = col;
+//    g_colorFlash.a = 0.0f;
+//}
+//
+//FADE *GetFlash(void)
+//{
+//    return &g_fade;
+//}

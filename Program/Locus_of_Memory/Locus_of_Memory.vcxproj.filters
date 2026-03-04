@@ -255,6 +255,9 @@
     <ClCompile Include="questionmark.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="flash.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -418,6 +421,9 @@
     </ClInclude>
     <ClInclude Include="questionmark.h">
       <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="flash.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
