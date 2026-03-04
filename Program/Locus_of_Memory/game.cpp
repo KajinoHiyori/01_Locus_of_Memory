@@ -106,9 +106,6 @@ void InitGame(void)
 	// 
 	InitAura();
 
-	// BGM再生
-	PlaySound(SOUND_LABEL_000);
-
 	pVibration->Vibration = false;
 
 	// 魔法関連オブジェクトの読み込み
@@ -273,6 +270,9 @@ void UpdateGame(void)
 
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_WHITE);
+
+			// goalBGMを再生
+			PlaySound(SOUND_LABEL_GOALRESULTBGM);
 		}
 
 		break;
@@ -286,6 +286,9 @@ void UpdateGame(void)
 
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_BLACK);
+
+			// faildBGMを再生
+			PlaySound(SOUND_LABEL_FAILDRESULTBGM);
 		}
 		break;
 
@@ -298,6 +301,9 @@ void UpdateGame(void)
 
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_BLACK);
+
+			// faildBGMを再生
+			PlaySound(SOUND_LABEL_FAILDRESULTBGM);
 		}
 		break;
 	}

@@ -741,26 +741,35 @@ void SetMode(MODE mode)
 
 		// タイトルモード
 	case MODE_TITLE:
+		// titleBGM停止
+		StopSound(SOUND_LABEL_TITLEBGM);
 		UninitTitle();
 		break;
 
 		// チュートリアルモード
 	case MODE_TUTORIAL:
+		// tutorialBGM停止
+		StopSound(SOUND_LABEL_TUTORIALBGM);
 		UninitTutorial();
 		break;
 
 		// ゲームモード
 	case MODE_GAME:
+		// gameBGM停止
+		StopSound(SOUND_LABEL_GAMEBGM);
 		UninitGame();
 		break;
 
 		// リザルトモード
 	case MODE_RESULT:
+		StopSound();
 		UninitResult();
 		break;
 
 		// 診断モード
 	case MODE_DIAGNOSIS:
+		// diagnosisBGM停止
+		StopSound(SOUND_LABEL_DIAGNOSISBGM);
 		UninitDiagnosis();
 		break;
 	}
@@ -775,16 +784,22 @@ void SetMode(MODE mode)
 
 		// タイトルモード
 	case MODE_TITLE:
+		// titleBGM再生
+		PlaySound(SOUND_LABEL_TITLEBGM);
 		InitTitle();
 		break;
 
 		// チュートリアルモード
 	case MODE_TUTORIAL:
+		// tutorialBGM再生
+		PlaySound(SOUND_LABEL_TUTORIALBGM);
 		InitTutorial();
 		break;
 
 		// ゲームモード
 	case MODE_GAME:
+		// gameBGM再生
+		PlaySound(SOUND_LABEL_GAMEBGM);
 		InitGame();
 		break;
 
@@ -795,6 +810,8 @@ void SetMode(MODE mode)
 
 		// 診断モード
 	case MODE_DIAGNOSIS:
+		// diagnosisBGM再生
+		PlaySound(SOUND_LABEL_DIAGNOSISBGM);
 		InitDiagnosis();
 		break;
 	}

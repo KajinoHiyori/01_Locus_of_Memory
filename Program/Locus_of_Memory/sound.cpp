@@ -34,7 +34,12 @@ DWORD g_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
 // サウンドの情報
 SOUNDINFO g_aSoundInfo[SOUND_LABEL_MAX] =
 {
-	{"data/BGM/game.wav", -1},		// BGM
+	{"data/BGM/title.wav", -1},			// titleBGM
+	{"data/BGM/tutorial.wav", -1},		// tutorialBGM
+	{"data/BGM/game.wav", -1},			// gameBGM
+	{"data/BGM/diagnosis.wav", -1},		// dignosisBGM
+	{"data/BGM/faildresult.wav", -1},	// faildBGM
+	{"data/BGM/goalresult.wav", -1},	// goalBGM
 };
 
 //=============================================================================
