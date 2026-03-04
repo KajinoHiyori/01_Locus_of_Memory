@@ -187,6 +187,7 @@ void UpdateQuestionMark(void)
 //======================================================================================
 void DrawQuestionMark(void)
 {
+#if 0
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX mtxRot;	// UIのマトリックス情報を取得
 	Player* pPlayer = GetPlayer();
@@ -249,4 +250,5 @@ void DrawQuestionMark(void)
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
+#endif
 }

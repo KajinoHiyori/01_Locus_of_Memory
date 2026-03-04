@@ -9,6 +9,9 @@
 
 #include "main.h"
 
+// マクロ定義
+#define MAX_MAGICLOCUS			(64)		//魔法使用場所最大数
+
 //魔法の種類
 typedef enum
 {
@@ -149,6 +152,7 @@ void UninitMagic(void);
 void UpdateMagic(void);
 void DrawMagic(void);
 Magic* GetMagic(int nIdx);
+MagicLocus* GetResetMagicLucus();
 
 //使用中魔法情報の取得==============================
 MAGICTYPE GetCurrentMagicType(int nIdx);

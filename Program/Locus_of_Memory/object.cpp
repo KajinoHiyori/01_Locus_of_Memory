@@ -24,10 +24,12 @@
 #define VTX_MAX		(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// オブジェクトの大きさの初期化値(最大)
 
 // グローバル変数
-ObjectModel g_aObjectModel[NUM_OBJECT];			// モデルの種類を管理
-Object g_aObject[MAX_OBJECT];					// オブジェクトの情報を格納
-ParentObject g_aParentObject[MAX_PARENTOBJECT];	// 階層構造オブジェクトの情報を格納
-ModelData g_aModelData[MAX_PARENTMODEL];		// 階層構造を持ったモデルデータ
+ObjectModel g_aObjectModel[NUM_OBJECT];					// モデルの種類を管理
+Object g_aObject[MAX_OBJECT];							// オブジェクトの情報を格納
+Object g_aResetObject[MAX_OBJECT];						// オブジェクトの再設置情報を格納
+ParentObject g_aParentObject[MAX_PARENTOBJECT];			// 階層構造オブジェクトの情報を格納
+ParentObject g_aResetParentObject[MAX_PARENTOBJECT];	// 階層構造オブジェクトの情報を格納
+ModelData g_aModelData[MAX_PARENTMODEL];				// 階層構造を持ったモデルデータ
 
 int g_nNumObjectModel;				// モデル数を管理
 int g_nNumRandObj;					// ランダムオブジェクトの数
@@ -44,10 +46,12 @@ void InitObject(void)
 
 	ModelData* pModelData = &g_aModelData[0];	// 先頭アドレス
 	ParentObject* pParentObject = &g_aParentObject[0];
+	ParentObject* pResetParentObject = &g_aParentObject[0];
 		
-	memset(pModelData, NULL, sizeof(ModelData) * MAX_PARENTMODEL);			// モデルデータの初期化
-	memset(pParentObject, NULL, sizeof(ParentObject) * MAX_PARENTOBJECT);	// 階層構造オブジェクト情報の初期化
-	memset(&g_nIdxRandObj, -1, sizeof(int) * MAX_OBJECT);					// ランダムオブジェクトの番号初期化
+	memset(pModelData, NULL, sizeof(ModelData) * MAX_PARENTMODEL);				// モデルデータの初期化
+	memset(pParentObject, NULL, sizeof(ParentObject) * MAX_PARENTOBJECT);		// 階層構造オブジェクト情報の初期化
+	memset(pResetParentObject, NULL, sizeof(ParentObject) * MAX_PARENTOBJECT);	// 階層構造オブジェクト情報の初期化
+	memset(&g_nIdxRandObj, -1, sizeof(int) * MAX_OBJECT);						// ランダムオブジェクトの番号初期化
 
 	// Object情報の初期化
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
@@ -59,7 +63,18 @@ void InitObject(void)
 		g_aObject[nCntObject].fAlpha = 1.0f;
 		g_aObject[nCntObject].nIdxShadow = -1;
 		g_aObject[nCntObject].fSize = g_aObjectModel[g_aObject[nCntObject].type].vtxMax.x;
+		g_aObject[nCntObject].nCollisionIdx = -1;
 		g_aObject[nCntObject].bUse = false;
+
+		g_aResetObject[nCntObject].pos = DEFALT;
+		g_aResetObject[nCntObject].rot = DEFALT;
+		g_aResetObject[nCntObject].type = OBJECTTYPE_HOUSE000;
+		g_aResetObject[nCntObject].EventType = EVENTTYPE_NONE;
+		g_aResetObject[nCntObject].fAlpha = 1.0f;
+		g_aResetObject[nCntObject].nIdxShadow = -1;
+		g_aResetObject[nCntObject].fSize = g_aObjectModel[g_aObject[nCntObject].type].vtxMax.x;
+		g_aResetObject[nCntObject].nCollisionIdx = -1;
+		g_aResetObject[nCntObject].bUse = false;
 	}
 
 	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
@@ -565,6 +580,17 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 			// 影のIDを設定
 			g_aObject[nCntObject].nIdxShadow = SetShadow(SHADOWTYPE_SQUARE, 180.0f, 180.0f);
 
+			// 再配置用の情報を設定
+			g_aResetObject[nCntObject].pos				= g_aObject[nCntObject].pos;
+			g_aResetObject[nCntObject].rot				= g_aObject[nCntObject].rot;
+			g_aResetObject[nCntObject].type				= g_aObject[nCntObject].type;
+			g_aResetObject[nCntObject].EventType		= g_aObject[nCntObject].EventType;
+			g_aResetObject[nCntObject].fAlpha			= g_aObject[nCntObject].fAlpha;
+			g_aResetObject[nCntObject].nIdxShadow		= g_aObject[nCntObject].nIdxShadow;
+			g_aResetObject[nCntObject].fSize			= g_aObject[nCntObject].fSize;
+			g_aResetObject[nCntObject].nCollisionIdx	= g_aObject[nCntObject].nCollisionIdx;
+			g_aResetObject[nCntObject].bUse				= true;
+
 			break;
 		}
 	}
@@ -576,8 +602,9 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision, bool isCollider)
 {
 	ParentObject* pParentObject = &g_aParentObject[0];		// 先頭アドレス
+	ParentObject* pResetParentObject = &g_aResetParentObject[0];	// 先頭アドレス
 
-	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++)
+	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++, pParentObject++, pResetParentObject++)
 	{
 		if (pParentObject->bUse == true)
 		{// 使っていたら弾く
@@ -660,6 +687,22 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		// ニュートラルモーションで開始
 		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, false, 10);
 
+		// 再配置用の情報を設定
+		pResetParentObject->pModelData	= SetModelData(parentmodeltype);					// モデルデータ設定
+		pResetParentObject->type		= parentmodeltype;
+		pResetParentObject->pos			= pParentObject->pos;
+		pResetParentObject->rot			= rot;
+		pResetParentObject->bUse		= true;
+		// オフセット情報を格納するメンバ変数へのポインタを取得
+		Model* pParentModel = &pResetParentObject->pModelData->aModel[0];			// モデル情報
+		D3DXVECTOR3* pOffSetParentPos = &pResetParentObject->OffSetData.pos[0];	// オブジェクトのオフセット座標
+		D3DXVECTOR3* pOffSetParentRot = &pResetParentObject->OffSetData.rot[0];	// オブジェクトのオフセット向き
+
+		for (int nCntModel = 0; nCntModel < pResetParentObject->pModelData->nNumParts; nCntModel++, pOffSetParentPos++, pOffSetParentRot++, pParentModel++)
+		{// ローカル座標を設定
+			*pOffSetParentPos += pParentModel->posLocal;
+			*pOffSetParentRot += pParentModel->rotLocal;
+		}
 		break;
 	}
 }
@@ -673,11 +716,27 @@ Object* GetObjectInfo(int nIdx)
 }
 
 //======================================================================================
+// 再配置オブジェクトの情報を渡す
+//======================================================================================
+Object* GetResetObjectInfo(int nIdx)
+{
+	return &g_aResetObject[nIdx];
+}
+
+//======================================================================================
 // 階層構造オブジェクトの情報を渡す
 //======================================================================================
 ParentObject* GetParentObjectInfo(int nIdx)
 {
 	return &g_aParentObject[nIdx];
+}
+
+//======================================================================================
+// 再配置階層構造オブジェクトの情報を渡す
+//======================================================================================
+ParentObject* GetParentResetObjectInfo(int nIdx)
+{
+	return &g_aResetParentObject[nIdx];
 }
 
 //======================================================================================
@@ -875,6 +934,76 @@ void UpdateObjectEvent001(ParentObject* pParentObject)
 		if (pParentObject->fAlpha < 0.0f)
 		{
 			pParentObject->bUse = false;
+		}
+	}
+}
+
+//=============================================================================
+//	オブジェクトの再設置処理
+//=============================================================================
+void ResetObject(void)
+{
+	bool isShadow = false;
+	bool isCollision = false;
+	ColliderInfo aColliderInfo[10] = {};   // コライダー情報読み込み
+
+	// オブジェクトの再配置
+	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
+	{
+		if (g_aResetObject[nCntObject].bUse == true)
+		{
+			// 影の設置フラグ
+			if (g_aResetObject[nCntObject].nIdxShadow == -1)
+			{
+				isShadow = false;
+			}
+			else
+			{
+				isShadow = true;
+			}
+
+			// 当たり判定設置フラグ
+			if (g_aResetObject[nCntObject].nCollisionIdx == -1)
+			{
+				isCollision = false;
+			}
+			else
+			{
+				isCollision = true;
+			}
+
+			// オブジェクトの再配置
+			SetObject(g_aResetObject[nCntObject].type, g_aResetObject[nCntObject].pos, g_aResetObject[nCntObject].rot, isShadow, isCollision, isCollision, &aColliderInfo[0], g_aResetObject[nCntObject].nCollisionIdx);
+		}
+	}
+
+	// 階層構造オブジェクトの再配置
+	for (int nCntParentObject = 0; nCntParentObject < MAX_PARENTOBJECT; nCntParentObject++)
+	{
+		if (g_aResetParentObject[nCntParentObject].bUse == true)
+		{
+			// 当たり判定設置フラグ
+			if (g_aResetParentObject[nCntParentObject].nCollisionIdx == -1)
+			{
+				isCollision = false;
+			}
+			else
+			{
+				isCollision = true;
+			}
+
+			// オブジェクトの再配置
+			SetParentObject(g_aResetParentObject[nCntParentObject].pos, g_aResetParentObject[nCntParentObject].rot, g_aResetParentObject[nCntParentObject].type, &aColliderInfo[0], g_aResetParentObject[nCntParentObject].nCollisionIdx, isCollision, isCollision);
+		}
+	}
+
+	MagicLocus* pMagicLucus = GetResetMagicLucus();
+	// イベントの再設置
+	for (int nCntMagicLucus = 0; nCntMagicLucus < MAX_MAGICLOCUS; nCntMagicLucus++, pMagicLucus++)
+	{
+		if (pMagicLucus->bUse == true)
+		{
+			SetMagicLocus(pMagicLucus->MagicEvent, pMagicLucus->pos, pMagicLucus->fRadius, pMagicLucus->nIdxObject);
 		}
 	}
 }

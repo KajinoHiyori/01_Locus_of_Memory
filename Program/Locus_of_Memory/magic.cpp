@@ -21,7 +21,6 @@
 #define MAX_MAGIC				(128)		//魔法の最大数
 #define MAX_DROPMAGIC			(32)		//落ちてる魔法の最大数
 #define MAX_COMMAND				(3)			//コマンドの最大数
-#define MAX_MAGICLOCUS			(64)		//魔法使用場所最大数
 #define DROPMAGIC_RADIUS		(70.0f)		//落ちてる魔法の半径
 #define DROPMAGIC_MEDIUMRADIUS	(100.0f)	//落ちてる魔法の半径
 #define DROPMAGIC_FARRADIUS		(130.0f)	//落ちてる魔法の半径
@@ -34,6 +33,7 @@ COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
 COMMANDTYPE g_aCommandSave[MAX_PLAYER][MAX_COMMAND];		//コマンドの過去の情報
 MagicCounter g_aCounter[MAX_PLAYER];					//リザルト用魔法回数カウント
 MagicLocus g_aMagicLocus[MAX_MAGICLOCUS];				//魔法使用場所の情報
+MagicLocus g_aResetMagicLocus[MAX_MAGICLOCUS];				//魔法使用場所の情報
 int g_aCntCommand[MAX_PLAYER] = {};						//
 
 //魔法の初期化処理=============================
@@ -41,6 +41,7 @@ void InitMagic(void)
 {
 	MagicCounter* pCounter = &g_aCounter[0];
 	MagicLocus* pMagicLocus = &g_aMagicLocus[0];
+	MagicLocus* pResetMagicLocus = &g_aResetMagicLocus[0];
 
 	memset(pCounter, NULL, sizeof(MagicCounter) * MAX_PLAYER);
 	memset(&g_aCntCommand[0], NULL, sizeof(int) * MAX_PLAYER);
@@ -583,6 +584,7 @@ void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, float fRadius)
 void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx)
 {
 	MagicLocus* pMagicLocus = &g_aMagicLocus[0];		// 先頭アドレス
+	MagicLocus* pResetMagicLocus = &g_aResetMagicLocus[0];		// 先頭アドレス
 
 	for (int nCntMagicLocus = 0; nCntMagicLocus < MAX_MAGICLOCUS; nCntMagicLocus++, pMagicLocus++)
 	{
@@ -598,15 +600,27 @@ void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx)
 		pMagicLocus->nIdxObject = nIdx;			// 対応するオブジェクトの番号
 		pMagicLocus->bUse = true;				// 使用状態
 
+		// 再配置用に各引数の値を代入
+		pResetMagicLocus->MagicEvent = event;		// イベントの種類
+		pResetMagicLocus->pos = pos;					// 原点
+		pResetMagicLocus->fRadius = fRadius;			// 半径
+		pResetMagicLocus->nIdxObject = nIdx;			// 対応するオブジェクトの番号
+		pResetMagicLocus->bUse = true;				// 使用状態
+
 		break;
 	}
 }
-
 
 //魔法情報の取得==============================
 Magic* GetMagic(int nIdx)
 {
 	return &g_aMagic[nIdx];
+}
+
+//魔法情報の取得==============================
+MagicLocus* GetResetMagicLucus()
+{
+	return &g_aResetMagicLocus[0];
 }
 
 //使用中魔法情報の取得==============================

@@ -179,8 +179,12 @@ ModelData* SetModelData(PARENTMODELTYPE type);
 void LoadParentModel(const char* pModelPath, int nNumParentModel);
 void LoadParentModelOffSet(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nIdxModel, int nIdxModelParent, int nNumParentModel, int nCntParts);
 Object* GetObjectInfo(int nIdx);
+Object* GetResetObjectInfo(int nIdx);
 ParentObject* GetParentObjectInfo(int nIdx);
+ParentObject* GetResetParentObjectInfo(int nIdx);
 ObjectModel* GetObjectModel(void);
 void UninitRandomObject(void);
 void UpdateObjectEvent001(ParentObject* pParentObject);
+
+void ResetObject(void);
 #endif
