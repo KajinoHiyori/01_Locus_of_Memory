@@ -899,7 +899,7 @@ HRESULT LoadModel(const char* pModelFileName)
 	}
 
 	// ƒS[ƒ‹‚Ìİ’èˆ— (”ğ“ï)
-	SetGoal(D3DXVECTOR3(1400.0f, 50.0f, 2800.0f), 150.0f);
+	SetGoal(D3DXVECTOR3(0.0f, 45.0f, 1050.0f), 150.0f);
 
 	return S_OK;
 }
