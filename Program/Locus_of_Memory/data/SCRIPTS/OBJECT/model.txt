@@ -77,7 +77,7 @@ MODEL_FILENAME = data/MODEL/landmark/x/landmark001.x		# [43]風車
 MODEL_FILENAME = data/MODEL/landmark/x/landmark002.x		# [44]灯台
 MODEL_FILENAME = data/MODEL/blacksmith/blacksmith.x			# [45]煙突
 MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall000.x	# [46]チュートリアル分断壁
-MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall001.x	# [47]チュートリアル分断壁
+MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall002.x	# [47]チュートリアル分断壁
 MODEL_FILENAME = data/MODEL/fence/fence.x					# [48]川を囲うフェンス
 MODEL_FILENAME = data/MODEL/sled/sled000.x					# [49]そり
 
