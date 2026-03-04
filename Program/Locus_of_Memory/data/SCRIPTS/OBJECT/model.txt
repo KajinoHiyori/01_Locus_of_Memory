@@ -1515,6 +1515,54 @@ MODELSET
 	COLLISION = 1
 END_MODELSET
 
+MODELSET
+	TYPE = 48
+	POS = 2687 0 -845
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2687 0 -775
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2687 0 -705
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2687 0 -635
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2687 0 -565
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 48
+	POS = 2700 0 -495
+	ROT = 0 110 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 #------------------------------------------------------------------------------
 # ‚»‚è
 #------------------------------------------------------------------------------
