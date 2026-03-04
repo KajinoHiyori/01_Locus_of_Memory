@@ -391,46 +391,46 @@ void UpdateSpellUI(void)
 	Player* pPlayer = GetPlayer();
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		// ポーズ状態になったら非表示にする
-		if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aSpellUI[nCntPlayer].bSpell == true)
-		{
-			SetSpellUIDisappear(nCntPlayer);
-			bSpell = true;
-		}
-		else if (g_aSpellUI[nCntPlayer].bSpell == false)
-		{
-			SetSpellUINonDisplay(nCntPlayer);
-		}
-
-		// SPELLメニューを開いているかのフラグを立てる
-		if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true))
-		{
-			if (bSpell == false && ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-				&& (g_aSpellUI[nCntPlayer].state == SPELLUISTATE_NONDISPLAY || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_DISAPPEAR)
-				&& pPlayer->bJump == false)
-			{
-				g_aSpellUI[nCntPlayer].state = SPELLUISTATE_APPEAR;
-				SetSpellUINonDisplay(nCntPlayer);
-				SetSpellUIAppear(nCntPlayer);
-				g_aSpellUI[nCntPlayer].bSpell = true;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
-			}
-			pPlayer->state = PLAYERSTATE_SPELL;
-		}
-		else
-		{
-			if (bSpell == false && ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-				&& (g_aSpellUI[nCntPlayer].state == SPELLUISTATE_DISPLAY || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_APPEAR || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_SETMAGIC)
-				&& pPlayer->bJump == false)
-			{
-				g_aSpellUI[nCntPlayer].state = SPELLUISTATE_DISAPPEAR;
-				SetSpellUIDisplay(nCntPlayer);
-				SetSpellUIDisappear(nCntPlayer);
-				ResetCommand(nCntPlayer);
-				pPlayer->state = PLAYERSTATE_NORMAL;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-			}
-		}
+		//// ポーズ状態になったら非表示にする
+		//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aSpellUI[nCntPlayer].bSpell == true)
+		//{
+		//	SetSpellUIDisappear(nCntPlayer);
+		//	bSpell = true;
+		//}
+		//else if (g_aSpellUI[nCntPlayer].bSpell == false)
+		//{
+		//	SetSpellUINonDisplay(nCntPlayer);
+		//}
+		//
+		//// SPELLメニューを開いているかのフラグを立てる
+		//if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true))
+		//{
+		//	if (bSpell == false && ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+		//		&& (g_aSpellUI[nCntPlayer].state == SPELLUISTATE_NONDISPLAY || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_DISAPPEAR)
+		//		&& pPlayer->bJump == false)
+		//	{
+		//		g_aSpellUI[nCntPlayer].state = SPELLUISTATE_APPEAR;
+		//		SetSpellUINonDisplay(nCntPlayer);
+		//		SetSpellUIAppear(nCntPlayer);
+		//		g_aSpellUI[nCntPlayer].bSpell = true;
+		//		SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
+		//	}
+		//	pPlayer->state = PLAYERSTATE_SPELL;
+		//}
+		//else
+		//{
+		//	if (bSpell == false && ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+		//		&& (g_aSpellUI[nCntPlayer].state == SPELLUISTATE_DISPLAY || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_APPEAR || g_aSpellUI[nCntPlayer].state == SPELLUISTATE_SETMAGIC)
+		//		&& pPlayer->bJump == false)
+		//	{
+		//		g_aSpellUI[nCntPlayer].state = SPELLUISTATE_DISAPPEAR;
+		//		SetSpellUIDisplay(nCntPlayer);
+		//		SetSpellUIDisappear(nCntPlayer);
+		//		ResetCommand(nCntPlayer);
+		//		pPlayer->state = PLAYERSTATE_NORMAL;
+		//		SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+		//	}
+		//}
 
 		if (g_aSpellUI[nCntPlayer].bSpell == false)
 		{
@@ -750,10 +750,8 @@ void SetSpellUIAppear(int nIdx)
 	// 操作人数の取得
 	OPERATIONTYPE operationType = GetOperationType();
 	Player* pPlayer = GetPlayer();
-	if (pPlayer->state != PLAYERSTATE_PAUSE && g_aSpellUI[nIdx].bSpell == false)
+	if (pPlayer->state != PLAYERSTATE_PAUSE)
 	{
-		pPlayer[nIdx].state = PLAYERSTATE_SPELL;
-
 		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 		{
 			// 各種情報の設定
@@ -902,8 +900,6 @@ void SetSpellUIDisplay(int nIdx)
 	Player* pPlayer = GetPlayer();
 	if (pPlayer->state != PLAYERSTATE_PAUSE)
 	{
-		pPlayer[nIdx].state = PLAYERSTATE_SPELL;
-
 		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 		{
 			// 各種情報の設定
@@ -1265,7 +1261,7 @@ void SetCommandTex(int nIdx, int nNumCommand)
 //======================================================================================
 void SetCommandDisplay(int nIdx, int nNumCommand)
 {
-
+	g_aSpellUI[nIdx].aSpellUI[nNumCommand].move = SPELLUI_MOVE_STOP;
 	g_aSpellUI[nIdx].aSpellUI[nNumCommand].fWidth = COMMAND_SIZE;		// 幅
 	g_aSpellUI[nIdx].aSpellUI[nNumCommand].fHeight = COMMAND_SIZE;		// 高さ
 	g_aSpellUI[nIdx].aSpellUI[nNumCommand].fWidthDest = 0.0f;			// 幅の目的地
@@ -1286,6 +1282,14 @@ void SetCommandDisappear(int nIdx, int nNumCommand)
 	g_aSpellUI[nIdx].aSpellUI[nNumCommand].fHeightDest = 0.0f;	// 高さの目的地
 	g_aSpellUI[nIdx].aSpellUI[nNumCommand].nKey = 0;					// キーの初期化
 	g_aSpellUI[nIdx].aSpellUI[nNumCommand].nNumKey = NUM_KEY;			// 浮遊感を演出
+}
+
+//======================================================================================
+// UIの表示状態を取得
+//======================================================================================
+bool GetSpellUIDisp(int nIdx)
+{
+	return g_aSpellUI[nIdx].bSpell;
 }
 
 //======================================================================================

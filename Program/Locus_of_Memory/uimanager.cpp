@@ -378,11 +378,13 @@ void UpdateUIManager(void)
 			{
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;
 			}
+#if 0
 			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && pPlayer->bJump == false)
 			{
 				SetUIAppear(nCntPlayer);	// UIを出現状態にする
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
 			}
+#endif
 			break;
 
 		case UISTATE_APPEAR:	// 出現状態
@@ -596,7 +598,7 @@ void DrawUIManager(void)
 	// カリングをオフにする
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
 		if (g_aUIManager[nCntPlayer].bPause == false)
 		{

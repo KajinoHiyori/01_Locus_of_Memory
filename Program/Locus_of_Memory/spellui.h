@@ -77,6 +77,7 @@ void SetSpellUINonDisplay(int nIdx);
 void SetCommandTex(int nIdx, int nNumCommand);
 void SetCommandDisplay(int nIdx, int nNumCommand);
 void SetCommandDisappear(int nIdx, int nNumCommand);
+bool GetSpellUIDisp(int nIdx);
 SPELLUISTATE GetSpellUIState(int nIdx);
 LPDIRECT3DTEXTURE9 GetSpellTexture(SPELLUI_TEX SpellTex);
 #endif
