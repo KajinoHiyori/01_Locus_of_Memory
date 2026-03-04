@@ -348,6 +348,9 @@ void InitSpellUI(void)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffSpellUI->Unlock();
+
+	SetSpellUINonDisplay(0);
+	SetSpellUINonDisplay(1);
 }
 
 //======================================================================================
