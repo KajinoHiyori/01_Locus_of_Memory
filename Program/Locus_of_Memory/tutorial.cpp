@@ -38,6 +38,7 @@
 #include "sparkle.h"
 #include "animal.h"
 #include "field.h"
+#include "riverwall.h"
 
 // UI関連の初期化
 #include "uimanager.h"
@@ -225,6 +226,9 @@ void UpdateTutorial(void)
 	// フィールドの更新処理
 	UpdateField();
 
+	// 川の壁の更新処理
+	UpdateRiverWall();
+
 	// カスタムメッシュの更新処理
 	UpdateCustomMesh();
 
@@ -332,6 +336,9 @@ void DrawTutorial(void)
 
 	// フィールドの描画処理
 	DrawField();
+
+	// 川の壁の描画処理
+	DrawRiverWall();
 
 	// カスタムメッシュの描画処理
 	DrawCustomMesh();
