@@ -145,6 +145,8 @@ void InitTutorial(void)
 
 	// ƒhƒ‰ƒSƒ“‚Ìó‘Ô‚ğİ’è
 	SetDragonType(0, DRAGONTYPE_FIRE);
+
+	ResetObject();
 }
 //=======================================================
 // ƒQ[ƒ€‚ÌI—¹ˆ—

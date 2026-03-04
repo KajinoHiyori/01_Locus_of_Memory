@@ -90,7 +90,7 @@ void InitCamera(void)
 
 	g_nNumCamera = INIT_NUMCAMERA;
 	g_nCntCameraRoll = 0;
-	g_EventStateCounter = 300;
+	g_EventStateCounter = 180;
 }
 
 //=============================================================================
@@ -449,7 +449,7 @@ void UpdateGameCamera(void)
 				//Ž‹–ìŠp‚ð45‚É‚·‚é
 				pCamera->fieldView = 45.0f;
 
-				g_EventStateCounter = 300;
+				g_EventStateCounter = 180;
 			}
 		}
 	}

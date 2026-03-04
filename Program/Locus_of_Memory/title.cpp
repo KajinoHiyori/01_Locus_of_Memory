@@ -119,14 +119,12 @@ void UpdateTitle(void)
 	Update2DEffect();
 
 	// 霧の演出のテスト
-#ifdef _DEBUG
 	if (g_fTitleFogEnd < 50000.0f)
 	{
 		g_fTitleFogEnd += (50000.0f * 0.00075f);
 	}
 
 	SetFog(COLOR_SKY_NIGHT, 0.0f, g_fTitleFogEnd);
-#endif // _DEBUG
 
 	if (g_bFade == false)	// フェードをしていない場合
 	{

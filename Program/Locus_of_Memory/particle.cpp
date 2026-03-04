@@ -69,6 +69,7 @@ void UpdateParticle(void)
 
 	rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
+#ifdef _DEBUG
 	if (GetKeyboardTrigger(DIK_BACK) == true)
 	{//ŽžŠÔ
 		SetParticle(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120, PARTICLETYPE_TIMEREVERT);
@@ -123,6 +124,7 @@ void UpdateParticle(void)
 	{//•‚—V
 		SetParticle(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120, PARTICLETYPE_LEVITATION);
 	}
+#endif
 
 	for (int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
 	{
