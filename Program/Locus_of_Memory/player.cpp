@@ -588,6 +588,14 @@ void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 {
 	// ‰ß‹‚Ìî•ñ‚ğŠi”[
 	COMMANDOREDER ownCommandOld[MAX_OWNCOMMAND];
+
+	for (int nCntCommand = 0; nCntCommand < pMagicBook->nCntOwn; nCntCommand++)
+	{
+		if (pMagicBook->OwnCommand[nCntCommand] == GetFieldMagic(nDropMagicIdx))
+		{
+			return;
+		}
+	}
 	
 	for (int nCntCommand = 0; nCntCommand < MAX_OWNCOMMAND; nCntCommand++)
 	{
