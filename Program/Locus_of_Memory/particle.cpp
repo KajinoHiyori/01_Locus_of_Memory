@@ -256,12 +256,36 @@ void UpdateParticle(void)
 			case PARTICLETYPE_FLASH:
 				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 				{
-					pos[0] = g_aParticle[nCntParticle].pos;
-					move[0][PARTICLETYPE_FLASH].x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_FLASH].y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_FLASH].z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_RED, 10, 25);
+					//ˆÊ’u‚ÌÝ’è
+					pos[0] = g_aParticle[nCntAppear].pos;
+					
+					pos[1] = g_aParticle[nCntAppear].pos;
+
+					//ˆÚ“®—Ê
+					move[0][PARTICLETYPE_FLASH].x = (sinf((float)(rand() % 629 - 314) / 100.0f) * (float)(rand() % 10) / 2 + 1.0f) * 2.5f;	// ˆÚ“®—ÊX
+					move[0][PARTICLETYPE_FLASH].y = (cosf((float)(rand() % 629 - 314) / 100.0f) * (float)(rand() % 10) / 2 + 1.0f) * 2.5f;	// ˆÚ“®—ÊY
+					move[0][PARTICLETYPE_FLASH].z = (cosf((float)(rand() % 629 - 314) / 100.0f) * (float)(rand() % 10) / 2 + 1.0f) * 2.5f;	// ˆÚ“®—ÊZ
+
+					//ˆÚ“®—Ê
+					move[1][PARTICLETYPE_FLASH].x = (sinf((float)(rand() % 629 - 314) / 100.0f) * (float)(rand() % 10) / 2 + 1.0f) * 1.5f;	// ˆÚ“®—ÊX
+					move[1][PARTICLETYPE_FLASH].y = (cosf((float)(rand() % 629 - 314) / 100.0f) * (float)(rand() % 10) / 2 + 1.0f) * 1.5f;	// ˆÚ“®—ÊY
+					move[1][PARTICLETYPE_FLASH].z = (cosf((float)(rand() % 629 - 314) / 100.0f) * (float)(rand() % 10) / 2 + 1.0f) * 1.5f;	// ˆÚ“®—ÊZ
+
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_YELLOW, 10, 15);
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[1], move[1][PARTICLETYPE_FLASH], COLOR_WHITE, 10, 10);
 				}
+				//move.x = (sinf((float)(rand() % ANGLE_DOUBLE - MAX_ANGLE) / ANGLE_ADJUST) * (float)(rand() % MOVE_PARTICLE) / MOVE_ADJUST + MOVE_MIN) * SPEED_EXPLOSION;	// ˆÚ“®—ÊX
+				//move.y = (cosf((float)(rand() % ANGLE_DOUBLE - MAX_ANGLE) / ANGLE_ADJUST) * (float)(rand() % MOVE_PARTICLE) / MOVE_ADJUST + MOVE_MIN) * SPEED_EXPLOSION;	// ˆÚ“®—ÊY
+				//move.z = (cosf((float)(rand() % ANGLE_DOUBLE - MAX_ANGLE) / ANGLE_ADJUST) * (float)(rand() % MOVE_PARTICLE) / MOVE_ADJUST + MOVE_MIN) * SPEED_EXPLOSION;	// ˆÚ“®—ÊZ
+				//col = g_aParticle[nCntParticle].col;
+				//fRadius = SIZE_EXPLOSION;
+				//nLife = ELIFE_EXPLOSION;
+				//pos = g_aParticle[nCntParticle].pos;	// ”­¶ˆÊ’u
+				//SetEffect(pos, move, col, EFFECTTYPE_EXPLOSION, 0.0f, nLife, fRadius);
+				//ANGLE_DOUBLE¨629;
+				//MAX_ANGLE¨314;
+				//ANGLE_ADJUST¨100.0f;
+				//(float)(rand() % MOVE_PARTICLE) / MOVE_ADJUST + MOVE_MIN)* SPEED_EXPLOSION‚ÍˆÚ“®—Ê‚ðŠÇ—‚µ‚Ä‚¢‚Ü‚·
 				break;
 
 				//‰Î‹…=============================================================================
