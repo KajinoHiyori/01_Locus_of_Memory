@@ -711,7 +711,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 //–‚–@î•ñ‚Ìæ“¾==============================
 COMMANDOREDER GetFieldMagic(int nIdx)
 {
-	g_aDropMagic[nIdx].bUse = false;
+	//g_aDropMagic[nIdx].bUse = false;
 	return g_aDropMagic[nIdx].oType;
 }
 
