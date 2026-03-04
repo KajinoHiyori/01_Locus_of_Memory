@@ -541,7 +541,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_ACCELERATION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, false, true, BLENDFRAME);
+				//SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, false, true, BLENDFRAME);
 				break;
 
 				//ŽžŠÔ‚ÌŠª‚«–ß‚µ(‰ñ‹A)

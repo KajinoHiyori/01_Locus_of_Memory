@@ -413,9 +413,9 @@ void UpdateSpellUI(void)
 				SetSpellUINonDisplay(nCntPlayer);
 				SetSpellUIAppear(nCntPlayer);
 				g_aSpellUI[nCntPlayer].bSpell = true;
-				pPlayer->state = PLAYERSTATE_SPELL;
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
 			}
+			pPlayer->state = PLAYERSTATE_SPELL;
 		}
 		else
 		{

@@ -19,6 +19,7 @@
 #include "particle.h"
 #include "goal.h"
 #include "collision.h"
+#include "spellui.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -39,7 +40,7 @@
 #define FLOATSPEED		(0.7625f)							// 浮遊速度
 #define FLOATINERTIA	(0.005f)							// 浮遊中慣性
 #define FLOATMOVE		(0.015f)							// 浮遊中移動量
-#define ACCELEMOVE		(0.175f)							// 加速中移動量
+#define ACCELEMOVE		(0.27f)							// 加速中移動量
 #define ACCELEINERTIA	(0.025f)							// 加速中
 
 // テクスチャの読み込み
@@ -233,6 +234,12 @@ void UpdatePlayer(void)
 				// 移動状態を求める(fMoveDir == 0は移動していない)
 				fMoveDir = SQRTF(moveDir.x, moveDir.z);
 
+				//// TAB押されている間( = SPELL中)は移動をしない
+				//if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+				//	&& g_aPlayer[nCntPlayer].bJump == false)
+				//{
+				//	fMoveDir = 0.0f;
+				//}
 			}
 			break;
 
@@ -268,7 +275,8 @@ void UpdatePlayer(void)
 			}
 
 			// ジャンプ処理
-			if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
+			if (((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false) &&
+				((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadPress(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true))
 			{
 				g_aPlayer[nCntPlayer].move.y = JUMP;
 				g_aPlayer[nCntPlayer].bJump = true;
@@ -288,6 +296,15 @@ void UpdatePlayer(void)
 
 			// 移動状態を求める(fMoveDir == 0は移動していない)
 			fMoveDir = SQRTF(moveDir.x, moveDir.z);
+			
+			// TAB押されている間( = SPELL中)は移動をしない
+			if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+				&& g_aPlayer[nCntPlayer].bJump == false)
+			{
+				//fMoveDir = 0.0f;
+				//g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
+			}
+			
 			break;
 		}
 
@@ -312,7 +329,15 @@ void UpdatePlayer(void)
 
 			if (g_aPlayer[nCntPlayer].bJump == false && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE && g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_FLOATONG)
 			{// ジャンプ状態じゃないかつ移動モーション / 浮遊モーション中じゃない
-				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
+
+				if (g_aPlayer[nCntPlayer].fSpeed == ACCELEMOVE)
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, true, true, BLENDFRAME);
+				}
+				else
+				{
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
+				}
 			}
 		}
 		else if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE)
@@ -352,6 +377,11 @@ void UpdatePlayer(void)
 			break;
 		}
 
+		if (g_aPlayer[nCntPlayer].fSpeed == ACCELEMOVE && fMoveDir != 0)
+		{
+			SetParticle(g_aPlayer[nCntPlayer].pos, 1, PARTICLETYPE_ACCELERATION);
+		}
+
 		// 重力
 		g_aPlayer[nCntPlayer].move.y -= GRAVITY;
 
@@ -367,6 +397,11 @@ void UpdatePlayer(void)
 				// 着地モーション
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
+
+				if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true))
+				{
+					SetSpellUIAppear(nCntPlayer);
+				}
 			}
 			g_aPlayer[nCntPlayer].pos.y = 0.0f;
 			g_aPlayer[nCntPlayer].move.y = 0.0f;
@@ -428,9 +463,10 @@ void UpdatePlayer(void)
 		// モーションの更新処理
 		UpdateMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData);
 
-		//// デバッグ表示
-		//PrintDebugProc("%dプレイヤーのステート : %d [0 NORMAL / 1 PAUSE / 2 SPELL / 3 MAGIC]\n", nCntPlayer, g_aPlayer[nCntPlayer].state);
-		//PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
+		// デバッグ表示
+		PrintDebugProc("%dプレイヤーのステート : %d [0 NORMAL / 1 PAUSE / 2 SPELL / 3 MAGIC]\n", nCntPlayer, g_aPlayer[nCntPlayer].state);
+		PrintDebugProc("%dプレイヤーのjumpフラグ : %d\n", nCntPlayer, g_aPlayer[nCntPlayer].bJump);
+		PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
 		//PrintDebugProc("プレイヤー[%d]の移動量 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].move.x, g_aPlayer[nCntPlayer].move.y, g_aPlayer[nCntPlayer].move.z);
 		//PrintDebugProc("プレイヤー[%d]の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rot.x, g_aPlayer[nCntPlayer].rot.y, g_aPlayer[nCntPlayer].rot.z);
 		//PrintDebugProc("プレイヤー[%d]の目的の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rotDest.x, g_aPlayer[nCntPlayer].rotDest.y, g_aPlayer[nCntPlayer].rotDest.z);
