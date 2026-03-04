@@ -43,6 +43,7 @@
 #include "key.h"
 #include "riverwall.h"
 #include "questionmark.h"
+#include "aura.h"
 
 // マクロ定義
 #define GAMEPOS_1P		(D3DXVECTOR3(-745.0f, 0.0f, -3427.0f))	// 1Pの位置[GAME]
@@ -102,6 +103,9 @@ void InitGame(void)
 	// パーティクルの初期化処理
 	InitParticle();
 
+	// 
+	InitAura();
+
 	// BGM再生
 	PlaySound(SOUND_LABEL_000);
 
@@ -158,6 +162,9 @@ void UninitGame(void)
 
 	// 鍵の終了処理
 	UninitKey();
+
+	// 
+	UninitAura();
 
 	// BGM終了
 	StopSound();
@@ -232,6 +239,9 @@ void UpdateGame(void)
 
 	// 鍵の更新処理
 	UpdateKey();
+
+	//
+	UpdateAura();
 
 	switch (g_eventState)
 	{
@@ -355,6 +365,9 @@ void DrawGame(void)
 
 	// 粒の描画処理
 	DrawSparkle();
+
+	// 
+	DrawAura();
 
 	SetFogEnable(false);		// 霧を無効
 

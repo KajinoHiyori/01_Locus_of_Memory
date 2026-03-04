@@ -13,8 +13,8 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define AURA_RADIUS			(300.0f)			// オーラの半径
-#define AURA_HEIGHT			(300.0f)			// オーラの高さ
+#define AURA_RADIUS			(150.0f)			// オーラの半径
+#define AURA_HEIGHT			(175.0f)			// オーラの高さ
 #define AURA_SPLIT_WIDHT	(32 + 1)			// 横の分割数
 #define AURA_SPLIT_HEIGTH	(1 + 1)				// 縦の分割数
 #define MAX_AURA			(4)					// オーラの最大数
@@ -30,7 +30,7 @@ typedef struct Aura
 	D3DXVECTOR3 rot;							// 向き
 	D3DXMATRIX mtxWorld;						// ワールドマトリックス
 	float fAngle;								// 角度
-	float fRadius[AURA_SPLIT_HEIGTH];			// 半径
+	float fRadius;								// 半径
 	bool bUse;									// 使用状態
 }Aura;
 
