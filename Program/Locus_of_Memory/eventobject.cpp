@@ -55,6 +55,17 @@ void UpdateEventObject(void)
 			continue;
 		}
 
+		if (pEventObject->ObjectInfo.ParentObject.motion.bFinishMotion == true && 
+			pEventObject->isEvent == true && pEventObject->ObjectInfo.ParentObject.type == PARENTMODELTYPE_HOUSE)
+		{
+			pEventObject->fAlpha -= 0.01f;
+
+			if (pEventObject->fAlpha < 0.0f)
+			{
+				pEventObject->bUse = false;
+			}
+		}
+
 		if (pEventObject->ObjectType == EVENTOBJECTTYPE_PARENT && pEventObject->ObjectInfo.ParentObject.motion.pMotionData != NULL)
 		{// オブジェクトが階層構造モデルかつモーションがあるならば
 			// モーションを更新
@@ -197,7 +208,7 @@ void DrawEventObject(void)
 				{
 					MatCpy = pMat[nCntMat];		// 今のマテリアルをコピー
 
-					//MatCpy.MatD3D.Diffuse.a = pParentObject->fAlpha;	// アルファ値を適用
+					MatCpy.MatD3D.Diffuse.a = pEventObject->fAlpha;	// アルファ値を適用
 
 					// マテリアルの設定
 					pDevice->SetMaterial(&MatCpy.MatD3D);
@@ -241,6 +252,7 @@ void SetEventObjectNormal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, OBJECTTYPE type, Col
 		pEventObject->ObjectInfo.NormalObject.pModelData = GetObjectModel(type);
 		pEventObject->pos = pos;
 		pEventObject->rot = rot;
+		pEventObject->fAlpha = 1.0f;
 		pEventObject->bUse = true;
 
 		// 当たり判定
@@ -310,6 +322,7 @@ void SetEventObjectParent(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE pare
 		// 各種設定
 		pEventObject->pos = pos;							// 位置
 		pEventObject->rot = rot;							// 向き
+		pEventObject->fAlpha = 1.0f;						// アルファ値
 		pEventObject->ObjectType = EVENTOBJECTTYPE_PARENT;	// 通常か階層構造か
 		pEventObject->bUse = true;							// 使用状態に
 

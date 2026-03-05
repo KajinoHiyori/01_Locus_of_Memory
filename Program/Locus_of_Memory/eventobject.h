@@ -66,7 +66,7 @@ typedef struct EventObject
 	EventObjectInfo ObjectInfo;	// オブジェクト情報
 	EVENTOBJECTTYPE ObjectType;	// オブジェクトの種類
 	EVENTTYPE EventType;		// イベントの種類
-	int nEventIdx;				// イベントのインデックス
+	float fAlpha;				// アルファ値
 	int nCollisionIdx;			// 当たり判定のインデックス
 	bool isEvent;				// イベント中か
 	bool bUse;					// 使用状態
