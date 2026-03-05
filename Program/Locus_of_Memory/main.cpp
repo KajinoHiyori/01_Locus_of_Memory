@@ -362,78 +362,80 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
+	bool bTest = false;
+
 	// カメラの初期化
 	InitCamera();
-
+	bTest = false;
 	//// ライトの初期化
 	//InitLight();
 
 	// サウンドの初期化処理
 	InitSound(hWnd);
-
+	bTest = false;
 	// メッシュフィールドの初期化処理
 	InitMeshField();
-
+	bTest = false;
 	// フィールドの初期化処理
 	InitField();
-
+	bTest = false;
 	// 川の壁の初期化処理
 	InitRiverWall();
-
+	bTest = false;
 	// カスタムメッシュの初期化処理
 	InitCustomMesh();
-
+	bTest = false;
 	// 影の初期化処理
 	InitShadow();
-
+	bTest = false;
 	// オブジェクトの初期化処理
 	InitObject();
-
+	bTest = false;
 	// スカイボックスの初期化処理
 	InitSkyBox();
-
+	bTest = false;
 	// 塀の初期化処理
 	InitBrickWall();
-
+	bTest = false;
 	// モーションの初期化処理
 	InitMotion();
-
+	bTest = false;
 	// モードの設定
 	InitFade(g_mode, COLOR_WHITE);
-
+	bTest = false;
 	// デバッグ表示の初期化処理
 	InitDebugProc();
-	
+	bTest = false;
 	// エフェクトの初期化処理
 	InitEffect();
-
+	bTest = false;
 	// パーティクルの初期化処理
 	InitParticle();
-
+	bTest = false;
 	// 文字の初期化処理
 	InitGrain();
-
+	bTest = false;
 	// 粒の初期化処理
 	InitSparkle();
-
+	bTest = false;
 	// ゴールの初期化処理
 	InitGoal();
-
+	bTest = false;
 	// 動物の初期化処理
 	InitAnimal();
-
+	bTest = false;
 	// 時計の初期化処理
 	InitClock();
-
+	bTest = false;
 #ifndef _DEBUG
 	// マウスカーソルを非表示
 	ShowCursor(false);
 #endif
 
 	LoadScript(INFORMATION_SCRIPT);
-
+	bTest = false;
 	LoadModel(MODEL_SCRIPT);
-
+	bTest = false;
 	return S_OK;
 }
 
