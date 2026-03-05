@@ -17,21 +17,58 @@
 //*****************************************************************************
 
 //*****************************************************************************
+// 使用するオブジェクトの種類
+//*****************************************************************************
+typedef enum EVENTOBJECTTYPE
+{
+	EVENTOBJECTTYPE_NORMAL = 0,	// 通常
+	EVENTOBJECTTYPE_PARENT,		// 階層構造
+	EVENTOBJECTTYPE_MAX
+}EVENTOBJECTTYPE;
+
+//*****************************************************************************
+// イベント用通常オブジェクトの構造体定義
+//*****************************************************************************
+typedef struct EventObject_Normal
+{
+	OBJECTTYPE type;			// モデルの種類
+	ObjectModel* pModelData;	// モデルの情報
+}EventObject_Normal;
+
+//*****************************************************************************
+// イベント用階層構造オブジェクトの構造体定義
+//*****************************************************************************
+typedef struct EventObject_Parent
+{
+	PARENTMODELTYPE	type;		// 階層構造オブジェクトの種類
+	Motion motion;				// モーション情報
+	ModelData* pModelData;		// モデルの情報
+	OffSetData OffSetData;		// モーション中の階層構造情報
+}EventObject_Parent;
+
+//*****************************************************************************
+// イベント用オブジェクトの共用体定義
+//*****************************************************************************
+union EventObjectInfo
+{
+	EventObject_Normal NormalObject;	// 通常モデル
+	EventObject_Parent ParentObject;	// 階層構造モデル
+};
+
+//*****************************************************************************
 // イベント用オブジェクトの構造体定義
 //*****************************************************************************
 typedef struct EventObject
 {
-	D3DXMATRIX		mtxWorld;		// ワールドマトリックス
-	D3DXVECTOR3		pos;			// オブジェクトの位置
-	D3DXVECTOR3		rot;			// オブジェクトの向き
-	PARENTMODELTYPE	type;			// 階層構造オブジェクトの種類
-	EVENTTYPE		EventType;		// イベントの種類
-	Motion			motion;			// モーション情報
-	ModelData*		pModelData;		// モデルの情報
-	OffSetData		OffSetData;		// モーション中の階層構造情報
-	int				nEventIdx;		// イベントのインデックス
-	int				nCollisionIdx;	// 当たり判定のインデックス
-	bool			bUse;			// 使用状態
+	D3DXMATRIX mtxWorld;		// ワールドマトリックス
+	D3DXVECTOR3 pos;			// オブジェクトの位置
+	D3DXVECTOR3 rot;			// オブジェクトの向き
+	EventObjectInfo ObjectInfo;	// オブジェクト情報
+	EVENTOBJECTTYPE ObjectType;	// オブジェクトの種類
+	EVENTTYPE EventType;		// イベントの種類
+	int nEventIdx;				// イベントのインデックス
+	int nCollisionIdx;			// 当たり判定のインデックス
+	bool bUse;					// 使用状態
 }EventObject;
 
 //*****************************************************************************
@@ -43,4 +80,4 @@ void UpdateEventObject(void);
 void DrawEventObject(void);
 void SetEventObject(D3DXVECTOR3 pos, float fRadius);
 
-#endif // !_GOAL_H_
+#endif // !_EVENTOBJECT_H_
