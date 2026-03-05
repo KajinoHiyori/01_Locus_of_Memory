@@ -6,6 +6,7 @@
 //=============================================================================
 
 #include "eventobject.h"
+#include "loadscript.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -27,6 +28,8 @@ void InitEventObject(void)
 
 	// ただ単純な初期化
 	memset(pEventObject, NULL, sizeof(EventObject) * MAX_EVENTOBJECT);
+
+	LoadEventObject("data\\SCRIPTS\\OBJECT\\Eventobject000.txt");
 
 	// SetEventObjectParent(INIT_D3DXVEC3, INIT_D3DXVEC3, PARENTMODELTYPE_DRAGON, MOTIONDATATYPE_DRAGON, NULL, 0, true, false);
 }
@@ -54,8 +57,9 @@ void UpdateEventObject(void)
 			continue;
 		}
 
-		if (pEventObject->ObjectType == EVENTOBJECTTYPE_PARENT)
-		{
+		if (pEventObject->ObjectType == EVENTOBJECTTYPE_PARENT && pEventObject->ObjectInfo.ParentObject.motion.pMotionData != NULL)
+		{// オブジェクトが階層構造モデルかつモーションがあるならば
+			// モーションを更新
 			UpdateMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 				pEventObject->ObjectInfo.ParentObject.pModelData,
 				&pEventObject->ObjectInfo.ParentObject.OffSetData);
@@ -85,7 +89,7 @@ void DrawEventObject(void)
 		}
 
 		if (pEventObject->ObjectType == EVENTOBJECTTYPE_NORMAL)
-		{
+		{// 通常オブジェクト
 			// ワールドマトリックスの初期化(デフォルトの値にする)
 			D3DXMatrixIdentity(&pEventObject->mtxWorld);
 

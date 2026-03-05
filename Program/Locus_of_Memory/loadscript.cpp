@@ -7,6 +7,7 @@
 
 #include "loadscript.h"
 #include "object.h"
+#include "eventobject.h"
 #include "player.h"
 #include "motion.h"
 #include "magic.h"
@@ -50,6 +51,7 @@
 #define LOAD_DEPTH			"DEPTH"						// 奥行き読み込み
 #define LOAD_TYPE			"TYPE"						// 種類読み込み
 #define LOAD_PARENTTYPE		"PARENTTYPE"				// 階層構造モデルの種類読み込み
+#define LOAD_MOTIONTYPE		"MOTIONTYPE"				// モーションデータの種類読み込み
 #define LOAD_MESHTYPE		"MESHTYPE"					// メッシュの種類読み込み
 #define LOAD_EVENT			"EVENT"						// イベント読み込み
 #define LOAD_RADIUS			"RADIUS"					// 半径読み込み
@@ -1126,6 +1128,264 @@ HRESULT LoadMagicObject(const char* pMagicObjectFileName)
 		{// END_SCRIPTを読み込んだ
 			fclose(pMagicObjectFile);
 			memset(&aMagicObjPath[0][0], NULL, sizeof(char) * MAX_MAGICOBJECTFILE * FILENAME_MAX);
+			break;
+		}
+	}
+
+	return S_OK;
+}
+
+//=============================================================================
+//	イベント用オブジェクト情報読み込み処理
+//=============================================================================
+HRESULT LoadEventObject(const char* pEventObjectFileName)
+{
+	FILE* pStageFile = fopen(pEventObjectFileName, "r");
+
+	if (pStageFile == NULL)
+	{// 読み込み失敗
+		return E_FAIL;
+	}
+
+	char aStr[MAX_STRING] = {};			   // 文字列読み込み
+	char aStrCpy[MAX_STRING] = {};		   // 文字列複製(整理)
+	char* pStart = NULL;				   // 文字列開始位置
+	int nIdx = 0;						   // モデルのインデックス読み込み
+	int nParent = 0;					   // モデルの親インデックス読み込み
+	D3DXVECTOR3 pos = {};				   // 位置読み込み
+	D3DXVECTOR3 rot = {};				   // 向き読み込み
+	float fRadius = 0.0f;				   // 半径読み込み
+	int type = -1;						   // 種類読み込み
+	int motiontype = MOTIONDATATYPE_MAX;   // モーションデータの種類
+	int nEvent = -1;					   // イベント読み込み
+	int Parenttype = -1;				   // 階層構造モデルの種類読み込み
+	int nCollision = true;				   // 当たり判定するか
+	int nCollider = false;				   // コライダーを使うか
+	int nNumModel = 0;					   // モデル数読み込み
+	int nNumCollider = 0;				   // コライダー数
+	int nCntModel = -1;					   // 直前に読み込んだモデル
+	int nCntParentModel = -1;			   // 直前に読み込んだ階層構造モデル
+
+	ColliderInfo aColliderInfo[10] = {};   // コライダー情報読み込み
+
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		(void)fgets(aStr, sizeof(aStr), pStageFile);	// 一列読み込み
+
+		if (strstr(aStr, LOAD_START) != NULL)
+		{// LOAD_STARTを読み込めば読み込み開始
+			break;
+		}
+
+		if (feof(pStageFile) != NULL)
+		{// 読み込み失敗
+			return E_FAIL;
+		}
+	}
+
+	while (true)
+	{
+		memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+		memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+		(void)fgets(aStr, sizeof(aStr), pStageFile);	// 一列読み込み
+		LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+
+		if (strcmp(aStrCpy, LOAD_MODELINFO) == 0)
+		{// MODELSETを読み込んだ
+			while (true)
+			{
+				memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+				memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+				(void)fgets(aStr, sizeof(aStr), pStageFile);	// 一列読み込み
+				LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+
+				if (strstr(aStr, LOAD_POS))
+				{// POSを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+
+					continue;
+				}
+
+				if (strstr(aStr, LOAD_ROT))
+				{// ROTを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &rot.x, &rot.y, &rot.z);
+
+					continue;
+				}
+
+				if (strncmp(aStrCpy, LOAD_TYPE, sizeof(LOAD_TYPE + 1)) == 0)
+				{// TYPEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &type);
+
+					continue;
+				}
+
+				if (strncmp(aStrCpy, LOAD_MOTIONTYPE, sizeof(LOAD_MOTIONTYPE + 1)) == 0)
+				{// MOTIONTYPEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &motiontype);
+
+					continue;
+				}
+
+				if (strstr(aStr, LOAD_COLLISION))
+				{// COLLISIONを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &nCollision);
+
+					continue;
+				}
+
+				if (strncmp(aStrCpy, LOAD_PARENTTYPE, sizeof(LOAD_PARENTTYPE + 1)) == 0)
+				{// PARENTTYPEを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &Parenttype);
+
+					continue;
+				}
+
+				if (strcmp(aStrCpy, LOAD_COLLIDER) == 0)
+				{// COLLIDERSETを読み込んだ
+					aColliderInfo[nNumCollider] = LoadCollider(pStageFile);
+					nNumCollider++;
+					nCollider = true;
+				}
+
+				if (strcmp(aStrCpy, LOAD_ENDMODELINFO) == 0)
+				{// END_MODELSETを読み込んだ
+					if (Parenttype != -1)
+					{
+						SetEventObjectParent(pos, rot, (PARENTMODELTYPE)Parenttype, (MOTIONDATATYPE)motiontype,
+							&aColliderInfo[0], nNumCollider, (bool)nCollision, (bool)nCollider);
+						nCntParentModel++;
+					}
+					else
+					{
+						SetEventObjectNormal(pos, rot, (OBJECTTYPE)type, &aColliderInfo[0], nNumCollider, (bool)nCollision, (bool)nCollider);
+						nCntModel++;
+					}
+
+					nNumCollider = 0;
+					nCollider = false;
+					Parenttype = -1;
+					break;
+				}
+			}
+		}
+
+		if (strcmp(aStrCpy, LOAD_MAGICEVENT) == 0)
+		{// MAGICEVENTSETを読み込んだ
+			while (true)
+			{
+				memset(aStr, NULL, sizeof(aStr));				// 文字列クリア
+				memset(aStrCpy, NULL, sizeof(aStrCpy));			// コピーもクリア
+				(void)fgets(aStr, sizeof(aStr), pStageFile);	// 一列読み込み
+				LoadEnableString(&aStrCpy[0], &aStr[0]);		// 有効文字だけ抜き取って複製
+
+				if (strstr(aStr, LOAD_POS))
+				{// POSを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f %f %f", &pos.x, &pos.y, &pos.z);
+
+					continue;
+				}
+
+				if (strstr(aStr, LOAD_RADIUS))
+				{// RADIUSを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%f", &fRadius);
+
+					continue;
+				}
+
+				if (strncmp(aStrCpy, LOAD_EVENT, sizeof(LOAD_EVENT + 1)) == 0)
+				{// EVENTを読み込んだ
+					if ((pStart = strchr(aStr, '=')) == NULL)
+					{
+						continue;
+					}
+
+					(void)sscanf(pStart + 1, "%d", &nEvent);
+
+					continue;
+				}
+
+				if (strcmp(aStrCpy, LOAD_ENDMAGICEVENT) == 0)
+				{// END_MAGICEVENTSETを読み込んだ
+					ParentObject* pPalentObject = GetParentObjectInfo(nCntParentModel);
+
+					switch (nEvent)
+					{
+					case 1:	// HOUSE関連
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						pPalentObject->nEventIdx = nCntParentModel;
+						break;
+
+					case 2:	// 橋関連
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						pPalentObject->nEventIdx = nCntParentModel;
+						break;
+
+					case 3:	// 植物関連[燃焼/成長]
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						pPalentObject->nEventIdx = nCntParentModel;
+						break;
+
+					case 4:	// 植物関連[時戻し]
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
+						pPalentObject->nEventIdx = nCntParentModel;
+						break;
+
+					default:	// イベント無し
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
+						pPalentObject->nEventIdx = -1;
+						break;
+					}
+
+					break;
+				}
+			}
+		}
+
+		if (strcmp(aStrCpy, LOAD_END) == 0)
+		{// END_SCRIPTを読み込んだ
+			fclose(pStageFile);
 			break;
 		}
 	}

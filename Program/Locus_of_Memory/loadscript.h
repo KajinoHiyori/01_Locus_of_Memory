@@ -25,7 +25,7 @@ HRESULT LoadScript(const char* pScriptFileName);
 HRESULT LoadParentModel(const char* pParentModelFileName);
 HRESULT LoadMotionInfo(const char* pMotionFileName);
 HRESULT LoadModel(const char* pModelFileName);
-HRESULT LoadMagicObject(const char* pMagicObjectFileName);
+HRESULT LoadEventObject(const char* pEventObjectFileName);
 HRESULT LoadMagicObject(const char* pMagicObjectFileName);
 ColliderInfo LoadCollider(FILE* pFile);
 void LoadEnableString(char* aStrCpy, char* pStart);

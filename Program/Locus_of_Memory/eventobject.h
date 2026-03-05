@@ -68,6 +68,7 @@ typedef struct EventObject
 	EVENTTYPE EventType;		// イベントの種類
 	int nEventIdx;				// イベントのインデックス
 	int nCollisionIdx;			// 当たり判定のインデックス
+	bool isEvent;				// イベント中か
 	bool bUse;					// 使用状態
 }EventObject;
 
