@@ -18,7 +18,7 @@
 #define MAXMAGICBUBBLE_TYPE	(MAGICBUBBLETYPE_MAX)	// テクスチャの最大数
 #define BUBBLE_WIDTH		(28.0f)					// 吹き出しの幅
 #define BUBBLE_HEIGHT		(10.0f)					// 吹き出しの高さ
-#define BUBBLE_X			(30.0f)					// 吹き出しのX軸
+#define BUBBLE_X			(-10.0f)					// 吹き出しのX軸
 #define BUBBLE_Y			(85.0f)					// 吹き出しのY高度
 #define NUM_KEY				(30)					// 処理を行うキー数
 #define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
@@ -185,6 +185,13 @@ void UpdateMagicBubble(void)
 		{
 			g_aMagicBubble[nCntPlayer].bDisp = false;
 		}
+		if (pPlayer->bUse == true)
+		{
+			g_aMagicBubble[nCntPlayer].pos = pPlayer->pos;
+			g_aMagicBubble[nCntPlayer].pos.x += sinf(pPlayer->rot.y) * BUBBLE_X;
+			g_aMagicBubble[nCntPlayer].pos.z += cosf(pPlayer->rot.y) * BUBBLE_X;
+			g_aMagicBubble[nCntPlayer].pos.y += BUBBLE_Y;
+		}
 	}
 }
 
@@ -194,7 +201,7 @@ void UpdateMagicBubble(void)
 void DrawMagicBubble(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX UIMatrix, mtxRot;	// UIのマトリックス情報を取得
+	D3DXMATRIX UIMatrix, mtxRot, mtxView;	// UIのマトリックス情報を取得
 	Player* pPlayer = GetPlayer();
 
 	// ワールドマトリックスの初期化(デフォルトの値にする)
@@ -226,22 +233,23 @@ void DrawMagicBubble(void)
 		D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
 		D3DXMATRIX	mtxParent;					// 親のマトリックス
 
+		// 親となるマトリックスを設定
 		// ポリゴンのワールドマトリックスを初期化
 		D3DXMatrixIdentity(&g_aMagicBubble[nCntPlayer].mtxWorld);
+
+		// ビューマトリックスを取得する
+		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+		// ポリゴンをカメラに対して正面に向ける
+		D3DXMatrixInverse(&g_aMagicBubble[nCntPlayer].mtxWorld, NULL, &mtxView);	//逆行列を求める
+
+		g_aMagicBubble[nCntPlayer].mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
+		g_aMagicBubble[nCntPlayer].mtxWorld._42 = 0.0f;
+		g_aMagicBubble[nCntPlayer].mtxWorld._43 = 0.0f;
 
 		// パーツの位置を反映
 		D3DXMatrixTranslation(&mtxTransModel, g_aMagicBubble[nCntPlayer].pos.x, g_aMagicBubble[nCntPlayer].pos.y, g_aMagicBubble[nCntPlayer].pos.z);
 		D3DXMatrixMultiply(&g_aMagicBubble[nCntPlayer].mtxWorld, &g_aMagicBubble[nCntPlayer].mtxWorld, &mtxTransModel);
-
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aMagicBubble[nCntPlayer].rot.y, g_aMagicBubble[nCntPlayer].rot.x, g_aMagicBubble[nCntPlayer].rot.z);
-		D3DXMatrixMultiply(&g_aMagicBubble[nCntPlayer].mtxWorld, &g_aMagicBubble[nCntPlayer].mtxWorld, &mtxRot);
-
-		// 親マトリックスを設定
-		mtxParent = UIMatrix;
-
-		// 算出したパーツのワールドマトリックスと親モデルのマトリックスを掛け合わせる
-		D3DXMatrixMultiply(&g_aMagicBubble[nCntPlayer].mtxWorld, &g_aMagicBubble[nCntPlayer].mtxWorld, &mtxParent);
 
 		// パーツのワールドマトリックスを設定
 		pDevice->SetTransform(D3DTS_WORLD, &g_aMagicBubble[nCntPlayer].mtxWorld);

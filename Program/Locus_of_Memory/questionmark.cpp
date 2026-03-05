@@ -179,7 +179,7 @@ void UpdateQuestionMark(void)
 		g_aQuestionMark[0].pos.z -= 0.1f;
 	}
 
-	PrintDebugProc("?�̈ʒu : (%f, %f, %f)\n", g_aQuestionMark[0].pos.x, g_aQuestionMark[0].pos.y, g_aQuestionMark[0].pos.z);
+	//PrintDebugProc("?�̈ʒu : (%f, %f, %f)\n", g_aQuestionMark[0].pos.x, g_aQuestionMark[0].pos.y, g_aQuestionMark[0].pos.z);
 }
 
 //======================================================================================

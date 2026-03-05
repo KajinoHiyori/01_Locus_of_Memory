@@ -206,7 +206,6 @@ void UpdateTutorialUI(void)
 				pPlayer->pos.z >= g_aTutorialUI[nCntUI].pos.z - APPEAR_SIZE &&	// ˆê’è”ÍˆÍ‚æ‚è‰œ‚É‚ ‚é
 				pPlayer->pos.z <= g_aTutorialUI[nCntUI].pos.z + APPEAR_SIZE)
 			{
-				PrintDebugProc("%d‚ª“–‚½‚Á‚Ä‚é\n", nCntPlayer);
 				bDisp[nCntUI] = true;
 				if (g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_NONDISPLAY)
 				{

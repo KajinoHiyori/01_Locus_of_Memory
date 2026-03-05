@@ -427,8 +427,6 @@ void UpdateSpellUI(void)
 
 		if (g_aSpellUI[nCntPlayer].bSpell == false)
 		{
-			PrintDebugProc("%dのメニューはない\n", nCntPlayer);
-
 			continue;
 		}
 
@@ -493,7 +491,6 @@ void UpdateSpellUI(void)
 			break;
 
 		case SPELLUISTATE_DISPLAY:	// 表示状態
-			PrintDebugProc("%dのメニューはある\n", nCntPlayer);
 			break;
 
 		case SPELLUISTATE_SETMAGIC:	// 魔法発動状態
@@ -518,7 +515,6 @@ void UpdateSpellUI(void)
 				// 中心位置からの位置を求める
 				//g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos += g_aSpellUI[nCntPlayer].pos;
 			}
-			PrintDebugProc("アイコンのキー %d\n", g_aSpellUI[nCntPlayer].nKey);
 
 			g_aSpellUI[nCntPlayer].nKey++;
 
@@ -587,7 +583,6 @@ void UpdateSpellUI(void)
 			pVtx[1].pos = D3DXVECTOR3(g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, 0.0f);
 			pVtx[2].pos = D3DXVECTOR3(-g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, -g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, 0.0f);
 			pVtx[3].pos = D3DXVECTOR3(g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, -g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, 0.0f);
-			PrintDebugProc("アイコンの高度 %f\n", g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight);
 		}
 	}
 

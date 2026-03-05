@@ -176,7 +176,7 @@ void UpdateKey(void)
 				g_aKey[nCntKey].pos += g_aKey[nCntKey].move;
 
 				// 鍵の位置
-				PrintDebugProc("鍵の位置[%d] : (%f, %f, %f)\n", nCntKey, g_aKey[nCntKey].pos.x, g_aKey[nCntKey].pos.y, g_aKey[nCntKey].pos.z);
+				//PrintDebugProc("鍵の位置[%d] : (%f, %f, %f)\n", nCntKey, g_aKey[nCntKey].pos.x, g_aKey[nCntKey].pos.y, g_aKey[nCntKey].pos.z);
 
 
 				// 最低高度に到達したとき
@@ -305,11 +305,11 @@ void CollisionKey(int nIdx, D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3
 			{
 				g_aKey[nCntKey].bUse = false;
 			}
-			PrintDebugProc("カギに当たっている\n");
+			//PrintDebugProc("カギに当たっている\n");
 		}
 		else
 		{
-			PrintDebugProc("カギに当たってない\n");
+			//PrintDebugProc("カギに当たってない\n");
 		}
 	}
 }

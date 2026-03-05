@@ -275,7 +275,7 @@ void UpdatePlayer(void)
 		{
 			if (bPause == false)
 			{
-				PrintDebugProc("%dのbPauseはfalse\n", nCntPlayer);
+				//PrintDebugProc("%dのbPauseはfalse\n", nCntPlayer);
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_SPELL;	// 呪文状態に変更
 				if ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
 				{
@@ -594,7 +594,7 @@ void UpdatePlayer(void)
 
 		// デバッグ表示
 		PrintDebugProc("%dプレイヤーのステート : %d [0 NORMAL / 1 PAUSE / 2 SPELL / 3 MAGIC]\n", nCntPlayer, g_aPlayer[nCntPlayer].state);
-		PrintDebugProc("%dプレイヤーのjumpフラグ : %d\n", nCntPlayer, g_aPlayer[nCntPlayer].bJump);
+		//PrintDebugProc("%dプレイヤーのjumpフラグ : %d\n", nCntPlayer, g_aPlayer[nCntPlayer].bJump);
 		PrintDebugProc("プレイヤー[%d]の位置 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].pos.x, g_aPlayer[nCntPlayer].pos.y, g_aPlayer[nCntPlayer].pos.z);
 		//PrintDebugProc("プレイヤー[%d]の移動量 : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].move.x, g_aPlayer[nCntPlayer].move.y, g_aPlayer[nCntPlayer].move.z);
 		//PrintDebugProc("プレイヤー[%d]の向き : (%.3f, %.3f, %.3f)\n", nCntPlayer, g_aPlayer[nCntPlayer].rot.x, g_aPlayer[nCntPlayer].rot.y, g_aPlayer[nCntPlayer].rot.z);

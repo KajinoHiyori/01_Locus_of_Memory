@@ -509,30 +509,6 @@ void UpdateLogoMotion(void)
 			SetFade(MODE_TITLE, COLOR_WHITE);
 		}
 	}
-
-	if (g_Logo.bDisp == true)
-	{
-		PrintDebugProc("モーションの種類 : %d\n",  g_Logo.motionType);
-		PrintDebugProc("現在のキー : %d\n", g_Logo.nKey);
-		PrintDebugProc("キーカウンター : %d\n", g_Logo.nCounterMotion);
-		PrintDebugProc("遷移間隔 : %d\n", g_nCounterFade);
-		if (g_Logo.bLoopMotion == true)
-		{
-			PrintDebugProc("ループ状態 : true\n");
-		}
-		else
-		{
-			PrintDebugProc("ループ状態 : false\n");
-		}
-		if (g_Logo.bFinishMotion == true)
-		{
-			PrintDebugProc("終了状態 : true\n");
-		}
-		else
-		{
-			PrintDebugProc("終了状態 : false\n");
-		}
-	}
 }
 
 //======================================================================================
