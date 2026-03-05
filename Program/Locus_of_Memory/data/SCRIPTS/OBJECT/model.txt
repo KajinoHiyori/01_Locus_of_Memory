@@ -2369,6 +2369,72 @@ MODELSET
 END_MODELSET
 
 #------------------------------------------------------------------------------
+# ì±ê¸
+#------------------------------------------------------------------------------
+MODELSET
+	TYPE = 29
+	POS = -189 0 1280
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = -189 0 424
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 29
+	POS = -189 0 689
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = -189 0 1070
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 29
+	POS = 319 0 424
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 319 0 689
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 29
+	POS = 319 0 1070
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 13
+	POS = 319 0 1280
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+#------------------------------------------------------------------------------
 # äKëwç\ë¢ÇÃÇ†ÇÈâ∆
 #------------------------------------------------------------------------------
 MODELSET
