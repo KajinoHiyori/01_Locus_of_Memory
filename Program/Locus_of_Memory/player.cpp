@@ -663,12 +663,14 @@ void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE paren
 	g_aPlayer[nIdx].rot = rot;
 	g_aPlayer[nIdx].nIdxShadow = SetShadow(SHADOWTYPE_CIRCLE, SHADOｗ, SHADOｗ);
 
-	// 当たり判定設定
+	// 当たり判定所持
 	g_aPlayer[nIdx].nIdxCollision = SetCollision();
 
+	// 当たり判定情報を設定
 	ColliderInfo.type = COLLIDERTYPE_SPHERE;
-	ColliderInfo.Collidertype.sphere.fRadius = 0.0f;
+	ColliderInfo.Collidertype.sphere.fRadius = 15.0f;
 
+	// 当たり判定を設定
 	SetCollider(g_aPlayer[nIdx].nIdxCollision, ColliderInfo);
 
 	// モーションを設定
@@ -683,10 +685,14 @@ void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 	// 過去の情報を格納
 	COMMANDOREDER ownCommandOld[MAX_OWNCOMMAND];
 
+	// 取得しようとしているコマンド
+	COMMANDOREDER DropCommand = GetFieldMagic(nDropMagicIdx);
+
+	// 今持っているコマンドと照合
 	for (int nCntCommand = 0; nCntCommand < pMagicBook->nCntOwn; nCntCommand++)
 	{
-		if (pMagicBook->OwnCommand[nCntCommand] == GetFieldMagic(nDropMagicIdx))
-		{
+		if (pMagicBook->OwnCommand[nCntCommand] == DropCommand)
+		{// すでに持っていたら終了
 			return;
 		}
 	}
@@ -698,7 +704,7 @@ void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 
 	if (pMagicBook->nCntOwn <= 0)	// 1つも魔法を持っていない場合
 	{
-		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
+		pMagicBook->OwnCommand[0] = DropCommand;
 		pMagicBook->nCntOwn++;
 		return;	// 処理を終了
 	}
@@ -721,7 +727,7 @@ void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 			pMagicBook->OwnCommand[nCntCommand + 1] = ownCommandOld[nCntCommand];
 		}
 
-		pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
+		pMagicBook->OwnCommand[0] = DropCommand;
 	}
 
 #if 0
