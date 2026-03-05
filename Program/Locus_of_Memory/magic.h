@@ -196,4 +196,7 @@ void ResetCommdSave(int nIdx);
 // 入力情報リセット処理==========================
 void ResetCommand(int nIdx);
 
+// 魔法の種類を取得==========================
+MAGICTYPE GetMagicType(int nIdx);
+
 #endif

@@ -284,40 +284,40 @@ void UpdateMagicUI(void)
 		// 魔導書の中身を更新
 		SetMagicTexture(nCntPlayer);
 
-		// ポーズ状態になったら非表示にする
-		if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aMagicUI[nCntPlayer].bDisp == true)
-		{
-			SetMagicUIDisappear(nCntPlayer);
-			bPause = true;
-		}
-		else if (g_aMagicUI[nCntPlayer].bDisp == false)
-		{
-			SetMagicUINonDisplay(nCntPlayer);
-		}
-
-		// SPELLメニューを開いているかのフラグを立てる
-		if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
-		{
-			if (bPause == false && ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-				&& (g_aMagicUI[nCntPlayer].state == MAGICUISTATE_NONDISPLAY || g_aMagicUI[nCntPlayer].state == MAGICUISTATE_DISAPPEAR)
-				&& pPlayer->bJump == false)
-			{
-				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_APPEAR;
-				SetMagicUINonDisplay(nCntPlayer);
-				SetMagicUIAppear(nCntPlayer);
-			}
-			g_aMagicUI[nCntPlayer].bDisp = true;
-		}
-		else
-		{
-			if (bPause == false && ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
-				&& (g_aMagicUI[nCntPlayer].state == MAGICUISTATE_DISPLAY || g_aMagicUI[nCntPlayer].state == MAGICUISTATE_APPEAR))
-			{
-				g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISAPPEAR;
-				SetMagicUIDisplay(nCntPlayer);
-				SetMagicUIDisappear(nCntPlayer);
-			}
-		}
+		//// ポーズ状態になったら非表示にする
+		//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aMagicUI[nCntPlayer].bDisp == true)
+		//{
+		//	SetMagicUIDisappear(nCntPlayer);
+		//	bPause = true;
+		//}
+		//else if (g_aMagicUI[nCntPlayer].bDisp == false)
+		//{
+		//	SetMagicUINonDisplay(nCntPlayer);
+		//}
+		//
+		//// SPELLメニューを開いているかのフラグを立てる
+		//if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+		//{
+		//	if (bPause == false && ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+		//		&& (g_aMagicUI[nCntPlayer].state == MAGICUISTATE_NONDISPLAY || g_aMagicUI[nCntPlayer].state == MAGICUISTATE_DISAPPEAR)
+		//		&& pPlayer->bJump == false)
+		//	{
+		//		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_APPEAR;
+		//		SetMagicUINonDisplay(nCntPlayer);
+		//		SetMagicUIAppear(nCntPlayer);
+		//	}
+		//	g_aMagicUI[nCntPlayer].bDisp = true;
+		//}
+		//else
+		//{
+		//	if (bPause == false && ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+		//		&& (g_aMagicUI[nCntPlayer].state == MAGICUISTATE_DISPLAY || g_aMagicUI[nCntPlayer].state == MAGICUISTATE_APPEAR))
+		//	{
+		//		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISAPPEAR;
+		//		SetMagicUIDisplay(nCntPlayer);
+		//		SetMagicUIDisappear(nCntPlayer);
+		//	}
+		//}
 
 		if (g_aMagicUI[nCntPlayer].bDisp == false)
 		{

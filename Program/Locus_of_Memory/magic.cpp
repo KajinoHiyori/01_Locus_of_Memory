@@ -16,6 +16,7 @@
 #include "magiccircle.h"
 #include "magicbubble.h"
 #include "spellui.h"
+#include "magicui.h"
 
 //マクロ定義
 #define MAX_MAGIC				(128)		//魔法の最大数
@@ -85,7 +86,9 @@ void UninitMagic(void)
 //魔法の更新処理==============================
 void UpdateMagic(void)
 {
-	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
+	Player* pPlayer = GetPlayer();
+
+	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++, pPlayer++)
 	{
 		if (g_aMagic[nCntPlayerType].bUse == true)
 		{
@@ -95,6 +98,21 @@ void UpdateMagic(void)
 
 			if (g_aMagic[nCntPlayerType].nLife < 0)
 			{
+				if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayerType == 0) || GetJoypadRightTriggePress(nCntPlayerType) == true || GetJoypadLeftTriggePress(nCntPlayerType) == true) && pPlayer->bJump == false)
+				{
+					// Spellメニューを表示状態にする
+					SetSpellUIAppear(nCntPlayerType);
+					SetMagicUIAppear(nCntPlayerType);
+					if (pPlayer->motion.motionType != PLAYERMOTIONTYPE_COMMAND)
+					{
+						SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
+					}
+				}
+				else
+				{
+					pPlayer->state = PLAYERSTATE_NORMAL;
+				}
+
 				g_aMagic[nCntPlayerType].mType = MAGICTYPE_NONE;
 				g_aMagic[nCntPlayerType].bUse = false;
 			}
@@ -770,4 +788,10 @@ void ResetCommand(int nIdx)
 	{
 		g_aCommand[nIdx][nCntCommand] = COMMANDTYPE_NONE;
 	}
+}
+
+// 魔法の種類を取得==========================
+MAGICTYPE GetMagicType(int nIdx)
+{
+	return g_aMagic[nIdx].mType;
 }
