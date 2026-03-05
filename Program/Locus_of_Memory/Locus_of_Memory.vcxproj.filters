@@ -258,6 +258,9 @@
     <ClCompile Include="flash.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="eventobject.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -423,6 +426,9 @@
       <Filter>UI\h</Filter>
     </ClInclude>
     <ClInclude Include="flash.h">
+      <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="eventobject.h">
       <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
