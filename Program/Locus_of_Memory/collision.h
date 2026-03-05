@@ -115,7 +115,8 @@ typedef struct ColliderInfo
 //*****************************************************************************
 typedef struct Collision
 {
-	int nIdx;								// 識別番号
+	D3DXVECTOR3 pos;						// 位置
+	D3DXVECTOR3 rot;						// 向き
 	int nColliderIdx[MAX_ONECOLLIDER];		// 使用するコライダーの番号
 	int nNumCollider;						// 使用しているコライダーの数
 	bool bUse;								// 使用状態
@@ -139,7 +140,7 @@ void UninitCollision(void);
 CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx);
 void UpdateCollider(int nIdx, D3DXVECTOR3 pos);
 void DrawCollision(void);
-int SetCollision(void);
+int SetCollision(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 void ResetCollision(int nIdx);
 void SetCollider(int nIdx, ColliderInfo ColliderInfo);
 

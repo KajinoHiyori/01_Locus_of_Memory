@@ -564,7 +564,7 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 			// “–‚½‚è”»’è
 			if (isCollider == true)
 			{
-				g_aObject[nCntObject].nCollisionIdx = SetCollision();
+				g_aObject[nCntObject].nCollisionIdx = SetCollision(pos, rot);
 
 				for (int nCntCollider = 0; nCntCollider < nNumCollider; nCntCollider++, pColliderInfo++)
 				{
@@ -671,7 +671,7 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		// “–‚½‚è”»’è
 		if (isCollider == true)
 		{
-			pParentObject->nCollisionIdx = SetCollision();
+			pParentObject->nCollisionIdx = SetCollision(pos, rot);
 
 			for (int nCntCollider = 0; nCntCollider < nNumCollider; nCntCollider++, pColliderInfo++)
 			{

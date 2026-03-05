@@ -6,6 +6,7 @@
 //=============================================================================
 #include "event.h"
 #include "object.h"
+#include "eventobject.h"
 #include "particle.h"
 #include "motion.h"
 #include "magic.h"
@@ -51,7 +52,7 @@ bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type, int nIdx)
 //========================================================================
 bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 {
-	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+	EventObject* pEventObject = GetEventObject(nIdx);
 
 	switch (type)
 	{
@@ -61,9 +62,12 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 
 		// ”RÄƒCƒxƒ“ƒg
 	case MAGICTYPE_COMBUSTION:
-		pParentObject->EventType = EVENTTYPE_001_1;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_COMBUSTION);
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, false, 10);
+		pEventObject->EventType = EVENTTYPE_001_1;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
+			pEventObject->ObjectInfo.ParentObject.pModelData, 
+			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
+			MOTIONTYPE_MOVE, false, false, 10);
 		return true;
 
 	default:
@@ -76,14 +80,17 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 //========================================================================
 bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 {
-	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+	EventObject* pEventObject = GetEventObject(nIdx);
 
 	switch (type)
 	{
 	case MAGICTYPE_TIMEREVERT:
-		pParentObject->EventType = EVENTTYPE_002_0;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, false, 10);
+		pEventObject->EventType = EVENTTYPE_002_0;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
+			pEventObject->ObjectInfo.ParentObject.pModelData, 
+			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
+			MOTIONTYPE_MOVE, false, false, 10);
 		return true;
 
 	case MAGICTYPE_COMBUSTION:
@@ -104,7 +111,7 @@ bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 //========================================================================
 bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 {
-	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+	EventObject* pEventObject = GetEventObject(nIdx);
 
 	switch (type)
 	{
@@ -118,29 +125,41 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 #endif
 
 	case MAGICTYPE_GROWTH:	// ¬’·‚³‚¹‚é
-		pParentObject->EventType = EVENTTYPE_003_1;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_GROWTH);
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
-		SetMagicLocus(MAGICEVENT_004, pParentObject->pos, 500.0f, pParentObject->nEventIdx);
+		pEventObject->EventType = EVENTTYPE_003_1;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_GROWTH);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
+			pEventObject->ObjectInfo.ParentObject.pModelData, 
+			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
+			MOTIONTYPE_MOVE, false, true, 10);
+		SetMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, pEventObject->nEventIdx);
 		return true;
 
 	case MAGICTYPE_RAINPRAY:	// ¬’·‚³‚¹‚é
-		pParentObject->EventType = EVENTTYPE_003_1;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_GROWTH);
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_MOVE, false, true, 10);
-		SetMagicLocus(MAGICEVENT_004, pParentObject->pos, 500.0f, pParentObject->nEventIdx);
+		pEventObject->EventType = EVENTTYPE_003_1;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_GROWTH);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
+			pEventObject->ObjectInfo.ParentObject.pModelData, 
+			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
+			MOTIONTYPE_MOVE, false, true, 10);
+		SetMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, pEventObject->nEventIdx);
 		return true;
 
 	case MAGICTYPE_COMBUSTION:	// ”RÄ‚³‚¹‚é
-		pParentObject->EventType = EVENTTYPE_003_2;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_RUN, false, false, 10);
+		pEventObject->EventType = EVENTTYPE_003_2;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
+			pEventObject->ObjectInfo.ParentObject.pModelData, 
+			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
+			MOTIONTYPE_RUN, false, false, 10);
 		return true;
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ‚³‚¹‚é
-		pParentObject->EventType = EVENTTYPE_003_2;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_RUN, false, false, 10);
+		pEventObject->EventType = EVENTTYPE_003_2;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
+			pEventObject->ObjectInfo.ParentObject.pModelData, 
+			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
+			MOTIONTYPE_RUN, false, false, 10);
 		return true;
 
 	default:
@@ -153,15 +172,18 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 //========================================================================
 bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 {
-	ParentObject* pParentObject = GetParentObjectInfo(nIdx);
+	EventObject* pEventObject = GetEventObject(nIdx);
 
 	switch (type)
 	{
 	case MAGICTYPE_TIMEREVERT:	// ¬’·‘O‚É–ß‚é
-		pParentObject->EventType = EVENTTYPE_003_0;
-		SetParticle(pParentObject->pos, 150, PARTICLETYPE_TIMEREVERT);
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_ACTION, false, false, 10);
-		SetMagicLocus(MAGICEVENT_003, pParentObject->pos, 500.0f, pParentObject->nEventIdx); 
+		pEventObject->EventType = EVENTTYPE_003_0;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
+			pEventObject->ObjectInfo.ParentObject.pModelData, 
+			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
+			MOTIONTYPE_ACTION, false, false, 10);
+		SetMagicLocus(MAGICEVENT_003, pEventObject->pos, 500.0f, pEventObject->nEventIdx); 
 		return true;
 
 	default:

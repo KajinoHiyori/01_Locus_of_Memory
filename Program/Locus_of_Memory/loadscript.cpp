@@ -801,7 +801,7 @@ HRESULT LoadModel(const char* pModelFileName)
 				}
 			}
 		}
-
+#if 0
 		if (strcmp(aStrCpy, LOAD_MAGICEVENT) == 0)
 		{// MAGICEVENTSETを読み込んだ
 			while (true)
@@ -892,6 +892,7 @@ HRESULT LoadModel(const char* pModelFileName)
 				}
 			}
 		}
+#endif
 
 		if (strcmp(aStrCpy, LOAD_END) == 0)
 		{// END_SCRIPTを読み込んだ
@@ -1285,13 +1286,13 @@ HRESULT LoadEventObject(const char* pEventObjectFileName)
 					{
 						SetEventObjectParent(pos, rot, (PARENTMODELTYPE)Parenttype, (MOTIONDATATYPE)motiontype,
 							&aColliderInfo[0], nNumCollider, (bool)nCollision, (bool)nCollider);
-						nCntParentModel++;
 					}
 					else
 					{
 						SetEventObjectNormal(pos, rot, (OBJECTTYPE)type, &aColliderInfo[0], nNumCollider, (bool)nCollision, (bool)nCollider);
-						nCntModel++;
 					}
+
+					nCntModel++;
 
 					nNumCollider = 0;
 					nCollider = false;
@@ -1348,34 +1349,27 @@ HRESULT LoadEventObject(const char* pEventObjectFileName)
 
 				if (strcmp(aStrCpy, LOAD_ENDMAGICEVENT) == 0)
 				{// END_MAGICEVENTSETを読み込んだ
-					ParentObject* pPalentObject = GetParentObjectInfo(nCntParentModel);
-
 					switch (nEvent)
 					{
 					case 1:	// HOUSE関連
-						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
-						pPalentObject->nEventIdx = nCntParentModel;
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
 						break;
 
 					case 2:	// 橋関連
-						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
-						pPalentObject->nEventIdx = nCntParentModel;
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
 						break;
 
 					case 3:	// 植物関連[燃焼/成長]
-						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
-						pPalentObject->nEventIdx = nCntParentModel;
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
 						break;
 
 					case 4:	// 植物関連[時戻し]
-						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntParentModel);
-						pPalentObject->nEventIdx = nCntParentModel;
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
 						break;
 
-					default:	// イベント無し
-						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
-						pPalentObject->nEventIdx = -1;
-						break;
+					//default:	// イベント無し
+					//	SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
+					//	break;
 					}
 
 					break;

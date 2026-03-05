@@ -26,12 +26,10 @@ void InitEventObject(void)
 	// イベント用オブジェクトへのポインタ
 	EventObject* pEventObject = &g_aEventObject[0];
 
-	// ただ単純な初期化
+	// 初期化
 	memset(pEventObject, NULL, sizeof(EventObject) * MAX_EVENTOBJECT);
 
 	LoadEventObject("data\\SCRIPTS\\OBJECT\\Eventobject000.txt");
-
-	// SetEventObjectParent(INIT_D3DXVEC3, INIT_D3DXVEC3, PARENTMODELTYPE_DRAGON, MOTIONDATATYPE_DRAGON, NULL, 0, true, false);
 }
 
 //=============================================================================
@@ -249,7 +247,7 @@ void SetEventObjectNormal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, OBJECTTYPE type, Col
 		if (isCollider == true)
 		{// コライダーを使っているなら
 			// 当たり判定を設定
-			pEventObject->nCollisionIdx = SetCollision();
+			pEventObject->nCollisionIdx = SetCollision(pos, rot);
 
 			pColliderInfo->Collidertype.pos = pos;
 
@@ -330,7 +328,7 @@ void SetEventObjectParent(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE pare
 		if (isCollider == true)
 		{// コライダーを使っているなら
 			// 当たり判定を設定
-			pEventObject->nCollisionIdx = SetCollision();
+			pEventObject->nCollisionIdx = SetCollision(pos, rot);
 
 			// 使っているコライダーの分だけ
 			for (int nCntCollider = 0; nCntCollider < nNumCollider; nCntCollider++, pColliderInfo++)
@@ -346,4 +344,12 @@ void SetEventObjectParent(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE pare
 
 		break;
 	}
+}
+
+//==============================================================================
+// イベント用オブジェクトの取得処理
+//==============================================================================
+EventObject* GetEventObject(int nIdx)
+{
+	return &g_aEventObject[nIdx];
 }

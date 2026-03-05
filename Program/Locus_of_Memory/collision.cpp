@@ -176,7 +176,7 @@ void DrawCollision(void)
 //=============================================================================
 //	当たり判定の設定処理
 //=============================================================================
-int SetCollision(void)
+int SetCollision(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	Collision* pCollision = &g_aCollision[0];
 	int nCntCollision = 0;
@@ -187,6 +187,9 @@ int SetCollision(void)
 		{// 使ってたら弾く
 			continue;
 		}
+
+		pCollision->pos = pos;
+		pCollision->rot = rot;
 
 		pCollision->bUse = true;	// 使用状態に
 		g_nNumCollision++;			// 全体の数を増やす

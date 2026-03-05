@@ -735,7 +735,7 @@ void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE paren
 	g_aPlayer[nIdx].nIdxShadow = SetShadow(SHADOWTYPE_CIRCLE, SHADO‚—, SHADO‚—);
 
 	// “–‚½‚è”»’èŠ
-	g_aPlayer[nIdx].nIdxCollision = SetCollision();
+	g_aPlayer[nIdx].nIdxCollision = SetCollision(pos, rot);
 
 	// “–‚½‚è”»’èî•ñ‚ğİ’è
 	ColliderInfo.type = COLLIDERTYPE_SPHERE;
