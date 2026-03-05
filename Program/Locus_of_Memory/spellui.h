@@ -67,7 +67,6 @@ void InitSpellUI(void);
 void UninitSpellUI(void);
 void UpdateSpellUI(void);
 void DrawSpellUI(void);
-void ResetSpellUI(int nIdx);
 void SetSpellUI(MAGICTYPE magicType, int nIdx, int nDispTime);
 void SetSpellUIState(int nIdx, SPELLUISTATE state);
 void SetSpellUIAppear(int nIdx);
@@ -80,4 +79,5 @@ void SetCommandDisappear(int nIdx, int nNumCommand);
 bool GetSpellUIDisp(int nIdx);
 SPELLUISTATE GetSpellUIState(int nIdx);
 LPDIRECT3DTEXTURE9 GetSpellTexture(SPELLUI_TEX SpellTex);
+D3DXMATRIX GetSpellUIMtx(int nIdx);
 #endif
