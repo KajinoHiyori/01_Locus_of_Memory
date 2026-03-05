@@ -30,7 +30,7 @@ int g_nNumCollision;							// 使用している当たり判定の数
 //=============================================================================
 //	矩形の当たり判定
 //=============================================================================
-bool(*BoxCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider) =
+bool(*BoxCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger) =
 {
 	CollisionBoxToBox,
 	CollisionBoxToCylinder,
@@ -41,7 +41,7 @@ bool(*BoxCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderTyp
 //=============================================================================
 //	筒の当たり判定
 //=============================================================================
-bool(*CylinderCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider) =
+bool(*CylinderCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger) =
 {
 	CollisionCylinderToBox,
 	CollisionCylinderToCylinder,
@@ -52,7 +52,7 @@ bool(*CylinderCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, Collid
 //=============================================================================
 //	球の当たり判定
 //=============================================================================
-bool(*SphereCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider) =
+bool(*SphereCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger) =
 {
 	CollisionSphereToBox,
 	CollisionSphereToCylinder,
@@ -64,7 +64,7 @@ bool(*SphereCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, Collider
 //	カプセルの当たり判定
 //=============================================================================
 #if 0	// 未実装
-bool(*CapsuleCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider) =
+bool(*CapsuleCollision[COLLIDERTYPE_MAX])(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger) =
 {
 
 };
@@ -100,7 +100,7 @@ void UninitCollision(void)
 //=============================================================================
 //	当たり判定の更新処理
 //=============================================================================
-CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx)
+CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx, bool isTrigger)
 {
 	Collision* pMyCollision = &g_aCollision[nMyIdx];			// 自分の当たり判定へのポインタ
 	Collision* pTargetCollision = &g_aCollision[nTargetIdx];	// 相手の当たり判定へのポインタ
@@ -121,7 +121,8 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx)
 				isCollision = BoxCollision[g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].type]
 				(CollisionInfo, 
 				g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].Collidertype, 
-				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype);
+				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype, 
+				isTrigger);
 				break;
 
 				// 筒の当たり判定
@@ -129,7 +130,8 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx)
 				isCollision = CylinderCollision[g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].type]
 				(CollisionInfo,
 				g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].Collidertype,
-				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype);
+				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype,
+				isTrigger);
 				break;
 
 				// 球の当たり判定
@@ -137,7 +139,8 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx)
 				isCollision = SphereCollision[g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].type]
 				(CollisionInfo, 
 				g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].Collidertype, 
-				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype);
+				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype,
+				isTrigger);
 				break;
 
 				// カプセルの当たり判定
@@ -252,7 +255,7 @@ void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 //=============================================================================
 //	矩形と矩形との当たり判定処理
 //=============================================================================
-bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 未実装
 	return false;
@@ -261,7 +264,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 //=============================================================================
 //	矩形と筒との当たり判定処理
 //=============================================================================
-bool CollisionBoxToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionBoxToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 未実装
 	return false;
@@ -270,7 +273,7 @@ bool CollisionBoxToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollid
 //=============================================================================
 //	矩形と球との当たり判定処理
 //=============================================================================
-bool CollisionBoxToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionBoxToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 未実装
 	return false;
@@ -279,7 +282,7 @@ bool CollisionBoxToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 //=============================================================================
 //	矩形とカプセルとの当たり判定処理
 //=============================================================================
-bool CollisionBoxToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionBoxToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 未実装
 	return false;
@@ -288,7 +291,7 @@ bool CollisionBoxToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollide
 //=============================================================================
 //	筒と矩形との当たり判定処理
 //=============================================================================
-bool CollisionCylinderToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionCylinderToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 未実装
 	return false;
@@ -297,7 +300,7 @@ bool CollisionCylinderToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollid
 //=============================================================================
 //	筒と筒との当たり判定処理
 //=============================================================================
-bool CollisionCylinderToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionCylinderToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 各距離を二乗したものをすべて足す
 	float fDiff = powf(MyCollider.cylinder.pos.x - TargetCollider.cylinder.pos.x, 2) + 
@@ -306,6 +309,11 @@ bool CollisionCylinderToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyC
 	// 総合より自分と対象の半径を足して二乗したもののほうが大きければ当たっている
 	if (fDiff <= powf(MyCollider.cylinder.fRadius + TargetCollider.cylinder.fRadius, 2))
 	{// 当たっていたら
+		if (isTrigger)
+		{// トリガーだったら
+			return true;
+		}
+
 		// 距離から弾く角度を出す
 		float fAngle = atan2f(MyCollider.cylinder.pos.x - TargetCollider.cylinder.pos.x, 
 			MyCollider.cylinder.pos.z - TargetCollider.cylinder.pos.z);
@@ -324,7 +332,7 @@ bool CollisionCylinderToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyC
 //=============================================================================
 //	筒と球との当たり判定処理
 //=============================================================================
-bool CollisionCylinderToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionCylinderToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 各距離を二乗したものをすべて足す
 	float fDiff = powf(MyCollider.cylinder.pos.x - TargetCollider.cylinder.pos.x, 2) +
@@ -333,6 +341,11 @@ bool CollisionCylinderToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCol
 	// 総合より自分と対象の半径を足して二乗したもののほうが大きければ当たっている
 	if (fDiff <= powf(MyCollider.cylinder.fRadius + TargetCollider.cylinder.fRadius, 2))
 	{// 当たっていたら
+		if (isTrigger)
+		{// トリガーだったら
+			return true;
+		}
+
 		// 距離から弾く角度を出す
 		float fAngle = atan2f(MyCollider.cylinder.pos.x - TargetCollider.cylinder.pos.x,
 			MyCollider.cylinder.pos.z - TargetCollider.cylinder.pos.z);
@@ -351,7 +364,7 @@ bool CollisionCylinderToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCol
 //=============================================================================
 //	筒とカプセルとの当たり判定処理
 //=============================================================================
-bool CollisionCylinderToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionCylinderToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 未実装
 	return false;
@@ -360,7 +373,7 @@ bool CollisionCylinderToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCo
 //=============================================================================
 //	球と矩形との当たり判定処理
 //=============================================================================
-bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 未実装
 	return false;
@@ -369,7 +382,7 @@ bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 //=============================================================================
 //	球と筒との当たり判定処理
 //=============================================================================
-bool CollisionSphereToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionSphereToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 各距離を二乗したものをすべて足す
 	float fDiff = powf(MyCollider.sphere.pos.x - TargetCollider.cylinder.pos.x, 2) +
@@ -378,6 +391,11 @@ bool CollisionSphereToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCol
 	// 総合より自分と対象の半径を足して二乗したもののほうが大きければ当たっている
 	if (fDiff <= powf(MyCollider.sphere.fRadius + TargetCollider.cylinder.fRadius, 2))
 	{// 当たっていたら
+		if (isTrigger)
+		{// トリガーだったら
+			return true;
+		}
+
 		// 距離から弾く角度を出す
 		float fAngle = atan2f(MyCollider.sphere.pos.x - TargetCollider.cylinder.pos.x,
 			MyCollider.sphere.pos.z - TargetCollider.cylinder.pos.z);
@@ -396,7 +414,7 @@ bool CollisionSphereToCylinder(CollisionInfo& _CollisionInfo, ColliderType MyCol
 //=============================================================================
 //	球と球との当たり判定処理
 //=============================================================================
-bool CollisionSphereToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionSphereToSphere(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 各距離を二乗したものをすべて足す
 	float fDiff = powf(MyCollider.sphere.pos.x - TargetCollider.sphere.pos.x, 2) + 
@@ -406,6 +424,11 @@ bool CollisionSphereToSphere(CollisionInfo& _CollisionInfo, ColliderType MyColli
 	// 総合より自分と対象の半径を足して二乗したもののほうが大きければ当たっている
 	if (fDiff <= powf(MyCollider.sphere.fRadius + TargetCollider.sphere.fRadius, 2))
 	{// 当たっていたら
+		if (isTrigger)
+		{// トリガーだったら
+			return true;
+		}
+
 		// 弾く方向を決める (自分と対象の距離から出た向きを正規化)
 		D3DXVECTOR3 VecDir = (MyCollider.sphere.pos - TargetCollider.sphere.pos);
 		D3DXVec3Normalize(&VecDir, &VecDir);
@@ -423,7 +446,7 @@ bool CollisionSphereToSphere(CollisionInfo& _CollisionInfo, ColliderType MyColli
 //=============================================================================
 //	球とカプセルとの当たり判定処理
 //=============================================================================
-bool CollisionSphereToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider)
+bool CollisionSphereToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
 	// 未実装
 	return false;
