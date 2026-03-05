@@ -7,6 +7,7 @@
 #include "main.h"
 #include "color.h"
 #include "magicui.h"
+#include "spellui.h"
 #include "player.h"
 #include "game.h"
 #include "input.h"
@@ -399,7 +400,6 @@ void DrawMagicUI(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX UIMatrix, mtxRot;	// UIのマトリックス情報を取得
-	Player* pPlayer = GetPlayer();
 
 	// ワールドマトリックスの初期化(デフォルトの値にする)
 	D3DXMatrixIdentity(&UIMatrix);
@@ -415,14 +415,14 @@ void DrawMagicUI(void)
 	// カリングをオフにする
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		if (g_aMagicUI[nCntPlayer].bDisp == false)
 		{
 			continue;
 		}
 		// UIのマトリックス情報を取得
-		UIMatrix = pPlayer->mtxWorld;
+		UIMatrix = GetSpellUIMtx(nCntPlayer);
 
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &UIMatrix);
@@ -443,10 +443,6 @@ void DrawMagicUI(void)
 			// パーツの位置を反映
 			D3DXMatrixTranslation(&mtxTransModel, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.x, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.y, g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].pos.z);
 			D3DXMatrixMultiply(&g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &mtxTransModel);
-
-			// 向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aMagicUI[nCntPlayer].rot.y, g_aMagicUI[nCntPlayer].rot.x, g_aMagicUI[nCntPlayer].rot.z);
-			D3DXMatrixMultiply(&g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &g_aMagicUI[nCntPlayer].aMagicUI[nCntUI].mtxWorld, &mtxRot);
 
 			// 親マトリックスを設定
 			mtxParent = UIMatrix;
