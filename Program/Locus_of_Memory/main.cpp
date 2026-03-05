@@ -556,34 +556,44 @@ void Update(void)
 	}
 #endif
 
+	bool bTest = false;
 	PrintDebugProc("FPS : %d\n", g_nCountFPS);
 
 	// キーボードの更新処理
 	UpdateKeyboard();
+	bTest = false;
 
 	// ジョイパッドの更新処理
 	UpdateJoypad();
+	bTest = false;
 
 	// マウスの更新処理
 	UpdateMouse();
+	bTest = false;
 
 	// デバッグ表示の更新処理
 	UpdateDebugProc();
+	bTest = false;
 
 	// カメラの更新処理
 	UpdateCamera(g_mode);
+	bTest = false;
 
 	// オブジェクトの更新処理(仮)
 	UpdateObject();
+	bTest = false;
 
 	// スカイボックスの更新処理
 	UpdateSkyBox();
+	bTest = false;
 
 	// 塀の更新処理
 	UpdateBrickWall();
+	bTest = false;
 
 	// 時計の更新処理
 	UpdateClock();
+	bTest = false;
 
 	switch (g_mode)
 	{
@@ -591,51 +601,64 @@ void Update(void)
 		// スタートモード
 	case MODE_START:
 		UpdateStart();
+		bTest = false;
+
 		break;
 
 		// タイトルモード
 	case MODE_TITLE:
 		UpdateTitle();
+		bTest = false;
 		break;
 
 		// チュートリアルモード
 	case MODE_TUTORIAL:
 		UpdateTutorial();
+		bTest = false;
 		break;
 
 		// ゲームモード
 	case MODE_GAME:
 		UpdateGame();
+		bTest = false;
 		break;
 
 		// リザルトモード
 	case MODE_RESULT:
 		UpdateResult();
+		bTest = false;
 		break;
 
 		// 診断モード
 	case MODE_DIAGNOSIS:
 		UpdateDiagnosis();
+		bTest = false;
 		break;
 	}
 
 
 	// フェードの更新処理
 	UpdateFade();
+	bTest = false;
 
 	// エフェクトの更新処理
 	UpdateEffect();
+	bTest = false;
 
 	// パーティクルの更新処理
 	UpdateParticle();
+	bTest = false;
 
 	// 文字の更新処理
 	UpdateGrain();
+	bTest = false;
 
 	// 粒の更新処理
 	UpdateSparkle();
+	bTest = false;
 
 	UpdateVibration();
+	bTest = false;
 
 }
 
