@@ -282,7 +282,7 @@ void UpdateMagicUI(void)
 		SetMagicTexture(nCntPlayer);
 
 		//// ポーズ状態になったら非表示にする
-		//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aMagicUI[nCntPlayer].bDisp == true)
+		//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aMagicUI[nCntPlayer].bDisp == true)
 		//{
 		//	SetMagicUIDisappear(nCntPlayer);
 		//	bPause = true;
@@ -293,9 +293,9 @@ void UpdateMagicUI(void)
 		//}
 		//
 		//// SPELLメニューを開いているかのフラグを立てる
-		//if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 1) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+		//if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
 		//{
-		//	if (bPause == false && ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+		//	if (bPause == false && ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
 		//		&& (g_aMagicUI[nCntPlayer].state == MAGICUISTATE_NONDISPLAY || g_aMagicUI[nCntPlayer].state == MAGICUISTATE_DISAPPEAR)
 		//		&& pPlayer->bJump == false)
 		//	{
@@ -307,7 +307,7 @@ void UpdateMagicUI(void)
 		//}
 		//else
 		//{
-		//	if (bPause == false && ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 1) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+		//	if (bPause == false && ((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
 		//		&& (g_aMagicUI[nCntPlayer].state == MAGICUISTATE_DISPLAY || g_aMagicUI[nCntPlayer].state == MAGICUISTATE_APPEAR))
 		//	{
 		//		g_aMagicUI[nCntPlayer].state = MAGICUISTATE_DISAPPEAR;

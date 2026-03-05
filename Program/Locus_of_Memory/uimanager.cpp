@@ -376,7 +376,7 @@ void UpdateUIManager(void)
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;
 			}
 #if 0
-			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && pPlayer->bJump == false)
+			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && pPlayer->bJump == false)
 			{
 				SetUIAppear(nCntPlayer);	// UIを出現状態にする
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
@@ -394,7 +394,8 @@ void UpdateUIManager(void)
 			break;
 
 		case UISTATE_SELECT:	// セレクトメニュー
-			//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
+
+			//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
 			//{
 			//	SetUIDissapear(nCntPlayer);	// UIの表示状態を消滅状態にする
 			//	SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
@@ -402,7 +403,7 @@ void UpdateUIManager(void)
 			//else
 			{
 				// 選択に合わせてメニューを切り替え
-				if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 1) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
+				if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
 				{
 					g_aUIManager[nCntPlayer].nSelect--;
 					if (g_aUIManager[nCntPlayer].nSelect < UITYPE_CLOCK)
@@ -410,7 +411,7 @@ void UpdateUIManager(void)
 						g_aUIManager[nCntPlayer].nSelect = UITYPE_QUIT;
 					}
 				}
-				else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 1) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
+				else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
 				{
 					g_aUIManager[nCntPlayer].nSelect++;
 					if (g_aUIManager[nCntPlayer].nSelect > UITYPE_QUIT)
@@ -433,7 +434,7 @@ void UpdateUIManager(void)
 
 				}
 
-				if (*pFade == FADE_NONE && ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true))
+				if (*pFade == FADE_NONE && ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true))
 				{
 					switch (g_aUIManager[nCntPlayer].nSelect)
 					{
@@ -444,7 +445,14 @@ void UpdateUIManager(void)
 
 					case UITYPE_CONTINUE:	// CONTINUEを選択
 						SetUIDissapear(nCntPlayer);
-						SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+						if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+						{
+							// SPELLを開いた状態の場合はモーション切り替えを行わない
+						}
+						else
+						{
+							SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+						}
 						break;
 
 					case UITYPE_RETRY:	// RETRYを選択
@@ -492,12 +500,12 @@ void UpdateUIManager(void)
 			break;
 
 		case UISTATE_CLOCK:	// 時計
-			if ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true)
+			if ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true)
 			{
 				SetClockDissapear(nCntPlayer);
 				g_aUIManager[nCntPlayer].stateNext = UISTATE_APPEAR;
 			}
-			//else if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
+			//else if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
 			//{
 			//	SetClockDissapear(nCntPlayer);
 			//	g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;
@@ -839,7 +847,7 @@ void SetUINonDisp(int nIdx)
 	DissapearBattery(nIdx);
 	Player* pPlayer = GetPlayer();
 	pPlayer[nIdx].state = PLAYERSTATE_NORMAL;
-	if (((GetKeyboardPress(DIK_TAB) == true && nIdx == 1) || GetJoypadRightTriggePress(nIdx) == true || GetJoypadLeftTriggePress(nIdx) == true))
+	if (((GetKeyboardPress(DIK_TAB) == true && nIdx == 0) || GetJoypadRightTriggePress(nIdx) == true || GetJoypadLeftTriggePress(nIdx) == true))
 	{
 		SetSpellUIAppear(nIdx);
 		SetMagicUIAppear(nIdx);

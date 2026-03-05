@@ -221,7 +221,7 @@ void UpdateTutorialUI(void)
 				switch (operationType)
 				{
 				case OPERATIONTYPE_2P:	// 2êlëÄçÏ
-					if (bDisp[nCntUI] == false && nCntPlayer == 1)
+					if (bDisp[nCntUI] == false && nCntPlayer == 0)
 					{
 						SetTutorialUIDisappear(nCntUI);
 					}

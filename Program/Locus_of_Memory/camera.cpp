@@ -228,7 +228,7 @@ void UpdateGameCamera(void)
 	Player* pPlayer = GetPlayer();		// プレイヤーの先頭アドレス
 	EVENTSTATE *pEventState = GetEventState();
 
-	for (int nCntCamera = 0; nCntCamera < g_nNumCamera; nCntCamera++, pCamera++, pPlayer++)
+	for (int nCntCamera = 0; nCntCamera < g_nNumCamera; nCntCamera++, pCamera++)
 	{
 		if (*pEventState == EVENTSTATE_NORMAL)
 		{
@@ -427,7 +427,8 @@ void UpdateGameCamera(void)
 			pCamera->posR.z = -4800.0f;
 
 			//プレイヤーをポーズ状態に
-			pPlayer->state = PLAYERSTATE_PAUSE;
+			pPlayer[0].state = PLAYERSTATE_PAUSE;
+			pPlayer[1].state = PLAYERSTATE_PAUSE;
 
 			//時計を停止
 			SetClockState(CLOCKSTATE_STOP);
@@ -441,7 +442,8 @@ void UpdateGameCamera(void)
 				*pEventState = EVENTSTATE_NORMAL;
 
 				//プレイヤーをノーマル状態に
-				pPlayer->state = PLAYERSTATE_NORMAL;
+				pPlayer[0].state = PLAYERSTATE_NORMAL;
+				pPlayer[1].state = PLAYERSTATE_NORMAL;
 
 				//時計を稼働
 				SetClockState(CLOCKSTATE_OPERATION);

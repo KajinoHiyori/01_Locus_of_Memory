@@ -426,6 +426,7 @@ void UpdateSpellUI(void)
 
 		if (g_aSpellUI[nCntPlayer].bSpell == false)
 		{
+
 			continue;
 		}
 
@@ -752,144 +753,142 @@ void SetSpellUIAppear(int nIdx)
 	// 操作人数の取得
 	OPERATIONTYPE operationType = GetOperationType();
 	Player* pPlayer = GetPlayer();
-	if (pPlayer->state != PLAYERSTATE_PAUSE)
+	
+	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 	{
-		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
+		// 各種情報の設定
+		switch (nCntUI)
 		{
-			// 各種情報の設定
-			switch (nCntUI)
-			{
-			case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(-COMMAND_X, COMMAND_Y, 0.0f);	// 中心位置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_COMMAND0;	// テクスチャの配置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_NONDISP;		// UIの浮遊感
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = COMMAND_SIZE;		// 幅
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = COMMAND_SIZE;		// 幅の目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = COMMAND_SIZE;		// 高さの目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;				// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;			// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = false;				// 表示状態
-				break;
+		case SPELLUI_TYPE_COMMAND0:	// 1つ目のコマンド
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(-COMMAND_X, COMMAND_Y, 0.0f);	// 中心位置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_COMMAND0;	// テクスチャの配置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_NONDISP;		// UIの浮遊感
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = COMMAND_SIZE;		// 幅
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = COMMAND_SIZE;		// 幅の目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = COMMAND_SIZE;		// 高さの目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;				// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;			// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = false;				// 表示状態
+			break;
 
-			case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(0.0f, COMMAND_Y, 0.0f);	// 中心位置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_COMMAND1;	// テクスチャの配置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_NONDISP;		// UIの浮遊感
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = COMMAND_SIZE;		// 幅
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = COMMAND_SIZE;		// 幅の目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = COMMAND_SIZE;		// 高さの目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;				// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;			// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = false;				// 表示状態
-				break;
+		case SPELLUI_TYPE_COMMAND1:	// 2つ目のコマンド
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(0.0f, COMMAND_Y, 0.0f);	// 中心位置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_COMMAND1;	// テクスチャの配置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_NONDISP;		// UIの浮遊感
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = COMMAND_SIZE;		// 幅
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = COMMAND_SIZE;		// 幅の目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = COMMAND_SIZE;		// 高さの目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;				// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;			// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = false;				// 表示状態
+			break;
 
-			case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(COMMAND_X, COMMAND_Y, 0.0f);	// 中心位置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_COMMAND2;	// テクスチャの配置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_NONDISP;		// UIの浮遊感
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = COMMAND_SIZE;		// 幅
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = COMMAND_SIZE;		// 幅の目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = COMMAND_SIZE;		// 高さの目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;				// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;			// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = false;				// 表示状態
-				break;
+		case SPELLUI_TYPE_COMMAND2:	// 3つ目のコマンド
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(COMMAND_X, COMMAND_Y, 0.0f);	// 中心位置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_MAGICNULL;	// テクスチャの種類
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_COMMAND2;	// テクスチャの配置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_NONDISP;		// UIの浮遊感
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = COMMAND_SIZE;		// 幅
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = COMMAND_SIZE;		// 幅の目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = COMMAND_SIZE;		// 高さの目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;				// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;			// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = false;				// 表示状態
+			break;
 
-			case SPELLUI_TYPE_RED:	// 赤魔法
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(COMMAND_X, MAGICRB_Y, 0.0f);	// 中心位置
-				// テクスチャの種類
-				if (operationType == OPERATIONTYPE_KEYBOARD)
-				{ // キーボード操作
-					g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_L;
-				}
-				else
-				{ // ジョイパッド操作
-					g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_B;
-				}
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_RED;		// テクスチャの配置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;	// UIの浮遊感
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;	// 幅
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = MAGIC_SIZE;	// 幅の目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = MAGIC_SIZE;	// 高さの目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;			// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;		// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
-				break;
-
-			case SPELLUI_TYPE_GREEN:	// 緑魔法
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(0.0f, MAGICG_Y, 0.0f);	// 中心位置
-				// テクスチャの種類
-				if (operationType == OPERATIONTYPE_KEYBOARD)
-				{ // キーボード操作
-					g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_K;
-				}
-				else
-				{ // ジョイパッド操作
-					g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_A;
-				}
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_GREEN;	// テクスチャの配置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;		// UIの浮遊感
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;	// 幅
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = MAGIC_SIZE;	// 幅の目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = MAGIC_SIZE;	// 高さの目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;			// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;		// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
-				break;
-
-			case SPELLUI_TYPE_BLUE:	// 青魔法
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(-COMMAND_X, MAGICRB_Y, 0.0f);	// 中心位置
-				// テクスチャの種類
-				if (operationType == OPERATIONTYPE_KEYBOARD)
-				{ // キーボード操作
-					g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_J;
-				}
-				else
-				{ // ジョイパッド操作
-					g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_X;
-				}
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_BLUE;	// テクスチャの配置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;	// UIの浮遊感
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;	// 幅
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = MAGIC_SIZE;	// 幅の目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = MAGIC_SIZE;	// 高さの目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;			// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;		// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
-				break;
-
-			case SPELLUI_TYPE_YELLOW:	// 黄魔法
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(0.0f, MAGICY_Y, 0.0f);	// 中心位置
-				// テクスチャの種類
-				if (operationType == OPERATIONTYPE_KEYBOARD)
-				{ // キーボード操作
-					g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_I;
-				}
-				else
-				{ // ジョイパッド操作
-					g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_Y;
-				}
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_YELLOW;	// テクスチャの配置
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;	// UIの浮遊感
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;	// 幅
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = MAGIC_SIZE;	// 幅の目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = MAGIC_SIZE;	// 高さの目的地
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;			// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;		// 浮遊感を演出
-				g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
-				break;
+		case SPELLUI_TYPE_RED:	// 赤魔法
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(COMMAND_X, MAGICRB_Y, 0.0f);	// 中心位置
+			// テクスチャの種類
+			if (operationType == OPERATIONTYPE_KEYBOARD)
+			{ // キーボード操作
+				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_L;
 			}
+			else
+			{ // ジョイパッド操作
+				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_B;
+			}
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_RED;		// テクスチャの配置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;	// UIの浮遊感
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;	// 幅
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = MAGIC_SIZE;	// 幅の目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = MAGIC_SIZE;	// 高さの目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;			// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;		// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case SPELLUI_TYPE_GREEN:	// 緑魔法
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(0.0f, MAGICG_Y, 0.0f);	// 中心位置
+			// テクスチャの種類
+			if (operationType == OPERATIONTYPE_KEYBOARD)
+			{ // キーボード操作
+				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_K;
+			}
+			else
+			{ // ジョイパッド操作
+				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_A;
+			}
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_GREEN;	// テクスチャの配置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;		// UIの浮遊感
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;	// 幅
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = MAGIC_SIZE;	// 幅の目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = MAGIC_SIZE;	// 高さの目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;			// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;		// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case SPELLUI_TYPE_BLUE:	// 青魔法
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(-COMMAND_X, MAGICRB_Y, 0.0f);	// 中心位置
+			// テクスチャの種類
+			if (operationType == OPERATIONTYPE_KEYBOARD)
+			{ // キーボード操作
+				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_J;
+			}
+			else
+			{ // ジョイパッド操作
+				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_X;
+			}
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_BLUE;	// テクスチャの配置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;	// UIの浮遊感
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;	// 幅
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = MAGIC_SIZE;	// 幅の目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = MAGIC_SIZE;	// 高さの目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;			// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;		// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
+			break;
+
+		case SPELLUI_TYPE_YELLOW:	// 黄魔法
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].pos = D3DXVECTOR3(0.0f, MAGICY_Y, 0.0f);	// 中心位置
+			// テクスチャの種類
+			if (operationType == OPERATIONTYPE_KEYBOARD)
+			{ // キーボード操作
+				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_I;
+			}
+			else
+			{ // ジョイパッド操作
+				g_aSpellUI[nIdx].aSpellUI[nCntUI].tex = SPELLUI_TEX_Y;
+			}
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].type = SPELLUI_TYPE_YELLOW;	// テクスチャの配置
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].move = SPELLUI_MOVE_STOP;	// UIの浮遊感
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidth = MAGIC_SIZE;	// 幅
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fWidthDest = MAGIC_SIZE;	// 幅の目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].fHeightDest = MAGIC_SIZE;	// 高さの目的地
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nKey = 0;			// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].nNumKey = NUM_KEY;		// 浮遊感を演出
+			g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
+			break;
 		}
-		g_aSpellUI[nIdx].bSpell = true;
-		g_aSpellUI[nIdx].state = SPELLUISTATE_APPEAR;
-		g_aSpellUI[nIdx].rot = D3DXVECTOR3(0.0f, 3.14f, 0.0f);	// 中心位置
-		g_aSpellUI[nIdx].magicType = SPELLUI_TEX_NONE;		// 発動中の魔法を格納
-		g_aSpellUI[nIdx].nNumKey = NUM_KEY;			// 処理を行うキー数
-		g_aSpellUI[nIdx].nKey = 0;				// 現在のキー
 	}
+	g_aSpellUI[nIdx].bSpell = true;
+	g_aSpellUI[nIdx].state = SPELLUISTATE_APPEAR;
+	g_aSpellUI[nIdx].rot = D3DXVECTOR3(0.0f, 3.14f, 0.0f);	// 中心位置
+	g_aSpellUI[nIdx].magicType = SPELLUI_TEX_NONE;		// 発動中の魔法を格納
+	g_aSpellUI[nIdx].nNumKey = NUM_KEY;			// 処理を行うキー数
+	g_aSpellUI[nIdx].nKey = 0;				// 現在のキー
 }
 
 //======================================================================================
