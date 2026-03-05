@@ -78,6 +78,7 @@ void InitEventObject(void);
 void UninitEventObject(void);
 void UpdateEventObject(void);
 void DrawEventObject(void);
-void SetEventObject(D3DXVECTOR3 pos, float fRadius);
+void SetEventObjectNormal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, OBJECTTYPE type, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision, bool isCollider);
+void SetEventObjectParent(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, MOTIONDATATYPE motiondatatype, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision, bool isCollider);
 
 #endif // !_EVENTOBJECT_H_

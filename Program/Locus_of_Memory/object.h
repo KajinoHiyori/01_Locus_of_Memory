@@ -182,7 +182,7 @@ Object* GetObjectInfo(int nIdx);
 Object* GetResetObjectInfo(int nIdx);
 ParentObject* GetParentObjectInfo(int nIdx);
 ParentObject* GetResetParentObjectInfo(int nIdx);
-ObjectModel* GetObjectModel(void);
+ObjectModel* GetObjectModel(int nIdx);
 void UninitRandomObject(void);
 void UpdateObjectEvent001(ParentObject* pParentObject);
 

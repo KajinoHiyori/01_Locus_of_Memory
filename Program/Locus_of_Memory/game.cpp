@@ -5,17 +5,17 @@
 // 
 //=============================================================================
 #include "main.h"
-#include"game.h"
+#include "game.h"
 #include "color.h"
-#include"input.h"
+#include "input.h"
 #include "debugproc.h"
-#include"fade.h"
-#include"sound.h"
+#include "fade.h"
+#include "sound.h"
 #include "fog.h"
-#include"effect.h"
-#include"particle.h"
-#include"camera.h"
-#include"player.h"
+#include "effect.h"
+#include "particle.h"
+#include "camera.h"
+#include "player.h"
 #include "magic.h"
 #include "uimanager.h"
 #include "magicui.h"
@@ -25,13 +25,14 @@
 #include "clock.h"
 #include "battery.h"
 #include "object.h"
+#include "eventobject.h"
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
-#include"light.h"
-#include"shadow.h"
+#include "light.h"
+#include "shadow.h"
 #include "vibration.h"
-#include"meshfield.h"
+#include "meshfield.h"
 #include "brickwall.h"
 #include "loadscript.h"
 #include "grain.h"
@@ -66,6 +67,9 @@ void InitGame(void)
 
 	// 影の初期化処理
 	InitShadow();
+
+	// イベントオブジェクトの初期化処理
+	InitEventObject();
 
 	// プレイヤーの初期化処理
 	InitPlayer();
@@ -147,6 +151,9 @@ void UninitGame(void)
 	// 影の終了処理
 	UninitShadow();
 
+	// イベントオブジェクトの終了処理
+	UninitEventObject();
+
 	// プレイヤーの終了処理
 	UninitPlayer();
 
@@ -196,6 +203,9 @@ void UpdateGame(void)
 
 	// 影の更新処理
 	UpdateShadow();
+
+	// イベントオブジェクトの更新処理
+	UpdateEventObject();
 
 	// プレイヤーの更新処理
 	UpdatePlayer();
@@ -355,6 +365,9 @@ void DrawGame(void)
 
 	// オブジェクトの描画処理（仮）
 	DrawObject();
+
+	// イベントオブジェクトの描画処理
+	DrawEventObject();
 
 	// 鍵の描画処理
 	DrawKey();

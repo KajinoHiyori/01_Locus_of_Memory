@@ -451,9 +451,9 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 {
 	Object* pObject = &g_aObject[0];				// 先頭アドレス
 	D3DXMATRIX mtxRot, mtxTrans, mtxScale;			// 計算用マトリックス
-	D3DXVECTOR3 posMax, posMin;						// 
-	D3DXVECTOR3 posA, posB, posC, posD;
-	bool isRand = false;
+	D3DXVECTOR3 posMax, posMin;						// 頂点の最大と最小位置
+	D3DXVECTOR3 posA, posB, posC, posD;				// 各頂点情報
+	bool isRand = false;							// 着地判定
 
 	for (int nCntModel = 0; nCntModel < MAX_OBJECT; nCntModel++, pObject++)
 	{
@@ -467,7 +467,7 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 			CollisionInfo CollisionInfo = UpdateCollision(nCollisionIdx, pObject->nCollisionIdx);
 
 			if (CollisionInfo.isCollision)
-			{
+			{// 当たっていれば
 				*pPos = CollisionInfo.Intersection;
 				break;
 			}
@@ -742,9 +742,9 @@ ParentObject* GetParentResetObjectInfo(int nIdx)
 //======================================================================================
 // オブジェクトのモデル情報を渡す
 //======================================================================================
-ObjectModel* GetObjectModel(void)
+ObjectModel* GetObjectModel(int nIdx)
 {
-	return &g_aObjectModel[0];
+	return &g_aObjectModel[nIdx];
 }
 
 //======================================================================================

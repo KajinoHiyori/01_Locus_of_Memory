@@ -27,6 +27,8 @@ void InitEventObject(void)
 
 	// ただ単純な初期化
 	memset(pEventObject, NULL, sizeof(EventObject) * MAX_EVENTOBJECT);
+
+	// SetEventObjectParent(INIT_D3DXVEC3, INIT_D3DXVEC3, PARENTMODELTYPE_DRAGON, MOTIONDATATYPE_DRAGON, NULL, 0, true, false);
 }
 
 //=============================================================================
@@ -42,7 +44,23 @@ void UninitEventObject(void)
 //=============================================================================
 void UpdateEventObject(void)
 {
+	// イベント用オブジェクトへのポインタ
+	EventObject* pEventObject = &g_aEventObject[0];
 
+	for (int nCntEventObject = 0; nCntEventObject < MAX_EVENTOBJECT; nCntEventObject++, pEventObject++)
+	{
+		if (pEventObject->bUse == false)
+		{// 使っていなければ弾く
+			continue;
+		}
+
+		if (pEventObject->ObjectType == EVENTOBJECTTYPE_PARENT)
+		{
+			UpdateMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+				pEventObject->ObjectInfo.ParentObject.pModelData,
+				&pEventObject->ObjectInfo.ParentObject.OffSetData);
+		}
+	}
 }
 
 //==============================================================================
@@ -50,7 +68,150 @@ void UpdateEventObject(void)
 //==============================================================================
 void DrawEventObject(void)
 {
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
+	D3DMATERIAL9 matDef;						// 現在のマテリアルを保存
+	D3DXMATERIAL* pMat;							// マテリアルデータへのポインタ
+	D3DXMATERIAL MatCpy;						// 書き換え用マテリアル
 
+	// イベント用オブジェクトへのポインタ
+	EventObject* pEventObject = &g_aEventObject[0];
+
+	for (int nCntEventObject = 0; nCntEventObject < MAX_EVENTOBJECT; nCntEventObject++, pEventObject++)
+	{
+		if (pEventObject->bUse == false)
+		{// 使っていなければ弾く
+			continue;
+		}
+
+		if (pEventObject->ObjectType == EVENTOBJECTTYPE_NORMAL)
+		{
+			// ワールドマトリックスの初期化(デフォルトの値にする)
+			D3DXMatrixIdentity(&pEventObject->mtxWorld);
+
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, pEventObject->rot.y, pEventObject->rot.x, pEventObject->rot.z);
+			D3DXMatrixMultiply(&pEventObject->mtxWorld, &pEventObject->mtxWorld, &mtxRot);
+
+			// 位置を反映
+			D3DXMatrixTranslation(&mtxTrans, pEventObject->pos.x, pEventObject->pos.y, pEventObject->pos.z);
+			D3DXMatrixMultiply(&pEventObject->mtxWorld, &pEventObject->mtxWorld, &mtxTrans);
+
+			// ワールドマトリックスの設定
+			pDevice->SetTransform(D3DTS_WORLD, &pEventObject->mtxWorld);
+
+			// 現在のマテリアルを取得
+			pDevice->GetMaterial(&matDef);
+
+			// マテリアルデータへのポインタを取得
+			pMat = (D3DXMATERIAL*)pEventObject->ObjectInfo.NormalObject.pModelData->pBuffMat->GetBufferPointer();
+
+			for (int nCntMat = 0; nCntMat < (int)pEventObject->ObjectInfo.NormalObject.pModelData->dwNumMat; nCntMat++)
+			{
+				// マテリアルの設定
+				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+
+				pDevice->SetTexture(0, pEventObject->ObjectInfo.NormalObject.pModelData->apTexture[nCntMat]);
+
+				// オブジェクトパーツの描画
+				pEventObject->ObjectInfo.NormalObject.pModelData->pMesh->DrawSubset(nCntMat);	// ここでモデルの形を指定しているため、g_aObjectModelの中身を設定する必要がある
+			}
+
+			// 保存していたマテリアルに戻す
+			pDevice->SetMaterial(&matDef);
+
+		}
+		else if (pEventObject->ObjectType == EVENTOBJECTTYPE_PARENT)
+		{// 階層構造オブジェクト
+			// ワールドマトリックスの初期化
+			D3DXMatrixIdentity(&pEventObject->mtxWorld);
+
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, pEventObject->rot.y, pEventObject->rot.x, pEventObject->rot.z);
+			D3DXMatrixMultiply(&pEventObject->mtxWorld, &pEventObject->mtxWorld, &mtxRot);
+
+			// 位置を反映
+			D3DXMatrixTranslation(&mtxTrans, pEventObject->pos.x, pEventObject->pos.y, pEventObject->pos.z);
+			D3DXMatrixMultiply(&pEventObject->mtxWorld, &pEventObject->mtxWorld, &mtxTrans);
+
+			// ワールドマトリックスの設定
+			pDevice->SetTransform(D3DTS_WORLD, &pEventObject->mtxWorld);
+
+			// 現在のマテリアルを取得
+			pDevice->GetMaterial(&matDef);
+
+			// 全モデル(パーツ)の描画
+			for (int nCntParentModel = 0; nCntParentModel < pEventObject->ObjectInfo.ParentObject.pModelData->nNumParts; nCntParentModel++)
+			{
+				D3DXMATRIX mtxRotOffSetModel, mtxTransOffSetModel;	// 計算用マトリックス
+				D3DXMATRIX mtxParent;								// 親のマトリックス
+
+				// パーツのワールドマトリックスを初期化
+				D3DXMatrixIdentity(&pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].mtxWorld);
+
+				// パーツの向きを反映
+				D3DXMatrixRotationYawPitchRoll(&mtxRotOffSetModel,
+					pEventObject->ObjectInfo.ParentObject.OffSetData.rot[nCntParentModel].y, 
+					pEventObject->ObjectInfo.ParentObject.OffSetData.rot[nCntParentModel].x, 
+					pEventObject->ObjectInfo.ParentObject.OffSetData.rot[nCntParentModel].z);
+
+				D3DXMatrixMultiply(&pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].mtxWorld, 
+					&pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].mtxWorld, 
+					&mtxRotOffSetModel);
+
+				// パーツの位置を反映(オフセット)
+				D3DXMatrixTranslation(&mtxTransOffSetModel, 
+					pEventObject->ObjectInfo.ParentObject.OffSetData.pos[nCntParentModel].x,
+					pEventObject->ObjectInfo.ParentObject.OffSetData.pos[nCntParentModel].y, 
+					pEventObject->ObjectInfo.ParentObject.OffSetData.pos[nCntParentModel].z);
+
+				D3DXMatrixMultiply(&pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].mtxWorld, 
+					&pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].mtxWorld, 
+					&mtxTransOffSetModel);
+
+				// パーツの「親のマトリックス」を設定
+				if (pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModelParent != -1)
+				{// 親モデルがある場合
+					mtxParent = pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModelParent].mtxWorld;
+				}
+				else
+				{// 親モデルがない場合
+					mtxParent = pEventObject->mtxWorld;
+				}
+
+				// 算出した「パーツのワールドマトリックス」と「親のマトリックス」を掛け合わせる
+				D3DXMatrixMultiply(&pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].mtxWorld,
+					&pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].mtxWorld,
+					&mtxParent);
+
+				// パーツのワールドマトリックスを設定
+				pDevice->SetTransform(D3DTS_WORLD, &pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].mtxWorld);
+
+				// マテリアルデータへのポインタを取得
+				pMat = (D3DXMATERIAL*)pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModel].pBuffMat->GetBufferPointer();
+
+
+				for (int nCntMat = 0; nCntMat < (int)pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModel].dwNumMat; nCntMat++)
+				{
+					MatCpy = pMat[nCntMat];		// 今のマテリアルをコピー
+
+					//MatCpy.MatD3D.Diffuse.a = pParentObject->fAlpha;	// アルファ値を適用
+
+					// マテリアルの設定
+					pDevice->SetMaterial(&MatCpy.MatD3D);
+
+					// テクスチャの設定
+					pDevice->SetTexture(0, pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModel].apTexture[nCntMat]);
+
+					// パーツの描画
+					pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModel].pMesh->DrawSubset(nCntMat);
+				}
+			}
+
+			// 保存していたマテリアルを戻す
+			pDevice->SetMaterial(&matDef);
+		}
+	}
 }
 
 //==============================================================================
@@ -74,11 +235,12 @@ void SetEventObjectNormal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, OBJECTTYPE type, Col
 		rot.z = DegreeToRadian(rot.z);
 
 		// 各種変数設定
+		pEventObject->ObjectInfo.NormalObject.type = type;
+		pEventObject->ObjectInfo.NormalObject.pModelData = GetObjectModel(type);
 		pEventObject->pos = pos;
 		pEventObject->rot = rot;
 		pEventObject->bUse = true;
 
-#if 1
 		// 当たり判定
 		if (isCollider == true)
 		{// コライダーを使っているなら
@@ -98,7 +260,7 @@ void SetEventObjectNormal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, OBJECTTYPE type, Col
 		{
 			pEventObject->nCollisionIdx = -1;
 		}
-#endif
+
 		break;
 	}
 }
