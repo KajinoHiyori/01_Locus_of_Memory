@@ -362,10 +362,6 @@ void UpdateUIManager(void)
 	MODE mode = GetMode();	// 現在のモードを取得
 	D3DXVECTOR3 posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// オフセットの情報を初期化
 
-	VERTEX_3D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffUIManager->Lock(0, 0, (void**)&pVtx, 0);
-
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
 		switch (g_aUIManager[nCntPlayer].state)
@@ -379,7 +375,7 @@ void UpdateUIManager(void)
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;
 			}
 #if 0
-			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && pPlayer->bJump == false)
+			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && pPlayer->bJump == false)
 			{
 				SetUIAppear(nCntPlayer);	// UIを出現状態にする
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
@@ -397,7 +393,7 @@ void UpdateUIManager(void)
 			break;
 
 		case UISTATE_SELECT:	// セレクトメニュー
-			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
+			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
 			{
 				SetUIDissapear(nCntPlayer);	// UIの表示状態を消滅状態にする
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
@@ -405,7 +401,7 @@ void UpdateUIManager(void)
 			else
 			{
 				// 選択に合わせてメニューを切り替え
-				if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
+				if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 1) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
 				{
 					g_aUIManager[nCntPlayer].nSelect--;
 					if (g_aUIManager[nCntPlayer].nSelect < UITYPE_CLOCK)
@@ -413,7 +409,7 @@ void UpdateUIManager(void)
 						g_aUIManager[nCntPlayer].nSelect = UITYPE_QUIT;
 					}
 				}
-				else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
+				else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 1) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
 				{
 					g_aUIManager[nCntPlayer].nSelect++;
 					if (g_aUIManager[nCntPlayer].nSelect > UITYPE_QUIT)
@@ -436,7 +432,7 @@ void UpdateUIManager(void)
 
 				}
 
-				if (*pFade == FADE_NONE && ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true))
+				if (*pFade == FADE_NONE && ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true))
 				{
 					switch (g_aUIManager[nCntPlayer].nSelect)
 					{
@@ -494,12 +490,12 @@ void UpdateUIManager(void)
 			break;
 
 		case UISTATE_CLOCK:	// 時計
-			if ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true)
+			if ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true)
 			{
 				SetClockDissapear(nCntPlayer);
 				g_aUIManager[nCntPlayer].stateNext = UISTATE_APPEAR;
 			}
-			else if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
+			else if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
 			{
 				SetClockDissapear(nCntPlayer);
 				g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;
@@ -543,10 +539,13 @@ void UpdateUIManager(void)
 		{
 			g_aUIManager[nCntPlayer].aUITexture[UITEX_BATTERY].col = COLOR_REDBATTERY;
 		}
+	}
 
-		// ポーズ状態にする
-		pPlayer->state = PLAYERSTATE_PAUSE;
-		
+	VERTEX_3D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffUIManager->Lock(0, 0, (void**)&pVtx, 0);
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pVtx += 4)
 		{
 			// 頂点座標の設定
@@ -611,7 +610,7 @@ void DrawUIManager(void)
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &mtxPlayer);
 
-		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
+		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pPlayer++)
 		{
 			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp == false)
 			{
@@ -750,8 +749,6 @@ void UpdateUIBG(int nIdx)
 //========================================================================
 void SetUIAppear(int nIdx)
 {
-	Player* pPlayer = GetPlayer();
-	pPlayer[nIdx].state = PLAYERSTATE_PAUSE;
 	g_aUIManager[nIdx].bPause = true;
 	g_aUIManager[nIdx].state = UISTATE_APPEAR;
 	g_aUIManager[nIdx].nKey = 0;
@@ -824,7 +821,7 @@ void SetUINonDisp(int nIdx)
 	DissapearBattery(nIdx);
 	Player* pPlayer = GetPlayer();
 	pPlayer[nIdx].state = PLAYERSTATE_NORMAL;
-	if (((GetKeyboardPress(DIK_TAB) == true && nIdx == 0) || GetJoypadRightTriggePress(nIdx) == true || GetJoypadLeftTriggePress(nIdx) == true))
+	if (((GetKeyboardPress(DIK_TAB) == true && nIdx == 1) || GetJoypadRightTriggePress(nIdx) == true || GetJoypadLeftTriggePress(nIdx) == true))
 	{
 		SetSpellUIAppear(nIdx);
 		SetMagicUIAppear(nIdx);

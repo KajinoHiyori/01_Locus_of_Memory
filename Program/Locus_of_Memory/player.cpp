@@ -267,12 +267,12 @@ void UpdatePlayer(void)
 			SetSpellUIDisappear(nCntPlayer);
 			SetMagicUIDisappear(nCntPlayer);
 			ResetCommand(nCntPlayer);
-			if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION ||		// 静止魔法
-				g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION ||		// 空に魔法
-				g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING ||		// しゃがんで魔法
-				g_aPlayer[nCntPlayer].motion.motionType		 == (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION ||			// 静止魔法
-				g_aPlayer[nCntPlayer].motion.motionType		 == (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION ||			// 空に魔法
-				g_aPlayer[nCntPlayer].motion.motionType		 == (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING)				// しゃがんで魔法
+			if (g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION ||		// 静止魔法
+				g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION ||		// 空に魔法
+				g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING ||		// しゃがんで魔法
+				g_aPlayer[nCntPlayer].motion.motionType		 != (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION ||			// 静止魔法
+				g_aPlayer[nCntPlayer].motion.motionType		 != (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION ||			// 空に魔法
+				g_aPlayer[nCntPlayer].motion.motionType		 != (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING)				// しゃがんで魔法
 			{
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 			}
@@ -284,7 +284,7 @@ void UpdatePlayer(void)
 			if (bPause == true)	// ポーズ状態の場合、各種処理を行わない[]
 			{
 				// 3D空間UIの更新処理
-				UpdateUIManager();
+				//UpdateUIManager();
 			}
 			else	// キー入力を受け付ける====================================
 			{

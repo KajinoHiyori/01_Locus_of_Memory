@@ -382,14 +382,9 @@ void UninitSpellUI(void)
 //======================================================================================
 void UpdateSpellUI(void)
 {
-	VERTEX_3D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffSpellUI->Lock(0, 0, (void**)&pVtx, 0);
-
 	bool bSpell = false;	// ポーズ状態との兼ね合いを管理
 
-	Player* pPlayer = GetPlayer();
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		//// ポーズ状態になったら非表示にする
 		//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aSpellUI[nCntPlayer].bSpell == true)
@@ -498,7 +493,7 @@ void UpdateSpellUI(void)
 			break;
 
 		case SPELLUISTATE_DISPLAY:	// 表示状態
-			nCntPlayer = nCntPlayer;
+			PrintDebugProc("%dのメニューはある\n", nCntPlayer);
 			break;
 
 		case SPELLUISTATE_SETMAGIC:	// 魔法発動状態
@@ -535,7 +530,7 @@ void UpdateSpellUI(void)
 		}
 
 		// 個々の演出処理======================================================================================
-		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++, pVtx += 4)
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 		{
 			switch (g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].move)
 			{
@@ -573,7 +568,17 @@ void UpdateSpellUI(void)
 				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].bDisp = false;
 				break;
 			}
+		}
+	}
 
+	VERTEX_3D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffSpellUI->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++, pVtx += 4)
+		{
 			// 頂点座標の設定
 			pVtx[0].pos = D3DXVECTOR3(-g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, SPELLUI_Z);
 			pVtx[1].pos = D3DXVECTOR3(g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fWidth, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight, SPELLUI_Z);
@@ -621,7 +626,7 @@ void DrawSpellUI(void)
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &UIMatrix);
 
-		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++, pPlayer++)
+		for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 		{
 			D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
 			D3DXMATRIX	mtxParent;					// 親のマトリックス
