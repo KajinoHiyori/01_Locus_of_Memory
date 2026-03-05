@@ -362,80 +362,78 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
-	bool bTest = false;
-
 	// カメラの初期化
 	InitCamera();
-	bTest = false;
+
 	//// ライトの初期化
 	//InitLight();
 
 	// サウンドの初期化処理
 	InitSound(hWnd);
-	bTest = false;
+
 	// メッシュフィールドの初期化処理
 	InitMeshField();
-	bTest = false;
+
 	// フィールドの初期化処理
 	InitField();
-	bTest = false;
+
 	// 川の壁の初期化処理
 	InitRiverWall();
-	bTest = false;
+
 	// カスタムメッシュの初期化処理
 	InitCustomMesh();
-	bTest = false;
+
 	// 影の初期化処理
 	InitShadow();
-	bTest = false;
+
 	// オブジェクトの初期化処理
 	InitObject();
-	bTest = false;
+
 	// スカイボックスの初期化処理
 	InitSkyBox();
-	bTest = false;
+
 	// 塀の初期化処理
 	InitBrickWall();
-	bTest = false;
+
 	// モーションの初期化処理
 	InitMotion();
-	bTest = false;
+
 	// モードの設定
 	InitFade(g_mode, COLOR_WHITE);
-	bTest = false;
+
 	// デバッグ表示の初期化処理
 	InitDebugProc();
-	bTest = false;
+	
 	// エフェクトの初期化処理
 	InitEffect();
-	bTest = false;
+
 	// パーティクルの初期化処理
 	InitParticle();
-	bTest = false;
+
 	// 文字の初期化処理
 	InitGrain();
-	bTest = false;
+
 	// 粒の初期化処理
 	InitSparkle();
-	bTest = false;
+
 	// ゴールの初期化処理
 	InitGoal();
-	bTest = false;
+
 	// 動物の初期化処理
 	InitAnimal();
-	bTest = false;
+
 	// 時計の初期化処理
 	InitClock();
-	bTest = false;
+
 #ifndef _DEBUG
 	// マウスカーソルを非表示
 	ShowCursor(false);
 #endif
 
 	LoadScript(INFORMATION_SCRIPT);
-	bTest = false;
+
 	LoadModel(MODEL_SCRIPT);
-	bTest = false;
+
 	return S_OK;
 }
 
@@ -556,44 +554,34 @@ void Update(void)
 	}
 #endif
 
-	bool bTest = false;
 	PrintDebugProc("FPS : %d\n", g_nCountFPS);
 
 	// キーボードの更新処理
 	UpdateKeyboard();
-	bTest = false;
 
 	// ジョイパッドの更新処理
 	UpdateJoypad();
-	bTest = false;
 
 	// マウスの更新処理
 	UpdateMouse();
-	bTest = false;
 
 	// デバッグ表示の更新処理
 	UpdateDebugProc();
-	bTest = false;
 
 	// カメラの更新処理
 	UpdateCamera(g_mode);
-	bTest = false;
 
 	// オブジェクトの更新処理(仮)
 	UpdateObject();
-	bTest = false;
 
 	// スカイボックスの更新処理
 	UpdateSkyBox();
-	bTest = false;
 
 	// 塀の更新処理
 	UpdateBrickWall();
-	bTest = false;
 
 	// 時計の更新処理
 	UpdateClock();
-	bTest = false;
 
 	switch (g_mode)
 	{
@@ -601,64 +589,51 @@ void Update(void)
 		// スタートモード
 	case MODE_START:
 		UpdateStart();
-		bTest = false;
-
 		break;
 
 		// タイトルモード
 	case MODE_TITLE:
 		UpdateTitle();
-		bTest = false;
 		break;
 
 		// チュートリアルモード
 	case MODE_TUTORIAL:
 		UpdateTutorial();
-		bTest = false;
 		break;
 
 		// ゲームモード
 	case MODE_GAME:
 		UpdateGame();
-		bTest = false;
 		break;
 
 		// リザルトモード
 	case MODE_RESULT:
 		UpdateResult();
-		bTest = false;
 		break;
 
 		// 診断モード
 	case MODE_DIAGNOSIS:
 		UpdateDiagnosis();
-		bTest = false;
 		break;
 	}
 
 
 	// フェードの更新処理
 	UpdateFade();
-	bTest = false;
 
 	// エフェクトの更新処理
 	UpdateEffect();
-	bTest = false;
 
 	// パーティクルの更新処理
 	UpdateParticle();
-	bTest = false;
 
 	// 文字の更新処理
 	UpdateGrain();
-	bTest = false;
 
 	// 粒の更新処理
 	UpdateSparkle();
-	bTest = false;
 
 	UpdateVibration();
-	bTest = false;
 
 }
 
