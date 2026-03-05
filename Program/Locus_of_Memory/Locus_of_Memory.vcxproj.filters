@@ -261,6 +261,9 @@
     <ClCompile Include="eventobject.cpp">
       <Filter>object\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="questui.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -430,6 +433,9 @@
     </ClInclude>
     <ClInclude Include="eventobject.h">
       <Filter>object\h</Filter>
+    </ClInclude>
+    <ClInclude Include="questui.h">
+      <Filter>UI\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

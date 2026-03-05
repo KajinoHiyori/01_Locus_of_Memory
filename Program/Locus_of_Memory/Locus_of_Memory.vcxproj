@@ -204,6 +204,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="questui.cpp" />
     <ClCompile Include="questionmark.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="resultui.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="particle.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="questui.h" />
     <ClInclude Include="questionmark.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="resultui.h" />
