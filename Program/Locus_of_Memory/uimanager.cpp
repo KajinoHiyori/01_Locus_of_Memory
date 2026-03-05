@@ -364,6 +364,7 @@ void UpdateUIManager(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
+		// 全体の状態を管理
 		switch (g_aUIManager[nCntPlayer].state)
 		{
 		case UISTATE_NONDISPLAY:	// 非表示状態
@@ -393,12 +394,12 @@ void UpdateUIManager(void)
 			break;
 
 		case UISTATE_SELECT:	// セレクトメニュー
-			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
-			{
-				SetUIDissapear(nCntPlayer);	// UIの表示状態を消滅状態にする
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-			}
-			else
+			//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
+			//{
+			//	SetUIDissapear(nCntPlayer);	// UIの表示状態を消滅状態にする
+			//	SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+			//}
+			//else
 			{
 				// 選択に合わせてメニューを切り替え
 				if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 1) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
@@ -443,6 +444,7 @@ void UpdateUIManager(void)
 
 					case UITYPE_CONTINUE:	// CONTINUEを選択
 						SetUIDissapear(nCntPlayer);
+						SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 						break;
 
 					case UITYPE_RETRY:	// RETRYを選択
@@ -495,12 +497,12 @@ void UpdateUIManager(void)
 				SetClockDissapear(nCntPlayer);
 				g_aUIManager[nCntPlayer].stateNext = UISTATE_APPEAR;
 			}
-			else if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
-			{
-				SetClockDissapear(nCntPlayer);
-				g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-			}
+			//else if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
+			//{
+			//	SetClockDissapear(nCntPlayer);
+			//	g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;
+			//	SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+			//}
 			break;
 
 		case UISTATE_CLOCKDISAPPEAR:	// 時計の消滅
@@ -610,7 +612,7 @@ void DrawUIManager(void)
 		// ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &mtxPlayer);
 
-		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++, pPlayer++)
+		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 		{
 			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp == false)
 			{
@@ -693,11 +695,27 @@ void SetPauseFalse(void)
 }
 
 //========================================================================
+// 次の状態を設定
+//========================================================================
+void SetUIStateNext(int nIdx, UISTATE stateNext)
+{
+	g_aUIManager[nIdx].stateNext = stateNext;
+}
+
+//========================================================================
 // ポーズ状態を管理
 //========================================================================
 bool GetPause(int nIdx)
 {
 	return g_aUIManager[nIdx].bPause;
+}
+
+//========================================================================
+// UIの状態を取得する
+//========================================================================
+UISTATE GetUIState(int nIdx)
+{
+	return g_aUIManager[nIdx].state;
 }
 
 //========================================================================

@@ -185,6 +185,7 @@ void UpdatePlayer(void)
 
 		// ポーズ状態の取得
 		bPause = GetPause(nCntPlayer);
+		UISTATE uiState = GetUIState(nCntPlayer);
 
 		// Spell状態の取得
 		bSpell = GetSpellUIDisp(nCntPlayer);
@@ -208,17 +209,43 @@ void UpdatePlayer(void)
 			switch (bPause)
 			{
 			case true:	// ポーズ状態から通常状態に変更
-				// ポーズメニューを開く
-				g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;	// 通常状態に変更
-				SetUIDissapear(nCntPlayer);
-				if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 1) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+
+				switch (uiState)
 				{
-					// SPELLを開いた状態の場合はモーション切り替えを行わない
-				}
-				else
-				{
+				case UISTATE_SELECT:	// セレクトメニュー
+					if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 1) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && bPause == true)
+					{ // セレクトメニューの状態でポーズ解除
+						SetUIDissapear(nCntPlayer);	// UIの表示状態を消滅状態にする
+						SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+						g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;	// 通常状態に変更
+						if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 1) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+						{
+							// SPELLを開いた状態の場合はモーション切り替えを行わない
+						}
+						else
+						{
+							SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+						}
+					}
+					break;
+
+				case UISTATE_CLOCK:	// 時計状態
+					SetClockDissapear(nCntPlayer);
+					SetUIStateNext(nCntPlayer, UISTATE_NONDISPLAY);
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+					break;
 				}
+				//// ポーズメニューを開く
+				//g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;	// 通常状態に変更
+				//SetUIDissapear(nCntPlayer);
+				//if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 1) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+				//{
+				//	// SPELLを開いた状態の場合はモーション切り替えを行わない
+				//}
+				//else
+				//{
+				//	SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+				//}
 				break;
 
 			case false:	// 通常状態orSpellメニューからポーズ状態に変更

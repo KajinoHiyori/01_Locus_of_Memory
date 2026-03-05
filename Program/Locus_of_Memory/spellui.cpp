@@ -342,9 +342,6 @@ void InitSpellUI(void)
 			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 			
 		}
-
-		g_aSpellUI[0].bSpell = true;
-		g_aSpellUI[1].bSpell = true;
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffSpellUI->Unlock();

@@ -53,7 +53,9 @@ void UninitUIManager(void);
 void UpdateUIManager(void);
 void DrawUIManager(void);
 void SetPauseFalse(void);
+void SetUIStateNext(int nIdx, UISTATE stateNext);
 bool GetPause(int nIdx);
+UISTATE GetUIState(int nIdx);
 D3DXMATRIX GetUIMatrix(int nIdx);	// UIのマトリックス情報を取得
 D3DXVECTOR3 GetUIPos(int nIdx);	// UIの位置を取得
 D3DXVECTOR3 GetUIRot(int nIdx);	// UIの角度を取得
