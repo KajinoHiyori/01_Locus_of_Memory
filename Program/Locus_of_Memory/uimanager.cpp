@@ -28,8 +28,9 @@
 #define PHONE_HEIGHT		(50.0f)			// スマホの高さ
 #define FLICKER				(0.5f)			// UI画面のちらつきを軽減
 #define PHONE_Y				(60.0f)			// スマホの高度
-#define UI_DISTANCEX		(60.0f)		// UIとplayerの距離X
-#define UI_DISTANCEZ		(60.0f)		// UIとplayerの距離Z
+#define UI_DISTANCEX		(-75.0f)		// UIとplayerの距離X
+#define UI_DISTANCEZ		(-75.0f)		// UIとplayerの距離Z
+#define UI_DISTANCEY		(75.0f)		// UIの表示距離Y
 #define NUM_KEY				(30)			// 処理を行うキー数
 #define MENU_HEIGHT			(6.35f)			// メニューの高さ
 #define MENU_POS			(D3DXVECTOR3(0.0f, 30.0f, 0.0f))	// メニューの表示位置
@@ -44,7 +45,7 @@
 #define BATTERYFRAME_WIDTH	(21.0f)	// バッテリーフレームの幅
 #define BATTERYFRAME_HEIGHT	(6.0f)	// バッテリーフレームの高さ
 #define BATTERYFRAME_POS	(D3DXVECTOR3(0.0f, 49.0f, 0.0f))	// バッテリーフレームの位置
-#define UI_POS				(D3DXVECTOR3(sinf(-0.45f) * UI_DISTANCEX, PHONE_Y, cosf(0.45f) * UI_DISTANCEZ))	// UIの角度
+#define ROT_ADD				(0.25f)	// 角度の調整
 
 // UIのテクスチャの状態
 typedef struct
@@ -64,6 +65,7 @@ typedef struct
 typedef struct
 {
 	UI_TEXTURE	aUITexture[MAXUI_TEX];
+	D3DXMATRIX	mtxWorld;		// ワールドマトリックス
 	D3DXVECTOR3 pos;		// 位置
 	D3DXVECTOR3 rot;		// 向き
 	UITYPE		type;		// 表示中のUIの種類
@@ -143,7 +145,7 @@ void InitUIManager(void)
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].fHeightDest = 0.0f;						// 高さの目的地
 			g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;							// 表示状態
 		}
-		g_aUIManager[nCntPlayer].pos = UI_POS;	// 中心位置
+		g_aUIManager[nCntPlayer].pos = INIT_D3DXVEC3;	// 中心位置
 		g_aUIManager[nCntPlayer].rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);	// 中心位置
 		g_aUIManager[nCntPlayer].type = UITYPE_CLOCK;						// 選択している種類(type)
 		g_aUIManager[nCntPlayer].state = UISTATE_NONDISPLAY;				// UIの表示状態
@@ -364,6 +366,13 @@ void UpdateUIManager(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
+		g_aUIManager[nCntPlayer].pos = pPlayer->pos;
+		float fRot = pPlayer->rot.y + ROT_ADD;
+		fRot = AngleNormalize(fRot);
+		g_aUIManager[nCntPlayer].pos.x += sinf(fRot) * UI_DISTANCEX;
+		g_aUIManager[nCntPlayer].pos.z += cosf(fRot) * UI_DISTANCEZ;
+		g_aUIManager[nCntPlayer].pos.y += UI_DISTANCEY;
+
 		// 全体の状態を管理
 		switch (g_aUIManager[nCntPlayer].state)
 		{
@@ -394,84 +403,76 @@ void UpdateUIManager(void)
 			break;
 
 		case UISTATE_SELECT:	// セレクトメニュー
-
-			//if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
-			//{
-			//	SetUIDissapear(nCntPlayer);	// UIの表示状態を消滅状態にする
-			//	SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-			//}
-			//else
+			
+			// 選択に合わせてメニューを切り替え
+			if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
 			{
-				// 選択に合わせてメニューを切り替え
-				if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
+				g_aUIManager[nCntPlayer].nSelect--;
+				if (g_aUIManager[nCntPlayer].nSelect < UITYPE_CLOCK)
 				{
-					g_aUIManager[nCntPlayer].nSelect--;
-					if (g_aUIManager[nCntPlayer].nSelect < UITYPE_CLOCK)
-					{
-						g_aUIManager[nCntPlayer].nSelect = UITYPE_QUIT;
-					}
+					g_aUIManager[nCntPlayer].nSelect = UITYPE_QUIT;
 				}
-				else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
+			}
+			else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
+			{
+				g_aUIManager[nCntPlayer].nSelect++;
+				if (g_aUIManager[nCntPlayer].nSelect > UITYPE_QUIT)
 				{
-					g_aUIManager[nCntPlayer].nSelect++;
-					if (g_aUIManager[nCntPlayer].nSelect > UITYPE_QUIT)
-					{
-						g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;
-					}
+					g_aUIManager[nCntPlayer].nSelect = UITYPE_CLOCK;
+				}
+			}
+
+			// テクスチャの色を変更
+			for (int nCntSelect = UITEX_CLOCKMENU; nCntSelect < UITEX_FILTER; nCntSelect++)
+			{
+				if (g_aUIManager[nCntPlayer].nSelect + 5 == nCntSelect)
+				{
+					g_aUIManager[nCntPlayer].aUITexture[nCntSelect].col = COLOR_YELLOW;
+				}
+				else
+				{
+					g_aUIManager[nCntPlayer].aUITexture[nCntSelect].col = COLOR_WHITE;
 				}
 
-				// テクスチャの色を変更
-				for (int nCntSelect = UITEX_CLOCKMENU; nCntSelect < UITEX_FILTER; nCntSelect++)
+			}
+
+			if (*pFade == FADE_NONE && ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true))
+			{
+				switch (g_aUIManager[nCntPlayer].nSelect)
 				{
-					if (g_aUIManager[nCntPlayer].nSelect + 5 == nCntSelect)
+				case UITYPE_CLOCK:	// 時計状態を選択
+					SetUIDissapear(nCntPlayer);
+					g_aUIManager[nCntPlayer].stateNext = UISTATE_CLOCKAPPEAR;
+					break;
+
+				case UITYPE_CONTINUE:	// CONTINUEを選択
+					SetUIDissapear(nCntPlayer);
+					if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
 					{
-						g_aUIManager[nCntPlayer].aUITexture[nCntSelect].col = COLOR_YELLOW;
+						// SPELLを開いた状態の場合はモーション切り替えを行わない
 					}
 					else
 					{
-						g_aUIManager[nCntPlayer].aUITexture[nCntSelect].col = COLOR_WHITE;
+						SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 					}
+					break;
 
-				}
-
-				if (*pFade == FADE_NONE && ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true))
-				{
-					switch (g_aUIManager[nCntPlayer].nSelect)
+				case UITYPE_RETRY:	// RETRYを選択
+					switch (mode)
 					{
-					case UITYPE_CLOCK:	// 時計状態を選択
-						SetUIDissapear(nCntPlayer);
-						g_aUIManager[nCntPlayer].stateNext = UISTATE_CLOCKAPPEAR;
+					case MODE_TUTORIAL:	// チュートリアル
+						SetFade(MODE_TUTORIAL, COLOR_WHITE);
 						break;
 
-					case UITYPE_CONTINUE:	// CONTINUEを選択
-						SetUIDissapear(nCntPlayer);
-						if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
-						{
-							// SPELLを開いた状態の場合はモーション切り替えを行わない
-						}
-						else
-						{
-							SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-						}
-						break;
-
-					case UITYPE_RETRY:	// RETRYを選択
-						switch (mode)
-						{
-						case MODE_TUTORIAL:	// チュートリアル
-							SetFade(MODE_TUTORIAL, COLOR_WHITE);
-							break;
-
-						case MODE_GAME:	// ゲーム
-							SetFade(MODE_GAME, COLOR_WHITE);
-							break;
-						}
-						break;
-
-					case UITYPE_QUIT:	// QUITを選択
-						SetFade(MODE_TITLE, COLOR_WHITE);
+					case MODE_GAME:	// ゲーム
+						SetFade(MODE_GAME, COLOR_WHITE);
 						break;
 					}
+					break;
+
+				case UITYPE_QUIT:	// QUITを選択
+					SetFade(MODE_TITLE, COLOR_WHITE);
+					break;
 				}
 			}
 			break;
@@ -505,12 +506,6 @@ void UpdateUIManager(void)
 				SetClockDissapear(nCntPlayer);
 				g_aUIManager[nCntPlayer].stateNext = UISTATE_APPEAR;
 			}
-			//else if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aUIManager[nCntPlayer].bPause == true)
-			//{
-			//	SetClockDissapear(nCntPlayer);
-			//	g_aUIManager[nCntPlayer].stateNext = UISTATE_NONDISPLAY;
-			//	SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-			//}
 			break;
 
 		case UISTATE_CLOCKDISAPPEAR:	// 時計の消滅
@@ -591,10 +586,9 @@ void UpdateUIManager(void)
 //========================================================================
 void DrawUIManager(void)
 {
-	Player* pPlayer = GetPlayer();
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX mtxRot, mtxTrans, mtxPlayer, mtxParent;	// 計算用マトリックス
-	D3DXMATRIX mtxView;		// ビューマトリックスの取得
+	D3DXMATRIX mtxUI, mtxRot, mtxView;	// UIのマトリックス情報を取得
+	D3DXMATRIX mtxParentTrans, mtxParentRot;	// UIのマトリックス情報[親]を取得
 
 	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
@@ -607,47 +601,62 @@ void DrawUIManager(void)
 	// カリングをオフにする
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		if (g_aUIManager[nCntPlayer].bPause == false)
 		{
 			continue;
 		}
 
-		// UIのマトリックス情報を取得
-		mtxPlayer = pPlayer->mtxWorld;
+		// 親となるマトリックスを設定
+		// メインのワールドマトリックスを初期化
+		D3DXMatrixIdentity(&g_aUIManager[nCntPlayer].mtxWorld);
+
+		// ビューマトリックスを取得する
+		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+		// ポリゴンをカメラに対して正面に向ける
+		D3DXMatrixInverse(&g_aUIManager[nCntPlayer].mtxWorld, NULL, &mtxView);	//逆行列を求める
+
+		g_aUIManager[nCntPlayer].mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
+		g_aUIManager[nCntPlayer].mtxWorld._42 = 0.0f;
+		g_aUIManager[nCntPlayer].mtxWorld._43 = 0.0f;
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxParentTrans, g_aUIManager[nCntPlayer].pos.x, g_aUIManager[nCntPlayer].pos.y, g_aUIManager[nCntPlayer].pos.z);
+		D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].mtxWorld, &g_aUIManager[nCntPlayer].mtxWorld, &mtxParentTrans);
 
 		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &mtxPlayer);
+		pDevice->SetTransform(D3DTS_WORLD, &g_aUIManager[nCntPlayer].mtxWorld);
+
+		// UIのマトリックス情報を取得
+		mtxUI = g_aUIManager[nCntPlayer].mtxWorld;
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &mtxUI);
 
 		for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 		{
+			D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
+			D3DXMATRIX	mtxParent;					// 親のマトリックス
+
 			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp == false)
 			{
 				continue;
 			}
 
-			// フィルターのみ加算合成にする
-			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_FILTER || g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_FILTER)
-			{
-				pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-				pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-			}
-
 			// ポリゴンのワールドマトリックスを初期化
 			D3DXMatrixIdentity(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld);
 
-			// パーツの位置を反映
-			D3DXMatrixTranslation(&mtxTrans, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.x, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.y, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.z);
-			D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &mtxTrans);
+			// ビューマトリックスを取得する
+			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
-			// 向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aUIManager[nCntPlayer].rot.y, g_aUIManager[nCntPlayer].rot.x, g_aUIManager[nCntPlayer].rot.z);
-			D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &mtxRot);
+			// パーツの位置を反映
+			D3DXMatrixTranslation(&mtxTransModel, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.x, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.y, g_aUIManager[nCntPlayer].aUITexture[nCntUI].pos.z);
+			D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &mtxTransModel);
 
 			// 親マトリックスを設定
-			mtxParent = mtxPlayer;
+			mtxParent = mtxUI;
 
 			// 算出したパーツのワールドマトリックスと親モデルのマトリックスを掛け合わせる
 			D3DXMatrixMultiply(&g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &g_aUIManager[nCntPlayer].aUITexture[nCntUI].mtxWorld, &mtxParent);
@@ -666,15 +675,6 @@ void DrawUIManager(void)
 
 			// UIの描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + (nCntPlayer * MAXUI_TEX * 4), 2);
-
-			// フィルターを加算合成から戻す
-			if (g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_FILTER || g_aUIManager[nCntPlayer].aUITexture[nCntUI].tex == UITEX_FILTER)
-			{
-				//αブレンディングを戻す
-				pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-				pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-				pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-			}
 		}
 	}
 

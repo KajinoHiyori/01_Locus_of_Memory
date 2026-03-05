@@ -512,8 +512,6 @@ void UpdateSpellUI(void)
 				// 背景の高度変更
 				fDiffKey = g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeightDest - g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight;
 				g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight = g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].fHeight + fDiffKey * fRateKey;
-				// 中心位置からの位置を求める
-				//g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos += g_aSpellUI[nCntPlayer].pos;
 			}
 
 			g_aSpellUI[nCntPlayer].nKey++;
@@ -599,7 +597,6 @@ void DrawSpellUI(void)
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX mtxUI, mtxRot, mtxView;	// UIのマトリックス情報を取得
 	D3DXMATRIX mtxParentTrans, mtxParentRot;	// UIのマトリックス情報[親]を取得
-	Player* pPlayer = GetPlayer();
 
 	// アルファテストを有効にする
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
@@ -612,7 +609,7 @@ void DrawSpellUI(void)
 	// カリングをオフにする
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		if (g_aSpellUI[nCntPlayer].bSpell == false)
 		{
@@ -688,6 +685,7 @@ void DrawSpellUI(void)
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4 + (nCntPlayer * MAXSPELL_TYPE * 4), 2);
 		}
 	}
+
 	// ライトをオンにする
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 
