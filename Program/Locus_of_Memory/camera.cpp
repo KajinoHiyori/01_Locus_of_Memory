@@ -441,6 +441,8 @@ void UpdateGameCamera(void)
 				//イベント状態ノーマル
 				*pEventState = EVENTSTATE_NORMAL;
 
+				pPlayer = GetPlayer();
+
 				//プレイヤーをノーマル状態に
 				pPlayer[0].state = PLAYERSTATE_NORMAL;
 				pPlayer[1].state = PLAYERSTATE_NORMAL;

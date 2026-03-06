@@ -171,7 +171,7 @@ void UpdateQuestionMark(void)
 	{
 		if (pPlayer->bUse == false)
 		{
-			g_aQuestionMark[nCntPlayer].bDisp = false;
+			//g_aQuestionMark[nCntPlayer].bDisp = false;
 			continue;
 		}
 
