@@ -30,7 +30,6 @@ typedef struct
 {
 	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
 	D3DXVECTOR3		pos;		// 位置
-	D3DXVECTOR3		rot;		// 向き
 	D3DXCOLOR		col;		// 色
 	float	fWidth;			// 幅
 	float	fWidthDest;		// 幅の目的値
@@ -77,7 +76,6 @@ void InitQuestionMark(void)
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		g_aQuestionMark[nCntPlayer].pos = D3DXVECTOR3(0.0f, MARK_Y, 0.0f);	// 位置
-		g_aQuestionMark[nCntPlayer].rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 向き
 		g_aQuestionMark[nCntPlayer].col = COLOR_WHITE;	// 種類
 		g_aQuestionMark[nCntPlayer].fWidth = MARK_WIDTH;			// 幅
 		g_aQuestionMark[nCntPlayer].fWidthDest = MARK_WIDTH;			// 幅の目的値
@@ -100,10 +98,10 @@ void InitQuestionMark(void)
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pVtx += 4)
 	{
 		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-g_aQuestionMark[nCntPlayer].fWidth, g_aQuestionMark[nCntPlayer].fHeight, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(g_aQuestionMark[nCntPlayer].fWidth, g_aQuestionMark[nCntPlayer].fHeight, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-g_aQuestionMark[nCntPlayer].fWidth,  g_aQuestionMark[nCntPlayer].fHeight, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3( g_aQuestionMark[nCntPlayer].fWidth,  g_aQuestionMark[nCntPlayer].fHeight, 0.0f);
 		pVtx[2].pos = D3DXVECTOR3(-g_aQuestionMark[nCntPlayer].fWidth, -g_aQuestionMark[nCntPlayer].fHeight, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(g_aQuestionMark[nCntPlayer].fWidth, -g_aQuestionMark[nCntPlayer].fHeight, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3( g_aQuestionMark[nCntPlayer].fWidth, -g_aQuestionMark[nCntPlayer].fHeight, 0.0f);
 
 		// rhwの設定
 		pVtx[0].nor = NORMAL;
@@ -112,10 +110,10 @@ void InitQuestionMark(void)
 		pVtx[3].nor = NORMAL;
 
 		// 頂点カラーの設定
-		pVtx[0].col = COLOR_WHITE;
-		pVtx[1].col = COLOR_WHITE;
-		pVtx[2].col = COLOR_WHITE;
-		pVtx[3].col = COLOR_WHITE;
+		pVtx[0].col = g_aQuestionMark[nCntPlayer].col;
+		pVtx[1].col = g_aQuestionMark[nCntPlayer].col;
+		pVtx[2].col = g_aQuestionMark[nCntPlayer].col;
+		pVtx[3].col = g_aQuestionMark[nCntPlayer].col;
 
 		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -158,7 +156,7 @@ void UninitQuestionMark(void)
 void UpdateQuestionMark(void)
 {
 	Player* pPlayer = GetPlayer();
-	g_aQuestionMark[0].rot = pPlayer->rot;
+#if 0
 	g_aQuestionMark[0].pos = pPlayer->pos;
 	g_aQuestionMark[0].pos.y += 90.0f;
 
@@ -178,8 +176,14 @@ void UpdateQuestionMark(void)
 	{
 		g_aQuestionMark[0].pos.z -= 0.1f;
 	}
+#endif
 
-	//PrintDebugProc("?の位置 : (%f, %f, %f)\n", g_aQuestionMark[0].pos.x, g_aQuestionMark[0].pos.y, g_aQuestionMark[0].pos.z);
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	{
+		// 位置の更新
+		g_aQuestionMark[nCntPlayer].pos = pPlayer->pos;
+		g_aQuestionMark[nCntPlayer].pos.y += 90.0f;
+	}
 }
 
 //======================================================================================
@@ -187,7 +191,6 @@ void UpdateQuestionMark(void)
 //======================================================================================
 void DrawQuestionMark(void)
 {
-#if 0
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX mtxRot;	// UIのマトリックス情報を取得
 	Player* pPlayer = GetPlayer();
@@ -210,15 +213,20 @@ void DrawQuestionMark(void)
 			continue;
 		}
 
-		D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
-		D3DXMATRIX	mtxParent;					// 親のマトリックス
+		D3DXMATRIX	mtxView, mtxTransModel;	// 計算用マトリックス
 
 		// ポリゴンのワールドマトリックスを初期化
 		D3DXMatrixIdentity(&g_aQuestionMark[nCntPlayer].mtxWorld);
 
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aQuestionMark[nCntPlayer].rot.y, g_aQuestionMark[nCntPlayer].rot.x, g_aQuestionMark[nCntPlayer].rot.z);
-		D3DXMatrixMultiply(&g_aQuestionMark[nCntPlayer].mtxWorld, &g_aQuestionMark[nCntPlayer].mtxWorld, &mtxRot);
+		// ビューマトリックスを取得する
+		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+		// ポリゴンをカメラに対して正面に向ける
+		D3DXMatrixInverse(&g_aQuestionMark[nCntPlayer].mtxWorld, NULL, &mtxView);	//逆行列を求める
+
+		g_aQuestionMark[nCntPlayer].mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
+		g_aQuestionMark[nCntPlayer].mtxWorld._42 = 0.0f;
+		g_aQuestionMark[nCntPlayer].mtxWorld._43 = 0.0f;
 
 		// パーツの位置を反映
 		D3DXMatrixTranslation(&mtxTransModel, g_aQuestionMark[nCntPlayer].pos.x, g_aQuestionMark[nCntPlayer].pos.y, g_aQuestionMark[nCntPlayer].pos.z);
@@ -250,5 +258,19 @@ void DrawQuestionMark(void)
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
-#endif
+}
+
+//======================================================================================
+// 落ちている魔法との距離を返す
+//======================================================================================
+float DistanceMagicAndMark(int nIdx)
+{
+	//Player* pPlayer = GetPlayer();
+	//pPlayer += nIdx;
+	//
+	//MagicLocus* magicLucus = GetMagicLucus();
+	//
+	//for (int nCntMagic = 0; nCntMagic < )
+
+	return 0;
 }

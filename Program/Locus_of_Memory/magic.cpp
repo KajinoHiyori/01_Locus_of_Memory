@@ -772,6 +772,12 @@ COMMANDTYPE* GetCommandSaveType(int nIdx)
 	return &g_aCommandSave[nIdx][0];
 }
 
+// 落ちている魔法を取得==========================
+DropMagic* GetDropMagic(void)
+{
+	return &g_aDropMagic[0];
+}
+
 // セーブされた魔法の種類を初期化
 void ResetCommdSave(int nIdx)
 {

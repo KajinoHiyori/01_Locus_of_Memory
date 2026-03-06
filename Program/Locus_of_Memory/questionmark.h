@@ -12,5 +12,5 @@ void InitQuestionMark(void);
 void UninitQuestionMark(void);
 void UpdateQuestionMark(void);
 void DrawQuestionMark(void);
-
+float DistanceMagicAndMark(int nIdx);
 #endif

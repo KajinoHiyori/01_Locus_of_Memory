@@ -190,6 +190,9 @@ COMMANDTYPE* GetCommandType(int nIdx);
 // セーブされた魔法の種類を取得
 COMMANDTYPE* GetCommandSaveType(int nIdx);
 
+// 落ちている魔法の情報を取得
+DropMagic* GetDropMagic(void);
+
 // セーブされた魔法の種類を初期化
 void ResetCommdSave(int nIdx);
 
