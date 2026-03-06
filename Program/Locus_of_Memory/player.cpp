@@ -241,17 +241,6 @@ void UpdatePlayer(void)
 					}
 					break;
 				}
-				//// ポーズメニューを開く
-				//g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;	// 通常状態に変更
-				//SetUIDissapear(nCntPlayer);
-				//if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
-				//{
-				//	// SPELLを開いた状態の場合はモーション切り替えを行わない
-				//}
-				//else
-				//{
-				//	SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-				//}
 				break;
 
 			case false:	// 通常状態orSpellメニューからポーズ状態に変更
@@ -275,7 +264,6 @@ void UpdatePlayer(void)
 		{
 			if (bPause == false)
 			{
-				//PrintDebugProc("%dのbPauseはfalse\n", nCntPlayer);
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_SPELL;	// 呪文状態に変更
 				if ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
 				{
@@ -301,17 +289,7 @@ void UpdatePlayer(void)
 			SetSpellUIDisappear(nCntPlayer);
 			SetMagicUIDisappear(nCntPlayer);
 			ResetCommand(nCntPlayer);
-			if (bPause == false 
-				//&&
-				//g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND		&&	// コマンド入力モーション
-				//g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION		&&	// 静止魔法
-				//g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION	&&	// 空に魔法
-				//g_aPlayer[nCntPlayer].motion.motionTypeBlend != (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING		&&	// しゃがんで魔法
-				//g_aPlayer[nCntPlayer].motion.motionType		 != (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND		&&	// コマンド入力モーション
-				//g_aPlayer[nCntPlayer].motion.motionType		 != (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION		&&	// 静止魔法
-				//g_aPlayer[nCntPlayer].motion.motionType		 != (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION	&&	// 空に魔法
-				//g_aPlayer[nCntPlayer].motion.motionType		 != (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING
-				)			// しゃがんで魔法
+			if (bPause == false )
 			{
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 			}
@@ -322,25 +300,24 @@ void UpdatePlayer(void)
 		case PLAYERSTATE_NORMAL:	// 通常時
 			if (bPause == true)	// ポーズ状態の場合、各種処理を行わない[]
 			{
-				// 3D空間UIの更新処理
-				//UpdateUIManager();
+				
 			}
 			else	// キー入力を受け付ける====================================
 			{
 				// 移動方向を管理
-				if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+				if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
 				{
 					moveDir.x -= 1.0f;
 				}
-				else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+				else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
 				{
 					moveDir.x += 1.0f;
 				}
-				if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+				if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
 				{
 					moveDir.z += 1.0f;
 				}
-				else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+				else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
 				{
 					moveDir.z -= 1.0f;
 				}
@@ -384,19 +361,19 @@ void UpdatePlayer(void)
 //#if 0
 			// キー入力を受け付ける====================================
 			// 移動方向を管理
-			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
 			{
 				moveDir.x -= 1.0f;
 			}
-			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
 			{
 				moveDir.x += 1.0f;
 			}
-			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
 			{
 				moveDir.z += 1.0f;
 			}
-			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
 			{
 				moveDir.z -= 1.0f;
 			}
@@ -428,10 +405,8 @@ void UpdatePlayer(void)
 				&& g_aPlayer[nCntPlayer].bJump == false)
 			{
 				fMoveDir = 0.0f;
-				//g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
 			}
 //#endif		
-			//g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
 			break;
 		}
 
@@ -585,8 +560,7 @@ void UpdatePlayer(void)
 		// プレイヤーの魔法発動モーション終了時
 		if (g_aPlayer[nCntPlayer].motion.motionType == MOTIONTYPE_ACTION && g_aPlayer[nCntPlayer].motion.bFinishMotion == true)
 		{
-			// 待機モーションに切り替え
-			//SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+
 		}
 
 		// モーションの更新処理

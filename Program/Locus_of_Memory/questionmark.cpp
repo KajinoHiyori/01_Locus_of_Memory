@@ -91,13 +91,9 @@ void InitQuestionMark(void)
 		g_aQuestionMark[nCntPlayer].commandType = COMMANDOREDER_NONE;	// 落ちている魔法の種類
 	}
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
-	{
-		if (pPlayer->bUse == true)
-		{
-			g_aQuestionMark[nCntPlayer].bDisp = true;				// 表示状態
-		}
-	}
+	//g_aQuestionMark[0].bDisp = true;				// 表示状態
+	//g_aQuestionMark[1].bDisp = false;				// 表示状態
+
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffQuestionMark, NULL);
 
@@ -171,8 +167,12 @@ void UpdateQuestionMark(void)
 	{
 		if (pPlayer->bUse == false)
 		{
-			//g_aQuestionMark[nCntPlayer].bDisp = false;
+			g_aQuestionMark[nCntPlayer].bDisp = false;
 			continue;
+		}
+		else
+		{
+			g_aQuestionMark[nCntPlayer].bDisp = true;
 		}
 
 		// 位置の更新
