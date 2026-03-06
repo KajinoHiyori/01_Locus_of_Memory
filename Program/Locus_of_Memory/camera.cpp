@@ -228,7 +228,7 @@ void UpdateGameCamera(void)
 	Player* pPlayer = GetPlayer();		// プレイヤーの先頭アドレス
 	EVENTSTATE *pEventState = GetEventState();
 
-	for (int nCntCamera = 0; nCntCamera < g_nNumCamera; nCntCamera++, pCamera++)
+	for (int nCntCamera = 0; nCntCamera < g_nNumCamera; nCntCamera++, pCamera++, pPlayer++)
 	{
 		if (*pEventState == EVENTSTATE_NORMAL)
 		{

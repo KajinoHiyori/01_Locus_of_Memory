@@ -656,9 +656,6 @@ void DrawSpellUI(void)
 			// ポリゴンのワールドマトリックスを初期化
 			D3DXMatrixIdentity(&g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld);
 
-			// ビューマトリックスを取得する
-			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
-
 			// パーツの位置を反映
 			D3DXMatrixTranslation(&mtxTransModel, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos.x, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos.y, g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].pos.z);
 			D3DXMatrixMultiply(&g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld, &g_aSpellUI[nCntPlayer].aSpellUI[nCntUI].mtxWorld, &mtxTransModel);

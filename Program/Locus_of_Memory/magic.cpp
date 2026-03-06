@@ -20,7 +20,6 @@
 
 //マクロ定義
 #define MAX_MAGIC				(128)		//魔法の最大数
-#define MAX_DROPMAGIC			(32)		//落ちてる魔法の最大数
 #define MAX_COMMAND				(3)			//コマンドの最大数
 #define DROPMAGIC_RADIUS		(70.0f)		//落ちてる魔法の半径
 #define DROPMAGIC_MEDIUMRADIUS	(100.0f)	//落ちてる魔法の半径
