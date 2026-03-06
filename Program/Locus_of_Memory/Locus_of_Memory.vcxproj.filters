@@ -264,6 +264,9 @@
     <ClCompile Include="questui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="magiceffect.cpp">
+      <Filter>object\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -436,6 +439,9 @@
     </ClInclude>
     <ClInclude Include="questui.h">
       <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="magiceffect.h">
+      <Filter>object\h</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

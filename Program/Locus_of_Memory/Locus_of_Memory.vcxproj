@@ -183,6 +183,7 @@
     <ClCompile Include="loadscript.cpp" />
     <ClCompile Include="magicbubble.cpp" />
     <ClCompile Include="magiccircle.cpp" />
+    <ClCompile Include="magiceffect.cpp" />
     <ClCompile Include="magicui.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="object.cpp" />
@@ -247,6 +248,7 @@
     <ClInclude Include="loadscript.h" />
     <ClInclude Include="magicbubble.h" />
     <ClInclude Include="magiccircle.h" />
+    <ClInclude Include="magiceffect.h" />
     <ClInclude Include="magicui.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="object.h" />
