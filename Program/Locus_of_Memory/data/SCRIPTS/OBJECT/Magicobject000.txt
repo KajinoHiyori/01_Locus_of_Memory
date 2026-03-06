@@ -45,7 +45,7 @@ END_DROPMAGICSET
 
 DROPMAGICSET
 	TYPE = 1
-	POS = -3276 0 -3307
+	POS = -1680 0 -4258
 	RADIUS = 100.0
 END_DROPMAGICSET
 
@@ -105,7 +105,6 @@ DROPMAGICSET
 	POS = -4499 0 -476
 	RADIUS = 100.0
 END_DROPMAGICSET
-
 
 #------------------------------------------------------------------------------
 # 時止め
