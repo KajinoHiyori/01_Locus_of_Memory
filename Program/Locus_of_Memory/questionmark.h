@@ -14,7 +14,7 @@ void InitQuestionMark(void);
 void UninitQuestionMark(void);
 void UpdateQuestionMark(void);
 void DrawQuestionMark(void);
-void DistanceMagicAndMark(int nIdx);
+float DistanceMagicAndMark(int nIdx);
 void UpdateMarkPos(int nIdx);
-void SetMarkColor(int nIdx, COMMANDOREDER commandType);
+void SetMarkColor(int nIdx, COMMANDOREDER commandType, float fDistance);
 #endif

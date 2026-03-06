@@ -16,12 +16,14 @@
 #include "color.h"
 
 // マクロ定義
-#define QUESTIONMARK_TYPE	(1)	// テクスチャの最大数
-#define MARK_WIDTH		(15.0f)					// 吹き出しの幅
-#define MARK_HEIGHT		(15.0f)					// 吹き出しの高さ
-#define MARK_X			(30.0f)					// 吹き出しのX軸
-#define MARK_Y			(95.0f)					// 吹き出しのY高度
-#define DISTANCE		(30.0f)					// 処理を行うキー数
+#define QUESTIONMARK_TYPE	(1)		// テクスチャの最大数
+#define MARK_WIDTH		(15.0f)		// 吹き出しの幅
+#define MARK_HEIGHT		(15.0f)		// 吹き出しの高さ
+#define MARK_X			(30.0f)		// 吹き出しのX軸
+#define MARK_Y			(95.0f)		// 吹き出しのY高度
+#define DISTANCE		(30.0f)		// 処理を行うキー数
+#define NONDISP			(500.0f)	// これ以上離れていたら表示しない
+#define DISP			(100.0f)	// アルファ値1.0fで表示
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 
 // MAGICMARKの構造体
@@ -90,9 +92,6 @@ void InitQuestionMark(void)
 		g_aQuestionMark[nCntPlayer].nIdxMagic = -1;			// 落ちている魔法のインデックス
 		g_aQuestionMark[nCntPlayer].commandType = COMMANDOREDER_NONE;	// 落ちている魔法の種類
 	}
-
-	//g_aQuestionMark[0].bDisp = true;				// 表示状態
-	//g_aQuestionMark[1].bDisp = false;				// 表示状態
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffQuestionMark, NULL);
@@ -180,16 +179,16 @@ void UpdateQuestionMark(void)
 		g_aQuestionMark[nCntPlayer].Offset.y += 50.0f;
 
 		// 距離を取得
-		DistanceMagicAndMark(nCntPlayer);
+		float fDistance = DistanceMagicAndMark(nCntPlayer);
 
 		// 目的の向きに合わせて表示位置を変更
 		UpdateMarkPos(nCntPlayer);
 
+		// 色の変更
+		SetMarkColor(nCntPlayer, g_aQuestionMark[nCntPlayer].commandType, fDistance);
+
 		g_aQuestionMark[0].pos.x = sinf(g_aQuestionMark[nCntPlayer].rot.y) * DISTANCE;
 		g_aQuestionMark[0].pos.z = cosf(g_aQuestionMark[nCntPlayer].rot.y) * DISTANCE;
-
-		// 色の変更
-		SetMarkColor(nCntPlayer, g_aQuestionMark[nCntPlayer].commandType);
 
 		PrintDebugProc("?の位置 : (%f, %f, %f)\n", g_aQuestionMark[nCntPlayer].pos.x, g_aQuestionMark[nCntPlayer].pos.y, g_aQuestionMark[nCntPlayer].pos.z);
 		PrintDebugProc("?の向き : (%f, %f, %f)\n", g_aQuestionMark[nCntPlayer].rot.x, g_aQuestionMark[nCntPlayer].rot.y, g_aQuestionMark[nCntPlayer].rot.z);
@@ -330,7 +329,7 @@ void DrawQuestionMark(void)
 //======================================================================================
 // 1番近くに落ちている魔法との距離を返す
 //======================================================================================
-void DistanceMagicAndMark(int nIdx)
+float DistanceMagicAndMark(int nIdx)
 {
 	DropMagic* pDropMagic = GetDropMagic();	// 落ちている魔法を取得
 	float fLength = 1000000.0f;	// 魔法との距離を保存
@@ -368,6 +367,8 @@ void DistanceMagicAndMark(int nIdx)
 			g_aQuestionMark[nIdx].commandType = pDropMagic->oType;
 		}
 	}
+
+	return fLength;
 }
 
 //======================================================================================
@@ -388,8 +389,9 @@ void UpdateMarkPos(int nIdx)
 //======================================================================================
 // 魔法の位置に合わせて?の色を変更する
 //======================================================================================
-void SetMarkColor(int nIdx, COMMANDOREDER commandType)
+void SetMarkColor(int nIdx, COMMANDOREDER commandType, float fDistance)
 {
+	// メインの色を指定
 	if (commandType == COMMANDOREDER_NONE)
 	{
 		g_aQuestionMark[nIdx].col0 = COLOR_WHITE;
@@ -494,4 +496,24 @@ void SetMarkColor(int nIdx, COMMANDOREDER commandType)
 		g_aQuestionMark[nIdx].col3 = COLOR_YELLOW;
 		PrintDebugProc("魔法の種類 : COMMANDOREDER_RGB\n");
 	}
+
+	float fAlpha = 0.0f;
+	// アルファ値を管理
+	if (fDistance > NONDISP)
+	{ // 一定以上離れていたらアルファ値を0.0fにする
+		fAlpha = 0.0f;
+	}
+	else if (fDistance < DISP)
+	{ // 一定以上近づいたらアルファ値を1.0fにする
+		fAlpha = 1.0f;
+	}
+	else
+	{ // 距離に応じてアルファ値を管理する
+		fAlpha = 1.0f -(fDistance / NONDISP);
+	}
+
+	g_aQuestionMark[nIdx].col0.a = fAlpha;
+	g_aQuestionMark[nIdx].col1.a = fAlpha;
+	g_aQuestionMark[nIdx].col2.a = fAlpha;
+	g_aQuestionMark[nIdx].col3.a = fAlpha;
 }
