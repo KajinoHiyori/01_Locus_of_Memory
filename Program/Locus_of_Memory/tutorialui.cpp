@@ -42,17 +42,22 @@ typedef struct
 }TutorialUI;
 
 // マクロ定義
-#define NUM_TUTORIALUI		(4)						// チュートリアルUIの表示数
+#define NUM_TUTORIALUI		(TUTORIALUITYPE_MAX - 2)						// チュートリアルUIの表示数
 #define MAX_TUTORIALUI		(TUTORIALUITYPE_MAX)	// テクスチャの最大数
 #define WIDTH				(105.0f)	// 横幅
 #define HEIGHT				(70.0f)	// 縦幅
 #define UI_KEY				(30)		// UIのキー数
+#define CIRCLE_SIZE			(90.0f)	// 魔法陣の大きさ
 #define UI_ROT				(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 表示方向
 #define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 法線ベクトル
 #define PLAY_POS			(D3DXVECTOR3(-3480.0f, 120.0f, -3000.0f))	// 操作方法の表示位置
 #define MAGIC_POS			(D3DXVECTOR3(-3080.0f, 120.0f, -3000.0f))	// 魔法の使い方の表示位置
 #define LIMIT_POS			(D3DXVECTOR3(-2680.0f, 120.0f, -3000.0f))	// 制限時間の表示位置
 #define BOOK_POS			(D3DXVECTOR3(-2280.0f, 120.0f, -3000.0f))	// 魔導書の表示位置
+#define HOUSE_POS			(D3DXVECTOR3(-2130.0f, 120.0f, -3900.0f))	// 燃える家の表示位置
+#define CIRCLE_POS			(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// 燃える家の表示位置
+#define CIRCLE_ROT			(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f))		// 魔法陣の表示角度
+#define CIRCLE_ROTATE		(0.05f)		// 魔法陣の回転速度
 #define APPEAR_SIZE			(250.0f)	// 出現の当たり判定を管理するサイズ
 
 // テクスチャの読み込み
@@ -64,6 +69,8 @@ const char* c_apFilenameTutorialUI[MAX_TUTORIALUI] =
 	"data\\TEXTURE\\tutorial\\tutorialui003.png",	// TUTORIALUITYPE_MAGICKEY
 	"data\\TEXTURE\\tutorial\\tutorialui004.png",	// TUTORIALUITYPE_TIMELIMIT
 	"data\\TEXTURE\\tutorial\\tutorialui005.png",	// TUTORIALUITYPE_MAGICBOOK
+	"data\\TEXTURE\\tutorial\\tutorialui006.png",	// TUTORIALUITYPE_FIREHOUSE
+	"data\\TEXTURE\\SpellUI\\19_SunsetDelay.png",	// TUTORIALUITYPE_MAGICCIRCLE
 };
 
 // グローバル変数
@@ -156,6 +163,8 @@ void InitTutorialUI(void)
 
 	SetTutorialUI(TUTORIALUITYPE_TIMELIMIT, LIMIT_POS, UI_ROT);
 	SetTutorialUI(TUTORIALUITYPE_MAGICBOOK, BOOK_POS, UI_ROT);
+	SetTutorialUI(TUTORIALUITYPE_FIREHOUSE, HOUSE_POS, UI_ROT);
+	SetTutorialUI(TUTORIALUITYPE_MAGICCIRCLE, CIRCLE_POS, CIRCLE_ROT);
 }
 
 //======================================================================================
@@ -200,38 +209,48 @@ void UpdateTutorialUI(void)
 		}
 		for (int nCntUI = 0; nCntUI < NUM_TUTORIALUI; nCntUI++)
 		{
-			// プレイヤーが設置位置に近づいた場合展開する
-			if (pPlayer->pos.x >= g_aTutorialUI[nCntUI].pos.x - APPEAR_SIZE &&	// 一定範囲より右にある
-				pPlayer->pos.x <= g_aTutorialUI[nCntUI].pos.x + APPEAR_SIZE &&	// 一定範囲より左にある
-				pPlayer->pos.z >= g_aTutorialUI[nCntUI].pos.z - APPEAR_SIZE &&	// 一定範囲より奥にある
-				pPlayer->pos.z <= g_aTutorialUI[nCntUI].pos.z + APPEAR_SIZE)
+			if (g_aTutorialUI[nCntUI].type == TUTORIALUITYPE_MAGICCIRCLE)
 			{
-				bDisp[nCntUI] = true;
-				if (g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_NONDISPLAY)
-				{
-					SetTutorialUIAppear(nCntUI);
-				}
+				g_aTutorialUI[nCntUI].rot.x += CIRCLE_ROTATE;
+				g_aTutorialUI[nCntUI].rot.z += CIRCLE_ROTATE;
+				g_aTutorialUI[nCntUI].fWidth = CIRCLE_SIZE;
+				g_aTutorialUI[nCntUI].fHeight = CIRCLE_SIZE;
+				g_aTutorialUI[nCntUI].state = TUTORIALUISTATE_DISPLAY;
 			}
-			else if (g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_APPEAR || // 出現状態
-					g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_DISPLAY)	// 表示状態
-					
-			{ // 2人プレイの場合の非表示処理
-
-				switch (operationType)
+			else
+			{
+				// プレイヤーが設置位置に近づいた場合展開する
+				if (pPlayer->pos.x >= g_aTutorialUI[nCntUI].pos.x - APPEAR_SIZE &&	// 一定範囲より右にある
+					pPlayer->pos.x <= g_aTutorialUI[nCntUI].pos.x + APPEAR_SIZE &&	// 一定範囲より左にある
+					pPlayer->pos.z >= g_aTutorialUI[nCntUI].pos.z - APPEAR_SIZE &&	// 一定範囲より奥にある
+					pPlayer->pos.z <= g_aTutorialUI[nCntUI].pos.z + APPEAR_SIZE)
 				{
-				case OPERATIONTYPE_2P:	// 2人操作
-					if (bDisp[nCntUI] == false && nCntPlayer == 0)
+					bDisp[nCntUI] = true;
+					if (g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_NONDISPLAY)
 					{
-						SetTutorialUIDisappear(nCntUI);
+						SetTutorialUIAppear(nCntUI);
 					}
-					break;
+				}
+				else if (g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_APPEAR || // 出現状態
+					g_aTutorialUI[nCntUI].state == TUTORIALUISTATE_DISPLAY)	// 表示状態
 
-				default:
-					SetTutorialUIDisappear(nCntUI);
-					break;
+				{ // 2人プレイの場合の非表示処理
+
+					switch (operationType)
+					{
+					case OPERATIONTYPE_2P:	// 2人操作
+						if (bDisp[nCntUI] == false && nCntPlayer == 0)
+						{
+							SetTutorialUIDisappear(nCntUI);
+						}
+						break;
+
+					default:
+						SetTutorialUIDisappear(nCntUI);
+						break;
+					}
 				}
 			}
-			
 		}
 	}
 
@@ -320,7 +339,7 @@ void UpdateTutorialUI(void)
 void DrawTutorialUI(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX UIMatrix, mtxRot;	// UIのマトリックス情報を取得
+	D3DXMATRIX UIMatrix, mtxRot, mtxView;	// UIのマトリックス情報を取得
 
 	// ワールドマトリックスの初期化(デフォルトの値にする)
 	D3DXMatrixIdentity(&UIMatrix);
@@ -344,7 +363,6 @@ void DrawTutorialUI(void)
 		}
 
 		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &UIMatrix);
 
 		D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
 		D3DXMATRIX	mtxParent;					// 親のマトリックス
@@ -352,14 +370,29 @@ void DrawTutorialUI(void)
 		// ポリゴンのワールドマトリックスを初期化
 		D3DXMatrixIdentity(&g_aTutorialUI[nCntUI].mtxWorld);
 
+		if (g_aTutorialUI[nCntUI].type != TUTORIALUITYPE_MAGICCIRCLE)	// 魔法陣以外はビルボードにする
+		{
+			// ビューマトリックスを取得する
+			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+
+			// ポリゴンをカメラに対して正面に向ける
+			D3DXMatrixInverse(&g_aTutorialUI[nCntUI].mtxWorld, NULL, &mtxView);	//逆行列を求める
+
+			g_aTutorialUI[nCntUI].mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
+			g_aTutorialUI[nCntUI].mtxWorld._42 = 0.0f;
+			g_aTutorialUI[nCntUI].mtxWorld._43 = 0.0f;
+		}
+		else
+		{
+			// 向きを反映
+			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aTutorialUI[nCntUI].rot.y, g_aTutorialUI[nCntUI].rot.x, g_aTutorialUI[nCntUI].rot.z);
+			D3DXMatrixMultiply(&g_aTutorialUI[nCntUI].mtxWorld, &g_aTutorialUI[nCntUI].mtxWorld, &mtxRot);
+		}
+
 		// パーツの位置を反映
 		D3DXMatrixTranslation(&mtxTransModel, g_aTutorialUI[nCntUI].pos.x, g_aTutorialUI[nCntUI].pos.y, g_aTutorialUI[nCntUI].pos.z);
 		D3DXMatrixMultiply(&g_aTutorialUI[nCntUI].mtxWorld, &g_aTutorialUI[nCntUI].mtxWorld, &mtxTransModel);
-
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aTutorialUI[nCntUI].rot.y, g_aTutorialUI[nCntUI].rot.x, g_aTutorialUI[nCntUI].rot.z);
-		D3DXMatrixMultiply(&g_aTutorialUI[nCntUI].mtxWorld, &g_aTutorialUI[nCntUI].mtxWorld, &mtxRot);
-
+		
 		// パーツのワールドマトリックスを設定
 		pDevice->SetTransform(D3DTS_WORLD, &g_aTutorialUI[nCntUI].mtxWorld);
 
