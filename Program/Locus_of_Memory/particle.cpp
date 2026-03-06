@@ -11,7 +11,7 @@
 #include"debugproc.h"
 #include "color.h"
 
-#define MAX_PARTICLE	(128)	//パーティクルの最大数
+#define MAX_PARTICLE	(256)	//パーティクルの最大数
 #define MAX_APPEAR		(5)		//粒子の最大数
 #define MAX_ANGRE		(629)
 #define MAX_ANGRE2		(314)
@@ -20,6 +20,7 @@
 #define MAX_MOVE2		(30)
 #define MAX_MOVE3		(10)
 #define MAX_MOVE4		(20)
+
 //パーティクルの構造体
 typedef struct
 {
@@ -29,7 +30,7 @@ typedef struct
 	D3DXMATRIX g_mtxWorldParticle;	//ワールドマトリックス
 	float fRadius;			//半径
 	int nLife;				//寿命（色）
-	PARTICLETYPE Type;				//種類
+	PARTICLETYPE Type;		//種類
 	bool bUse;				//使用しているか
 }PARTICLE;
 
@@ -38,16 +39,34 @@ LPDIRECT3DTEXTURE9 g_pTextureBuffParticle = NULL;
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffParticle = NULL;
 PARTICLE g_aParticle[MAX_PARTICLE];
 
+//========================================================================
+// 初期化
+//========================================================================
 void InitParticle(void)
 {
-
+	for (int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)
+	{
+		g_aParticle[nCntParticle].bUse = false;
+		g_aParticle[nCntParticle].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aParticle[nCntParticle].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		g_aParticle[nCntParticle].nLife = 0;
+		g_aParticle[nCntParticle].fRadius = 0;
+		g_aParticle[nCntParticle].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		g_aParticle[nCntParticle].Type = PARTICLETYPE_NONE;
+	}
 }
 
+//========================================================================
+// 終了
+//========================================================================
 void UninitParticle(void)
 {
 
 }
 
+//========================================================================
+// 更新
+//========================================================================
 void UpdateParticle(void)
 {
 	D3DXVECTOR3 pos[3];
@@ -103,7 +122,7 @@ void UpdateParticle(void)
 
 	if (GetKeyboardTrigger(DIK_6) == true)
 	{//雨乞い
-		SetParticle(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120, PARTICLETYPE_RAINPRAY);
+		SetParticle(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 240, PARTICLETYPE_RAINPRAY);
 	}
 
 	if (GetKeyboardTrigger(DIK_7) == true)
@@ -198,7 +217,7 @@ void UpdateParticle(void)
 			case PARTICLETYPE_COMBUSTION:
 				for (int nCntAppear = 0; nCntAppear < 3; nCntAppear++)
 				{
-					//位置の設(
+					//位置の設定
 					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 50;
 					pos[0].y = g_aParticle[nCntParticle].pos.y;
 					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 50;
@@ -330,13 +349,23 @@ void UpdateParticle(void)
 
 				//雨乞い===========================================================================
 			case PARTICLETYPE_RAINPRAY:
-				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
+				for (int nCntAppear = 0; nCntAppear < 15; nCntAppear++)
 				{
-					pos[0] = g_aParticle[nCntParticle].pos;
-					move[0][PARTICLETYPE_RAINPRAY].x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_RAINPRAY].y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_RAINPRAY].z = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_RAINPRAY], COLOR_RED, 10, 25);
+					//位置の設定
+					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 500)) * 200;
+					pos[0].y = g_aParticle[nCntParticle].pos.y + 300.0f;
+					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 500)) * 200;
+
+					fSpeed = (float)(rand() % 2 + 1);
+
+					//移動量	
+					rot.x = ((float)(rand() % 629 - 314) / 100);
+					rot.z = ((float)(rand() % 629 - 314) / 100);
+
+					move[0][PARTICLETYPE_RAINPRAY].y = -(float)(rand() % 10) - 2;
+
+					SetEffect(EFFECT_TYPE_RAIN, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_RAINPRAY], COLOR_BLUE, (rand() % 200) + 100, (float)(rand() % 7));
+					SetEffect(EFFECT_TYPE_RAIN, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_RAINPRAY], COLOR_HISUI, (rand() % 200) + 100, (float)(rand() % 4));
 				}
 				break;
 
@@ -385,7 +414,7 @@ void UpdateParticle(void)
 			case PARTICLETYPE_GROWTH:
 				for (int nCntAppear = 0; nCntAppear < 2; nCntAppear++)
 				{
-					//位置の設(
+					//位置の設定
 					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 50;
 					pos[0].y = g_aParticle[nCntParticle].pos.y;
 					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 50;
@@ -399,7 +428,6 @@ void UpdateParticle(void)
 					move[0][PARTICLETYPE_GROWTH].x = sinf(rot.z) * fSpeed;
 					move[0][PARTICLETYPE_GROWTH].z = cosf(rot.z) * fSpeed;
 					move[0][PARTICLETYPE_GROWTH].y = (float)(rand() % 2 + 1) * 1.2f;
-					//move[0][PARTICLETYPE_COMBUSTION].y = cosf(rot.y) * fSpeed;
 
 					//半径の設定
 					fRadius = g_aParticle[nCntParticle].fRadius;
@@ -424,14 +452,24 @@ void UpdateParticle(void)
 
 				//時間の巻き戻し(回帰)=============================================================
 			case PARTICLETYPE_TIMEREVERT:
-				for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
-				{
-					pos[0] = g_aParticle[nCntParticle].pos;
-					move[0][PARTICLETYPE_TIMEREVERT].x = (sinf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_TIMEREVERT].y = (cosf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					move[0][PARTICLETYPE_TIMEREVERT].z = (tanf(float(rand() % MAX_ANGRE - MAX_ANGRE2 / MAX_ONEHUNDRED))) * (float(rand() % MAX_MOVE - MAX_MOVE2 / MAX_ONEHUNDRED));
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_TIMEREVERT], COLOR_RED, 100, 25);
-				}
+					//位置の設定
+					pos[0].x = g_aParticle[nCntParticle].pos.x + sinf((float)(rand() % 100)) * 50;
+					pos[0].y = g_aParticle[nCntParticle].pos.y;
+					pos[0].z = g_aParticle[nCntParticle].pos.z + cosf((float)(rand() % 100)) * 50;
+
+					fSpeed = (float)(rand() % 3 + 1);
+
+					//移動量						　　　
+					rot.z = ((float)(rand() % 629 - 314) / 100);
+					
+					move[0][PARTICLETYPE_TIMEREVERT].x = sinf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_TIMEREVERT].z = cosf(rot.z) * fSpeed;
+					move[0][PARTICLETYPE_TIMEREVERT].y = (float)(rand() % 2 + 1) * 1.0f;
+
+					//半径の設定
+					fRadius = g_aParticle[nCntParticle].fRadius;
+
+					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_TIMEREVERT], COLOR_WHITE, 100, 5);
 				break;
 			}
 
@@ -446,11 +484,17 @@ void UpdateParticle(void)
 	PrintDebugProc("使用しているパーティクル : %d\n", nCountParticle++);
 }
 
+//========================================================================
+// 描画
+//========================================================================
 void DrawParticle(void)
 {
 
 }
 
+//========================================================================
+// パーティクルの設定
+//========================================================================
 void SetParticle(D3DXVECTOR3 pos, int nLife, PARTICLETYPE type)
 {
 	for (int nCntParticle = 0; nCntParticle < MAX_PARTICLE; nCntParticle++)

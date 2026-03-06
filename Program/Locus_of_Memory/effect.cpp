@@ -192,6 +192,19 @@ void UpdateEffect(void)
 			break;
 		}
 
+		if (pEffect->bUse == true)
+		{
+			if (pEffect->type == EFFECT_TYPE_RAIN)
+			{
+				if (pEffect->pos.y <= 0)
+				{
+					ReleaseEffect(nCntEffect);
+					nCntEffect--;
+					continue;
+				}
+			}
+		}
+
 		/*g_aEffect[nCntEffect].fRadius -= 0.01f;*/
 		pEffect->pos += pEffect->move;
 		pEffect->nLife--;
