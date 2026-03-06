@@ -42,6 +42,13 @@ DROPMAGICSET
 	POS = -2710 0 -83
 	RADIUS = 100.0
 END_DROPMAGICSET
+
+DROPMAGICSET
+	TYPE = 1
+	POS = -3276 0 -3307
+	RADIUS = 100.0
+END_DROPMAGICSET
+
 #------------------------------------------------------------------------------
 # 洪水魔法
 #------------------------------------------------------------------------------
@@ -98,6 +105,7 @@ DROPMAGICSET
 	POS = -4499 0 -476
 	RADIUS = 100.0
 END_DROPMAGICSET
+
 
 #------------------------------------------------------------------------------
 # 時止め
@@ -198,6 +206,12 @@ END_DROPMAGICSET
 DROPMAGICSET
 	TYPE = 22
 	POS = 2400 0 -4118
+	RADIUS = 100.0
+END_DROPMAGICSET
+
+DROPMAGICSET
+	TYPE = 22
+	POS = -2908 0 -3235
 	RADIUS = 100.0
 END_DROPMAGICSET
 
