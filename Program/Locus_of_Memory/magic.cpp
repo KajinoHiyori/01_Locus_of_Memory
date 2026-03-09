@@ -33,7 +33,6 @@ COMMANDTYPE g_aCommand[MAX_PLAYER][MAX_COMMAND];		//コマンドの情報
 COMMANDTYPE g_aCommandSave[MAX_PLAYER][MAX_COMMAND];		//コマンドの過去の情報
 MagicCounter g_aCounter[MAX_PLAYER];					//リザルト用魔法回数カウント
 MagicLocus g_aMagicLocus[MAX_MAGICLOCUS];				//魔法使用場所の情報
-MagicLocus g_aResetMagicLocus[MAX_MAGICLOCUS];				//魔法使用場所の情報
 int g_aCntCommand[MAX_PLAYER] = {};						//
 
 //魔法の初期化処理=============================
@@ -41,7 +40,6 @@ void InitMagic(void)
 {
 	MagicCounter* pCounter = &g_aCounter[0];
 	MagicLocus* pMagicLocus = &g_aMagicLocus[0];
-	MagicLocus* pResetMagicLocus = &g_aResetMagicLocus[0];
 
 	memset(pCounter, NULL, sizeof(MagicCounter) * MAX_PLAYER);
 	memset(&g_aCntCommand[0], NULL, sizeof(int) * MAX_PLAYER);
@@ -602,7 +600,6 @@ void SetMagicPosition(COMMANDOREDER type, D3DXVECTOR3 pos, float fRadius)
 void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx)
 {
 	MagicLocus* pMagicLocus = &g_aMagicLocus[0];		// 先頭アドレス
-	MagicLocus* pResetMagicLocus = &g_aResetMagicLocus[0];		// 先頭アドレス
 
 	for (int nCntMagicLocus = 0; nCntMagicLocus < MAX_MAGICLOCUS; nCntMagicLocus++, pMagicLocus++)
 	{
@@ -616,16 +613,27 @@ void SetMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx)
 		pMagicLocus->pos = pos;					// 原点
 		pMagicLocus->fRadius = fRadius;			// 半径
 		pMagicLocus->nIdxObject = nIdx;			// 対応するオブジェクトの番号
+		pMagicLocus->nIdxLocus = nCntMagicLocus;	// 対応するイベントの番号
 		pMagicLocus->bUse = true;				// 使用状態
 
-		// 再配置用に各引数の値を代入
-		pResetMagicLocus->MagicEvent = event;		// イベントの種類
-		pResetMagicLocus->pos = pos;					// 原点
-		pResetMagicLocus->fRadius = fRadius;			// 半径
-		pResetMagicLocus->nIdxObject = nIdx;			// 対応するオブジェクトの番号
-		pResetMagicLocus->bUse = true;				// 使用状態
-
 		break;
+	}
+}
+
+//イベントの情報を上書きする==============================
+void UpdateMagicLocus(MAGICEVENT event, D3DXVECTOR3 pos, float fRadius, int nIdx)
+{
+	MagicLocus* pMagicLocus = &g_aMagicLocus[0];		// 先頭アドレス
+
+	for (int nCntMagicLocus = 0; nCntMagicLocus < MAX_MAGICLOCUS; nCntMagicLocus++, pMagicLocus++)
+	{
+		if (pMagicLocus->pos == pos && pMagicLocus->nIdxObject == nIdx)
+		{
+			// 各引数の値を代入
+			pMagicLocus->MagicEvent = event;		// イベントの種類
+			pMagicLocus->bUse = true;				// 使用状態
+			break;
+		}
 	}
 }
 
@@ -639,12 +647,6 @@ Magic* GetMagic(int nIdx)
 MagicLocus* GetMagicLucus()
 {
 	return &g_aMagicLocus[0];
-}
-
-//魔法情報の取得==============================
-MagicLocus* GetResetMagicLucus()
-{
-	return &g_aResetMagicLocus[0];
 }
 
 //使用中魔法情報の取得==============================
@@ -719,7 +721,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 2.5f, 2))
 		{// 落ちている魔法の周辺にいたら
 			// ここで種類に応じた振動を呼び出す
-			//SetMagicBubble(nIdx, pDropMagic->oType, 0);
+			ResetMagicBubble(nIdx);
 			VibrationType(VIBRATIONTYPE_MEDIUM, pDropMagic->oType, nIdx);
 			PrintDebugProc("[%d]周辺に魔法が落ちている\n", nCntMagic);
 			isSearch = true;

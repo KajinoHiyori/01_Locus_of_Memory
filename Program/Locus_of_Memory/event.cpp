@@ -139,7 +139,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
 			MOTIONTYPE_MOVE, false, true, 10);
-		SetMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, nIdx);
+		UpdateMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 
@@ -150,7 +150,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
 			MOTIONTYPE_MOVE, false, true, 10);
-		SetMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, nIdx);
+		UpdateMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, nIdx);
 		isSuccess =  true;
 		break;
 
@@ -197,7 +197,7 @@ bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
 			MOTIONTYPE_ACTION, false, false, 10);
-		SetMagicLocus(MAGICEVENT_003, pEventObject->pos, 500.0f, nIdx); 
+		UpdateMagicLocus(MAGICEVENT_003, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 	}
@@ -224,7 +224,7 @@ bool SetMagicEvent005(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_MOVE, false, false, 10);
-		SetMagicLocus(MAGICEVENT_006, pEventObject->pos, 500.0f, nIdx);
+		UpdateMagicLocus(MAGICEVENT_006, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 	}
@@ -251,7 +251,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_RUN, false, false, 10);
-		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
+		UpdateMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 
@@ -262,7 +262,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_RUN, false, false, 10);
-		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
+		UpdateMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 
@@ -273,7 +273,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_RUN, false, false, 10);
-		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
+		UpdateMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 	}
