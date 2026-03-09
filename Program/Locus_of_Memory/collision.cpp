@@ -272,27 +272,27 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	// 向き行列から各方向ベクトルの確保 (正規化Nと長さ)
 	// 自分の矩形のX方面ベクトル
-	D3DXVECTOR3 NAe1 = { MymtxRot._11, MymtxRot._21, MymtxRot._31 },
+	D3DXVECTOR3 NAe1 = { MymtxRot._11, MymtxRot._12, MymtxRot._13 },
 		Ae1 = NAe1 * MyCollider.box.fWidth;
 
 	// 自分の矩形のY方面ベクトル
-	D3DXVECTOR3 NAe2 = { MymtxRot._12, MymtxRot._22, MymtxRot._32 }, 
+	D3DXVECTOR3 NAe2 = { MymtxRot._21, MymtxRot._22, MymtxRot._23 },
 		Ae2 = NAe2 * MyCollider.box.fHeight;
 
 	// 自分の矩形のZ方面ベクトル
-	D3DXVECTOR3 NAe3 = { MymtxRot._13, MymtxRot._23, MymtxRot._33 }, 
+	D3DXVECTOR3 NAe3 = { MymtxRot._31, MymtxRot._32, MymtxRot._33 },
 		Ae3 = NAe3 * MyCollider.box.fDepth;
 
 	// 対象の矩形のX方面ベクトル
-	D3DXVECTOR3 NBe1 = { TargetmtxRot._11, TargetmtxRot._21, TargetmtxRot._31 }, 
+	D3DXVECTOR3 NBe1 = { TargetmtxRot._11, TargetmtxRot._12, TargetmtxRot._13 },
 		Be1 = NBe1 * TargetCollider.box.fWidth;
 
 	// 対象の矩形のY方面ベクトル
-	D3DXVECTOR3 NBe2 = { TargetmtxRot._12, TargetmtxRot._22, TargetmtxRot._32 }, 
+	D3DXVECTOR3 NBe2 = { TargetmtxRot._21, TargetmtxRot._22, TargetmtxRot._23 },
 		Be2 = NBe2 * TargetCollider.box.fHeight;
 
 	// 対象の矩形のZ方面ベクトル
-	D3DXVECTOR3 NBe3 = { TargetmtxRot._13, TargetmtxRot._23, TargetmtxRot._33 }, 
+	D3DXVECTOR3 NBe3 = { TargetmtxRot._31, TargetmtxRot._32, TargetmtxRot._33 },
 		Be3 = NBe3 * TargetCollider.box.fDepth;
 
 	// 自分と対象の中心点の距離
@@ -308,6 +308,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	float L = fabs(D3DXVec3Dot(&Distance, &NAe1));
 	if (L > rA + rB)
 	{
+		PrintDebugProc("AX %f\n", L);
 		return false; // 衝突していない
 	}
 
@@ -319,6 +320,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabs(D3DXVec3Dot(&Distance, &NAe2));
 	if (L > rA + rB)
 	{
+		PrintDebugProc("AY %f\n", L);
 		return false; // 衝突していない
 	}
 
@@ -330,40 +332,171 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabs(D3DXVec3Dot(&Distance, &NAe3));
 	if (L > rA + rB)
 	{
+		PrintDebugProc("AZ %f\n", L);
 		return false; // 衝突していない
 	}
 
 	// 分離軸 : Be1
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NBe1, &Ae1)), fabsf(D3DXVec3Dot(&NBe1, &Ae2)), fabsf(D3DXVec3Dot(&NBe1, &Ae3)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &NBe1)), fabsf(D3DXVec3Dot(&Ae2, &NBe1)), fabsf(D3DXVec3Dot(&Ae3, &NBe1)));
 
-	rA = D3DXVec3Length(&Be1);
-	rB = Sep.x + Sep.y + Sep.z;
+	rA = Sep.x + Sep.y + Sep.z;
+	rB = D3DXVec3Length(&Be1);
 	L = fabs(D3DXVec3Dot(&Distance, &NBe1));
 	if (L > rA + rB)
 	{
+		PrintDebugProc("BA %f\n", L);
 		return false; // 衝突していない
 	}
 
 	// 分離軸 : Be2
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NBe2, &Ae1)), fabsf(D3DXVec3Dot(&NBe2, &Ae2)), fabsf(D3DXVec3Dot(&NBe2, &Ae3)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &NBe2)), fabsf(D3DXVec3Dot(&Ae2, &NBe2)), fabsf(D3DXVec3Dot(&Ae3, &NBe2)));
 
-	rA = D3DXVec3Length(&Be2);
-	rB = Sep.x + Sep.y + Sep.z;
+	rA = Sep.x + Sep.y + Sep.z;
+	rB = D3DXVec3Length(&Be2);
 	L = fabs(D3DXVec3Dot(&Distance, &NBe2));
 	if (L > rA + rB)
 	{
+		PrintDebugProc("BY %f\n", L);
 		return false; // 衝突していない
 	}
 
 	// 分離軸 : Be3
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NBe3, &Ae1)), fabsf(D3DXVec3Dot(&NBe3, &Ae2)), fabsf(D3DXVec3Dot(&NBe3, &Ae3)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &NBe3)), fabsf(D3DXVec3Dot(&Ae2, &NBe3)), fabsf(D3DXVec3Dot(&Ae3, &NBe3)));
 
-	rA = D3DXVec3Length(&Be3);
-	rB = Sep.x + Sep.y + Sep.z;
+	rA = Sep.x + Sep.y + Sep.z;
+	rB = D3DXVec3Length(&Be3);
 	L = fabs(D3DXVec3Dot(&Distance, &NBe3));
 	if (L > rA + rB)
 	{
+		PrintDebugProc("BZ %f\n", L);
 		return false; // 衝突していない
+	}
+
+	// 分離軸 : C11
+	D3DXVECTOR3 Cross;
+	D3DXVec3Cross(&Cross, &NAe1, &NBe1);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae2, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
+	D3DXVECTOR3 Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be2, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
+	}
+
+	// 分離軸 : C12
+	D3DXVec3Cross(&Cross, &NAe1, &NBe2);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae2, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
+	}
+
+	// 分離軸 : C13
+	D3DXVec3Cross(&Cross, &NAe1, &NBe3);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae2, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be2, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
+	}
+
+	// 分離軸 : C21
+	D3DXVec3Cross(&Cross, &NAe2, &NBe1);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be2, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
+	}
+
+	// 分離軸 : C22
+	D3DXVec3Cross(&Cross, &NAe2, &NBe2);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
+	}
+
+	// 分離軸 : C23
+	D3DXVec3Cross(&Cross, &NAe2, &NBe3);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be2, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
+	}
+
+	// 分離軸 : C31
+	D3DXVec3Cross(&Cross, &NAe3, &NBe1);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae2, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be2, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
+	}
+
+	// 分離軸 : C32
+	D3DXVec3Cross(&Cross, &NAe3, &NBe2);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae2, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
+	}
+
+	// 分離軸 : C33
+	D3DXVec3Cross(&Cross, &NAe3, &NBe3);
+
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae2, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be2, &Cross)), 0.0f);
+
+	rA = Sep.x + Sep.y;
+	rB = Sep2.x + Sep2.y;
+	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	if (L > rA + rB)
+	{
+		return false;
 	}
 
 	PrintDebugProc("MyPos = {%.2f, %.2f, %.2f}\n", MyCollider.pos.x, MyCollider.pos.y, MyCollider.pos.z);;
