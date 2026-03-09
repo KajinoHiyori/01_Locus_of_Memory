@@ -136,6 +136,12 @@ DROPMAGICSET
 	RADIUS = 100.0
 END_DROPMAGICSET
 
+DROPMAGICSET
+	TYPE = 10
+	POS = -3297 0 -3257
+	RADIUS = 100.0
+END_DROPMAGICSET
+
 #------------------------------------------------------------------------------
 # 凍結魔法
 #------------------------------------------------------------------------------
@@ -154,6 +160,12 @@ END_DROPMAGICSET
 DROPMAGICSET
 	TYPE = 13
 	POS = 3308 0 1445
+	RADIUS = 100.0
+END_DROPMAGICSET
+
+DROPMAGICSET
+	TYPE = 13
+	POS = -3795 0 -1500
 	RADIUS = 100.0
 END_DROPMAGICSET
 
