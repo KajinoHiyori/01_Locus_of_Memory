@@ -648,6 +648,8 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		case PARENTMODELTYPE_CLOCKTOWER:
 			pParentObject->motion.pMotionData = NULL;
 			SetClockTowerIdx(nCntParentObject);		// 時計塔のインデックスを渡す
+		case PARENTMODELTYPE_POND:
+			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_POND);		// モーションデータ設定
 			break;
 		}
 
