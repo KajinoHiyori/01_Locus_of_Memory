@@ -698,7 +698,7 @@ END_MODELSET
 #------------------------------------------------------------------------------
 MODELSET
 	TYPE = 17
-	POS = 1500 202 -4265
+	POS = 3487 0 -3377
 	ROT = 0 30 0
 	SHADOW = 0
 	COLLISION = 1
@@ -706,7 +706,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 18
-	POS = 1500 202 -4265
+	POS = 3487 0 -3377
 	ROT = 0 180 0
 	SHADOW = 0
 	COLLISION = 1
@@ -714,7 +714,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 17
-	POS = -752 0 -4207
+	POS = 1519 0 -884
 	ROT = 0 30 0
 	SHADOW = 0
 	COLLISION = 1
@@ -722,7 +722,7 @@ END_MODELSET
 
 MODELSET
 	TYPE = 18
-	POS = -752 0 -4207
+	POS = 1519 0 -884
 	ROT = 0 180 0
 	SHADOW = 0
 	COLLISION = 1
@@ -975,13 +975,7 @@ MODELSET
 	COLLISION = 1
 END_MODELSET
 
-MODELSET
-	TYPE = 22
-	POS = 2081 0 -2772
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
+
 #------------------------------------------------------------------------------
 # Мо
 #------------------------------------------------------------------------------
