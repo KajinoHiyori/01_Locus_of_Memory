@@ -91,6 +91,12 @@ DROPMAGICSET
 	RADIUS = 100.0
 END_DROPMAGICSET
 
+DROPMAGICSET
+	TYPE = 3
+	POS = -1095 0 -4565
+	RADIUS = 100.0
+END_DROPMAGICSET
+
 #------------------------------------------------------------------------------
 # 燃焼魔法
 #------------------------------------------------------------------------------
@@ -166,6 +172,12 @@ DROPMAGICSET
 	RADIUS = 100.0
 END_DROPMAGICSET
 
+DROPMAGICSET
+	TYPE = 16
+	POS = -3591 0 -3335
+	RADIUS = 100.0
+END_DROPMAGICSET
+
 #------------------------------------------------------------------------------
 # 移動速度上昇魔法
 #------------------------------------------------------------------------------
@@ -184,6 +196,12 @@ END_DROPMAGICSET
 DROPMAGICSET
 	TYPE = 19
 	POS = 2081 0 -2772
+	RADIUS = 100.0
+END_DROPMAGICSET
+
+DROPMAGICSET
+	TYPE = 19
+	POS = -2500 0 -3250
 	RADIUS = 100.0
 END_DROPMAGICSET
 

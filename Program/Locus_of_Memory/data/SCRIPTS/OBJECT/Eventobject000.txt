@@ -251,14 +251,14 @@ END_MAGICEVENTSET
 
 MODELSET
 	PARENTTYPE = 6
-	POS = -2844 0 -2700
+	POS = -2844 0 -2600
 	ROT = 0 0 0
 	COLLISION = 1
 	MOTIONTYPE = 5
 END_MODELSET
 
 MAGICEVENTSET
-	POS = -2844 0 -2700
+	POS = -2844 0 -2600
 	RADIUS = 500.0
 	EVENT = 2
 END_MAGICEVENTSET
@@ -267,14 +267,14 @@ END_MAGICEVENTSET
 #------------------------------------------------------------------------------
 MODELSET
 	PARENTTYPE = 7
-	POS = -3000.0 0.0 -3235.0
+	POS = -3500.0 0.0 -3450.0
 	ROT = 0 0 0
 	COLLISION = 1
 	MOTIONTYPE = 6
 END_MODELSET
 
 MAGICEVENTSET
-	POS = -3000.0 0.0 -3235.0
+	POS = -3500.0 0.0 -3450.0
 	RADIUS = 500.0
 	EVENT = 3
 END_MAGICEVENTSET
@@ -293,4 +293,20 @@ MAGICEVENTSET
 	EVENT = 3
 END_MAGICEVENTSET
 
+#------------------------------------------------------------------------------
+# 階層構造のある池
+#------------------------------------------------------------------------------
+MODELSET
+	PARENTTYPE = 9
+	POS = -4231.0 0.0 -1234.0
+	ROT = 0 0 0
+	COLLISION = 1
+	MOTIONTYPE = 6
+END_MODELSET
+
+MAGICEVENTSET
+	POS =  -4231.0 0.0 -1234.0
+	RADIUS = 500.0
+	EVENT = 3
+END_MAGICEVENTSET
 END_SCRIPT		# この行は絶対消さないこと！
