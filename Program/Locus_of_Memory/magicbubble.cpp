@@ -30,6 +30,7 @@ typedef struct
 	D3DXVECTOR3		pos;		// 位置
 	D3DXVECTOR3		rot;		// 向き
 	MAGICBUBBLETYPE type;		// 種類
+	COMMANDOREDER	command;	// 設置するコマンドの種類
 	float	fWidth;			// 幅
 	float	fWidthDest;		// 幅の目的値
 	float	fHeight;		// 高さ
@@ -101,6 +102,7 @@ void InitMagicBubble(void)
 		g_aMagicBubble[nCntPlayer].pos			= D3DXVECTOR3(BUBBLE_X, BUBBLE_Y, 0.0f);	// 位置
 		g_aMagicBubble[nCntPlayer].rot			= D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 向き
 		g_aMagicBubble[nCntPlayer].type			= MAGICBUBBLETYPE_FAR;	// 種類
+		g_aMagicBubble[nCntPlayer].command		= COMMANDOREDER_NONE;	// コマンドの種類
 		g_aMagicBubble[nCntPlayer].fWidth		= BUBBLE_WIDTH;			// 幅
 		g_aMagicBubble[nCntPlayer].fWidthDest	= BUBBLE_WIDTH;			// 幅の目的値
 		g_aMagicBubble[nCntPlayer].fHeight		= BUBBLE_HEIGHT;		// 高さ
@@ -178,15 +180,27 @@ void UninitMagicBubble(void)
 void UpdateMagicBubble(void)
 {
 	Player* pPlayer = GetPlayer();
+	bool bDisp = false;	// 吹き出しの表示を管理
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
+		bDisp = false;
 		if (pPlayer->state == PLAYERSTATE_PAUSE || pPlayer->state == PLAYERSTATE_SPELL || pPlayer->state == PLAYERSTATE_MAGIC)
 		{
 			g_aMagicBubble[nCntPlayer].bDisp = false;
 		}
 		if (pPlayer->bUse == true)
 		{
+			for (int nCntMagic = 0; nCntMagic < MAX_OWNCOMMAND; nCntMagic++)
+			{
+				// もしプレイヤーが同じ魔法を持っている場合は処理を行わない
+				if (pPlayer->magicbook.OwnCommand[nCntMagic] == g_aMagicBubble[nCntPlayer].command && pPlayer->magicbook.OwnCommand[nCntMagic] != COMMANDOREDER_NONE)
+				{
+					g_aMagicBubble[nCntPlayer].bDisp = false;
+					break;
+				}
+			}
+
 			g_aMagicBubble[nCntPlayer].pos = pPlayer->pos;
 			g_aMagicBubble[nCntPlayer].pos.x += sinf(pPlayer->rot.y) * BUBBLE_X;
 			g_aMagicBubble[nCntPlayer].pos.z += cosf(pPlayer->rot.y) * BUBBLE_X;
@@ -286,7 +300,7 @@ void SetMagicBubble(int nIdx, COMMANDOREDER command, int nDistance)
 {
 	MAGICBUBBLETYPE type = MAGICBUBBLETYPE_FAR;	// テクスチャの種類を格納
 	g_aMagicBubble[nIdx].bDisp = true;
-
+	g_aMagicBubble[nIdx].command = command;
 	switch (nDistance)
 	{
 	case -1:	// 魔法の種類を取得してテクスチャを変更(取得可能状態)

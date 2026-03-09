@@ -21,6 +21,7 @@
 #include "uimanager.h"
 #include "spellui.h"
 #include "magicui.h"
+#include "magicbubble.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -333,6 +334,7 @@ void UpdatePlayer(void)
 				if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
 				{// Xボタンを押したかつ何かしらのコマンドが近くにある
 					OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
+					
 				}
 
 				// 移動方向の正規化
