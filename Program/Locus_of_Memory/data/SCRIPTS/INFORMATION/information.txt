@@ -18,6 +18,7 @@ MOTIONSCRIPT = data/SCRIPTS/MOTION/book_motion.txt
 MOTIONSCRIPT = data/SCRIPTS/MOTION/watermill_motion.txt
 MOTIONSCRIPT = data/SCRIPTS/MOTION/bridge_motion.txt
 MOTIONSCRIPT = data/SCRIPTS/MOTION/plant_motion.txt
+MOTIONSCRIPT = data/SCRIPTS/MOTION/pond_motion.txt
 
 #------------------------------------------------------------------------------
 #	階層構造モデルファイル
@@ -32,4 +33,6 @@ PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/watermill_model.txt
 PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/bridge_model.txt
 PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/plant_model.txt
 PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/clocktower_model.txt
+PARENTSCRIPT = data/SCRIPTS/PARENTMODEL/pond_model.txt
+
 END_SCRIPT
