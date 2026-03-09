@@ -43,6 +43,7 @@ typedef enum COLLIDERTYPE
 typedef struct BoxCollider
 {
 	D3DXVECTOR3 pos;	// 原点
+	D3DXVECTOR3 posOld;	// 過去の原点
 	D3DXVECTOR3 rot;	// 向き
 	float fWidth;		// 幅
 	float fHeight;		// 高さ
@@ -55,6 +56,7 @@ typedef struct BoxCollider
 typedef struct CylinderCollider
 {
 	D3DXVECTOR3 pos;	// 原点
+	D3DXVECTOR3 posOld;	// 過去の原点
 	D3DXVECTOR3 rot;	// 向き
 	float fRadius;		// 半径
 }CylinderCollider;
@@ -65,6 +67,7 @@ typedef struct CylinderCollider
 typedef struct SphereCollider
 {
 	D3DXVECTOR3 pos;	// 原点
+	D3DXVECTOR3 posOld;	// 過去の原点
 	float fRadius;		// 半径
 }SphereCollider;
 
@@ -74,6 +77,7 @@ typedef struct SphereCollider
 typedef struct CapsuleCollider
 {
 	D3DXVECTOR3 pos;	// 原点
+	D3DXVECTOR3 posOld;	// 過去の原点
 	D3DXVECTOR3 rot;	// 向き
 	float fRadius;		// 半径
 	float fHeight;		// 高さ
@@ -88,7 +92,11 @@ union ColliderType
 	CylinderCollider cylinder;	// 筒
 	SphereCollider sphere;		// 球
 	CapsuleCollider capsule;	// カプセル
-	D3DXVECTOR3 pos;			// 位置だけ設定したいときのため
+	struct
+	{
+		D3DXVECTOR3 pos;		// 位置だけ設定したいときのため
+		D3DXVECTOR3 posOld;		// 位置だけ設定したいときのため
+	};
 };
 
 //*****************************************************************************

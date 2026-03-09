@@ -6,6 +6,7 @@
 //=============================================================================
 
 #include "collision.h"
+#include "debugproc.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -165,6 +166,7 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx, bool isTrigger)
 void UpdateCollider(int nIdx, D3DXVECTOR3 pos)
 {
 	// 位置を合わせる
+	g_aCollider[g_aCollision[nIdx].nColliderIdx[0]].Collidertype.posOld = g_aCollider[g_aCollision[nIdx].nColliderIdx[0]].Collidertype.pos;
 	g_aCollider[g_aCollision[nIdx].nColliderIdx[0]].Collidertype.pos = pos;
 }
 
@@ -257,8 +259,117 @@ void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 //=============================================================================
 bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
+	// 計算用マトリックス
+	D3DXMATRIX MymtxRot, TargetmtxRot;
+
+	// マトリックスの初期化
+	D3DXMatrixIdentity(&MymtxRot);
+	D3DXMatrixIdentity(&TargetmtxRot);
+
+	// 向きを算出
+	D3DXMatrixRotationYawPitchRoll(&MymtxRot, MyCollider.box.rot.y, MyCollider.box.rot.x, MyCollider.box.rot.z);
+	D3DXMatrixRotationYawPitchRoll(&TargetmtxRot, TargetCollider.box.rot.y, TargetCollider.box.rot.x, TargetCollider.box.rot.z);
+
+	// 向き行列から各方向ベクトルの確保 (正規化Nと長さ)
+	// 自分の矩形のX方面ベクトル
+	D3DXVECTOR3 NAe1 = { MymtxRot._11, MymtxRot._21, MymtxRot._31 },
+		Ae1 = NAe1 * MyCollider.box.fWidth;
+
+	// 自分の矩形のY方面ベクトル
+	D3DXVECTOR3 NAe2 = { MymtxRot._12, MymtxRot._22, MymtxRot._32 }, 
+		Ae2 = NAe2 * MyCollider.box.fHeight;
+
+	// 自分の矩形のZ方面ベクトル
+	D3DXVECTOR3 NAe3 = { MymtxRot._13, MymtxRot._23, MymtxRot._33 }, 
+		Ae3 = NAe3 * MyCollider.box.fDepth;
+
+	// 対象の矩形のX方面ベクトル
+	D3DXVECTOR3 NBe1 = { TargetmtxRot._11, TargetmtxRot._21, TargetmtxRot._31 }, 
+		Be1 = NBe1 * TargetCollider.box.fWidth;
+
+	// 対象の矩形のY方面ベクトル
+	D3DXVECTOR3 NBe2 = { TargetmtxRot._12, TargetmtxRot._22, TargetmtxRot._32 }, 
+		Be2 = NBe2 * TargetCollider.box.fHeight;
+
+	// 対象の矩形のZ方面ベクトル
+	D3DXVECTOR3 NBe3 = { TargetmtxRot._13, TargetmtxRot._23, TargetmtxRot._33 }, 
+		Be3 = NBe3 * TargetCollider.box.fDepth;
+
+	// 自分と対象の中心点の距離
+	D3DXVECTOR3 Distance = MyCollider.box.pos - TargetCollider.box.pos;
+
+	D3DXVECTOR3 Sep = {};
+
+	// 分離軸 : Ae1
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NAe1, &Be1)), fabsf(D3DXVec3Dot(&NAe1, &Be2)), fabsf(D3DXVec3Dot(&NAe1, &Be3)));
+
+	float rA = D3DXVec3Length(&Ae1);
+	float rB = Sep.x + Sep.y + Sep.z;
+	float L = fabs(D3DXVec3Dot(&Distance, &NAe1));
+	if (L > rA + rB)
+	{
+		return false; // 衝突していない
+	}
+
+	// 分離軸 : Ae2
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NAe2, &Be1)), fabsf(D3DXVec3Dot(&NAe2, &Be2)), fabsf(D3DXVec3Dot(&NAe2, &Be3)));
+
+	rA = D3DXVec3Length(&Ae2);
+	rB = Sep.x + Sep.y + Sep.z;
+	L = fabs(D3DXVec3Dot(&Distance, &NAe2));
+	if (L > rA + rB)
+	{
+		return false; // 衝突していない
+	}
+
+	// 分離軸 : Ae3
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NAe3, &Be1)), fabsf(D3DXVec3Dot(&NAe3, &Be2)), fabsf(D3DXVec3Dot(&NAe3, &Be3)));
+
+	rA = D3DXVec3Length(&Ae3);
+	rB = Sep.x + Sep.y + Sep.z;
+	L = fabs(D3DXVec3Dot(&Distance, &NAe3));
+	if (L > rA + rB)
+	{
+		return false; // 衝突していない
+	}
+
+	// 分離軸 : Be1
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NBe1, &Ae1)), fabsf(D3DXVec3Dot(&NBe1, &Ae2)), fabsf(D3DXVec3Dot(&NBe1, &Ae3)));
+
+	rA = D3DXVec3Length(&Be1);
+	rB = Sep.x + Sep.y + Sep.z;
+	L = fabs(D3DXVec3Dot(&Distance, &NBe1));
+	if (L > rA + rB)
+	{
+		return false; // 衝突していない
+	}
+
+	// 分離軸 : Be2
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NBe2, &Ae1)), fabsf(D3DXVec3Dot(&NBe2, &Ae2)), fabsf(D3DXVec3Dot(&NBe2, &Ae3)));
+
+	rA = D3DXVec3Length(&Be2);
+	rB = Sep.x + Sep.y + Sep.z;
+	L = fabs(D3DXVec3Dot(&Distance, &NBe2));
+	if (L > rA + rB)
+	{
+		return false; // 衝突していない
+	}
+
+	// 分離軸 : Be3
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NBe3, &Ae1)), fabsf(D3DXVec3Dot(&NBe3, &Ae2)), fabsf(D3DXVec3Dot(&NBe3, &Ae3)));
+
+	rA = D3DXVec3Length(&Be3);
+	rB = Sep.x + Sep.y + Sep.z;
+	L = fabs(D3DXVec3Dot(&Distance, &NBe3));
+	if (L > rA + rB)
+	{
+		return false; // 衝突していない
+	}
+
+	PrintDebugProc("MyPos = {%.2f, %.2f, %.2f}\n", MyCollider.pos.x, MyCollider.pos.y, MyCollider.pos.z);;
+
 	// 未実装
-	return false;
+	return true;
 }
 
 //=============================================================================

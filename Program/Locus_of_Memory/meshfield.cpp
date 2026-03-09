@@ -272,10 +272,10 @@ void SetMeshField(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fWidth, float fDepth, 
 bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove)
 {
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
-	D3DXVECTOR3 vecNor, VecMove;				// 各種ベクトル
-	PMESHFIELD pMeshField = &g_ameshfield[0];	// 先頭アドレスポインタ
-	PMESHFIELD pRideMeshField = NULL;			// 乗っているメッシュ
-	float fRidePosY = 0.0f;						// 乗っているメッシュの高さ
+	D3DXVECTOR3 vecNor, VecMove;
+	PMESHFIELD pMeshField = &g_ameshfield[0];
+	PMESHFIELD pRideMeshField = NULL;
+	float fRidePosY = 0.0f;
 
 	for (int nCntMeshField = 0; nCntMeshField < MAX_MESHFIELD; nCntMeshField++, pMeshField++)
 	{
@@ -311,7 +311,7 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 		{
 			for (int nCntVtxWidht = 0; nCntVtxWidht < pMeshField->nSplitWidth - 1; nCntVtxWidht++)
 			{
-				D3DXVECTOR3 PosA, PosB, PosC;		// 各頂点位置格納用
+				D3DXVECTOR3 PosA, PosB, PosC;
 
 				// 位置と向きを反映した頂点座標を入れる
 				D3DXVec3TransformCoord(&PosA, &pVtx[nCntVtxWidht].pos, &pMeshField->mtxWorld);
@@ -323,42 +323,70 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 				D3DXVECTOR3 vecLineB = PosC - PosB;
 				D3DXVECTOR3 vecLineC = PosA - PosC;
 
+				D3DXVECTOR3 vecToPos = *pPos - PosA;
+				D3DXVECTOR3 vecToPosOld = *pPosOld - PosA;
+
 				// それぞれの始点から位置へのベクトルを算出
 				D3DXVECTOR3 vecToPosA = *pPos - PosA;
 				D3DXVECTOR3 vecToPosB = *pPos - PosB;
 				D3DXVECTOR3 vecToPosC = *pPos - PosC;
 
-				// 正規化
-				D3DXVec3Normalize(&vecLineA, &vecLineA);
-				D3DXVec3Normalize(&vecLineB, &vecLineB);
-				D3DXVec3Normalize(&vecLineC, &vecLineC);
+				// 面の法線
+				vecNor = { (-vecLineA.y * vecLineB.z) - (-vecLineA.z * vecLineB.y), (-vecLineA.z * vecLineB.x) - (-vecLineA.x * vecLineB.z), (-vecLineA.x * vecLineB.y) - (-vecLineA.y * vecLineB.x) };
+
+				D3DXVec3Normalize(&vecNor, &vecNor);	// 正規化
 
 				if ((vecLineA.z * vecToPosA.x) - (vecLineA.x * vecToPosA.z) < 0 &&
 					(vecLineB.z * vecToPosB.x) - (vecLineB.x * vecToPosB.z) < 0 &&
 					(vecLineC.z * vecToPosC.x) - (vecLineC.x * vecToPosC.z) < 0)
 				{// もし全ての境界線ベクトルの内側にいたら
-					// 面の法線
-					D3DXVECTOR3 vecNor = { (-vecLineA.y * vecLineB.z) - (-vecLineA.z * vecLineB.y), (-vecLineA.z * vecLineB.x) - (-vecLineA.x * vecLineB.z), (-vecLineA.x * vecLineB.y) - (-vecLineA.y * vecLineB.x) };
-
-					D3DXVec3Normalize(&vecNor, &vecNor);	// 正規化
 
 					// 高さ
-					float fPosY = PosA.y - (((vecNor.x * pPos->x) - (vecNor.x * PosA.x)) + ((vecNor.z * pPos->z) - (vecNor.z * PosA.z)) / vecNor.y);
+					float fPosY = PosA.y - ((vecNor.x * (pPos->x - PosA.x) + vecNor.z * (pPos->z - PosA.z)) / vecNor.y);
 
-					if (pPos->y <= fPosY)
+					float fDist = D3DXVec3Dot(&vecToPos, &vecNor);
+					float fDistOld = D3DXVec3Dot(&vecToPosOld, &vecNor);
+
+					if (fDist * fDistOld <= 0.0f)
 					{
-						if (pRideMeshField != NULL)
-						{
-							if (fRidePosY > fPosY)
-							{
-								break;
-							}
-						}
+						float fRate = fDist / (fDist + fDistOld);
 
-						fRidePosY = fPosY;
-						pRideMeshField = pMeshField;
-						break;
+						D3DXVECTOR3 Intersection = PosA + (vecToPos * (1.0f - fRate) + vecToPosOld * fRate);
+
+						D3DXVECTOR3 vecToPosA = Intersection - PosA;
+						D3DXVECTOR3 vecToPosB = Intersection - PosB;
+						D3DXVECTOR3 vecToPosC = Intersection - PosC;
+
+						D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
+						D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
+						D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
+
+						float fDotA = D3DXVec3Dot(&vecToPosA, &vecNor);
+						float fDotB = D3DXVec3Dot(&vecToPosB, &vecNor);
+						float fDotC = D3DXVec3Dot(&vecToPosC, &vecNor);
+						
+						if (-fDotA >= 0.0f &&
+							-fDotB >= 0.0f &&
+							-fDotC >= 0.0f)
+						{
+							PrintDebugProc("%f %f %f \n", Intersection.x, Intersection.y, Intersection.z);
+						}
 					}
+
+					//if (pPos->y <= fPosY)
+					//{
+					//	if (pRideMeshField != NULL)
+					//	{
+					//		if (fRidePosY > fPosY)
+					//		{
+					//			break;
+					//		}
+					//	}
+
+					//	fRidePosY = fPosY;
+					//	pRideMeshField = pMeshField;
+					//	break;
+					//}
 				}
 
 				// 位置と向きを反映した頂点座標を入れる
@@ -374,35 +402,71 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 				vecToPosB = *pPos - PosB;
 				vecToPosC = *pPos - PosC;
 
-				// 正規化
-				D3DXVec3Normalize(&vecLineA, &vecLineA);
-				D3DXVec3Normalize(&vecLineB, &vecLineB);
-				D3DXVec3Normalize(&vecLineC, &vecLineC);
+				//// 正規化
+				//D3DXVec3Normalize(&vecLineA, &vecLineA);
+				//D3DXVec3Normalize(&vecLineB, &vecLineB);
+				//D3DXVec3Normalize(&vecLineC, &vecLineC);
 
 				if ((vecLineA.z * vecToPosA.x) - (vecLineA.x * vecToPosA.z) > 0 &&
 					(vecLineB.z * vecToPosB.x) - (vecLineB.x * vecToPosB.z) > 0 &&
 					(vecLineC.z * vecToPosC.x) - (vecLineC.x * vecToPosC.z) > 0)
 				{// もし全ての境界線ベクトルの内側にいたら
-					D3DXVECTOR3 vecNor = { (vecLineB.y * -vecLineA.z) - (vecLineB.z * -vecLineA.y), (vecLineB.z * -vecLineA.x) - (vecLineB.x * -vecLineA.z), (vecLineB.x * -vecLineA.y) - (vecLineB.y * -vecLineA.x) };
-					
+
+					vecNor = { (vecLineB.y * -vecLineA.z) - (vecLineB.z * -vecLineA.y), (vecLineB.z * -vecLineA.x) - (vecLineB.x * -vecLineA.z), (vecLineB.x * -vecLineA.y) - (vecLineB.y * -vecLineA.x) };
+
 					D3DXVec3Normalize(&vecNor, &vecNor);
 
-					float fPosY = PosA.y - (((vecNor.x * pPos->x) - (vecNor.x * PosA.x)) + ((vecNor.z * pPos->z) - (vecNor.z * PosA.z)) / vecNor.y);
+					float fPosY = PosA.y - ((vecNor.x * (pPos->x - PosA.x) + vecNor.z * (pPos->z - PosA.z)) / vecNor.y);
 
-					if (pPos->y <= fPosY)
+					float fDist = D3DXVec3Dot(&vecToPos, &vecNor);
+					float fDistOld = D3DXVec3Dot(&vecToPosOld, &vecNor);
+
+					if (fDist * fDistOld <= 0.0f)
 					{
-						if (pRideMeshField != NULL)
-						{
-							if (fRidePosY > fPosY)
-							{
-								break;
-							}
-						}
+						float fRate = fDist / (fDist + fDistOld);
 
-						fRidePosY = fPosY;
-						pRideMeshField = pMeshField;
-						break;
+						D3DXVECTOR3 Intersection = PosA + (vecToPos * (1.0f - fRate) + vecToPosOld * fRate);
+
+						D3DXVECTOR3 vecToPosA = Intersection - PosA;
+						D3DXVECTOR3 vecToPosB = Intersection - PosB;
+						D3DXVECTOR3 vecToPosC = Intersection - PosC;
+
+						D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
+						D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
+						D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
+
+						float fDotA = D3DXVec3Dot(&vecToPosA, &vecNor);
+						float fDotB = D3DXVec3Dot(&vecToPosB, &vecNor);
+						float fDotC = D3DXVec3Dot(&vecToPosC, &vecNor);
+
+						if (fDotA >= 0.0f &&
+							fDotB >= 0.0f &&
+							fDotC >= 0.0f)
+						{
+							PrintDebugProc("%f %f %f \n", Intersection.x, Intersection.y, Intersection.z);
+
+							//D3DXVECTOR3 vecMove = *pPosOld - *pPos;
+
+							//float fDot = D3DXVec3Dot(&vecMove, &vecNor);
+
+							//*pPos = Intersection + (vecMove * fDot);
+						}
 					}
+
+					//if (pPos->y <= fPosY)
+					//{
+					//	if (pRideMeshField != NULL)
+					//	{
+					//		if (fRidePosY > fPosY)
+					//		{
+					//			break;
+					//		}
+					//	}
+
+					//	fRidePosY = fPosY;
+					//	pRideMeshField = pMeshField;
+					//	break;
+					//}
 				}
 
 			}
@@ -414,14 +478,18 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 		pMeshField->pVtxBuff->Unlock();
 	}
 
-	if (pRideMeshField != NULL)
-	{
-		pPos->y = fRidePosY;
-		pMove->y = 0.0f;
-		return true;
-	}
+	//if (pRideMeshField != NULL)
+	//{
+	//	//if (pRideMeshField->type != MESHFIELDTYPE_SEA)
+	//	//{
+	//	//	pPos->y = fRidePosY;
+	//	//	pMove->y = 0.0f;
+	//	//}
 
-	return false;
+	//	return pRideMeshField;
+	//}
+
+	return NULL;
 }
 
 //=============================================================================

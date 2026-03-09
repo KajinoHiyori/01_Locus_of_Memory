@@ -939,6 +939,10 @@ bool CrossCollision(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3 posStar
 
 		fLenght = (vecNor.z * vecMove.x) - (vecNor.x * vecMove.z);		// •Ç‚¸‚è‚Ì’·‚³Zo
 
+#if 0
+		fLenght = (vecLine.x * vecMove.x) + (vecLine.z * vecMove.z);	// ‚±‚êŒ‹‰Ê“¯‚¶‚ç‚µ‚¢(ã‚ªŠOÏ‚Å‰º‚ª“àÏ)
+#endif
+
 		fLenght = fabsf(fLenght);		// â‘Î’l‰»
 
 		if ((vecNor.z * vecMove.x) - (vecNor.x * vecMove.z) < 0)
