@@ -24,9 +24,13 @@ typedef enum EVENTTYPE
 	EVENTTYPE_001_0,
 	EVENTTYPE_001_1,	// ‰Æ‚Ì”RÄ
 	EVENTTYPE_002_0,	// ‹´‚ÌŽž–ß‚µ
-	EVENTTYPE_003_0,	// A•¨‚ÌŽž–ß‚µ
+	EVENTTYPE_003_0,	// A•¨‚ÌŽž–ß‚µ[ƒRƒƒ“ƒgƒAƒEƒgÏ]
 	EVENTTYPE_003_1,	// A•¨‚Ì¬’·
 	EVENTTYPE_003_2,	// A•¨‚Ì”RÄ
+	EVENTTYPE_004_0,	// A•¨‚ÌŽž–ß‚µ
+	EVENTTYPE_005_0,	// ’r‚Ì•XŒ‹
+	EVENTTYPE_006_0,	// ’r‚ÌŽž–ß‚µ
+	EVENTTYPE_006_1,	// ’r‚Ì—Z‰ð
 	EVENTTYPE_MAX,
 }EVENTTYPE;
 
