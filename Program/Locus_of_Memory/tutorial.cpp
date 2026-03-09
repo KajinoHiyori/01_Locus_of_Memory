@@ -9,6 +9,7 @@
 #include"player.h"
 #include"input.h"
 #include "object.h"
+#include "eventobject.h"
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
@@ -73,6 +74,9 @@ void InitTutorial(void)
 
 	// 魔法の初期化処理
 	InitMagic();
+
+	// イベントオブジェクトの初期化処理
+	InitEventObject();
 
 	//InitField();
 
@@ -160,6 +164,9 @@ void UninitTutorial(void)
 	// 魔法の終了処理
 	UninitMagic();
 
+	// イベントオブジェクトの終了処理
+	UninitEventObject();
+
 	//UninitField();
 
 	//UninitMeshsky();
@@ -212,6 +219,9 @@ void UpdateTutorial(void)
 
 	// 魔法の更新処理
 	UpdateMagic();
+
+	// イベントオブジェクトの更新処理
+	UpdateEventObject();
 
 	// 動物の更新処理
 	UpdateAnimal();
@@ -342,6 +352,9 @@ void DrawTutorial(void)
 
 	// カスタムメッシュの描画処理
 	DrawCustomMesh();
+
+	// イベントオブジェクトの描画処理
+	DrawEventObject();
 
 	// 魔法の描画処理
 	DrawMagic();
