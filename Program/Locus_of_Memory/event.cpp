@@ -219,7 +219,7 @@ bool SetMagicEvent005(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_FREEZE:	// •XŒ‹–‚–@
 		pEventObject->EventType = EVENTTYPE_005_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_FREEZE);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
@@ -244,35 +244,35 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 
 	switch (type)
 	{
-	case MAGICTYPE_FREEZE:	// Žž–ß‚µ–‚–@
+	case MAGICTYPE_TIMEREVERT:	// Žž–ß‚µ–‚–@
 		pEventObject->EventType = EVENTTYPE_006_0;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
-			MOTIONTYPE_MOVE, false, false, 10);
+			MOTIONTYPE_RUN, false, false, 10);
 		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 
 	case MAGICTYPE_COMBUSTION:	// —n‚©‚·
 		pEventObject->EventType = EVENTTYPE_006_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
-			MOTIONTYPE_MOVE, false, false, 10);
+			MOTIONTYPE_RUN, false, false, 10);
 		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 
 	case MAGICTYPE_FIREBALL:	// —n‚©‚·
 		pEventObject->EventType = EVENTTYPE_006_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
-			MOTIONTYPE_MOVE, false, false, 10);
+			MOTIONTYPE_RUN, false, false, 10);
 		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;

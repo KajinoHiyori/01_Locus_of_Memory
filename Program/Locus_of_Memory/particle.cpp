@@ -376,6 +376,7 @@ void UpdateParticle(void)
 					//à íuÇÃê›íË
 					pos[0].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
 					pos[0].y = g_aParticle[nCntParticle].pos.y + (float)(rand() % 20 - 10);
+					pos[0].z = g_aParticle[nCntParticle].pos.z + (float)(rand() % 20 - 10);
 
 					fSpeed = (float)(rand() % 2 + 1);
 
@@ -394,6 +395,7 @@ void UpdateParticle(void)
 					//à íuÇÃê›íË
 					pos[1].x = g_aParticle[nCntParticle].pos.x + (float)(rand() % 20 - 10);
 					pos[1].y = g_aParticle[nCntParticle].pos.y + (float)(rand() % 20 - 10);
+					pos[1].z = g_aParticle[nCntParticle].pos.z + (float)(rand() % 20 - 10);
 
 					fSpeed = (float)(rand() % 2 + 1);
 

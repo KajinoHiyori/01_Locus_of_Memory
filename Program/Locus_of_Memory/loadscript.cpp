@@ -1367,6 +1367,10 @@ HRESULT LoadEventObject(const char* pEventObjectFileName)
 						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
 						break;
 
+					case 5:	// ’r
+						SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
+						break;
+
 					//default:	// ƒCƒxƒ“ƒg–³‚µ
 					//	SetMagicLocus((MAGICEVENT)nEvent, pos, fRadius, nCntModel);
 					//	break;

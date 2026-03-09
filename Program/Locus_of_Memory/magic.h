@@ -10,7 +10,7 @@
 #include "main.h"
 
 // マクロ定義
-#define MAX_MAGICLOCUS			(64)		//魔法使用場所最大数
+#define MAX_MAGICLOCUS			(128)		//魔法使用場所最大数
 #define MAX_DROPMAGIC			(64)		//落ちてる魔法の最大数
 
 //魔法の種類
