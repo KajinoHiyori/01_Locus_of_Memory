@@ -735,6 +735,24 @@ MODELSET
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
+
+MODELSET
+	TYPE = 17
+	POS = -2430 0 -4213
+	ROT = 0 30 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 18
+	POS = -2430 0 -4213
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+
 #------------------------------------------------------------------------------
 # Šâ
 #------------------------------------------------------------------------------
@@ -996,6 +1014,15 @@ MODELSET
 	SHADOW = 0
 	COLLISION = 1
 END_MODELSET
+
+MODELSET
+	TYPE = 31
+	POS = -2209 0 -3235
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
 #------------------------------------------------------------------------------
 # ƒoƒPƒc
 #------------------------------------------------------------------------------
@@ -1284,6 +1311,22 @@ END_MODELSET
 MODELSET
 	TYPE = 42
 	POS = 3895 35 1350
+	ROT = -110 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 34
+	POS = -2688 0 -4035
+	ROT = 0 0 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 42
+	POS = -2688 35 -4035
 	ROT = -110 90 0
 	SHADOW = 0
 	COLLISION = 1

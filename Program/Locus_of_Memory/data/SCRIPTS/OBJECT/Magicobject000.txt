@@ -22,6 +22,12 @@ DROPMAGICSET
 	RADIUS = 100.0
 END_DROPMAGICSET
 
+DROPMAGICSET
+	TYPE = 0
+	POS = -2430 0 -4213
+	RADIUS = 100.0
+END_DROPMAGICSET
+
 #------------------------------------------------------------------------------
 # 燃焼魔法
 #------------------------------------------------------------------------------
@@ -70,6 +76,12 @@ DROPMAGICSET
 	RADIUS = 100.0
 END_DROPMAGICSET
 
+DROPMAGICSET
+	TYPE = 2
+	POS = -2688 0 -4035
+	RADIUS = 100.0
+END_DROPMAGICSET
+
 #------------------------------------------------------------------------------
 # FLASH
 #------------------------------------------------------------------------------
@@ -109,6 +121,12 @@ END_DROPMAGICSET
 DROPMAGICSET
 	TYPE = 4
 	POS = -4499 0 -476
+	RADIUS = 100.0
+END_DROPMAGICSET
+
+DROPMAGICSET
+	TYPE = 4
+	POS = -2209 0 -3235
 	RADIUS = 100.0
 END_DROPMAGICSET
 
