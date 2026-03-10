@@ -17,7 +17,7 @@ void InitMagicEffect(void);
 void UninitMagicEffect(void);
 void UpdateMagicEffect(void);
 void DrawMagicEffect(void);
-void SetMagicEffect(D3DXVECTOR3 pos, MAGICEF_TYPE type);
+void SetMagicEffect(D3DXVECTOR3 pos, MAGICEF_TYPE type, int nIdx);
 void StopMagicEffect(int nIdx);
 #endif 
 

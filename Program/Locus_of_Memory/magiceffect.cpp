@@ -5,14 +5,15 @@
 //========================================================================
 
 #include "main.h"
+#include "player.h"
 #include "magiceffect.h"
 #include "effect.h"
 #include "input.h"
 #include "debugproc.h"
 #include "color.h"
 
-#define MAX_MAGIC_PARTICLE	(128)		//パーティクルの最大数
-#define MAX_MAGIC_APPEAR	(5)		//粒子の最大数
+#define MAX_MAGIC_PARTICLE	(32)		//パーティクルの最大数
+#define MAX_MAGIC_APPEAR	(5)			//粒子の最大数
 #define MAX_ANGRE			(629)
 #define MAX_ANGRE2			(314)
 
@@ -31,21 +32,24 @@ typedef struct
 //グローバル変数
 LPDIRECT3DTEXTURE9 g_pTextureBuffMagicEffect = NULL;
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffMagicEffect = NULL;
-PARTICLE g_aMagicEffect[MAX_MAGIC_PARTICLE];
+PARTICLE g_aMagicEffect[MAX_PLAYER][MAX_MAGIC_PARTICLE];
 
 //========================================================================
 // 初期化
 //========================================================================
 void InitMagicEffect(void)
 {
-	for (int nCntMagicEffect = 0; nCntMagicEffect < MAX_MAGIC_PARTICLE; nCntMagicEffect++)
+	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
-		g_aMagicEffect[nCntMagicEffect].bUse = false;
-		g_aMagicEffect[nCntMagicEffect].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aMagicEffect[nCntMagicEffect].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		g_aMagicEffect[nCntMagicEffect].fRadius = 0;
-		g_aMagicEffect[nCntMagicEffect].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		g_aMagicEffect[nCntMagicEffect].Type = MAGICEF_TYPE_NONE;
+		for (int nCntMagicEffect = 0; nCntMagicEffect < MAX_MAGIC_PARTICLE; nCntMagicEffect++)
+		{
+			g_aMagicEffect[nCntPlayerType][nCntMagicEffect].bUse = false;
+			g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			g_aMagicEffect[nCntPlayerType][nCntMagicEffect].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			g_aMagicEffect[nCntPlayerType][nCntMagicEffect].fRadius = 0;
+			g_aMagicEffect[nCntPlayerType][nCntMagicEffect].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			g_aMagicEffect[nCntPlayerType][nCntMagicEffect].Type = MAGICEF_TYPE_NONE;
+		}
 	}
 }
 
@@ -84,68 +88,65 @@ void UpdateMagicEffect(void)
 
 #ifdef _DEBUG
 	if (GetKeyboardTrigger(DIK_M) == true)
-	{//時間
-		SetMagicEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MAGICEF_TYPE_GIMMICK);
+	{
+		SetMagicEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MAGICEF_TYPE_GIMMICK,1);
 	}
 
 	if (GetKeyboardTrigger(DIK_N) == true)
-	{//燃焼
-		SetMagicEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MAGICEF_TYPE_MAGIC);
+	{
+		SetMagicEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MAGICEF_TYPE_MAGIC,1);
+	}
+
+	if (GetKeyboardTrigger(DIK_B) == true)
+	{
+		SetMagicEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MAGICEF_TYPE_GIMMICK, 2);
+	}
+
+	if (GetKeyboardTrigger(DIK_V) == true)
+	{
+		SetMagicEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MAGICEF_TYPE_MAGIC, 2);
 	}
 #endif
 
-	for (int nCntMagicEffect = 0; nCntMagicEffect < MAX_MAGIC_PARTICLE; nCntMagicEffect++)
+	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
-		if (g_aMagicEffect[nCntMagicEffect].bUse == true)
+		for (int nCntMagicEffect = 0; nCntMagicEffect < MAX_MAGIC_PARTICLE; nCntMagicEffect++)
 		{
-			switch (g_aMagicEffect[nCntMagicEffect].Type)
+			if (g_aMagicEffect[nCntPlayerType][nCntMagicEffect].bUse == true)
 			{
-				//ギミック=========================================================================
-			case MAGICEF_TYPE_GIMMICK:
-				for (int nCntAppear = 0; nCntAppear < 1; nCntAppear++)
+				switch (g_aMagicEffect[nCntPlayerType][nCntMagicEffect].Type)
 				{
-					//位置の設定
-					pos[0].x = g_aMagicEffect[nCntMagicEffect].pos.x + sinf((float)(rand() % 100)) * 40;
-					pos[0].y = g_aMagicEffect[nCntMagicEffect].pos.y;
-					pos[0].z = g_aMagicEffect[nCntMagicEffect].pos.z + cosf((float)(rand() % 100)) * 40;
+					//ギミック=========================================================================
+				case MAGICEF_TYPE_GIMMICK:
+						//位置の設定
+						pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + sinf((float)(rand() % 100)) * 40;
+						pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y;
+						pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + cosf((float)(rand() % 100)) * 40;
 
-					fSpeed = (float)(rand() % 2 + 1);
+						fSpeed = (float)(rand() % 2 + 1);
 
-					//移動量	
-					rot.x = ((float)(rand() % 629 - 314) / 100);
-					rot.z = ((float)(rand() % 629 - 314) / 100);
+						//移動量	
+						rot.x = ((float)(rand() % 629 - 314) / 100);
+						rot.z = ((float)(rand() % 629 - 314) / 100);
 
-					move[0][MAGICEF_TYPE_GIMMICK].x = sinf(rot.x) * fSpeed;
-					move[0][MAGICEF_TYPE_GIMMICK].z = cosf(rot.z) * fSpeed;
-					move[0][MAGICEF_TYPE_GIMMICK].y = -1.5f;
+						move[0][MAGICEF_TYPE_GIMMICK].x = sinf(rot.x) * fSpeed;
+						move[0][MAGICEF_TYPE_GIMMICK].z = cosf(rot.z) * fSpeed;
+						move[0][MAGICEF_TYPE_GIMMICK].y = -1.5f;
 
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_WING000, pos[0], move[0][MAGICEF_TYPE_GIMMICK], COLOR_WHITE, 100, 15);
+						SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_GIMMICK], COLOR_WHITE, 100, 15);
+					break;
+					//落ちている魔法===================================================================
+				case MAGICEF_TYPE_MAGIC:
+						//位置の設定
+						pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + sinf((float)(rand() % 100)) * 40;
+						pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + cosf((float)(rand() % 100)) * 60;
+						pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + cosf((float)(rand() % 100)) * 40;
+
+						SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 15);
+					break;
 				}
-				break;
-				//落ちている魔法===================================================================
-			case MAGICEF_TYPE_MAGIC:
-				for (int nCntAppear = 0; nCntAppear < 1; nCntAppear++)
-				{
-					//位置の設定
-					pos[0].x = g_aMagicEffect[nCntMagicEffect].pos.x + sinf((float)(rand() % 100)) * 40;
-					pos[0].y = g_aMagicEffect[nCntMagicEffect].pos.y;
-					pos[0].z = g_aMagicEffect[nCntMagicEffect].pos.z + cosf((float)(rand() % 100)) * 40;
-
-					fSpeed = (float)(rand() % 2 + 1);
-
-					//移動量	
-					rot.x = ((float)(rand() % 629 - 314) / 100);
-					rot.z = ((float)(rand() % 629 - 314) / 100);
-
-					move[0][MAGICEF_TYPE_MAGIC].x = sinf(rot.x) * fSpeed;
-					move[0][MAGICEF_TYPE_MAGIC].z = cosf(rot.z) * fSpeed;
-					move[0][MAGICEF_TYPE_MAGIC].y = -1.5f;
-
-					SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_WING000, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 15);
-				}
-				break;
+				nCountMagicEffect++;
 			}
-			nCountMagicEffect++;
 		}
 	}
 }
@@ -161,16 +162,16 @@ void DrawMagicEffect(void)
 //========================================================================
 // パーティクルの設定
 //========================================================================
-void SetMagicEffect(D3DXVECTOR3 pos, MAGICEF_TYPE type)
+void SetMagicEffect(D3DXVECTOR3 pos, MAGICEF_TYPE type, int nIdx)
 {
 	for (int nCntMagicEffect = 0; nCntMagicEffect < MAX_MAGIC_PARTICLE; nCntMagicEffect++)
 	{
 		//使われていなければ
-		if (g_aMagicEffect[nCntMagicEffect].bUse == false)
+		if (g_aMagicEffect[nIdx][nCntMagicEffect].bUse == false)
 		{
-			g_aMagicEffect[nCntMagicEffect].pos = pos;
-			g_aMagicEffect[nCntMagicEffect].Type = type;
-			g_aMagicEffect[nCntMagicEffect].bUse = true;
+			g_aMagicEffect[nIdx][nCntMagicEffect].pos = pos;
+			g_aMagicEffect[nIdx][nCntMagicEffect].Type = type;
+			g_aMagicEffect[nIdx][nCntMagicEffect].bUse = true;
 			break;
 		}
 	}
@@ -183,6 +184,12 @@ void StopMagicEffect(int nIdx)
 {
 	for (int nCntMagicEffect = 0; nCntMagicEffect < MAX_MAGIC_PARTICLE; nCntMagicEffect++)
 	{
-
+		//使われていれば
+		if (g_aMagicEffect[nIdx][nCntMagicEffect].bUse == true)
+		{
+			g_aMagicEffect[nIdx][nCntMagicEffect].Type = MAGICEF_TYPE_NONE;
+			g_aMagicEffect[nIdx][nCntMagicEffect].bUse = false;
+			break;
+		}
 	}
 }

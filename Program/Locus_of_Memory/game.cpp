@@ -21,6 +21,7 @@
 #include "magicui.h"
 #include "magicbubble.h"
 #include "magiccircle.h"
+#include "magiceffect.h"
 #include "spellui.h"
 #include "clock.h"
 #include "battery.h"
@@ -107,6 +108,9 @@ void InitGame(void)
 
 	// パーティクルの初期化処理
 	InitParticle();
+
+	// マジックエフェクトの初期化
+	InitMagicEffect();
 
 	// オーラの初期化処理
 	InitAura();
@@ -243,6 +247,9 @@ void UpdateGame(void)
 
 	// 3D空間UIの更新処理
 	UpdateUIManager();
+
+	// マジックエフェクトの更新処理
+	UpdateMagicEffect();
 
 	// 吹き出しの更新処理
 	UpdateMagicBubble();
@@ -390,6 +397,9 @@ void DrawGame(void)
 
 	// パーティクルの描画処理
 	DrawParticle();
+
+	// マジックエフェクトの描画処理
+	DrawMagicEffect();
 
 	// 文字の描画処理
 	DrawGrain();

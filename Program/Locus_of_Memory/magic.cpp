@@ -15,6 +15,7 @@
 #include "event.h"
 #include "magiccircle.h"
 #include "magicbubble.h"
+#include "magiceffect.h"
 #include "spellui.h"
 #include "magicui.h"
 
@@ -723,6 +724,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 			// ‚±‚±‚ÅŽí—Þ‚É‰ž‚¶‚½U“®‚ðŒÄ‚Ño‚·
 			ResetMagicBubble(nIdx);
 			VibrationType(VIBRATIONTYPE_MEDIUM, pDropMagic->oType, nIdx);
+			SetMagicEffect(pDropMagic->pos, MAGICEF_TYPE_MAGIC,nIdx);
 			PrintDebugProc("[%d]Žü•Ó‚É–‚–@‚ª—Ž‚¿‚Ä‚¢‚é\n", nCntMagic);
 			isSearch = true;
 		}
@@ -743,6 +745,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		// ‚±‚±‚ÅŽí—Þ‚É‰ž‚¶‚½U“®‚ðŒÄ‚Ño‚·
 		VibrationType(VIBRATIONTYPE_NOTHING, pDropMagic->oType, nIdx);
 		ResetMagicBubble(nIdx);
+		StopMagicEffect(nIdx);
 	}
 
 	return -1;
