@@ -45,6 +45,7 @@
 #include "riverwall.h"
 #include "questionmark.h"
 #include "aura.h"
+#include "questui.h"
 
 // マクロ定義
 #define GAMEPOS_1P		(D3DXVECTOR3(-745.0f, 0.0f, -3427.0f))	// 1Pの位置[GAME]
@@ -107,8 +108,11 @@ void InitGame(void)
 	// パーティクルの初期化処理
 	InitParticle();
 
-	// 
+	// オーラの初期化処理
 	InitAura();
+
+	// クエストUIの初期化処理
+	InitQuestUI();
 
 	pVibration->Vibration = false;
 
@@ -169,8 +173,11 @@ void UninitGame(void)
 	// 鍵の終了処理
 	UninitKey();
 
-	// 
+	// オーラの終了処理
 	UninitAura();
+
+	// クエストUIの終了処理
+	UninitQuestUI();
 
 	// BGM終了
 	StopSound();
@@ -249,8 +256,11 @@ void UpdateGame(void)
 	// 鍵の更新処理
 	UpdateKey();
 
-	//
+	// オーラの更新処理
 	UpdateAura();
+
+	// クエストUIの更新処理
+	UpdateQuestUI();
 
 	switch (g_eventState)
 	{
@@ -428,6 +438,9 @@ void DrawGame(void)
 
 	// ?の描画処理
 	DrawQuestionMark();
+
+	// クエストUIの描画処理
+	DrawQuestUI();
 
 	SetFogEnable(true);			// 霧を有効
 
