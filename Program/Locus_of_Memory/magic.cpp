@@ -661,30 +661,46 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 {
 	MagicLocus* pMagicLocus = &g_aMagicLocus[0];	// 先頭アドレス
 	float fDiff = 0.0f;								// 判定用変数
+	float fLength = 10000.0f;	// 距離判定用変数
+	float fCompare = 0.0f;		// 比較用変数
+	int nIdxLocus = -1;	// 魔法使用可能場所のインデックスを取得
 
-	for (int nCntMagicLocus = 0; nCntMagicLocus < MAX_MAGICLOCUS; nCntMagicLocus++, pMagicLocus++)
+	Player* pPlayer = GetPlayer();	// プレイヤー情報の取得
+
+	// 一番近くの魔法使用場所を判定する
+	for (int nCntMagic = 0; nCntMagic < MAX_MAGICLOCUS; nCntMagic++, pMagicLocus++)
 	{
 		if (pMagicLocus->bUse == false)
 		{// 使っていなければ弾く
 			continue;
 		}
 
-		// 各距離を二乗したものをすべて足す
-		fDiff = powf(pMagicLocus->pos.x - pos.x, 2) + powf(pMagicLocus->pos.y - pos.y, 2) + powf(pMagicLocus->pos.z - pos.z, 2);
+		// ?と落ちている魔法の距離を判定
+		fCompare = sqrtf(((pPlayer[nIdx].pos.x - pMagicLocus->pos.x) * (pPlayer[nIdx].pos.x - pMagicLocus->pos.x)) + ((pPlayer[nIdx].pos.z - pMagicLocus->pos.z) * (pPlayer[nIdx].pos.z - pMagicLocus->pos.z))) * 0.5f;
+		if (fCompare < fLength)
+		{ // 今回の値が前回の値より小さかった場合、距離を代入する
+			fLength = fCompare;
+			nIdxLocus = nCntMagic;	// 1番近い魔法使用可能場所のインデックスを保存
+		}
+	}
 
-		if (fDiff <= powf(fRadius + pMagicLocus->fRadius, 2))
-		{// 当たっていたら
-			PrintDebugProc("============================================判定アリ");
+	pMagicLocus = &g_aMagicLocus[0];	// 再取得
 
-			if (SetMagicEvent(pMagicLocus->MagicEvent, type, pMagicLocus->nIdxObject) == true)
-			{// 魔法と対応するイベントかどうかチェック
-				pMagicLocus->bUse = false;
-				return true;
-			}
-			else
-			{// 対応していなければやり直し
-				continue;
-			}
+	// 各距離を二乗したものをすべて足す
+	fDiff = powf(pMagicLocus[nIdxLocus].pos.x - pos.x, 2) + powf(pMagicLocus[nIdxLocus].pos.y - pos.y, 2) + powf(pMagicLocus[nIdxLocus].pos.z - pos.z, 2);
+
+	if (fDiff <= powf(fRadius + pMagicLocus[nIdxLocus].fRadius, 2))
+	{// 当たっていたら
+		PrintDebugProc("============================================判定アリ");
+
+		if (SetMagicEvent(pMagicLocus[nIdxLocus].MagicEvent, type, pMagicLocus[nIdxLocus].nIdxObject) == true)
+		{// 魔法と対応するイベントかどうかチェック
+			pMagicLocus[nIdxLocus].bUse = false;
+			return true;
+		}
+		else
+		{// 対応していなければやり直し
+			
 		}
 	}
 
