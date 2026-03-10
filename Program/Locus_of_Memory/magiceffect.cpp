@@ -12,7 +12,7 @@
 #include "debugproc.h"
 #include "color.h"
 
-#define MAX_MAGIC_PARTICLE	(32)		//パーティクルの最大数
+#define MAX_MAGIC_PARTICLE	(1)		//パーティクルの最大数
 #define MAX_MAGIC_APPEAR	(5)			//粒子の最大数
 #define MAX_ANGRE			(629)
 #define MAX_ANGRE2			(314)
@@ -118,31 +118,27 @@ void UpdateMagicEffect(void)
 				{
 					//ギミック=========================================================================
 				case MAGICEF_TYPE_GIMMICK:
-						//位置の設定
-						pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + sinf((float)(rand() % 100)) * 40;
-						pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y;
-						pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + cosf((float)(rand() % 100)) * 40;
+					//位置の設定
+					pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+					pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+					pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
 
-						fSpeed = (float)(rand() % 2 + 1);
-
-						//移動量	
-						rot.x = ((float)(rand() % 629 - 314) / 100);
-						rot.z = ((float)(rand() % 629 - 314) / 100);
-
-						move[0][MAGICEF_TYPE_GIMMICK].x = sinf(rot.x) * fSpeed;
-						move[0][MAGICEF_TYPE_GIMMICK].z = cosf(rot.z) * fSpeed;
-						move[0][MAGICEF_TYPE_GIMMICK].y = -1.5f;
-
-						SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_GIMMICK], COLOR_WHITE, 100, 15);
+					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 15);
 					break;
 					//落ちている魔法===================================================================
 				case MAGICEF_TYPE_MAGIC:
-						//位置の設定
-						pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + sinf((float)(rand() % 100)) * 40;
-						pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + cosf((float)(rand() % 100)) * 60;
-						pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + cosf((float)(rand() % 100)) * 40;
+					//位置の設定
+					pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+					pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+					pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
 
-						SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 15);
+					//位置の設定
+					pos[1].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+					pos[1].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+					pos[1].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+
+					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 15);
+					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[1], move[0][MAGICEF_TYPE_MAGIC], COLOR_YELLOW, 100, 10);
 					break;
 				}
 				nCountMagicEffect++;

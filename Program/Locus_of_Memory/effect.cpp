@@ -205,7 +205,7 @@ void UpdateEffect(void)
 			}
 			if (pEffect->type == EFFECT_TYPE_MAGICEF)
 			{
-				pEffect->fRadius--;
+				pEffect->fRadius -= 0.5f;
 				if (pEffect->fRadius <= 0)
 				{
 					ReleaseEffect(nCntEffect);
