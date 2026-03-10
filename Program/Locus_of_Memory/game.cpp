@@ -70,14 +70,14 @@ void InitGame(void)
 	// 影の初期化処理
 	InitShadow();
 
-	// イベントオブジェクトの初期化処理
-	InitEventObject();
-
 	// プレイヤーの初期化処理
 	InitPlayer();
 
 	// 魔法の初期化処理
 	InitMagic();
+
+	// イベントオブジェクトの初期化処理
+	InitEventObject();
 
 	// 魔法発動状態表示の初期化処理
 	InitSpellUI();
@@ -356,6 +356,8 @@ void UpdateGame(void)
 //=======================================================
 void DrawGame(void)
 {
+	ProcessingSpeed(true);
+
 	// メッシュフィールドの描画処理
 	DrawMeshField();
 
@@ -379,13 +381,13 @@ void DrawGame(void)
 
 	// 動物の描画処理
 	DrawAnimal();
-
+	
 	// オブジェクトの描画処理（仮）
 	DrawObject();
 
 	// イベントオブジェクトの描画処理
 	DrawEventObject();
-
+	
 	// 鍵の描画処理
 	DrawKey();
 
@@ -454,6 +456,7 @@ void DrawGame(void)
 
 	SetFogEnable(true);			// 霧を有効
 
+	ProcessingSpeed(false, "aaa");
 }
 
 //=======================================================

@@ -372,7 +372,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false; // 衝突していない
 	}
 
-	// 分離軸 : C11
+	// 自分のX方向と対象のX方向との外積の分離軸
 	D3DXVECTOR3 Cross;
 	D3DXVec3Cross(&Cross, &MyAxisXNor, &TargetAxisXNor);
 
@@ -387,7 +387,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false;
 	}
 
-	// 分離軸 : C12
+	// 自分のX方向と対象のY方向との外積の分離軸
 	D3DXVec3Cross(&Cross, &MyAxisXNor, &TargetAxisYNor);
 
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
@@ -401,7 +401,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false;
 	}
 
-	// 分離軸 : C13
+	// 自分のX方向と対象のZ方向との外積の分離軸
 	D3DXVec3Cross(&Cross, &MyAxisXNor, &TargetAxisZNor);
 
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
@@ -415,7 +415,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false;
 	}
 
-	// 分離軸 : C21
+	// 自分のY方向と対象のX方向との外積の分離軸
 	D3DXVec3Cross(&Cross, &MyAxisYNor, &TargetAxisXNor);
 
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
@@ -429,7 +429,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false;
 	}
 
-	// 分離軸 : C22
+	// 自分のY方向と対象のY方向との外積の分離軸
 	D3DXVec3Cross(&Cross, &MyAxisYNor, &TargetAxisYNor);
 
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
@@ -443,7 +443,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false;
 	}
 
-	// 分離軸 : C23
+	// 自分のY方向と対象のZ方向との外積の分離軸
 	D3DXVec3Cross(&Cross, &MyAxisYNor, &TargetAxisZNor);
 
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
@@ -457,7 +457,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false;
 	}
 
-	// 分離軸 : C31
+	// 自分のZ方向と対象のX方向との外積の分離軸
 	D3DXVec3Cross(&Cross, &MyAxisZNor, &TargetAxisXNor);
 
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), 0.0f);
@@ -471,7 +471,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false;
 	}
 
-	// 分離軸 : C32
+	// 自分のZ方向と対象のY方向との外積の分離軸
 	D3DXVec3Cross(&Cross, &MyAxisZNor, &TargetAxisYNor);
 
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), 0.0f);
@@ -485,7 +485,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false;
 	}
 
-	// 分離軸 : C33
+	// 自分のZ方向と対象のZ方向との外積の分離軸
 	D3DXVec3Cross(&Cross, &MyAxisZNor, &TargetAxisZNor);
 
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), 0.0f);
@@ -501,7 +501,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	PrintDebugProc("MyPos = {%.2f, %.2f, %.2f}\n", MyCollider.pos.x, MyCollider.pos.y, MyCollider.pos.z);;
 
-	// 未実装
+	// 衝突した
 	return true;
 }
 

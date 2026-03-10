@@ -172,10 +172,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 			if ((dwCurrentTime - dwExecLastTime) >= (1000 / g_nFPS))
 			{// 60分の1秒経過
 				dwExecLastTime = dwCurrentTime;	// 処理開始の時刻[現在時刻]を保存
-
+				ProcessingSpeed(true);
 				// 更新処理
 				Update();
-
+				ProcessingSpeed(false, "Update");
 				// 描画処理
 				Draw();
 
@@ -643,7 +643,6 @@ void Update(void)
 void Draw(void)
 {
 	D3DVIEWPORT9 viewportDef;	// ビューポート保管変数
-
 	// 画面クリア(バックバッファとZバッファのクリア)
 	g_pD3DDevice->Clear(0, NULL,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
@@ -693,15 +692,14 @@ void Draw(void)
 				break;
 			}
 
-			SetFogEnable(false);
-			// フェードの描画処理
-			DrawFade();
-			SetFogEnable(true);
-
 			// ビューポートを元に戻す
 			g_pD3DDevice->SetViewport(&viewportDef);
 		}
 
+		SetFogEnable(false);
+		// フェードの描画処理
+		DrawFade();
+		SetFogEnable(true);
 
 #ifdef _DEBUG
 
@@ -713,6 +711,7 @@ void Draw(void)
 		// 描画終了
 		g_pD3DDevice->EndScene();
 	}
+
 
 	// バックバッファとフロントバッファの入れ替え
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
@@ -1165,7 +1164,10 @@ void ProcessingSpeed(bool isStart, const char* ptext)
 
 		char alog[256];
 		sprintf_s(alog, "%s : %lfms\n", ptext, time);
+
+#ifdef _DEBUG
 		PrintDebugProc("%s : %lfms\n", ptext, time);
+#endif
 		OutputDebugStringA(alog);
 	}
 }

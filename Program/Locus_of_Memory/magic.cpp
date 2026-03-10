@@ -44,7 +44,7 @@ void InitMagic(void)
 
 	memset(pCounter, NULL, sizeof(MagicCounter) * MAX_PLAYER);
 	memset(&g_aCntCommand[0], NULL, sizeof(int) * MAX_PLAYER);
-	//memset(pMagicLocus, NULL, sizeof(MagicLocus) * MAX_MAGICLOCUS);
+	memset(pMagicLocus, NULL, sizeof(MagicLocus) * MAX_MAGICLOCUS);
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
 	{
