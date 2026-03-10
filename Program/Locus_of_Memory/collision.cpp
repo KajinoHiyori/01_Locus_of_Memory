@@ -272,28 +272,28 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	// 向き行列から各方向ベクトルの確保 (正規化Nと長さ)
 	// 自分の矩形のX方面ベクトル
-	D3DXVECTOR3 NAe1 = { MymtxRot._11, MymtxRot._12, MymtxRot._13 },
-		Ae1 = NAe1 * MyCollider.box.fWidth;
+	D3DXVECTOR3 MyAxisXNor = { MymtxRot._11, MymtxRot._12, MymtxRot._13 },
+		MyAxisX = MyAxisXNor * MyCollider.box.fWidth;
 
 	// 自分の矩形のY方面ベクトル
-	D3DXVECTOR3 NAe2 = { MymtxRot._21, MymtxRot._22, MymtxRot._23 },
-		Ae2 = NAe2 * MyCollider.box.fHeight;
+	D3DXVECTOR3 MyAxisYNor = { MymtxRot._21, MymtxRot._22, MymtxRot._23 },
+		MyAxisY = MyAxisYNor * MyCollider.box.fHeight;
 
 	// 自分の矩形のZ方面ベクトル
-	D3DXVECTOR3 NAe3 = { MymtxRot._31, MymtxRot._32, MymtxRot._33 },
-		Ae3 = NAe3 * MyCollider.box.fDepth;
+	D3DXVECTOR3 MyAxisZNor = { MymtxRot._31, MymtxRot._32, MymtxRot._33 },
+		MyAxisZ = MyAxisZNor * MyCollider.box.fDepth;
 
 	// 対象の矩形のX方面ベクトル
-	D3DXVECTOR3 NBe1 = { TargetmtxRot._11, TargetmtxRot._12, TargetmtxRot._13 },
-		Be1 = NBe1 * TargetCollider.box.fWidth;
+	D3DXVECTOR3 TargetAxisXNor = { TargetmtxRot._11, TargetmtxRot._12, TargetmtxRot._13 },
+		TargetAxisX = TargetAxisXNor * TargetCollider.box.fWidth;
 
 	// 対象の矩形のY方面ベクトル
-	D3DXVECTOR3 NBe2 = { TargetmtxRot._21, TargetmtxRot._22, TargetmtxRot._23 },
-		Be2 = NBe2 * TargetCollider.box.fHeight;
+	D3DXVECTOR3 TargetAxisYNor = { TargetmtxRot._21, TargetmtxRot._22, TargetmtxRot._23 },
+		TargetAxisY = TargetAxisYNor * TargetCollider.box.fHeight;
 
 	// 対象の矩形のZ方面ベクトル
-	D3DXVECTOR3 NBe3 = { TargetmtxRot._31, TargetmtxRot._32, TargetmtxRot._33 },
-		Be3 = NBe3 * TargetCollider.box.fDepth;
+	D3DXVECTOR3 TargetAxisZNor = { TargetmtxRot._31, TargetmtxRot._32, TargetmtxRot._33 },
+		TargetAxisZ = TargetAxisZNor * TargetCollider.box.fDepth;
 
 	// 自分と対象の中心点の距離
 	D3DXVECTOR3 Distance = MyCollider.box.pos - TargetCollider.box.pos;
@@ -301,11 +301,11 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	D3DXVECTOR3 Sep = {};
 
 	// 分離軸 : Ae1
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NAe1, &Be1)), fabsf(D3DXVec3Dot(&NAe1, &Be2)), fabsf(D3DXVec3Dot(&NAe1, &Be3)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisXNor, &TargetAxisX)), fabsf(D3DXVec3Dot(&MyAxisXNor, &TargetAxisY)), fabsf(D3DXVec3Dot(&MyAxisXNor, &TargetAxisZ)));
 
-	float rA = D3DXVec3Length(&Ae1);
+	float rA = D3DXVec3Length(&MyAxisX);
 	float rB = Sep.x + Sep.y + Sep.z;
-	float L = fabs(D3DXVec3Dot(&Distance, &NAe1));
+	float L = fabs(D3DXVec3Dot(&Distance, &MyAxisXNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("AX %f\n", L);
@@ -313,11 +313,11 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : Ae2
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NAe2, &Be1)), fabsf(D3DXVec3Dot(&NAe2, &Be2)), fabsf(D3DXVec3Dot(&NAe2, &Be3)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisYNor, &TargetAxisX)), fabsf(D3DXVec3Dot(&MyAxisYNor, &TargetAxisY)), fabsf(D3DXVec3Dot(&MyAxisYNor, &TargetAxisZ)));
 
-	rA = D3DXVec3Length(&Ae2);
+	rA = D3DXVec3Length(&MyAxisY);
 	rB = Sep.x + Sep.y + Sep.z;
-	L = fabs(D3DXVec3Dot(&Distance, &NAe2));
+	L = fabs(D3DXVec3Dot(&Distance, &MyAxisYNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("AY %f\n", L);
@@ -325,11 +325,11 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : Ae3
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&NAe3, &Be1)), fabsf(D3DXVec3Dot(&NAe3, &Be2)), fabsf(D3DXVec3Dot(&NAe3, &Be3)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisZNor, &TargetAxisX)), fabsf(D3DXVec3Dot(&MyAxisZNor, &TargetAxisY)), fabsf(D3DXVec3Dot(&MyAxisZNor, &TargetAxisZ)));
 
-	rA = D3DXVec3Length(&Ae3);
+	rA = D3DXVec3Length(&MyAxisZ);
 	rB = Sep.x + Sep.y + Sep.z;
-	L = fabs(D3DXVec3Dot(&Distance, &NAe3));
+	L = fabs(D3DXVec3Dot(&Distance, &MyAxisZNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("AZ %f\n", L);
@@ -337,23 +337,23 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : Be1
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &NBe1)), fabsf(D3DXVec3Dot(&Ae2, &NBe1)), fabsf(D3DXVec3Dot(&Ae3, &NBe1)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &TargetAxisXNor)), fabsf(D3DXVec3Dot(&MyAxisY, &TargetAxisXNor)), fabsf(D3DXVec3Dot(&MyAxisZ, &TargetAxisXNor)));
 
 	rA = Sep.x + Sep.y + Sep.z;
-	rB = D3DXVec3Length(&Be1);
-	L = fabs(D3DXVec3Dot(&Distance, &NBe1));
+	rB = D3DXVec3Length(&TargetAxisX);
+	L = fabs(D3DXVec3Dot(&Distance, &TargetAxisXNor));
 	if (L > rA + rB)
 	{
-		PrintDebugProc("BA %f\n", L);
+		PrintDebugProc("BX %f\n", L);
 		return false; // 衝突していない
 	}
 
 	// 分離軸 : Be2
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &NBe2)), fabsf(D3DXVec3Dot(&Ae2, &NBe2)), fabsf(D3DXVec3Dot(&Ae3, &NBe2)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &TargetAxisYNor)), fabsf(D3DXVec3Dot(&MyAxisY, &TargetAxisYNor)), fabsf(D3DXVec3Dot(&MyAxisZ, &TargetAxisYNor)));
 
 	rA = Sep.x + Sep.y + Sep.z;
-	rB = D3DXVec3Length(&Be2);
-	L = fabs(D3DXVec3Dot(&Distance, &NBe2));
+	rB = D3DXVec3Length(&TargetAxisY);
+	L = fabs(D3DXVec3Dot(&Distance, &TargetAxisYNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("BY %f\n", L);
@@ -361,11 +361,11 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : Be3
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &NBe3)), fabsf(D3DXVec3Dot(&Ae2, &NBe3)), fabsf(D3DXVec3Dot(&Ae3, &NBe3)));
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &TargetAxisZNor)), fabsf(D3DXVec3Dot(&MyAxisY, &TargetAxisZNor)), fabsf(D3DXVec3Dot(&MyAxisZ, &TargetAxisZNor)));
 
 	rA = Sep.x + Sep.y + Sep.z;
-	rB = D3DXVec3Length(&Be3);
-	L = fabs(D3DXVec3Dot(&Distance, &NBe3));
+	rB = D3DXVec3Length(&TargetAxisZ);
+	L = fabs(D3DXVec3Dot(&Distance, &TargetAxisZNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("BZ %f\n", L);
@@ -374,10 +374,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	// 分離軸 : C11
 	D3DXVECTOR3 Cross;
-	D3DXVec3Cross(&Cross, &NAe1, &NBe1);
+	D3DXVec3Cross(&Cross, &MyAxisXNor, &TargetAxisXNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae2, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
-	D3DXVECTOR3 Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be2, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
+	D3DXVECTOR3 Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisY, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisZ, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
@@ -388,10 +388,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : C12
-	D3DXVec3Cross(&Cross, &NAe1, &NBe2);
+	D3DXVec3Cross(&Cross, &MyAxisXNor, &TargetAxisYNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae2, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
-	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisX, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisZ, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
@@ -402,10 +402,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : C13
-	D3DXVec3Cross(&Cross, &NAe1, &NBe3);
+	D3DXVec3Cross(&Cross, &MyAxisXNor, &TargetAxisZNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae2, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
-	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be2, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisX, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisY, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
@@ -416,10 +416,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : C21
-	D3DXVec3Cross(&Cross, &NAe2, &NBe1);
+	D3DXVec3Cross(&Cross, &MyAxisYNor, &TargetAxisXNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
-	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be2, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisY, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisZ, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
@@ -430,10 +430,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : C22
-	D3DXVec3Cross(&Cross, &NAe2, &NBe2);
+	D3DXVec3Cross(&Cross, &MyAxisYNor, &TargetAxisYNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
-	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisX, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisZ, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
@@ -444,10 +444,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : C23
-	D3DXVec3Cross(&Cross, &NAe2, &NBe3);
+	D3DXVec3Cross(&Cross, &MyAxisYNor, &TargetAxisZNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae3, &Cross)), 0.0f);
-	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be2, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisZ, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisX, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisY, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
@@ -458,10 +458,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : C31
-	D3DXVec3Cross(&Cross, &NAe3, &NBe1);
+	D3DXVec3Cross(&Cross, &MyAxisZNor, &TargetAxisXNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae2, &Cross)), 0.0f);
-	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be2, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisY, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisZ, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
@@ -472,10 +472,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : C32
-	D3DXVec3Cross(&Cross, &NAe3, &NBe2);
+	D3DXVec3Cross(&Cross, &MyAxisZNor, &TargetAxisYNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae2, &Cross)), 0.0f);
-	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be3, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisX, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisZ, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
@@ -486,10 +486,10 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	}
 
 	// 分離軸 : C33
-	D3DXVec3Cross(&Cross, &NAe3, &NBe3);
+	D3DXVec3Cross(&Cross, &MyAxisZNor, &TargetAxisZNor);
 
-	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Ae1, &Cross)), fabsf(D3DXVec3Dot(&Ae2, &Cross)), 0.0f);
-	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&Be1, &Cross)), fabsf(D3DXVec3Dot(&Be2, &Cross)), 0.0f);
+	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &Cross)), fabsf(D3DXVec3Dot(&MyAxisY, &Cross)), 0.0f);
+	Sep2 = D3DXVECTOR3(fabsf(D3DXVec3Dot(&TargetAxisX, &Cross)), fabsf(D3DXVec3Dot(&TargetAxisY, &Cross)), 0.0f);
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
