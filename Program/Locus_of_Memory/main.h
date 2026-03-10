@@ -48,4 +48,6 @@ void SetTextureStageStateAlpha(int nIdx, DWORD Stage, D3DTEXTUREOP Type, DWORD V
 void ResetTextureStageStateAlpha(int nNumIdx);
 void SetTextureStageStateColor(int nIdx, DWORD Stage, D3DTEXTUREOP Type, DWORD Value);
 void ResetTextureStageStateColor(int nNumIdx);
+void ProcessingSpeed(bool isStart, const char* ptext = "");
+
 #endif

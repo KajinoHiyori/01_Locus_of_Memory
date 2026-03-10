@@ -1138,3 +1138,34 @@ void ResetTextureStageStateColor(int nNumIdx)
 		g_pD3DDevice->SetTextureStageState(nCntIdx, D3DTSS_COLORARG2, D3DTA_CURRENT);
 	}
 }
+
+//==================================================================================
+//	ˆ—‘¬“x‘ª’èˆ—
+//==================================================================================
+void ProcessingSpeed(bool isStart, const char* ptext)
+{
+	static DWORD dwCurrentTime;		// Œ»İ
+	static DWORD dwExecLastTime;	// ÅŒã‚Éˆ—‚µ‚½
+
+	using namespace std;
+
+	static chrono::high_resolution_clock::time_point start, end;
+
+	if (isStart)
+	{
+		dwExecLastTime = timeGetTime();
+		start = chrono::high_resolution_clock::now();
+	}
+	else
+	{
+		dwCurrentTime = timeGetTime();
+		end = chrono::high_resolution_clock::now();
+
+		double time = static_cast<double>(chrono::duration_cast<chrono::microseconds>(end - start).count() / 1000.0f);
+
+		char alog[256];
+		sprintf_s(alog, "%s : %lfms\n", ptext, time);
+		PrintDebugProc("%s : %lfms\n", ptext, time);
+		OutputDebugStringA(alog);
+	}
+}

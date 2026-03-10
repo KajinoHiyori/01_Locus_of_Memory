@@ -16,6 +16,7 @@
 #include <cstdio>
 #include <crtdbg.h>
 #include <math.h>
+#include <chrono>
 #include "d3dx9.h"								// 描画処理に必要
 #include "dinput.h"								// 入力処理に必要
 #include "xaudio2.h"							// サウンド処理に必要
