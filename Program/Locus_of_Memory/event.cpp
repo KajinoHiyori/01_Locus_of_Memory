@@ -145,7 +145,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_RAINPRAY:	// ¬’·‚³‚¹‚é
 		pEventObject->EventType = EVENTTYPE_003_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_GROWTH);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_RAINPRAY);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 

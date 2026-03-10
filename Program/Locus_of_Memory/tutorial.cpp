@@ -14,6 +14,7 @@
 #include "effect.h"
 #include "particle.h"
 #include "brickwall.h"
+#include "loadscript.h"
 //#include"sound.h"
 #include"fade.h"
 //#include"pause.h"
@@ -132,6 +133,9 @@ void InitTutorial(void)
 
 	// UIの状態を初期化
 	SetPauseFalse();
+
+	// 魔法関連オブジェクトの読み込み
+	LoadMagicObject(MAGICOBJECTINFO_SCRIPT);
 
 	// プレイヤーの設置
 	OPERATIONTYPE operationtyoe = GetOperationType();
