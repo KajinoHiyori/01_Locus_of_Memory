@@ -711,7 +711,9 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 {
 	DropMagic* pDropMagic = &g_aDropMagic[0];	// 先頭アドレス
+	Player* pPlayer = GetPlayer();
 	bool isSearch = false;
+	bool bHave = false;	// 魔法の所持状態
 
 	//VIBRATIONTYPE* pVibration = GetVibration();
 
@@ -721,6 +723,20 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 	{
 		if (pDropMagic->bUse == false)
 		{// 使っていなかったら弾く
+			continue;
+		}
+
+		for (int nCntOwnMagic = 0; nCntOwnMagic < MAX_OWNCOMMAND; nCntOwnMagic++)
+		{
+			if (pPlayer[nIdx].magicbook.OwnCommand[nCntOwnMagic] == pDropMagic->oType)
+			{ // プレイヤーが同じ魔法を持っていた場合、処理を行わない
+				bHave = true;
+				break;
+			}
+		}
+
+		if (bHave == true)
+		{ // その魔法を持っていた場合弾く
 			continue;
 		}
 
@@ -738,6 +754,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 2.5f, 2))
 		{// 落ちている魔法の周辺にいたら
 			// ここで種類に応じた振動を呼び出す
+			StopMagicEffect(nIdx); 
 			ResetMagicBubble(nIdx);
 			VibrationType(VIBRATIONTYPE_MEDIUM, pDropMagic->oType, nIdx);
 			SetMagicEffect(pDropMagic->pos, MAGICEF_TYPE_MAGIC,nIdx);
@@ -750,6 +767,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 			//SetMagicBubble(nIdx, pDropMagic->oType, 1);
 			VibrationType(VIBRATIONTYPE_FAR, pDropMagic->oType, nIdx);
 			PrintDebugProc("[%d]遠くに魔法が落ちている\n", nCntMagic);
+			StopMagicEffect(nIdx); 
 			isSearch = true;
 		}
 
