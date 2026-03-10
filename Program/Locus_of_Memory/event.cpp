@@ -139,7 +139,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
 			MOTIONTYPE_MOVE, false, true, 10);
-		UpdateMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, nIdx);
+		SetMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 
@@ -150,13 +150,13 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
 			MOTIONTYPE_MOVE, false, true, 10);
-		UpdateMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, nIdx);
+		SetMagicLocus(MAGICEVENT_004, pEventObject->pos, 500.0f, nIdx);
 		isSuccess =  true;
 		break;
 
 	case MAGICTYPE_COMBUSTION:	// ”RÄ‚³‚¹‚é
 		pEventObject->EventType = EVENTTYPE_003_2;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -166,7 +166,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ‚³‚¹‚é
 		pEventObject->EventType = EVENTTYPE_003_2;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -197,7 +197,7 @@ bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
 			MOTIONTYPE_ACTION, false, false, 10);
-		UpdateMagicLocus(MAGICEVENT_003, pEventObject->pos, 500.0f, nIdx);
+		SetMagicLocus(MAGICEVENT_003, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 	}
@@ -224,7 +224,7 @@ bool SetMagicEvent005(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_MOVE, false, false, 10);
-		UpdateMagicLocus(MAGICEVENT_006, pEventObject->pos, 500.0f, nIdx);
+		SetMagicLocus(MAGICEVENT_006, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 	}
@@ -251,7 +251,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_RUN, false, false, 10);
-		UpdateMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
+		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 
@@ -262,7 +262,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_RUN, false, false, 10);
-		UpdateMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
+		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 
@@ -273,7 +273,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_RUN, false, false, 10);
-		UpdateMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
+		SetMagicLocus(MAGICEVENT_005, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		break;
 	}

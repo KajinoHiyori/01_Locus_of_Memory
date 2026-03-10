@@ -713,7 +713,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 	DropMagic* pDropMagic = &g_aDropMagic[0];	// 先頭アドレス
 	Player* pPlayer = GetPlayer();
 	bool isSearch = false;
-	bool bHave = false;	// 魔法の所持状態
+	
 
 	//VIBRATIONTYPE* pVibration = GetVibration();
 
@@ -726,6 +726,7 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 			continue;
 		}
 
+		bool bHave = false;	// 魔法の所持状態
 		for (int nCntOwnMagic = 0; nCntOwnMagic < MAX_OWNCOMMAND; nCntOwnMagic++)
 		{
 			if (pPlayer[nIdx].magicbook.OwnCommand[nCntOwnMagic] == pDropMagic->oType)
