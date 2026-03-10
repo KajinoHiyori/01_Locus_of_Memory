@@ -300,7 +300,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	D3DXVECTOR3 Sep = {};
 
-	// •ª—£² : Ae1
+	// ©•ª‚ÌX•ûŒü‚Ì•ª—£²
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisXNor, &TargetAxisX)), fabsf(D3DXVec3Dot(&MyAxisXNor, &TargetAxisY)), fabsf(D3DXVec3Dot(&MyAxisXNor, &TargetAxisZ)));
 
 	float rA = D3DXVec3Length(&MyAxisX);
@@ -312,7 +312,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false; // Õ“Ë‚µ‚Ä‚¢‚È‚¢
 	}
 
-	// •ª—£² : Ae2
+	// ©•ª‚ÌY•ûŒü‚Ì•ª—£²
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisYNor, &TargetAxisX)), fabsf(D3DXVec3Dot(&MyAxisYNor, &TargetAxisY)), fabsf(D3DXVec3Dot(&MyAxisYNor, &TargetAxisZ)));
 
 	rA = D3DXVec3Length(&MyAxisY);
@@ -324,7 +324,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false; // Õ“Ë‚µ‚Ä‚¢‚È‚¢
 	}
 
-	// •ª—£² : Ae3
+	// ©•ª‚ÌZ•ûŒü‚Ì•ª—£²
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisZNor, &TargetAxisX)), fabsf(D3DXVec3Dot(&MyAxisZNor, &TargetAxisY)), fabsf(D3DXVec3Dot(&MyAxisZNor, &TargetAxisZ)));
 
 	rA = D3DXVec3Length(&MyAxisZ);
@@ -336,7 +336,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false; // Õ“Ë‚µ‚Ä‚¢‚È‚¢
 	}
 
-	// •ª—£² : Be1
+	// ‘ÎÛ‚ÌX•ûŒü‚Ì•ª—£²
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &TargetAxisXNor)), fabsf(D3DXVec3Dot(&MyAxisY, &TargetAxisXNor)), fabsf(D3DXVec3Dot(&MyAxisZ, &TargetAxisXNor)));
 
 	rA = Sep.x + Sep.y + Sep.z;
@@ -348,7 +348,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false; // Õ“Ë‚µ‚Ä‚¢‚È‚¢
 	}
 
-	// •ª—£² : Be2
+	// ‘ÎÛ‚ÌY•ûŒü‚Ì•ª—£²
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &TargetAxisYNor)), fabsf(D3DXVec3Dot(&MyAxisY, &TargetAxisYNor)), fabsf(D3DXVec3Dot(&MyAxisZ, &TargetAxisYNor)));
 
 	rA = Sep.x + Sep.y + Sep.z;
@@ -360,7 +360,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 		return false; // Õ“Ë‚µ‚Ä‚¢‚È‚¢
 	}
 
-	// •ª—£² : Be3
+	// ‘ÎÛ‚ÌZ•ûŒü‚Ì•ª—£²
 	Sep = D3DXVECTOR3(fabsf(D3DXVec3Dot(&MyAxisX, &TargetAxisZNor)), fabsf(D3DXVec3Dot(&MyAxisY, &TargetAxisZNor)), fabsf(D3DXVec3Dot(&MyAxisZ, &TargetAxisZNor)));
 
 	rA = Sep.x + Sep.y + Sep.z;
