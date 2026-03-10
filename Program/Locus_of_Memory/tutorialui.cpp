@@ -50,12 +50,14 @@ typedef struct
 #define CIRCLE_SIZE			(90.0f)	// 魔法陣の大きさ
 #define UI_ROT				(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 表示方向
 #define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 法線ベクトル
-#define PLAY_POS			(D3DXVECTOR3(-3480.0f, 120.0f, -3000.0f))	// 操作方法の表示位置
-#define MAGIC_POS			(D3DXVECTOR3(-3080.0f, 120.0f, -3000.0f))	// 魔法の使い方の表示位置
-#define LIMIT_POS			(D3DXVECTOR3(-2680.0f, 120.0f, -3000.0f))	// 制限時間の表示位置
-#define BOOK_POS			(D3DXVECTOR3(-2280.0f, 120.0f, -3000.0f))	// 魔導書の表示位置
+#define PLAY_POS			(D3DXVECTOR3(-3480.0f, 120.0f, -3100.0f))	// 操作方法の表示位置
+#define MAGIC_POS			(D3DXVECTOR3(-3080.0f, 120.0f, -3100.0f))	// 魔法の使い方の表示位置
+#define LIMIT_POS			(D3DXVECTOR3(-2480.0f, 120.0f, -3100.0f))	// 制限時間の表示位置
+#define BOOK_POS			(D3DXVECTOR3(-1880.0f, 120.0f, -3100.0f))	// 魔導書の表示位置
 #define HOUSE_POS			(D3DXVECTOR3(-2130.0f, 120.0f, -3900.0f))	// 燃える家の表示位置
-#define CIRCLE_POS			(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// 燃える家の表示位置
+#define CIRCLE_POS			(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// 魔法陣の表示位置
+#define PLANTS_POS			(D3DXVECTOR3(-3300.0f, 120.0f, -3630.0f))	// 植物の表示位置
+#define BRIDGE_POS			(D3DXVECTOR3(-2800.0f, 120.0f, -3100.0f))	// 植物の表示位置
 #define CIRCLE_ROT			(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f))		// 魔法陣の表示角度
 #define CIRCLE_ROTATE		(0.05f)		// 魔法陣の回転速度
 #define APPEAR_SIZE			(250.0f)	// 出現の当たり判定を管理するサイズ
@@ -70,6 +72,8 @@ const char* c_apFilenameTutorialUI[MAX_TUTORIALUI] =
 	"data\\TEXTURE\\tutorial\\tutorialui004.png",	// TUTORIALUITYPE_TIMELIMIT
 	"data\\TEXTURE\\tutorial\\tutorialui005.png",	// TUTORIALUITYPE_MAGICBOOK
 	"data\\TEXTURE\\tutorial\\tutorialui006.png",	// TUTORIALUITYPE_FIREHOUSE
+	"data\\TEXTURE\\tutorial\\tutorialui007.png",	// TUTORIALUITYPE_PLANTS
+	"data\\TEXTURE\\tutorial\\tutorialui008.png",	// TUTORIALUITYPE_PLANTS
 	"data\\TEXTURE\\SpellUI\\19_SunsetDelay.png",	// TUTORIALUITYPE_MAGICCIRCLE
 };
 
@@ -164,6 +168,8 @@ void InitTutorialUI(void)
 	SetTutorialUI(TUTORIALUITYPE_TIMELIMIT, LIMIT_POS, UI_ROT);
 	SetTutorialUI(TUTORIALUITYPE_MAGICBOOK, BOOK_POS, UI_ROT);
 	SetTutorialUI(TUTORIALUITYPE_FIREHOUSE, HOUSE_POS, UI_ROT);
+	SetTutorialUI(TUTORIALUITYPE_PLANTS, PLANTS_POS, UI_ROT);
+	SetTutorialUI(TUTORIALUITYPE_BRIDGES, BRIDGE_POS, UI_ROT);
 	SetTutorialUI(TUTORIALUITYPE_MAGICCIRCLE, CIRCLE_POS, CIRCLE_ROT);
 }
 
@@ -212,6 +218,7 @@ void UpdateTutorialUI(void)
 			if (g_aTutorialUI[nCntUI].type == TUTORIALUITYPE_MAGICCIRCLE)
 			{
 				g_aTutorialUI[nCntUI].rot.x += CIRCLE_ROTATE;
+				g_aTutorialUI[nCntUI].rot.y += CIRCLE_ROTATE;
 				g_aTutorialUI[nCntUI].rot.z += CIRCLE_ROTATE;
 				g_aTutorialUI[nCntUI].fWidth = CIRCLE_SIZE;
 				g_aTutorialUI[nCntUI].fHeight = CIRCLE_SIZE;
