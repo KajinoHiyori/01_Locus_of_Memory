@@ -651,6 +651,9 @@ void SetParentObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmod
 		case PARENTMODELTYPE_POND:
 			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_POND);		// モーションデータ設定
 			break;
+		case PARENTMODELTYPE_FLOWER:
+			pParentObject->motion.pMotionData = SetMotionData(MOTIONDATATYPE_FLOWER);		// モーションデータ設定
+			break;
 		}
 
 		// 各種設定
