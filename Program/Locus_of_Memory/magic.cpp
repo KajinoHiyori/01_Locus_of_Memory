@@ -532,6 +532,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
+				SetParticle(pPlayer->pos, 300, PARTICLETYPE_RAINPRAY, nIdx);
 				break;
 
 				//“€Œ‹

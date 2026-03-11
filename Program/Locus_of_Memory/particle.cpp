@@ -295,9 +295,9 @@ void UpdateParticle(void)
 						rot.y = ((float)(rand() % 629 - 314) / pos[0].y);
 						rot.z = ((float)(rand() % 629 - 314) / pos[0].z);
 
-						move[0][PARTICLETYPE_FLASH].x = (sinf(rot.x)) * 25;
-						move[0][PARTICLETYPE_FLASH].y = (cosf(rot.y)) * 25;
-						move[0][PARTICLETYPE_FLASH].z = (cosf(rot.z)) * 25;
+						move[0][PARTICLETYPE_FLASH].x = (sinf(rot.x)) * 5;
+						move[0][PARTICLETYPE_FLASH].y = (cosf(rot.y)) * 5;
+						move[0][PARTICLETYPE_FLASH].z = (cosf(rot.z)) * 5;
 
 						SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 15);
 						SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[1], move[0][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 10);
