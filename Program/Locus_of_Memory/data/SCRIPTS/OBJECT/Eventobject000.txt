@@ -219,6 +219,20 @@ MAGICEVENTSET
 	EVENT = 1
 END_MAGICEVENTSET
 
+MODELSET
+	PARENTTYPE = 2
+	POS = -2724 -36 472
+	ROT = 0 0 0
+	COLLISION = 1
+	MOTIONTYPE = 1
+END_MODELSET
+
+MAGICEVENTSET
+	POS = -2724 0 472
+	RADIUS = 500.0
+	EVENT = 1
+END_MAGICEVENTSET
+
 #------------------------------------------------------------------------------
 # 階層構造のある橋
 #------------------------------------------------------------------------------
