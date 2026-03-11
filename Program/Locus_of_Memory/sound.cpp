@@ -40,6 +40,19 @@ SOUNDINFO g_aSoundInfo[SOUND_LABEL_MAX] =
 	{"data/BGM/diagnosis.wav", -1},		// dignosisBGM
 	{"data/BGM/faildresult.wav", -1},	// faildBGM
 	{"data/BGM/goalresult.wav", -1},	// goalBGM
+	{"data/SE/00_check.wav", 0},	// Œˆ’è
+	{"data/SE/01_select.wav", 0},	// ‘I‘ğ
+	{"data/SE/02_levitation.wav", 0},	// •‚—V
+	{"data/SE/03_combustion.wav", 0},	// ”RÄ
+	{"data/SE/04_flash.wav", 0},	// ƒtƒ‰ƒbƒVƒ…
+	{"data/SE/05_sunsetdelay.wav", 0},	// ŠÔ’â~
+	{"data/SE/06_rainpray.wav", 0},	// ‰JŒî‚¢
+	{"data/SE/07_freeze.wav", 0},	// “€Œ‹
+	{"data/SE/08_growth.wav", 0},	// ¬’·
+	{"data/SE/09_acceleration.wav", 0},	// ‰Á‘¬
+	{"data/SE/10_timerevert.wav", 0},	// Šª‚«–ß‚µ
+	{"data/SE/11_walk.wav", -1},	// •à‚«
+	{"data/SE/12_run.wav", -1},	// ‘–‚è
 };
 
 //=============================================================================
