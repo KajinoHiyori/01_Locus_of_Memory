@@ -13,6 +13,7 @@
 #include"input.h"
 #include "object.h"
 #include "eventobject.h"
+#include "magiceffect.h"
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
@@ -58,8 +59,8 @@
 #include "readyui.h"
 
 // マクロ定義
-#define TUTORIALPOS_1P	(D3DXVECTOR3(-3185.0f, 0.0f, -3235.0f))		// 1Pの位置[TUTORIAL]			
-#define TUTORIALPOS_2P	(D3DXVECTOR3(-3555.0f, 0.0f, -3235.0f))		// 2Pの位置[TUTORIAL]
+#define TUTORIALPOS_1P	(D3DXVECTOR3(-2820.0f, 0.0f, -3790.0f))		// 1Pの位置[TUTORIAL]			
+#define TUTORIALPOS_2P	(D3DXVECTOR3(-2850.0f, 0.0f, -3790.0f))		// 2Pの位置[TUTORIAL]
 #define GATE_POS		(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// ゲートの位置
 #define GATE_SIZE		(120.0f)	// ゲートの大きさ
 
@@ -88,6 +89,9 @@ void InitTutorial(void)
 
 	// イベントオブジェクトの初期化処理
 	InitEventObject();
+
+	// マジックエフェクトの初期化処理
+	InitMagicEffect();
 
 	//InitField();
 
@@ -185,6 +189,9 @@ void UninitTutorial(void)
 	// イベントオブジェクトの終了処理
 	UninitEventObject();
 
+	// マジックエフェクトの終了処理
+	UninitMagicEffect();
+
 	//UninitField();
 
 	//UninitMeshsky();
@@ -230,26 +237,11 @@ void UninitTutorial(void)
 void UpdateTutorial(void)
 {
 	FADE* pFade = GetFade();
-	//Timer* pTimer = GetTimer();
-
-	// プレイヤーの更新処理
-	//UpdateBG();
 
 	// ライトの更新処理
 	UpdateLight();
-
-	// 魔法の更新処理
-	UpdateMagic();
-
-	// イベントオブジェクトの更新処理
-	UpdateEventObject();
-
-	// 動物の更新処理
-	UpdateAnimal();
-
-	//UpdateField();
-
-	//UpdateMeshsky();
+	// チュートリアルUIの更新処理
+	UpdateTutorialUI();
 
 	// メッシュフィールドの更新処理
 	UpdateMeshField();
@@ -263,20 +255,32 @@ void UpdateTutorial(void)
 	// カスタムメッシュの更新処理
 	UpdateCustomMesh();
 
-	//UpdateMashwall();
-
-	//UpdateBullet();
-
 	// 影の更新処理
 	UpdateShadow();
 
-	//UpdateBillboard();
+	// イベントオブジェクトの更新処理
+	UpdateEventObject();
 
 	// プレイヤーの更新処理
 	UpdatePlayer();
 
+	// 動物の更新処理
+	UpdateAnimal();
+
+	// ゴールの更新処理
+	//UpdateGoal();
+
+	// 魔法の更新処理
+	UpdateMagic();
+
 	// 魔法陣の更新処理
 	UpdateMagicCircle();
+
+	// 文字の更新処理
+	UpdateGrain();
+
+	// 粒の更新処理
+	UpdateSparkle();
 
 	// 魔法発動状態表示の更新処理
 	UpdateSpellUI();
@@ -287,20 +291,20 @@ void UpdateTutorial(void)
 	// 3D空間UIの更新処理
 	UpdateUIManager();
 
+	// マジックエフェクトの更新処理
+	UpdateMagicEffect();
+
 	// 吹き出しの更新処理
 	UpdateMagicBubble();
-
-	// バッテリーの更新処理
-	UpdateBattery();
 
 	// ?の更新処理
 	UpdateQuestionMark();
 
-	// チュートリアルUIの更新処理
-	UpdateTutorialUI();
-
-	// 準備完了状態の更新
+	// 準備完了状態の更新処理
 	UpdateReadyUI();
+
+	// バッテリーの更新処理
+	UpdateBattery();
 
 	// ゲーム画面への遷移状態を管理
 	GoGameGate();
@@ -415,6 +419,9 @@ void DrawTutorial(void)
 
 	// 塀の描画処理
 	DrawBrickWall();
+
+	// マジックエフェクトの描画処理
+	DrawMagicEffect();
 
 	// エフェクトの描画処理
 	DrawEffect();
