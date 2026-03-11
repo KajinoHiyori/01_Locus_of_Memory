@@ -427,8 +427,8 @@ void UpdateGameCamera(void)
 			pCamera->posR.z = -4800.0f;
 
 			//プレイヤーをポーズ状態に
-			pPlayer[0].state = PLAYERSTATE_PAUSE;
-			pPlayer[1].state = PLAYERSTATE_PAUSE;
+			//pPlayer[0].state = PLAYERSTATE_PAUSE;
+			//pPlayer[1].state = PLAYERSTATE_PAUSE;
 
 			//時計を停止
 			SetClockState(CLOCKSTATE_STOP);
