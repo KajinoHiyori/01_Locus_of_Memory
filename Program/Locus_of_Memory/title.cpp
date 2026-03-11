@@ -22,6 +22,7 @@
 #include "sparkle.h"
 #include "animal.h"
 #include "2deffect.h"
+#include "sound.h"
 
 // マクロ定義
 #define NEXT_MODE		(600)		// 次のモードへの遷移時間
@@ -140,6 +141,7 @@ void UpdateTitle(void)
 		}
 		else if ((GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true) && *pfade == FADE_NONE)
 		{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
+			PlaySound(SOUND_LABEL_ENTER);
 			g_nModeResult = 0;
 			g_bFade = true;
 			SetFade(MODE_TUTORIAL, COLOR_WHITE);

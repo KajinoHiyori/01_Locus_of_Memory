@@ -316,7 +316,7 @@ void UpdateGame(void)
 			SetFade(MODE_RESULT, COLOR_WHITE);
 
 			// goalBGMÇçƒê∂
-			PlaySound(SOUND_LABEL_GOALRESULTBGM);
+			//PlaySound(SOUND_LABEL_GOALRESULTBGM);
 		}
 
 		break;
@@ -332,7 +332,7 @@ void UpdateGame(void)
 			SetFade(MODE_RESULT, COLOR_BLACK);
 
 			// faildBGMÇçƒê∂
-			PlaySound(SOUND_LABEL_FAILDRESULTBGM);
+			//PlaySound(SOUND_LABEL_FAILDRESULTBGM);
 		}
 		break;
 
@@ -347,7 +347,7 @@ void UpdateGame(void)
 			SetFade(MODE_RESULT, COLOR_BLACK);
 
 			// faildBGMÇçƒê∂
-			PlaySound(SOUND_LABEL_FAILDRESULTBGM);
+			//PlaySound(SOUND_LABEL_FAILDRESULTBGM);
 		}
 		break;
 	}

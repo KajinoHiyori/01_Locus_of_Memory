@@ -10,6 +10,7 @@
 #include "title.h"
 #include "input.h"
 #include "fog.h"
+#include "sound.h"
 
 // タイトルUIの種類
 typedef enum
@@ -212,6 +213,7 @@ void UpdateTitleUI(void)
 	// 選択状態の変更(Repeat)
 	if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true)
 	{
+		PlaySound(SOUND_LABEL_SELECT);
 		g_nSelectOperation--;
 		if (g_nSelectOperation < TITLEUITYPE_1PPLAY)
 		{
@@ -220,6 +222,7 @@ void UpdateTitleUI(void)
 	}
 	else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true)
 	{
+		PlaySound(SOUND_LABEL_SELECT);
 		g_nSelectOperation++;
 		if (g_nSelectOperation > TITLEUITYPE_KEYBOARD)
 		{
