@@ -207,6 +207,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="questui.cpp" />
     <ClCompile Include="questionmark.cpp" />
+    <ClCompile Include="readyui.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="resultui.cpp" />
     <ClCompile Include="riverwall.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="questui.h" />
     <ClInclude Include="questionmark.h" />
+    <ClInclude Include="readyui.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="resultui.h" />
     <ClInclude Include="riverwall.h" />

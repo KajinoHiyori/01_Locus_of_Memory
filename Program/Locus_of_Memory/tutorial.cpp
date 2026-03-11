@@ -470,7 +470,7 @@ void GoGameGate(void)
 		}
 
 		float fLength = sqrtf((pPlayer->pos.x - GATE_POS.x) * (pPlayer->pos.x - GATE_POS.x) + (pPlayer->pos.z - GATE_POS.z) * (pPlayer->pos.z - GATE_POS.z)) * 0.5f;
-		if (fLength > GATE_SIZE)
+		if (fLength < GATE_SIZE)
 		{
 			if (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
 			{
