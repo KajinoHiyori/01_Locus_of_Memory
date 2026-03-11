@@ -204,6 +204,21 @@ MAGICEVENTSET
 	RADIUS = 500.0
 	EVENT = 1
 END_MAGICEVENTSET
+
+MODELSET
+	PARENTTYPE = 2
+	POS = 4337 -36 -1930
+	ROT = 0 120 0
+	COLLISION = 1
+	MOTIONTYPE = 1
+END_MODELSET
+
+MAGICEVENTSET
+	POS = 4337 0 -1930
+	RADIUS = 500.0
+	EVENT = 1
+END_MAGICEVENTSET
+
 #------------------------------------------------------------------------------
 # 階層構造のある橋
 #------------------------------------------------------------------------------
@@ -309,4 +324,19 @@ MAGICEVENTSET
 	RADIUS = 500.0
 	EVENT = 5
 END_MAGICEVENTSET
+
+MODELSET
+	PARENTTYPE = 9
+	POS = 3150.0 0.0 -1948.0
+	ROT = 0 0 0
+	COLLISION = 1
+	MOTIONTYPE = 7
+END_MODELSET
+
+MAGICEVENTSET
+	POS =  3150.0 0.0 -1948.0
+	RADIUS = 500.0
+	EVENT = 5
+END_MAGICEVENTSET
+
 END_SCRIPT		# この行は絶対消さないこと！
