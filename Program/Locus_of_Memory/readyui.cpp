@@ -1,12 +1,11 @@
 //========================================================
 // 
-// 魔法発動状態のUI表示処理[magicbubble.cpp]
+// 準備完了状態のUI表示処理[readyui.cpp]
 // Author : KajinoHiyori
 // 
 //========================================================
-#if 0
 #include "main.h"
-#include "magicbubble.h"
+#include "readyui.h"
 #include "player.h"
 #include "game.h"
 #include "input.h"
@@ -16,70 +15,47 @@
 #include "color.h"
 
 // マクロ定義
-#define MAXMAGICBUBBLE_TYPE	(MAGICBUBBLETYPE_MAX)	// テクスチャの最大数
-#define BUBBLE_WIDTH		(28.0f)					// 吹き出しの幅
-#define BUBBLE_HEIGHT		(10.0f)					// 吹き出しの高さ
-#define BUBBLE_X			(-10.0f)					// 吹き出しのX軸
-#define BUBBLE_Y			(85.0f)					// 吹き出しのY高度
-#define NUM_KEY				(30)					// 処理を行うキー数
+#define MAXREADYUI_TYPE		(READYUITYPE_MAX)	// テクスチャの最大数
+#define READY_WIDTH		(30.0f)				// 準備完了状態の幅
+#define READY_HEIGHT		(READY_WIDTH / 2)	// 準備完了状態の高さ
+#define READY_X			(-10.0f)			// 準備完了状態のX軸
+#define READY_Y			(100.0f)				// 準備完了状態のY高度
+#define NUM_KEY				(30)				// 処理を行うキー数
 #define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 
-// MAGICBUBBLEの構造体
+// READYUIの構造体
 typedef struct
 {
 	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
 	D3DXVECTOR3		pos;		// 位置
 	D3DXVECTOR3		rot;		// 向き
-	MAGICBUBBLETYPE type;		// 種類
-	COMMANDOREDER	command;	// 設置するコマンドの種類
+	READYUITYPE type;		// 種類
 	float	fWidth;			// 幅
-	float	fWidthDest;		// 幅の目的値
 	float	fHeight;		// 高さ
-	float	fHeightDest;	// 高さの目的値
-	int		nNumKey;		// 浮遊感をカウントするキー数
-	int		nKey;			// 現在のキー数
 	bool	bDisp;			// 表示状態
-}MagicBubble;
+}ReadyUI;
 
 // グローバル変数
-LPDIRECT3DTEXTURE9	g_apTextureMagicBubble[MAXMAGICBUBBLE_TYPE] = {};	// テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffMagicBubble = NULL;			// 頂点バッファへのポインタ
-MagicBubble g_aMagicBubble[MAX_PLAYER];		// MAGICBUBBLEの全体管理
+LPDIRECT3DTEXTURE9	g_apTextureReadyUI[MAXREADYUI_TYPE] = {};	// テクスチャへのポインタ
+LPDIRECT3DVERTEXBUFFER9	g_pVtxBuffReadyUI = NULL;			// 頂点バッファへのポインタ
+ReadyUI g_aReadyUI[MAX_PLAYER];		// READYUIの全体管理
 
 // テクスチャの読み込み
-const char* c_apFilenameMagicBubble[MAXMAGICBUBBLE_TYPE] =
+const char* c_apFilenameReadyUI[MAXREADYUI_TYPE] =
 {
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_100.png",	// ?
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_101.png",	// !
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_000.png",	// GGG
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_001.png",	// RRR
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_002.png",	// BBB
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_003.png",	// YYY
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_004.png",	// RRG
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_005.png",	// RGR
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_006.png",	// GRR
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_007.png",	// RYY
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_008.png",	// YRY
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_009.png",	// YYR
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_010.png",	// BBG
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_011.png",	// BGB
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_012.png",	// GBB
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_013.png",	// BGG
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_014.png",	// GBG
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_015.png",	// GGB
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_016.png",	// BYY
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_017.png",	// YBY
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_018.png",	// YYB
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_019.png",	// GGY
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_020.png",	// GYG
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_021.png",	// YGG
-	"data\\TEXTURE\\MagicBubble\\MagicBubble_022.png",	// RGB
+	"data\\TEXTURE\\ready\\ready000.png",	// チュートリアル遷移[X]
+	"data\\TEXTURE\\ready\\ready001.png",	// チュートリアル遷移[ENTER]
+	"data\\TEXTURE\\ready\\ready002.png",	// チュートリアル遷移完了状態
+	"data\\TEXTURE\\ready\\ready003.png",	// ゲーム遷移[X]
+	"data\\TEXTURE\\ready\\ready004.png",	// ゲーム遷移[ENTER]	
+	"data\\TEXTURE\\ready\\ready005.png",	// ゲーム遷移完了状態
+	"data\\TEXTURE\\ready\\ready006.png",	// 他プレイヤーの待機状態
 };
 
 //======================================================================================
 // spellの初期化処理
 //======================================================================================
-void InitMagicBubble(void)
+void InitReadyUI(void)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();
@@ -89,44 +65,39 @@ void InitMagicBubble(void)
 	Player* pPlayer = GetPlayer();
 
 	// テクスチャの読み込み
-	for (int nCntUI = 0; nCntUI < MAXMAGICBUBBLE_TYPE; nCntUI++)
+	for (int nCntUI = 0; nCntUI < MAXREADYUI_TYPE; nCntUI++)
 	{
-		if (g_apTextureMagicBubble[nCntUI] == NULL)
+		if (g_apTextureReadyUI[nCntUI] == NULL)
 		{
-			D3DXCreateTextureFromFile(pDevice, c_apFilenameMagicBubble[nCntUI], &g_apTextureMagicBubble[nCntUI]);
+			D3DXCreateTextureFromFile(pDevice, c_apFilenameReadyUI[nCntUI], &g_apTextureReadyUI[nCntUI]);
 		}
 	}
 
 	// 初期化
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		g_aMagicBubble[nCntPlayer].pos			= D3DXVECTOR3(BUBBLE_X, BUBBLE_Y, 0.0f);	// 位置
-		g_aMagicBubble[nCntPlayer].rot			= D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 向き
-		g_aMagicBubble[nCntPlayer].type			= MAGICBUBBLETYPE_FAR;	// 種類
-		g_aMagicBubble[nCntPlayer].command		= COMMANDOREDER_NONE;	// コマンドの種類
-		g_aMagicBubble[nCntPlayer].fWidth		= BUBBLE_WIDTH;			// 幅
-		g_aMagicBubble[nCntPlayer].fWidthDest	= BUBBLE_WIDTH;			// 幅の目的値
-		g_aMagicBubble[nCntPlayer].fHeight		= BUBBLE_HEIGHT;		// 高さ
-		g_aMagicBubble[nCntPlayer].fHeightDest	= BUBBLE_HEIGHT;		// 高さの目的値
-		g_aMagicBubble[nCntPlayer].nNumKey		= NUM_KEY;				// 浮遊感をカウントするキー数
-		g_aMagicBubble[nCntPlayer].nKey			= 0;					// 現在のキー数
-		g_aMagicBubble[nCntPlayer].bDisp		= false;				// 表示状態
+		g_aReadyUI[nCntPlayer].pos			= D3DXVECTOR3(0.0f, READY_Y, 0.0f);	// 位置
+		g_aReadyUI[nCntPlayer].rot			= D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);			// 向き
+		g_aReadyUI[nCntPlayer].type			= READYUITYPE_TUTORIALX;	// 種類
+		g_aReadyUI[nCntPlayer].fWidth		= READY_WIDTH;			// 幅
+		g_aReadyUI[nCntPlayer].fHeight		= READY_HEIGHT;		// 高さ
+		g_aReadyUI[nCntPlayer].bDisp		= false;				// 表示状態
 	}
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffMagicBubble, NULL);
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * 4 * MAX_PLAYER, D3DUSAGE_WRITEONLY, FVF_VERTEX_3D, D3DPOOL_MANAGED, &g_pVtxBuffReadyUI, NULL);
 
 	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffMagicBubble->Lock(0, 0, (void**)&pVtx, 0);
+	g_pVtxBuffReadyUI->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pVtx += 4)
 	{
 		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-g_aMagicBubble[nCntPlayer].fWidth,  g_aMagicBubble[nCntPlayer].fHeight, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3( g_aMagicBubble[nCntPlayer].fWidth,  g_aMagicBubble[nCntPlayer].fHeight, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(-g_aMagicBubble[nCntPlayer].fWidth, -g_aMagicBubble[nCntPlayer].fHeight, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3( g_aMagicBubble[nCntPlayer].fWidth, -g_aMagicBubble[nCntPlayer].fHeight, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-g_aReadyUI[nCntPlayer].fWidth,  g_aReadyUI[nCntPlayer].fHeight, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3( g_aReadyUI[nCntPlayer].fWidth,  g_aReadyUI[nCntPlayer].fHeight, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(-g_aReadyUI[nCntPlayer].fWidth, -g_aReadyUI[nCntPlayer].fHeight, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3( g_aReadyUI[nCntPlayer].fWidth, -g_aReadyUI[nCntPlayer].fHeight, 0.0f);
 
 		// rhwの設定
 		pVtx[0].nor = NORMAL;
@@ -135,10 +106,10 @@ void InitMagicBubble(void)
 		pVtx[3].nor = NORMAL;
 
 		// 頂点カラーの設定
-		pVtx[0].col = COLOR_UIBUBBLE;
-		pVtx[1].col = COLOR_UIBUBBLE;
-		pVtx[2].col = COLOR_UIBUBBLE;
-		pVtx[3].col = COLOR_UIBUBBLE;
+		pVtx[0].col = COLOR_WHITE;
+		pVtx[1].col = COLOR_WHITE;
+		pVtx[2].col = COLOR_WHITE;
+		pVtx[3].col = COLOR_WHITE;
 
 		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -148,29 +119,29 @@ void InitMagicBubble(void)
 
 	}
 	// 頂点バッファをアンロック
-	g_pVtxBuffMagicBubble->Unlock();
+	g_pVtxBuffReadyUI->Unlock();
 }
 
 //======================================================================================
 // spellの終了処理
 //======================================================================================
-void UninitMagicBubble(void)
+void UninitReadyUI(void)
 {
 	// テクスチャの破棄
-	for (int nCntUI = 0; nCntUI < MAXMAGICBUBBLE_TYPE; nCntUI++)
+	for (int nCntUI = 0; nCntUI < MAXREADYUI_TYPE; nCntUI++)
 	{
-		if (g_apTextureMagicBubble[nCntUI] != NULL)
+		if (g_apTextureReadyUI[nCntUI] != NULL)
 		{
-			g_apTextureMagicBubble[nCntUI]->Release();
-			g_apTextureMagicBubble[nCntUI] = NULL;
+			g_apTextureReadyUI[nCntUI]->Release();
+			g_apTextureReadyUI[nCntUI] = NULL;
 		}
 	}
 
 	// 頂点バッファの破棄
-	if (g_pVtxBuffMagicBubble != NULL)
+	if (g_pVtxBuffReadyUI != NULL)
 	{
-		g_pVtxBuffMagicBubble->Release();
-		g_pVtxBuffMagicBubble = NULL;
+		g_pVtxBuffReadyUI->Release();
+		g_pVtxBuffReadyUI = NULL;
 	}
 
 }
@@ -178,34 +149,20 @@ void UninitMagicBubble(void)
 //======================================================================================
 // spellの更新処理
 //======================================================================================
-void UpdateMagicBubble(void)
+void UpdateReadyUI(void)
 {
 	Player* pPlayer = GetPlayer();
-	bool bDisp = false;	// 吹き出しの表示を管理
+	bool bDisp = false;	// 準備完了状態の表示を管理
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		bDisp = false;
-		if (pPlayer->state == PLAYERSTATE_PAUSE || pPlayer->state == PLAYERSTATE_SPELL || pPlayer->state == PLAYERSTATE_MAGIC)
-		{
-			g_aMagicBubble[nCntPlayer].bDisp = false;
-		}
+		
 		if (pPlayer->bUse == true)
 		{
-			for (int nCntMagic = 0; nCntMagic < MAX_OWNCOMMAND; nCntMagic++)
-			{
-				// もしプレイヤーが同じ魔法を持っている場合は処理を行わない
-				if (pPlayer->magicbook.OwnCommand[nCntMagic] == g_aMagicBubble[nCntPlayer].command && pPlayer->magicbook.OwnCommand[nCntMagic] != COMMANDOREDER_NONE)
-				{
-					g_aMagicBubble[nCntPlayer].bDisp = false;
-					break;
-				}
-			}
-
-			g_aMagicBubble[nCntPlayer].pos = pPlayer->pos;
-			g_aMagicBubble[nCntPlayer].pos.x += sinf(pPlayer->rot.y) * BUBBLE_X;
-			g_aMagicBubble[nCntPlayer].pos.z += cosf(pPlayer->rot.y) * BUBBLE_X;
-			g_aMagicBubble[nCntPlayer].pos.y += BUBBLE_Y;
+			g_aReadyUI[nCntPlayer].pos = pPlayer->pos;
+			g_aReadyUI[nCntPlayer].pos.x += sinf(pPlayer->rot.y) * READY_X;
+			g_aReadyUI[nCntPlayer].pos.z += cosf(pPlayer->rot.y) * READY_X;
+			g_aReadyUI[nCntPlayer].pos.y += READY_Y;
 		}
 	}
 }
@@ -213,7 +170,7 @@ void UpdateMagicBubble(void)
 //======================================================================================
 // spellの描画処理
 //======================================================================================
-void DrawMagicBubble(void)
+void DrawReadyUI(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX UIMatrix, mtxRot, mtxView;	// UIのマトリックス情報を取得
@@ -235,7 +192,7 @@ void DrawMagicBubble(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
-		if (g_aMagicBubble[nCntPlayer].bDisp == false)
+		if (g_aReadyUI[nCntPlayer].bDisp == false)
 		{
 			continue;
 		}
@@ -250,33 +207,33 @@ void DrawMagicBubble(void)
 
 		// 親となるマトリックスを設定
 		// ポリゴンのワールドマトリックスを初期化
-		D3DXMatrixIdentity(&g_aMagicBubble[nCntPlayer].mtxWorld);
+		D3DXMatrixIdentity(&g_aReadyUI[nCntPlayer].mtxWorld);
 
 		// ビューマトリックスを取得する
 		pDevice->GetTransform(D3DTS_VIEW, &mtxView);
 
 		// ポリゴンをカメラに対して正面に向ける
-		D3DXMatrixInverse(&g_aMagicBubble[nCntPlayer].mtxWorld, NULL, &mtxView);	//逆行列を求める
+		D3DXMatrixInverse(&g_aReadyUI[nCntPlayer].mtxWorld, NULL, &mtxView);	//逆行列を求める
 
-		g_aMagicBubble[nCntPlayer].mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
-		g_aMagicBubble[nCntPlayer].mtxWorld._42 = 0.0f;
-		g_aMagicBubble[nCntPlayer].mtxWorld._43 = 0.0f;
+		g_aReadyUI[nCntPlayer].mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
+		g_aReadyUI[nCntPlayer].mtxWorld._42 = 0.0f;
+		g_aReadyUI[nCntPlayer].mtxWorld._43 = 0.0f;
 
 		// パーツの位置を反映
-		D3DXMatrixTranslation(&mtxTransModel, g_aMagicBubble[nCntPlayer].pos.x, g_aMagicBubble[nCntPlayer].pos.y, g_aMagicBubble[nCntPlayer].pos.z);
-		D3DXMatrixMultiply(&g_aMagicBubble[nCntPlayer].mtxWorld, &g_aMagicBubble[nCntPlayer].mtxWorld, &mtxTransModel);
+		D3DXMatrixTranslation(&mtxTransModel, g_aReadyUI[nCntPlayer].pos.x, g_aReadyUI[nCntPlayer].pos.y, g_aReadyUI[nCntPlayer].pos.z);
+		D3DXMatrixMultiply(&g_aReadyUI[nCntPlayer].mtxWorld, &g_aReadyUI[nCntPlayer].mtxWorld, &mtxTransModel);
 
 		// パーツのワールドマトリックスを設定
-		pDevice->SetTransform(D3DTS_WORLD, &g_aMagicBubble[nCntPlayer].mtxWorld);
+		pDevice->SetTransform(D3DTS_WORLD, &g_aReadyUI[nCntPlayer].mtxWorld);
 
 		// 頂点バッファをデータストリームに設定
-		pDevice->SetStreamSource(0, g_pVtxBuffMagicBubble, 0, sizeof(VERTEX_3D));
+		pDevice->SetStreamSource(0, g_pVtxBuffReadyUI, 0, sizeof(VERTEX_3D));
 
 		// 頂点フォーマットの設定
 		pDevice->SetFVF(FVF_VERTEX_3D);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, g_apTextureMagicBubble[g_aMagicBubble[nCntPlayer].type]);
+		pDevice->SetTexture(0, g_apTextureReadyUI[g_aReadyUI[nCntPlayer].type]);
 
 		// UIの描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntPlayer * 4, 2);
@@ -295,123 +252,18 @@ void DrawMagicBubble(void)
 }
 
 //======================================================================================
-// 吹き出しの配置
+// 準備完了状態の配置
 //======================================================================================
-void SetMagicBubble(int nIdx, COMMANDOREDER command, int nDistance)
+void SetReadyUI(int nIdx, READYUITYPE type)
 {
-	MAGICBUBBLETYPE type = MAGICBUBBLETYPE_FAR;	// テクスチャの種類を格納
-	g_aMagicBubble[nIdx].bDisp = true;
-	g_aMagicBubble[nIdx].command = command;
-	switch (nDistance)
-	{
-	case -1:	// 魔法の種類を取得してテクスチャを変更(取得可能状態)
-		switch (command)
-		{
-		case COMMANDOREDER_NONE:	// コマンドがない場合
-			g_aMagicBubble[nIdx].bDisp = false;
-			type = MAGICBUBBLETYPE_FAR; 
-			break;
-
-		case COMMANDOREDER_GGG:	// GGG
-			type = MAGICBUBBLETYPE_GGG;
-			break;
-
-		case COMMANDOREDER_RRR:	// RRR
-			type = MAGICBUBBLETYPE_RRR;
-			break;
-
-		case COMMANDOREDER_BBB:	// BBB
-			type = MAGICBUBBLETYPE_BBB;
-			break;
-
-		case COMMANDOREDER_YYY:	// YYY
-			type = MAGICBUBBLETYPE_YYY;
-			break;
-
-		case COMMANDOREDER_RRG:	// RRG
-			type = MAGICBUBBLETYPE_RRG;
-			break;
-
-		case COMMANDOREDER_RGR:	// RGR
-			type = MAGICBUBBLETYPE_RGR;
-			break;
-
-		case COMMANDOREDER_GRR:	// GRR
-			type = MAGICBUBBLETYPE_GRR;
-			break;
-		case COMMANDOREDER_RYY:	// RYY
-			type = MAGICBUBBLETYPE_RYY;
-			break;
-		case COMMANDOREDER_YRY:	// YRY
-			type = MAGICBUBBLETYPE_YRY;
-			break;
-		case COMMANDOREDER_YYR:	// YYR
-			type = MAGICBUBBLETYPE_YYR;
-			break;
-		case COMMANDOREDER_BBG:	// BBG
-			type = MAGICBUBBLETYPE_BBG;
-			break;
-		case COMMANDOREDER_BGB:	// BGB
-			type = MAGICBUBBLETYPE_BGB;
-			break;
-		case COMMANDOREDER_GBB:	// GBB
-			type = MAGICBUBBLETYPE_GBB;
-			break;
-		case COMMANDOREDER_BGG:	// BGG
-			type = MAGICBUBBLETYPE_BGG;
-			break;
-		case COMMANDOREDER_GBG:	// GBG
-			type = MAGICBUBBLETYPE_GBG;
-			break;
-		case COMMANDOREDER_GGB:	// GGB
-			type = MAGICBUBBLETYPE_GGB;
-			break;
-		case COMMANDOREDER_BYY:	// BYY
-			type = MAGICBUBBLETYPE_BYY;
-			break;
-		case COMMANDOREDER_YBY:	// YBY
-			type = MAGICBUBBLETYPE_YBY;
-			break;
-		case COMMANDOREDER_YYB:	// YYB
-			type = MAGICBUBBLETYPE_YYB;
-			break;
-		case COMMANDOREDER_GGY:	// GGY
-			type = MAGICBUBBLETYPE_GGY;
-			break;
-		case COMMANDOREDER_GYG:	// GYG
-			type = MAGICBUBBLETYPE_GYG;
-			break;
-		case COMMANDOREDER_YGG:	// YGG
-			type = MAGICBUBBLETYPE_YGG;
-			break;
-		case COMMANDOREDER_RGB:	// RGB
-			type = MAGICBUBBLETYPE_RGB;
-			break;
-		}
-		break;
-
-	case 0:	// 近距離に魔法が落ちている
-		type = MAGICBUBBLETYPE_NEAR;
-		break;
-
-	case 1:	// 遠距離に魔法が落ちている
-		type = MAGICBUBBLETYPE_FAR;
-		break;
-
-	default:	// 条件に合わない数字が格納されている場合
-		type = MAGICBUBBLETYPE_FAR;
-		g_aMagicBubble[nIdx].bDisp = false;
-		break;
-	}
-
-	g_aMagicBubble[nIdx].type = type;
+	g_aReadyUI[nIdx].bDisp = true;
+	g_aReadyUI[nIdx].type = type;
 }
 
 //======================================================================================
-// 吹き出しの非表示
+// 準備完了状態の非表示
 //======================================================================================
-void ResetMagicBubble(int nIdx)
+void ResetReadyUI(int nIdx)
 {
-	g_aMagicBubble[nIdx].bDisp = false;
+	g_aReadyUI[nIdx].bDisp = false;
 }
-#endif

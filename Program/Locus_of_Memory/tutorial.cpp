@@ -55,6 +55,7 @@
 #include "battery.h"
 #include "tutorialui.h"
 #include "questionmark.h"
+#include "readyui.h"
 
 // マクロ定義
 #define TUTORIALPOS_1P	(D3DXVECTOR3(-3185.0f, 0.0f, -3235.0f))		// 1Pの位置[TUTORIAL]			
@@ -117,6 +118,9 @@ void InitTutorial(void)
 
 	// チュートリアルUIの初期化処理
 	InitTutorialUI();
+
+	// 準備完了状態の初期化処理
+	InitReadyUI();
 
 	//InitMashwall();
 
@@ -205,6 +209,9 @@ void UninitTutorial(void)
 	// ?の終了処理
 	UninitQuestionMark();
 
+	// 準備完了状態の終了処理
+	UninitReadyUI();
+
 	//UninitModel();
 
 	//UninitBlock();
@@ -291,6 +298,9 @@ void UpdateTutorial(void)
 
 	// チュートリアルUIの更新処理
 	UpdateTutorialUI();
+
+	// 準備完了状態の更新
+	UpdateReadyUI();
 
 	// ゲーム画面への遷移状態を管理
 	GoGameGate();
@@ -444,6 +454,9 @@ void DrawTutorial(void)
 
 	// ?の描画処理
 	DrawQuestionMark();
+
+	// 準備完了状態の描画処理
+	DrawReadyUI();
 
 	//DrawModel();
 

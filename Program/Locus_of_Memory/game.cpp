@@ -20,6 +20,7 @@
 #include "uimanager.h"
 #include "magicui.h"
 #include "magicbubble.h"
+#include "readyui.h"
 #include "magiccircle.h"
 #include "magiceffect.h"
 #include "spellui.h"
@@ -100,6 +101,9 @@ void InitGame(void)
 	// ?の初期化処理
 	InitQuestionMark();
 
+	// 準備完了状態の初期化処理
+	InitReadyUI();
+
 	// 鍵の初期化処理
 	InitKey();
 
@@ -173,6 +177,9 @@ void UninitGame(void)
 
 	// ?の終了処理
 	UninitQuestionMark();
+
+	// 準備完了状態の終了処理
+	UninitReadyUI();
 
 	// 鍵の終了処理
 	UninitKey();
@@ -256,6 +263,9 @@ void UpdateGame(void)
 
 	// ?の更新処理
 	UpdateQuestionMark();
+
+	// 準備完了状態の更新処理
+	UpdateReadyUI();
 
 	// バッテリーの更新処理
 	UpdateBattery();
@@ -409,7 +419,7 @@ void DrawGame(void)
 	// 粒の描画処理
 	DrawSparkle();
 
-	// 
+	// オーラの描画処理
 	DrawAura();
 
 	SetFogEnable(false);		// 霧を無効
@@ -450,6 +460,9 @@ void DrawGame(void)
 
 	// ?の描画処理
 	DrawQuestionMark();
+
+	// 準備完了状態の描画処理
+	DrawReadyUI();
 
 	// クエストUIの描画処理
 	DrawQuestUI();
