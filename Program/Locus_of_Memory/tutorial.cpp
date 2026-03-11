@@ -19,7 +19,7 @@
 #include "particle.h"
 #include "brickwall.h"
 #include "loadscript.h"
-//#include"sound.h"
+#include"sound.h"
 #include"fade.h"
 //#include"pause.h"
 #include"camera.h"
@@ -497,6 +497,7 @@ void GoGameGate(void)
 		{
 			if ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
 			{
+				PlaySound(SOUND_LABEL_ENTER);
 				g_abReady[nCntPlayer] = true;
 			}
 		}

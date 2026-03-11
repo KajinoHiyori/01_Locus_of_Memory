@@ -11,6 +11,7 @@
 #include "motion.h"
 #include "magic.h"
 #include "debugproc.h"
+#include "sound.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -58,12 +59,9 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 
 	switch (type)
 	{
-	case MAGICTYPE_TIMEREVERT:
-		isSuccess = true;
-		break;
-
 		// ”RÄƒCƒxƒ“ƒg
 	case MAGICTYPE_COMBUSTION:
+		PlaySound(SOUND_LABEL_COMBUSTION);
 		pEventObject->EventType = EVENTTYPE_001_1;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION,nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -90,6 +88,7 @@ bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 	switch (type)
 	{
 	case MAGICTYPE_TIMEREVERT:
+		PlaySound(SOUND_LABEL_TIMEREVERT);
 		pEventObject->EventType = EVENTTYPE_002_0;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -100,11 +99,11 @@ bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 		break;
 
 	case MAGICTYPE_COMBUSTION:
-		isSuccess = true;
+	//	isSuccess = true;
 		break;
 
 	case MAGICTYPE_LEVITATION:
-		isSuccess = true;
+	//	isSuccess = true;
 		break;
 	}
 
@@ -134,6 +133,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 #endif
 
 	case MAGICTYPE_GROWTH:	// ¬’·‚³‚¹‚é
+		PlaySound(SOUND_LABEL_GROWTH);
 		pEventObject->EventType = EVENTTYPE_003_1;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_GROWTH, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -145,6 +145,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 		break;
 
 	case MAGICTYPE_RAINPRAY:	// ¬’·‚³‚¹‚é
+		PlaySound(SOUND_LABEL_RAINPRAY);
 		pEventObject->EventType = EVENTTYPE_003_1;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_RAINPRAY, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -156,6 +157,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 		break;
 
 	case MAGICTYPE_COMBUSTION:	// ”RÄ‚³‚¹‚é
+		PlaySound(SOUND_LABEL_COMBUSTION);
 		pEventObject->EventType = EVENTTYPE_003_2;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -166,6 +168,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 		break;
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ‚³‚¹‚é
+		PlaySound(SOUND_LABEL_COMBUSTION);
 		pEventObject->EventType = EVENTTYPE_003_2;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -192,6 +195,7 @@ bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 	switch (type)
 	{
 	case MAGICTYPE_TIMEREVERT:	// ¬’·‘O‚É–ß‚é
+		PlaySound(SOUND_LABEL_TIMEREVERT); 
 		pEventObject->EventType = EVENTTYPE_004_0;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -219,6 +223,7 @@ bool SetMagicEvent005(MAGICTYPE type, int nIdx)
 	switch (type)
 	{
 	case MAGICTYPE_FREEZE:	// •XŒ‹–‚–@
+		PlaySound(SOUND_LABEL_FREEZE);
 		pEventObject->EventType = EVENTTYPE_005_0;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_FREEZE, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
@@ -246,6 +251,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 	switch (type)
 	{
 	case MAGICTYPE_TIMEREVERT:	// Žž–ß‚µ–‚–@
+		PlaySound(SOUND_LABEL_TIMEREVERT);
 		pEventObject->EventType = EVENTTYPE_006_0;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
@@ -257,6 +263,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 		break;
 
 	case MAGICTYPE_COMBUSTION:	// —n‚©‚·
+		PlaySound(SOUND_LABEL_COMBUSTION);
 		pEventObject->EventType = EVENTTYPE_006_1;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
@@ -268,6 +275,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 		break;
 
 	case MAGICTYPE_FIREBALL:	// —n‚©‚·
+		PlaySound(SOUND_LABEL_COMBUSTION);
 		pEventObject->EventType = EVENTTYPE_006_1;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
@@ -294,6 +302,7 @@ bool SetMagicEvent007(MAGICTYPE type, int nIdx)
 	switch (type)
 	{
 	case MAGICTYPE_RAINPRAY:	// ‰JŒî‚¢
+		PlaySound(SOUND_LABEL_RAINPRAY);
 		pEventObject->EventType = EVENTTYPE_007_0;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_RAINPRAY, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
@@ -305,6 +314,7 @@ bool SetMagicEvent007(MAGICTYPE type, int nIdx)
 		break;
 
 	case MAGICTYPE_GROWTH:	// ¬’·
+		PlaySound(SOUND_LABEL_GROWTH);
 		pEventObject->EventType = EVENTTYPE_007_1;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_GROWTH, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
@@ -330,7 +340,8 @@ bool SetMagicEvent008(MAGICTYPE type, int nIdx)
 	bool isSuccess = false;
 	switch (type)
 	{
-	case MAGICTYPE_TIMEREVERT:	// ‰JŒî‚¢
+	case MAGICTYPE_TIMEREVERT:	// Šª‚«–ß‚µ
+		PlaySound(SOUND_LABEL_TIMEREVERT);
 		pEventObject->EventType = EVENTTYPE_007_0;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,

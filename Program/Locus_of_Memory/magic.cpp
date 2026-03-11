@@ -17,6 +17,7 @@
 #include "magicbubble.h"
 #include "spellui.h"
 #include "magicui.h"
+#include "sound.h"
 
 //マクロ定義
 #define MAX_MAGIC				(128)		//魔法の最大数
