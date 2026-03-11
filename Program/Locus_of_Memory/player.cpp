@@ -145,6 +145,7 @@ void UninitPlayer(void)
 //========================================================================
 void UpdatePlayer(void)
 {
+	EVENTSTATE* pEventState = GetEventState();
 	Camera* pCamera = GetCamera();
 	D3DXVECTOR3 moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 移動方向の向きを決定
 	float fMoveDir = 0.0f;	// 移動方向の代入
@@ -160,6 +161,11 @@ void UpdatePlayer(void)
 
 	bool bPause = false;	// ポーズ状態の確認
 	bool bSpell = false;	// スペルメニューの表示状態の確認
+
+	if (*pEventState == EVENTSTATE_LOOKDOWN)
+	{
+		return;	// 見下ろし状態では一切の処理を弾く
+	}
 
 	// 過去の位置を保存
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)

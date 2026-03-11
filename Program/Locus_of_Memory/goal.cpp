@@ -196,6 +196,5 @@ void CollisionGoal(void)
 //==============================================================================
 bool GetGoalState(void)
 {
-	SetGameState(GAMESTATE_CLEAR, 0);
 	return g_NextMode;
 }

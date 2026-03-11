@@ -157,6 +157,9 @@ void InitGame(void)
 //=======================================================
 void UninitGame(void)
 {
+	// BGMなどを停止
+	StopSound();
+
 	// ライトの終了処理
 	UninitLight();
 
@@ -307,7 +310,7 @@ void UpdateGame(void)
 
 		if (bNextMode == true && *pFade == FADE_NONE)
 		{// 0以下になった
-			g_gameState = GAMESTATE_NONE;
+			g_gameState = GAMESTATE_CLEAR;
 
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_WHITE);
@@ -323,7 +326,7 @@ void UpdateGame(void)
 
 		if (g_nCounterGameState <= 0 && *pFade == FADE_NONE)
 		{// 0以下になった
-			g_gameState = GAMESTATE_NONE;
+			g_gameState = GAMESTATE_TIMEOVER;
 
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_BLACK);
@@ -338,7 +341,7 @@ void UpdateGame(void)
 
 		if (g_nCounterGameState <= 0 && *pFade == FADE_NONE)
 		{// 0以下になった
-			g_gameState = GAMESTATE_NONE;
+			g_gameState = GAMESTATE_BATTERYOVER;
 
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_BLACK);
@@ -349,13 +352,25 @@ void UpdateGame(void)
 		break;
 	}
 
-
+	// Oでクリア遷移
 	if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
 	{// 0以下になった
-		g_gameState = GAMESTATE_NONE;
+		SetGameState(GAMESTATE_CLEAR, 0);
 
 		// フェード設定(リザルト画面に移行)
 		SetFade(MODE_RESULT, COLOR_WHITE);
+
+		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+		{
+			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+		}
+	}
+	// Iで失敗遷移
+	if (GetKeyboardTrigger(DIK_I) == true && *pFade == FADE_NONE)
+	{// 0以下になった
+		SetGameState(GAMESTATE_BATTERYOVER, 0);
+		// フェード設定(リザルト画面に移行)
+		SetFade(MODE_RESULT, COLOR_BLACK);
 
 		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
 		{

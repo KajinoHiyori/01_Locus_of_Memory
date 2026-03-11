@@ -6,6 +6,7 @@
 //=============================================================================
 #include"main.h"
 #include"result.h"
+#include "game.h"
 #include"input.h"
 #include"fade.h"
 #include "object.h"
@@ -18,7 +19,7 @@
 #include "debugproc.h"
 #include "color.h"
 #include "animal.h"
-//#include"sound.h"
+#include"sound.h"
 
 // グローバル変数
 LPDIRECT3DTEXTURE9    g_pTextureResult = NULL;        // テクスチャへのポインタ
@@ -29,6 +30,19 @@ LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffResult = NULL;    // 頂点バッファへのポインタ
 //=======================================================
 void InitResult(void)
 {
+    GAMESTATE gameState = GetGameState();
+
+    switch (gameState)
+    {
+    case GAMESTATE_CLEAR:
+        PlaySound(SOUND_LABEL_GOALRESULTBGM);
+        break;
+
+    default:
+        PlaySound(SOUND_LABEL_FAILDRESULTBGM);
+        break;
+    }
+
     // ドラゴンのタイプを決定
     SetDragonType(0, DRAGONTYPE_FLYING);
 }
@@ -37,7 +51,7 @@ void InitResult(void)
 //=======================================================
 void UninitResult(void)
 {
-    
+    StopSound();
 }
 //=======================================================
 // リザルトの更新処理
