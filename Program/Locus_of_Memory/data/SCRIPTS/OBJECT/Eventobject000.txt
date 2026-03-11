@@ -353,4 +353,48 @@ MAGICEVENTSET
 	EVENT = 5
 END_MAGICEVENTSET
 
+#------------------------------------------------------------------------------
+# 階層構造のある花壇
+#------------------------------------------------------------------------------
+MODELSET
+	PARENTTYPE = 10
+	POS = 764.0 -20.0 -1620.0
+	ROT = 0 0 0
+	COLLISION = 1
+	MOTIONTYPE = 7
+END_MODELSET
+
+MAGICEVENTSET
+	POS =  764.0 0.0 -1620.0
+	RADIUS = 500.0
+	EVENT = 7
+END_MAGICEVENTSET
+
+MODELSET
+	PARENTTYPE = 10
+	POS = 2220.0 -20.0 -1700.0
+	ROT = 0 0 0
+	COLLISION = 1
+	MOTIONTYPE = 7
+END_MODELSET
+
+MAGICEVENTSET
+	POS =  2220.0.0 -1700.0
+	RADIUS = 500.0
+	EVENT = 7
+END_MAGICEVENTSET
+
+MODELSET
+	PARENTTYPE = 10
+	POS = -3591.0 -20.0 -3335.0
+	ROT = 0 0 0
+	COLLISION = 1
+	MOTIONTYPE = 7
+END_MODELSET
+
+MAGICEVENTSET
+	POS =  -3591.0 0.0 -3335.0
+	RADIUS = 500.0
+	EVENT = 7
+END_MAGICEVENTSET
 END_SCRIPT		# この行は絶対消さないこと！

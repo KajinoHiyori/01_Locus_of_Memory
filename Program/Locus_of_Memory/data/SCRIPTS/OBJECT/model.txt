@@ -1256,13 +1256,6 @@ END_MODELSET
 #------------------------------------------------------------------------------
 # ‰Ô’d
 #------------------------------------------------------------------------------
-MODELSET
-	TYPE = 39
-	POS = 764 0 -1620
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
 
 MODELSET
 	TYPE = 40
@@ -1321,14 +1314,6 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 39
-	POS = 2220 0 -1700
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
 	TYPE = 40
 	POS = 2320 0 -1600
 	ROT = 0 0 0
@@ -1339,15 +1324,6 @@ END_MODELSET
 MODELSET
 	TYPE = 40
 	POS = 2120 0 -1800
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-
-MODELSET
-	TYPE = 39
-	POS = -3591 0 -3335
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
