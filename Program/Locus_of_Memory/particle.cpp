@@ -282,14 +282,22 @@ void UpdateParticle(void)
 					for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 					{
 						//ˆÊ’u‚ÌÝ’è
-						pos[0].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1) * (nCntParticle * 5);
-						pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1) * (nCntParticle * 5);
-						pos[0].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1) * (nCntParticle * 5);
+						pos[0].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+						pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+						pos[0].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
 
 						//ˆÊ’u‚ÌÝ’è
-						pos[1].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1) * (nCntParticle * 5);
-						pos[1].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1) * (nCntParticle * 5);
-						pos[1].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1) * (nCntParticle * 5);
+						pos[1].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+						pos[1].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+						pos[1].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+
+						rot.x = ((float)(rand() % 629 - 314) / pos[0].x);
+						rot.y = ((float)(rand() % 629 - 314) / pos[0].y);
+						rot.z = ((float)(rand() % 629 - 314) / pos[0].z);
+
+						move[0][PARTICLETYPE_FLASH].x = (sinf(rot.x)) * 25;
+						move[0][PARTICLETYPE_FLASH].y = (cosf(rot.y)) * 25;
+						move[0][PARTICLETYPE_FLASH].z = (cosf(rot.z)) * 25;
 
 						SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 15);
 						SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[1], move[0][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 10);
