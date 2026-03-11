@@ -234,13 +234,13 @@ END_DROPMAGICSET
 #------------------------------------------------------------------------------
 DROPMAGICSET
 	TYPE = 22
-	POS = 0 0 -5000
+	POS = 0 0 -4920
 	RADIUS = 100.0
 END_DROPMAGICSET
 
 DROPMAGICSET
 	TYPE = 22
-	POS = 1016 34 -3133
+	POS = 1016 34 -3106
 	RADIUS = 100.0
 END_DROPMAGICSET
 
