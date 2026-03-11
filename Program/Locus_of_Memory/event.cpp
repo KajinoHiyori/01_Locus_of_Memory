@@ -64,7 +64,7 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 		// ”RÄƒCƒxƒ“ƒg
 	case MAGICTYPE_COMBUSTION:
 		pEventObject->EventType = EVENTTYPE_001_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION,nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -90,7 +90,7 @@ bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_TIMEREVERT:
 		pEventObject->EventType = EVENTTYPE_002_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -134,7 +134,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_GROWTH:	// ¬’·‚³‚¹‚é
 		pEventObject->EventType = EVENTTYPE_003_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_GROWTH);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_GROWTH, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -145,7 +145,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_RAINPRAY:	// ¬’·‚³‚¹‚é
 		pEventObject->EventType = EVENTTYPE_003_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_RAINPRAY);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_RAINPRAY, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -156,7 +156,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_COMBUSTION:	// ”RÄ‚³‚¹‚é
 		pEventObject->EventType = EVENTTYPE_003_2;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -166,7 +166,7 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ‚³‚¹‚é
 		pEventObject->EventType = EVENTTYPE_003_2;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -192,7 +192,7 @@ bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_TIMEREVERT:	// ¬’·‘O‚É–ß‚é
 		pEventObject->EventType = EVENTTYPE_004_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
@@ -219,7 +219,7 @@ bool SetMagicEvent005(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_FREEZE:	// •XŒ‹–‚–@
 		pEventObject->EventType = EVENTTYPE_005_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_FREEZE);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_FREEZE, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
@@ -246,7 +246,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_TIMEREVERT:	// Žž–ß‚µ–‚–@
 		pEventObject->EventType = EVENTTYPE_006_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
@@ -257,7 +257,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_COMBUSTION:	// —n‚©‚·
 		pEventObject->EventType = EVENTTYPE_006_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
@@ -268,7 +268,7 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_FIREBALL:	// —n‚©‚·
 		pEventObject->EventType = EVENTTYPE_006_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,

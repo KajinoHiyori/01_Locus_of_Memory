@@ -472,7 +472,7 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].move.y += FLOATSPEED;		// 浮遊速度加算
 			g_aPlayer[nCntPlayer].fSpeed = FLOATMOVE;		// 浮遊中の移動量に
 			fInertia = FLOATINERTIA;						// 浮遊中の慣性に
-			SetParticle(g_aPlayer[nCntPlayer].pos, 1, PARTICLETYPE_LEVITATION);
+			SetParticle(g_aPlayer[nCntPlayer].pos, 1, PARTICLETYPE_LEVITATION, nCntPlayer);
 			break;
 
 			// 加速魔法発動中
@@ -485,7 +485,7 @@ void UpdatePlayer(void)
 		// 加速状態での移動中はパーティクルを設置
 		if (g_aPlayer[nCntPlayer].fSpeed == ACCELEMOVE && fMoveDir != 0)
 		{
-			SetParticle(g_aPlayer[nCntPlayer].pos, 1, PARTICLETYPE_ACCELERATION);
+			SetParticle(g_aPlayer[nCntPlayer].pos, 1, PARTICLETYPE_ACCELERATION, nCntPlayer);
 		}
 
 		// 重力
