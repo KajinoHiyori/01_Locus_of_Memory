@@ -476,8 +476,6 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			g_aMagic[nIdx].nLife = 300;
 			g_aMagic[nIdx].bUse = true;
 			SetSpellUI(g_aMagic[nIdx].mType, nIdx, DISP_MAGIC);
-
-			CollisionMagicLocus(type, pos, 25.0f, nIdx);
 			SetMagicCircle(type, &pPlayer->pos);
 
 			switch (type)
@@ -569,6 +567,8 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 			}
+
+			CollisionMagicLocus(type, pos, 25.0f, nIdx);
 
 			break;
 		}
@@ -699,10 +699,10 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 		}
 		else
 		{// ‘Î‰ž‚µ‚Ä‚¢‚È‚¯‚ê‚Î‚â‚è’¼‚µ
-			
+		
 		}
 	}
-
+	SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD, false, true, BLENDFRAME);
 	return false;
 }
 

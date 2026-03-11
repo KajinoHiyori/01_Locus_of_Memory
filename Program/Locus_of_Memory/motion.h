@@ -35,10 +35,11 @@ typedef enum MOTIONTYPE
 	MOTIONTYPE_ACTION,		// アクションモーション[3]
 	MOTIONTYPE_JUMP,		// ジャンプモーション[4]
 	MOTIONTYPE_LANDING,		// 着地モーション[5]
-	MOTIONTYPE_006,		// 着地モーション[6]
-	MOTIONTYPE_007,		// 着地モーション[7]
-	MOTIONTYPE_008,		// 着地モーション[8]
-	MOTIONTYPE_009,		// 着地モーション[9]
+	MOTIONTYPE_006,		// モーション[6]
+	MOTIONTYPE_007,		// モーション[7]
+	MOTIONTYPE_008,		// モーション[8]
+	MOTIONTYPE_009,		// モーション[9]
+	MOTIONTYPE_010,		// モーション[10]
 	MOTIONTYPE_MAX
 }MOTIONTYPE;
 
