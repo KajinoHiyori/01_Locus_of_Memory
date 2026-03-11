@@ -525,13 +525,6 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].bJump = false;
 		}
 
-		// ゴールとの当たり判定
-		if (CollisionGoal(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius) && GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
-		{// 当たっているかつXボタンが押されたら
-			// クリア状態にする
-			SetGameState(GAMESTATE_CLEAR, 0);
-		}
-
 		// 使用したコマンドと所持コマンドを判定
 		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
 		{

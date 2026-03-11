@@ -294,6 +294,8 @@ void UpdateGame(void)
 
 	}
 
+	bool bNextMode = GetGoalState();
+
 	switch (g_gameState)
 	{
 	case GAMESTATE_NORMAL:		// 通常状態
@@ -303,7 +305,7 @@ void UpdateGame(void)
 	case GAMESTATE_CLEAR:			// 終了状態
 		g_nCounterGameState--;		// 状態管理カウンター減少
 
-		if (g_nCounterGameState <= 0 || GetKeyboardTrigger(DIK_RETURN) == true && *pFade == FADE_NONE)
+		if (bNextMode == true && *pFade == FADE_NONE)
 		{// 0以下になった
 			g_gameState = GAMESTATE_NONE;
 

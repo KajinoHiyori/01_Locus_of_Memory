@@ -473,19 +473,22 @@ void DrawTutorial(void)
 void GoGameGate(void)
 {
 	Player* pPlayer = GetPlayer();
+	OPERATIONTYPE operationType = GetOperationType();
+	float afLength[MAX_PLAYER] = { 0.0f };
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
 		// ゲートとプレイヤーの距離を測定
 		if (pPlayer->bUse == false)
 		{
+			ResetReadyUI(nCntPlayer);
 			continue;
 		}
 
-		float fLength = sqrtf((pPlayer->pos.x - GATE_POS.x) * (pPlayer->pos.x - GATE_POS.x) + (pPlayer->pos.z - GATE_POS.z) * (pPlayer->pos.z - GATE_POS.z)) * 0.5f;
-		if (fLength < GATE_SIZE)
+		afLength[nCntPlayer] = sqrtf((pPlayer->pos.x - GATE_POS.x) * (pPlayer->pos.x - GATE_POS.x) + (pPlayer->pos.z - GATE_POS.z) * (pPlayer->pos.z - GATE_POS.z)) * 0.5f;
+		if (afLength[nCntPlayer] < GATE_SIZE)	// 遷移完了状態に移行できる範囲にいる
 		{
-			if (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
+			if ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
 			{
 				g_abReady[nCntPlayer] = true;
 			}
@@ -494,7 +497,73 @@ void GoGameGate(void)
 		{
 			g_abReady[nCntPlayer] = false;
 		}
-		PrintDebugProc("%f", fLength);
+	}
+
+	// 準備完了状態のUIを管理
+	switch (operationType)
+	{
+	case OPERATIONTYPE_1P:	// 1Pジョイパッド操作
+		if (afLength[0] < GATE_SIZE)
+		{ // 遷移完了状態に移行できる範囲にいる
+			if (g_abReady[0] == true)
+			{ // ゴールフラグが立っている
+				SetReadyUI(0, READYUITYPE_READY);
+			}
+			else
+			{ // ゴールフラグが立っていない
+				SetReadyUI(0, READYUITYPE_TUTORIALX);
+			}
+		}
+		else
+		{ // 遷移完了状態に移行できる範囲にいない
+			ResetReadyUI(0);
+		}
+		break;
+
+	case OPERATIONTYPE_2P:	// 2人操作
+		if (afLength[0] < GATE_SIZE && afLength[1] < GATE_SIZE)
+		{ // 1P2P共に遷移完了状態に移行できる範囲にいる
+			for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+			{
+				if (g_abReady[nCntPlayer] == true)
+				{ // ゴールフラグが立っている
+					SetReadyUI(nCntPlayer, READYUITYPE_READY);
+				}
+				else
+				{ // ゴールフラグが立っていない
+					SetReadyUI(nCntPlayer, READYUITYPE_TUTORIALX);
+				}
+			}
+		}
+		if (afLength[0] < GATE_SIZE && afLength[1] > GATE_SIZE)
+		{ // 1Pが遷移完了状態に移行できる範囲にいて、2Pが遷移完了状態に移行できる範囲にいない
+			SetReadyUI(0, READYUITYPE_WAITING);
+			ResetReadyUI(1);
+		}
+		else if (afLength[0] > GATE_SIZE && afLength[1] < GATE_SIZE)
+		{ // 1Pが遷移完了状態に移行できる範囲におらず、2Pが遷移完了状態に移行できる範囲にいる
+			ResetReadyUI(0);
+			SetReadyUI(1, READYUITYPE_WAITING);
+		}
+		break;
+
+	case OPERATIONTYPE_KEYBOARD:	// キーボード操作
+		if (afLength[0] < GATE_SIZE)
+		{ // 遷移完了状態に移行できる範囲にいる
+			if (g_abReady[0] == true)
+			{ // ゴールフラグが立っている
+				SetReadyUI(0, READYUITYPE_READY);
+			}
+			else
+			{ // ゴールフラグが立っていない
+				SetReadyUI(0, READYUITYPE_TUTORIALENTER);
+			}
+		}
+		else
+		{ // 遷移完了状態に移行できる範囲にいない
+			ResetReadyUI(0);
+		}
+		break;
 	}
 }
 

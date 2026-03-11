@@ -38,6 +38,7 @@ void UninitGoal(void);
 void UpdateGoal(void);
 void DrawGoal(void);
 void SetGoal(D3DXVECTOR3 pos, float fRadius);
-bool CollisionGoal(D3DXVECTOR3 pos, float fRadius);
+void CollisionGoal(void);
+bool GetGoalState(void);
 
 #endif // !_GOAL_H_
