@@ -189,7 +189,7 @@ void InitFade(MODE modeNext, D3DXCOLOR col)
     pDevice = GetDevice();
 
     g_fade = FADE_IN;
-    g_modeNext = g_modeNext;
+    g_modeNext = modeNext;
     g_colorFade = col;
 
     // 頂点バッファの生成
