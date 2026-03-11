@@ -30,6 +30,7 @@ bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type, int nIdx) =
 	SetMagicEvent005,
 	SetMagicEvent006,
 	SetMagicEvent007,
+	SetMagicEvent008,
 };
 
 //========================================================================
@@ -283,21 +284,67 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 	return isSuccess;
 }
 
+//========================================================================
+// 各魔法イベント処理[植物の開花]
+//========================================================================
 bool SetMagicEvent007(MAGICTYPE type, int nIdx)
 {
+	EventObject* pEventObject = GetEventObject(nIdx);
+	bool isSuccess = false;
 	switch (type)
 	{
-	case MAGICTYPE_FLOOD:
+	case MAGICTYPE_RAINPRAY:	// 雨乞い
+		pEventObject->EventType = EVENTTYPE_007_0;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_RAINPRAY, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		SetMagicLocus(MAGICEVENT_008, pEventObject->pos, 500.0f, nIdx);
+		isSuccess = true;
+		break;
 
-		return true;
-
-	case MAGICTYPE_LEVITATION:
-
-		return true;
-
-	default:
-		return false;
+	case MAGICTYPE_GROWTH:	// 成長
+		pEventObject->EventType = EVENTTYPE_007_1;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_GROWTH, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		SetMagicLocus(MAGICEVENT_008, pEventObject->pos, 500.0f, nIdx);
+		isSuccess = true;
+		break;
 	}
+
+	pEventObject->isEvent = isSuccess;
+
+	return isSuccess;
+}
+
+//========================================================================
+// 各魔法イベント処理[植物の萎む]
+//========================================================================
+bool SetMagicEvent008(MAGICTYPE type, int nIdx)
+{
+	EventObject* pEventObject = GetEventObject(nIdx);
+	bool isSuccess = false;
+	switch (type)
+	{
+	case MAGICTYPE_TIMEREVERT:	// 雨乞い
+		pEventObject->EventType = EVENTTYPE_007_0;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_RUN, false, false, 10);
+		SetMagicLocus(MAGICEVENT_007, pEventObject->pos, 500.0f, nIdx);
+		isSuccess = true;
+		break;
+	}
+
+	pEventObject->isEvent = isSuccess;
+
+	return isSuccess;
 }
 
 //========================================================================

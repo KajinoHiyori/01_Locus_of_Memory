@@ -99,7 +99,7 @@ void UpdateMotion(Motion* pMotion, ModelData* pModelData, OffSetData* pOffSetDat
 	float fDiffKey;
 
 	// 全モデル(パーツ)の更新
-	for (int nCntModel = 0; nCntModel < pModelData->nNumModel; nCntModel++)
+	for (int nCntModel = 0; nCntModel < pModelData->nNumParts; nCntModel++)
 	{
 		KEY DiffKey = {};
 		KEY RateKey = {};
