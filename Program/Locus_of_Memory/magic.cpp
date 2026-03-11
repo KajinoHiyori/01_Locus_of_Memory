@@ -15,7 +15,6 @@
 #include "event.h"
 #include "magiccircle.h"
 #include "magicbubble.h"
-#include "magiceffect.h"
 #include "spellui.h"
 #include "magicui.h"
 
@@ -755,10 +754,8 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		else if (fDiff <= powf(fRadius + pDropMagic->fRadius * 2.5f, 2))
 		{// 落ちている魔法の周辺にいたら
 			// ここで種類に応じた振動を呼び出す
-			StopMagicEffect(nIdx); 
 			ResetMagicBubble(nIdx);
 			VibrationType(VIBRATIONTYPE_MEDIUM, pDropMagic->oType, nIdx);
-			SetMagicEffect(pDropMagic->pos, MAGICEF_TYPE_MAGIC,nIdx);
 			PrintDebugProc("[%d]周辺に魔法が落ちている\n", nCntMagic);
 			isSearch = true;
 		}
@@ -768,7 +765,6 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 			//SetMagicBubble(nIdx, pDropMagic->oType, 1);
 			VibrationType(VIBRATIONTYPE_FAR, pDropMagic->oType, nIdx);
 			PrintDebugProc("[%d]遠くに魔法が落ちている\n", nCntMagic);
-			StopMagicEffect(nIdx); 
 			isSearch = true;
 		}
 
@@ -780,7 +776,6 @@ int CollisionMagic(D3DXVECTOR3 pos, float fRadius, int nIdx)
 		// ここで種類に応じた振動を呼び出す
 		VibrationType(VIBRATIONTYPE_NOTHING, pDropMagic->oType, nIdx);
 		ResetMagicBubble(nIdx);
-		StopMagicEffect(nIdx);
 	}
 
 	return -1;

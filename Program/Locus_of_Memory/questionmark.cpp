@@ -14,6 +14,7 @@
 #include "fog.h"
 #include "debugproc.h"
 #include "color.h"
+#include "magiceffect.h"
 
 // マクロ定義
 #define QUESTIONMARK_TYPE	(1)		// テクスチャの最大数
@@ -24,6 +25,7 @@
 #define DISTANCE		(30.0f)		// 処理を行うキー数
 #define NONDISP			(500.0f)	// これ以上離れていたら表示しない
 #define DISP			(100.0f)	// アルファ値1.0fで表示
+#define MAGICEF_SIZE	(75.0f)		// マジックエフェクトの配置サイズ
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 
 // MAGICMARKの構造体
@@ -161,6 +163,7 @@ void UninitQuestionMark(void)
 void UpdateQuestionMark(void)
 {
 	Player* pPlayer = GetPlayer();
+	DropMagic* pDropMagic = GetDropMagic();	// 落ちている魔法を取得
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
@@ -180,6 +183,15 @@ void UpdateQuestionMark(void)
 
 		// 距離を取得
 		float fDistance = DistanceMagicAndMark(nCntPlayer);
+
+		if (fDistance < MAGICEF_SIZE)
+		{
+			SetMagicEffect(pDropMagic[g_aQuestionMark[nCntPlayer].nIdxMagic].pos, MAGICEF_TYPE_MAGIC, nCntPlayer);
+		}
+		else
+		{
+			StopMagicEffect(nCntPlayer);
+		}
 
 		// 目的の向きに合わせて表示位置を変更
 		UpdateMarkPos(nCntPlayer);
