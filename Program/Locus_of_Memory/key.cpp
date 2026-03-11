@@ -108,8 +108,6 @@ void InitKey(void)
 
 	// åÆÇÃê›íu
 	SetKey(KEY001_POS, INIT_D3DXVEC3, KEYTYPE_ONE);
-	SetKey(KEY002_POS, INIT_D3DXVEC3, KEYTYPE_TWO);
-	SetKey(KEY003_POS, INIT_D3DXVEC3, KEYTYPE_THREE);
 }
 
 //======================================================================================
