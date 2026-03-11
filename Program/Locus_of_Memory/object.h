@@ -83,6 +83,7 @@ typedef enum
 	OBJECTTYPE_TUTORIALWALL001,	// [47]チュートリアル分断壁
 	OBJECTTYPE_FANCE,			// [48]川を囲うフェンス
 	OBJECTTYPE_SLED000,			// [49]そり
+	OBJECTTYPE_TEST,			// [50]仮オブジェクト
 	OBJECTTYPE_MAX
 }OBJECTTYPE;
 

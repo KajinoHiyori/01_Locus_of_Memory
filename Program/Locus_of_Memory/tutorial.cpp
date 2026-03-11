@@ -5,7 +5,10 @@
 // 
 //=============================================================================
 #include"tutorial.h"
+#include"main.h"
 #include "color.h"
+#include "debugproc.h"
+#include "title.h"
 #include"player.h"
 #include"input.h"
 #include "object.h"
@@ -54,18 +57,24 @@
 #include "questionmark.h"
 
 // マクロ定義
-#define TUTORIALPOS_1P	(D3DXVECTOR3(-3185.0f, 0.0f, -3235.0f))	// 1Pの位置[TUTORIAL]			
-#define TUTORIALPOS_2P	(D3DXVECTOR3(-3555.0f, 0.0f, -3235.0f))	// 2Pの位置[TUTORIAL]
+#define TUTORIALPOS_1P	(D3DXVECTOR3(-3185.0f, 0.0f, -3235.0f))		// 1Pの位置[TUTORIAL]			
+#define TUTORIALPOS_2P	(D3DXVECTOR3(-3555.0f, 0.0f, -3235.0f))		// 2Pの位置[TUTORIAL]
+#define GATE_POS		(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// ゲートの位置
+#define GATE_SIZE		(120.0f)	// ゲートの大きさ
 
-TUTORIALSTATE g_TutorialState = TUTORIALSTATE_NONE;		// ゲームの状態
 int g_nCounterTutorialState = 0;				// 状態管理カウンター
 int g_nCntFade = 0;
+bool g_abReady[MAX_PLAYER];	// プレイヤーのゴール状態を管理
 
 //=======================================================
 // ゲームの初期化処理
 //=======================================================
 void InitTutorial(void)
 {
+	// プレイヤーのゴール状態を管理
+	g_abReady[0] = false;
+	g_abReady[1] = false;
+
 	// プレイヤーの初期化設定
 	//InitBG();
 
@@ -154,6 +163,7 @@ void InitTutorial(void)
 	// ドラゴンの状態を設定
 	SetDragonType(0, DRAGONTYPE_FIRE);
 }
+
 //=======================================================
 // ゲームの終了処理
 //=======================================================
@@ -206,12 +216,12 @@ void UninitTutorial(void)
 	//StopSound();
 
 }
+
 //=======================================================
 // ゲートの更新処理
 //=======================================================
 void UpdateTutorial(void)
 {
-	Player* pPlayer = GetPlayer();
 	FADE* pFade = GetFade();
 	//Timer* pTimer = GetTimer();
 
@@ -282,6 +292,9 @@ void UpdateTutorial(void)
 	// チュートリアルUIの更新処理
 	UpdateTutorialUI();
 
+	// ゲーム画面への遷移状態を管理
+	GoGameGate();
+
 	//UpdateMotion();
 
 	//UpdateModel();
@@ -292,33 +305,8 @@ void UpdateTutorial(void)
 
 	//UpdateScore();
 
-	switch (g_TutorialState)
-	{
-	case TUTORIALSTATE_NORMAL:		// 通常状態
-
-		break;
-
-	case TUTORIALSTATE_END:			// 終了状態
-
-		g_nCounterTutorialState--;		// 状態管理カウンター減少
-
-		if (g_nCounterTutorialState <= 0 || GetKeyboardTrigger(DIK_RETURN) == true && *pFade == FADE_NONE)
-		{// 0以下になった
-
-			g_TutorialState = TUTORIALSTATE_NONE;
-
-			// フェード設定(ゲーム画面に移行)
-			SetFade(MODE_GAME, COLOR_WHITE);
-
-			// サウンド停止
-			//StopSound(SOUND_LABEL_BGM000);
-		}
-	}
-
 	if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
 	{// 0以下になった
-		g_TutorialState = TUTORIALSTATE_NONE;
-
 		// フェード設定(ゲーム画面に移行)
 		SetFade(MODE_GAME, COLOR_WHITE);
 
@@ -330,9 +318,40 @@ void UpdateTutorial(void)
 		// サウンド停止
 		//StopSound(SOUND_LABEL_BGM000);
 	}
+	
+	// 操作人数の取得
+	OPERATIONTYPE operationType = GetOperationType();
 
+	switch (operationType)
+	{
+	case OPERATIONTYPE_2P:	// 2人操作
+		if (g_abReady[0] == true && g_abReady[1] == true && *pFade == FADE_NONE)
+		{ // 1P2P共に準備が済んでいる && フェードをしていない場合
+			// フェード設定(ゲーム画面に移行)
+			SetFade(MODE_GAME, COLOR_WHITE);
 
+			for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+			{
+				VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+			}
+		}
+		break;
+
+	default:	// 1人操作
+		if (g_abReady[0] == true && *pFade == FADE_NONE)
+		{ // 1P操作 && 1Pの準備が済んでいる && フェードをしていない場合
+			// フェード設定(ゲーム画面に移行)
+			SetFade(MODE_GAME, COLOR_WHITE);
+
+			for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+			{
+				VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+			}
+		}
+		break;
+	}
 }
+
 //=======================================================
 // ゲームの描画処理
 //=======================================================
@@ -435,12 +454,41 @@ void DrawTutorial(void)
 	//DrawScore();
 }
 
-void SetTutorialState(TUTORIALSTATE state, int nCounter)
+//=======================================================
+// ゲーム画面への遷移を管理
+//=======================================================
+void GoGameGate(void)
 {
-	g_TutorialState = state;				// ゲーム状態設定
-	g_nCounterTutorialState = nCounter;		// 状態管理カウンター設定
+	Player* pPlayer = GetPlayer();
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
+	{
+		// ゲートとプレイヤーの距離を測定
+		if (pPlayer->bUse == false)
+		{
+			continue;
+		}
+
+		float fLength = sqrtf((pPlayer->pos.x - GATE_POS.x) * (pPlayer->pos.x - GATE_POS.x) + (pPlayer->pos.z - GATE_POS.z) * (pPlayer->pos.z - GATE_POS.z)) * 0.5f;
+		if (fLength > GATE_SIZE)
+		{
+			if (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
+			{
+				g_abReady[nCntPlayer] = true;
+			}
+		}
+		else
+		{
+			g_abReady[nCntPlayer] = false;
+		}
+		PrintDebugProc("%f", fLength);
+	}
 }
-TUTORIALSTATE GetTutorialState(void)
+
+//=======================================================
+// ゴール可能状態を返す
+//=======================================================
+bool GetGate(int nIdx)
 {
-	return g_TutorialState;
+	return g_abReady[nIdx];
 }
