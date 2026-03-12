@@ -152,7 +152,7 @@ void InitGame(void)
 	}
 
 	// ドラゴンの状態を設定
-	SetDragonType(0, DRAGONTYPE_FIRE);
+	ResetDragon(0);
 
 	//ResetObject();
 }
@@ -172,6 +172,9 @@ void UninitGame(void)
 
 	// イベントオブジェクトの終了処理
 	UninitEventObject();
+
+	// 動物の終了処理
+	UninitAnimal();
 
 	// プレイヤーの終了処理
 	UninitPlayer();

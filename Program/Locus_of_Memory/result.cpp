@@ -52,6 +52,8 @@ void InitResult(void)
 void UninitResult(void)
 {
     StopSound();
+
+    UninitAnimal();
 }
 //=======================================================
 // リザルトの更新処理

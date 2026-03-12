@@ -55,6 +55,8 @@ void UninitAnimal(void)
 //===============================
 void UpdateAnimal(void)
 {
+	MODE mode = GetMode();
+
 	for (int nCntDragon = 0; nCntDragon < MAX_DRAGON; nCntDragon++)
 	{
 		if (g_aDragon[nCntDragon].bUse == false)
@@ -97,13 +99,28 @@ void SetDragon(int nIdx)
 }
 
 //===============================
+//	ドラゴンを非表示
+//===============================
+void ResetDragon(int nIdx)
+{
+	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nIdx].nIdx);
+
+	if (pParentObject->bUse == true)
+	{
+		g_aDragon[g_nCounterDragon].bUse = false;
+		pParentObject->bUse = false;
+	}
+}
+
+//===============================
 //	ドラゴンのタイプを設定
 //===============================
 void SetDragonType(int nCntDragon, DRAGONTYPE type)
 {
 	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
 	g_aDragon[nCntDragon].type = type;
-
+	pParentObject->bUse = true;
+	g_aDragon[nCntDragon].bUse = true;
 	if (g_aDragon[nCntDragon].type == DRAGONTYPE_FLYING)
 	{
 		pParentObject->pos = FLY_POS;

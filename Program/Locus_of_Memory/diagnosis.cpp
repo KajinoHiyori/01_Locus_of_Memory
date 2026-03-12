@@ -17,6 +17,7 @@
 #include "effect.h"
 #include "particle.h"
 #include "sound.h"
+#include "animal.h"
 
 // マクロ定義
 #define WIDTH			(650.0f)	// 幅
@@ -65,6 +66,9 @@ void InitDiagnosis(void)
 
 	g_diagnosisType = DIAGNOSISTYPE_1P;
 	g_nCounterTitle = 0;	// 遷移間隔の初期化
+
+	 // ドラゴンのタイプを決定
+	SetDragonType(0, DRAGONTYPE_FLYING);
 }
 
 //======================================================================================
@@ -80,6 +84,9 @@ void UninitDiagnosis(void)
 
 	// タイトルUIの終了処理
 	UninitDiagnosisUI();
+
+	// ドラゴンの終了処理
+	UninitAnimal();
 }
 
 //======================================================================================
@@ -99,6 +106,9 @@ void UpdateDiagnosis(void)
 
 	// タイトルUIの更新処理
 	UpdateDiagnosisUI();
+
+	// ドラゴンの更新処理
+	UpdateAnimal();
 
 	if ((g_nCounterTitle > FADE_TITLE || (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true)) && *pfade == FADE_NONE)
 	{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
@@ -122,6 +132,9 @@ void DrawDiagnosis(void)
 
 	// オブジェクトの描画処理（仮）
 	DrawObject();
+
+	// ドラゴンの描画処理
+	DrawAnimal();
 
 	// スカイボックスの描画処理
 	DrawSkyBox();

@@ -169,7 +169,7 @@ void InitTutorial(void)
 	}
 
 	// ドラゴンの状態を設定
-	SetDragonType(0, DRAGONTYPE_FIRE);
+	ResetDragon(0);
 }
 
 //=======================================================
@@ -218,6 +218,9 @@ void UninitTutorial(void)
 
 	// 準備完了状態の終了処理
 	UninitReadyUI();
+
+	// ドラゴンの終了処理
+	UninitAnimal();
 
 	//UninitModel();
 
