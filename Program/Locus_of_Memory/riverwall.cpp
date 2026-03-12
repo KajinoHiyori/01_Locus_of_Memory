@@ -8,20 +8,21 @@
 #include "main.h"
 #include "riverwall.h"
 #include "input.h"
-
+#include "game.h"
 #include "debugproc.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_CUSTOMMESH				(5)								// 壁の最大数
-#define TEX_SPLIT					(10)							// テクスチャの分割数
-#define TEX_DEFAULT					(D3DXVECTOR2(1.0f, 1.0f));		// テクスチャの初期位置
+#define MAX_CUSTOMMESH		(5)								// 壁の最大数
+#define TEX_SPLIT			(10)							// テクスチャの分割数
+#define TEX_DEFAULT			(D3DXVECTOR2(1.0f, 1.0f));		// テクスチャの初期位置
+#define MAX_TEXTURE			(2)	// テクスチャの最大数
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-LPDIRECT3DTEXTURE9 g_pCustomTextureMesh = NULL;	// テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_apCustomTextureRiverWall[MAX_TEXTURE] = {};	// テクスチャへのポインタ
 CustomMesh g_RiverWall;							// 壁の情報
 
 //=============================================================================
@@ -35,9 +36,8 @@ void InitRiverWall(void)
 	LPCUSTOMMESH pRiverWall = &g_RiverWall;	// 先頭アドレス
 
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice,
-		"data\\TEXTURE\\stone000.jpg",
-		&g_pCustomTextureMesh);
+	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\stone000.jpg", &g_apCustomTextureRiverWall[0]);
+	D3DXCreateTextureFromFile(pDevice, "data\\TEXTURE\\sunset.jpg", &g_apCustomTextureRiverWall[1]);
 
 	// 数分初期化(後でmemsetに変えてもいいかも)
 	for (int nCntRiverWall = 0; nCntRiverWall < MAX_CUSTOMMESH; nCntRiverWall++, pRiverWall++)
@@ -61,10 +61,13 @@ void UninitRiverWall(void)
 	LPCUSTOMMESH pRiverWall = &g_RiverWall;		// 先頭アドレス
 
 	// テクスチャの破棄
-	if (g_pCustomTextureMesh != NULL)
+	for (int nCntTexture = 0; nCntTexture < MAX_TEXTURE; nCntTexture++)
 	{
-		g_pCustomTextureMesh->Release();
-		g_pCustomTextureMesh = NULL;
+		if (g_apCustomTextureRiverWall[nCntTexture] != NULL)
+		{
+			g_apCustomTextureRiverWall[nCntTexture]->Release();
+			g_apCustomTextureRiverWall[nCntTexture] = NULL;
+		}
 	}
 
 	// 頂点バッファの破棄
@@ -91,7 +94,7 @@ void DrawRiverWall(void)
 
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
-
+	EVENTSTATE* pEventState = GetEventState();
 	if (pRiverWall->bUse == false)
 	{// 使っていなければ弾く
 		return;
@@ -121,7 +124,14 @@ void DrawRiverWall(void)
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
 	// テクスチャの設定
-	pDevice->SetTexture(0, g_pCustomTextureMesh);
+	if (*pEventState == EVENTSTATE_SUNSETDELAY)
+	{
+		pDevice->SetTexture(0, g_apCustomTextureRiverWall[1]);
+	}
+	else
+	{
+		pDevice->SetTexture(0, g_apCustomTextureRiverWall[0]);
+	}
 
 	// メッシュフィールドの描画
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,

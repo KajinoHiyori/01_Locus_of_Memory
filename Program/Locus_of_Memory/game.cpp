@@ -326,7 +326,7 @@ void UpdateGame(void)
 		if (bNextMode == true && *pFade == FADE_NONE)
 		{// 0以下になった
 			g_gameState = GAMESTATE_CLEAR;
-
+			g_eventState = EVENTSTATE_NORMAL;
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_WHITE);
 
@@ -342,7 +342,7 @@ void UpdateGame(void)
 		if (g_nCounterGameState <= 0 && *pFade == FADE_NONE)
 		{// 0以下になった
 			g_gameState = GAMESTATE_TIMEOVER;
-
+			g_eventState = EVENTSTATE_NORMAL;
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_BLACK);
 
@@ -357,7 +357,7 @@ void UpdateGame(void)
 		if (g_nCounterGameState <= 0 && *pFade == FADE_NONE)
 		{// 0以下になった
 			g_gameState = GAMESTATE_BATTERYOVER;
-
+			g_eventState = EVENTSTATE_NORMAL;
 			// フェード設定(リザルト画面に移行)
 			SetFade(MODE_RESULT, COLOR_BLACK);
 
@@ -371,7 +371,7 @@ void UpdateGame(void)
 	if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
 	{// 0以下になった
 		SetGameState(GAMESTATE_CLEAR, 0);
-
+		g_eventState = EVENTSTATE_NORMAL;
 		// フェード設定(リザルト画面に移行)
 		SetFade(MODE_RESULT, COLOR_WHITE);
 
@@ -383,6 +383,7 @@ void UpdateGame(void)
 	// Uで失敗遷移
 	if (GetKeyboardTrigger(DIK_U) == true && *pFade == FADE_NONE)
 	{// 0以下になった
+		g_eventState = EVENTSTATE_NORMAL;
 		SetGameState(GAMESTATE_BATTERYOVER, 0);
 		// フェード設定(リザルト画面に移行)
 		SetFade(MODE_RESULT, COLOR_BLACK);

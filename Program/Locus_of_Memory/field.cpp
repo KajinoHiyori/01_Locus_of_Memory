@@ -8,7 +8,7 @@
 #include "main.h"
 #include "field.h"
 #include "input.h"
-
+#include "game.h"
 #include "debugproc.h"
 
 //*****************************************************************************
@@ -20,7 +20,7 @@
 #define TEX_SPLIT				(10)							// テクスチャの分割数
 #define TEX_DEFAULT				(D3DXVECTOR2(1.0f, 1.0f));		// テクスチャの初期位置
 
-#define MAX_FIELDTEX			(3)								// テクスチャ数の最大
+#define MAX_FIELDTEX			(2)								// テクスチャ数の最大
 
 #define VTX_MIN		(D3DXVECTOR3(10000.0f, 10000.0f, 10000.0f))		// オブジェクトの大きさの初期化値(最小)
 #define VTX_MAX		(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// オブジェクトの大きさの初期化値(最大)
@@ -34,8 +34,7 @@ Field g_aField[MAX_FIELD];								// フィールドの情報
 const char* c_pFieldTextureName[MAX_FIELDTEX] =
 {
 	"data\\TEXTURE\\road000.jpg",
-	"data\\TEXTURE\\road000.jpg",
-	"data\\TEXTURE\\road000.jpg",
+	"data\\TEXTURE\\sunset.jpg",
 };
 
 //=============================================================================
@@ -111,6 +110,7 @@ void DrawField(void)
 
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
+	EVENTSTATE* pEventState = GetEventState();
 
 	for (int nCntField = 0; nCntField < MAX_FIELD; nCntField++, pField++)
 	{
@@ -143,8 +143,14 @@ void DrawField(void)
 		pDevice->SetFVF(FVF_VERTEX_3D_MULTI);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, g_apFieldTexture[0]);
-
+		if (*pEventState == EVENTSTATE_SUNSETDELAY)
+		{
+			pDevice->SetTexture(0, g_apFieldTexture[1]);
+		}
+		else
+		{
+			pDevice->SetTexture(0, g_apFieldTexture[0]);
+		}
 		// メッシュフィールドの描画
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,
 			0,

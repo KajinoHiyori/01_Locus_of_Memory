@@ -8,7 +8,7 @@
 #include "main.h"
 #include "custommesh.h"
 #include "input.h"
-
+#include "game.h"
 #include "debugproc.h"
 
 //*****************************************************************************
@@ -35,7 +35,7 @@ const char* c_pCustomMeshTextureName[MESHFIELDTYPE_MAX] =
 {
 	"data\\TEXTURE\\river000.jpg",
 	"data\\TEXTURE\\river000.png",
-	"data\\TEXTURE\\road000.jpg",
+	"data\\TEXTURE\\sunset.jpg",
 };
 
 //=============================================================================
@@ -112,6 +112,7 @@ void DrawCustomMesh(void)
 
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
+	EVENTSTATE* pEventState = GetEventState();
 
 	for (int nCntCustomMesh = 0; nCntCustomMesh < MAX_CUSTOMMESH; nCntCustomMesh++, pCustomMesh++)
 	{
@@ -148,8 +149,16 @@ void DrawCustomMesh(void)
 		SetTextureStageStateColor(1, D3DTA_TEXTURE, D3DTOP_BLENDTEXTUREALPHA, D3DTA_CURRENT);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, g_apCustomTextureMesh[0]);
-		pDevice->SetTexture(1, g_apCustomTextureMesh[1]);
+		if (*pEventState == EVENTSTATE_SUNSETDELAY)
+		{
+			pDevice->SetTexture(0, g_apCustomTextureMesh[3]);
+			pDevice->SetTexture(1, g_apCustomTextureMesh[3]);
+		}
+		else
+		{
+			pDevice->SetTexture(0, g_apCustomTextureMesh[0]);
+			pDevice->SetTexture(1, g_apCustomTextureMesh[1]);
+		}
 
 		// メッシュフィールドの描画
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,
