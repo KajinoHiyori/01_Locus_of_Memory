@@ -7,11 +7,13 @@
 
 #include "eventobject.h"
 #include "loadscript.h"
+#include "game.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MAX_EVENTOBJECT		(256)		// 置けるイベント用オブジェクトの最大
+#define MAX_EVENTOBJECT		(256)	// 置けるイベント用オブジェクトの最大
+#define COL_SUNSETDELAY		(0.25f)	// 時間停止魔法中のオブジェクトの色
 
 //*****************************************************************************
 // グローバル変数
@@ -90,6 +92,10 @@ void DrawEventObject(void)
 	// イベント用オブジェクトへのポインタ
 	EventObject* pEventObject = &g_aEventObject[0];
 
+	// 時間停止魔法中にオブジェクトの色をグレーにする
+	EVENTSTATE* pEventState = GetEventState();
+	float fRed, fGreen, fBlue;
+
 	for (int nCntEventObject = 0; nCntEventObject < MAX_EVENTOBJECT; nCntEventObject++, pEventObject++)
 	{
 		if (pEventObject->bUse == false)
@@ -121,13 +127,37 @@ void DrawEventObject(void)
 
 			for (int nCntMat = 0; nCntMat < (int)pEventObject->ObjectInfo.NormalObject.pModelData->dwNumMat; nCntMat++)
 			{
+				// 現在のマテリアルの色をローカルで保存
+				fRed = pMat[nCntMat].MatD3D.Diffuse.r;
+				fGreen = pMat[nCntMat].MatD3D.Diffuse.g;
+				fBlue = pMat[nCntMat].MatD3D.Diffuse.b;
+
+				if (*pEventState == EVENTSTATE_SUNSETDELAY)
+				{ // 時間停止魔法中
+					pMat[nCntMat].MatD3D.Diffuse.r = COL_SUNSETDELAY;
+					pMat[nCntMat].MatD3D.Diffuse.g = COL_SUNSETDELAY;
+					pMat[nCntMat].MatD3D.Diffuse.b = COL_SUNSETDELAY;
+				}
+
 				// マテリアルの設定
 				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
-				pDevice->SetTexture(0, pEventObject->ObjectInfo.NormalObject.pModelData->apTexture[nCntMat]);
+				if (*pEventState == EVENTSTATE_SUNSETDELAY)
+				{
+					pDevice->SetTexture(0, NULL);
+				}
+				else
+				{
+					pDevice->SetTexture(0, pEventObject->ObjectInfo.NormalObject.pModelData->apTexture[nCntMat]);
+				}
 
 				// オブジェクトパーツの描画
 				pEventObject->ObjectInfo.NormalObject.pModelData->pMesh->DrawSubset(nCntMat);	// ここでモデルの形を指定しているため、g_aObjectModelの中身を設定する必要がある
+			
+				// 元のマテリアルの色に戻す
+				pMat[nCntMat].MatD3D.Diffuse.r = fRed;
+				pMat[nCntMat].MatD3D.Diffuse.g = fGreen;
+				pMat[nCntMat].MatD3D.Diffuse.b = fBlue;
 			}
 
 			// 保存していたマテリアルに戻す
@@ -207,14 +237,28 @@ void DrawEventObject(void)
 				for (int nCntMat = 0; nCntMat < (int)pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModel].dwNumMat; nCntMat++)
 				{
 					MatCpy = pMat[nCntMat];		// 今のマテリアルをコピー
-
+					
 					MatCpy.MatD3D.Diffuse.a = pEventObject->fAlpha;	// アルファ値を適用
+
+					if (*pEventState == EVENTSTATE_SUNSETDELAY)
+					{ // 時間停止魔法中
+						MatCpy.MatD3D.Diffuse.r = COL_SUNSETDELAY;
+						MatCpy.MatD3D.Diffuse.g = COL_SUNSETDELAY;
+						MatCpy.MatD3D.Diffuse.b = COL_SUNSETDELAY;
+					}
 
 					// マテリアルの設定
 					pDevice->SetMaterial(&MatCpy.MatD3D);
 
 					// テクスチャの設定
-					pDevice->SetTexture(0, pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModel].apTexture[nCntMat]);
+					if (*pEventState == EVENTSTATE_SUNSETDELAY)
+					{
+						pDevice->SetTexture(0, NULL);
+					}
+					else
+					{
+						pDevice->SetTexture(0, pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModel].apTexture[nCntMat]);
+					}
 
 					// パーツの描画
 					pEventObject->ObjectInfo.ParentObject.pModelData->aModel[pEventObject->ObjectInfo.ParentObject.pModelData->aModel[nCntParentModel].nIdxModel].pMesh->DrawSubset(nCntMat);

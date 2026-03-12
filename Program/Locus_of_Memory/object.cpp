@@ -14,14 +14,16 @@
 #include "loadscript.h"
 #include "clock.h"
 #include "input.h"
+#include "game.h"
 
 // マクロ定義
-#define NUM_OBJECT	(OBJECTTYPE_MAX)	// モデルの数
-#define BLANK		(0.001f)		// 空白
-#define DEFALT		(D3DXVECTOR3(0.0f, 0.0f, 0.0f))					// xyzが0.0fの場合
-#define NORMAL		(D3DXVECTOR3(0.0f, 1.0f, 0.0f))					// 基本の法線
-#define VTX_MIN		(D3DXVECTOR3(10000.0f, 10000.0f, 10000.0f))		// オブジェクトの大きさの初期化値(最小)
-#define VTX_MAX		(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// オブジェクトの大きさの初期化値(最大)
+#define NUM_OBJECT		(OBJECTTYPE_MAX)	// モデルの数
+#define BLANK			(0.001f)		// 空白
+#define DEFALT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))					// xyzが0.0fの場合
+#define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))					// 基本の法線
+#define VTX_MIN			(D3DXVECTOR3(10000.0f, 10000.0f, 10000.0f))		// オブジェクトの大きさの初期化値(最小)
+#define VTX_MAX			(D3DXVECTOR3(-10000.0f, -10000.0f, -10000.0f))	// オブジェクトの大きさの初期化値(最大)
+#define COL_SUNSETDELAY	(0.25f)	// 時間停止魔法中のオブジェクトの色
 
 // グローバル変数
 ObjectModel g_aObjectModel[NUM_OBJECT];					// モデルの種類を管理
@@ -258,6 +260,10 @@ void DrawObject(void)
 
 	ParentObject* pParentObject = &g_aParentObject[0];
 
+	// 時間停止魔法中にオブジェクトの色をグレーにする
+	EVENTSTATE* pEventState = GetEventState();
+	float fRed, fGreen, fBlue;
+
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
 		if (g_aObject[nCntObject].bUse == true)
@@ -284,13 +290,36 @@ void DrawObject(void)
 
 			for (int nCntMat = 0; nCntMat < (int)g_aObjectModel[g_aObject[nCntObject].type].dwNumMat; nCntMat++)
 			{
+				// 現在のマテリアルの色をローカルで保存
+				fRed = pMat[nCntMat].MatD3D.Diffuse.r;
+				fGreen = pMat[nCntMat].MatD3D.Diffuse.g;
+				fBlue = pMat[nCntMat].MatD3D.Diffuse.b;
+
+				if (*pEventState == EVENTSTATE_SUNSETDELAY)
+				{ // 時間停止魔法中
+					pMat[nCntMat].MatD3D.Diffuse.r = COL_SUNSETDELAY;
+					pMat[nCntMat].MatD3D.Diffuse.g = COL_SUNSETDELAY;
+					pMat[nCntMat].MatD3D.Diffuse.b = COL_SUNSETDELAY;
+				}
+
 				// マテリアルの設定
 				pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 
-				pDevice->SetTexture(0, g_aObjectModel[g_aObject[nCntObject].type].apTexture[nCntMat]);
-
+				if (*pEventState == EVENTSTATE_SUNSETDELAY)
+				{
+					pDevice->SetTexture(0, NULL);
+				}
+				else
+				{
+					pDevice->SetTexture(0, g_aObjectModel[g_aObject[nCntObject].type].apTexture[nCntMat]);
+				}
 				// オブジェクトパーツの描画
 				g_aObjectModel[g_aObject[nCntObject].type].pMesh->DrawSubset(nCntMat);	// ここでモデルの形を指定しているため、g_aObjectModelの中身を設定する必要がある
+			
+				// 元のマテリアルの色に戻す
+				pMat[nCntMat].MatD3D.Diffuse.r = fRed;
+				pMat[nCntMat].MatD3D.Diffuse.g = fGreen;
+				pMat[nCntMat].MatD3D.Diffuse.b = fBlue;
 			}
 			// 保存していたマテリアルに戻す
 			pDevice->SetMaterial(&matDef);
@@ -305,7 +334,7 @@ void DrawObject(void)
 			continue;
 		}
 
-		// ドラゴンの場合
+		// ドラゴンの影を描画
 		if (pParentObject->type == PARENTMODELTYPE_DRAGON)
 		{
 			// ライトの位置を設定
@@ -378,10 +407,6 @@ void DrawObject(void)
 		// 現在のマテリアルを取得
 		pDevice->GetMaterial(&matDef);
 
-		if (pParentObject->type == PARENTMODELTYPE_CLOCKTOWER)
-		{
-			int nData = 100;
-		}
 
 		// 全モデル(パーツ)の描画
 		for (int nCntParentModel = 0; nCntParentModel < pParentObject->pModelData->nNumParts; nCntParentModel++)
@@ -428,11 +453,25 @@ void DrawObject(void)
 
 				MatCpy.MatD3D.Diffuse.a = pParentObject->fAlpha;	// アルファ値を適用
 
+				if (*pEventState == EVENTSTATE_SUNSETDELAY)
+				{ // 時間停止魔法中
+					MatCpy.MatD3D.Diffuse.r = COL_SUNSETDELAY;
+					MatCpy.MatD3D.Diffuse.g = COL_SUNSETDELAY;
+					MatCpy.MatD3D.Diffuse.b = COL_SUNSETDELAY;
+				}
+
 				// マテリアルの設定
 				pDevice->SetMaterial(&MatCpy.MatD3D);
 
 				// テクスチャの設定
-				pDevice->SetTexture(0, pParentObject->pModelData->aModel[pParentObject->pModelData->aModel[nCntParentModel].nIdxModel].apTexture[nCntMat]);
+				if (*pEventState == EVENTSTATE_SUNSETDELAY)
+				{
+					pDevice->SetTexture(0, NULL);
+				}
+				else
+				{
+					pDevice->SetTexture(0, pParentObject->pModelData->aModel[pParentObject->pModelData->aModel[nCntParentModel].nIdxModel].apTexture[nCntMat]);
+				}
 
 				// パーツの描画
 				pParentObject->pModelData->aModel[pParentObject->pModelData->aModel[nCntParentModel].nIdxModel].pMesh->DrawSubset(nCntMat);
