@@ -12,6 +12,7 @@
 #include "magic.h"
 #include "debugproc.h"
 #include "sound.h"
+#include "questui.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -379,6 +380,7 @@ bool SetMagicEvent007(MAGICTYPE type, int nIdx)
 			MOTIONTYPE_MOVE, false, false, 10);
 		SetMagicLocus(MAGICEVENT_008, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
+		ClearQuest(QUESTTYPE_FLOWER);
 		break;
 
 	case MAGICTYPE_GROWTH:	// ¬’·
@@ -398,6 +400,7 @@ bool SetMagicEvent007(MAGICTYPE type, int nIdx)
 			MOTIONTYPE_MOVE, false, false, 10);
 		SetMagicLocus(MAGICEVENT_008, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
+		ClearQuest(QUESTTYPE_FLOWER);
 		break;
 	}
 

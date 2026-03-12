@@ -12,11 +12,13 @@
 #include "input.h"
 #include "title.h"
 #include "sound.h"
+#include "questui.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define GOAL_SIZE	(120.0f)	// ゴール判定のサイズ
+#define FADE_INTERVAL	(0)	// フェードに入るまでの間隔
 
 //*****************************************************************************
 // グローバル変数
@@ -133,6 +135,7 @@ void CollisionGoal(void)
 		{ // 遷移完了状態に移行できる範囲にいる
 			if (g_abGoal[0] == true)
 			{ // ゴールフラグが立っている
+				SetGameState(GAMESTATE_CLEAR, FADE_INTERVAL);
 				SetReadyUI(0, READYUITYPE_GOAL);
 				g_NextMode = true;
 			}
@@ -169,12 +172,12 @@ void CollisionGoal(void)
 		}
 		else if (afLength[0] > GOAL_SIZE && afLength[1] < GOAL_SIZE)
 		{ // 1Pが遷移完了状態に移行できる範囲におらず、2Pが遷移完了状態に移行できる範囲にいる
-			ResetReadyUI(0);
 			SetReadyUI(1, READYUITYPE_WAITING);
 		}
 
 		if (g_abGoal[0] == true && g_abGoal[1] == true)
 		{
+			SetGameState(GAMESTATE_CLEAR, FADE_INTERVAL);
 			g_NextMode = true;
 		}
 		break;
@@ -185,6 +188,7 @@ void CollisionGoal(void)
 			if (g_abGoal[0] == true)
 			{ // ゴールフラグが立っている
 				SetReadyUI(0, READYUITYPE_GOAL);
+				SetGameState(GAMESTATE_CLEAR, FADE_INTERVAL);
 				g_NextMode = true;
 			}
 			else
@@ -197,6 +201,11 @@ void CollisionGoal(void)
 			ResetReadyUI(0);
 		}
 		break;
+	}
+
+	if (g_NextMode == true)
+	{
+		ClearQuest(QUESTTYPE_TEMPLE);
 	}
 }
 
