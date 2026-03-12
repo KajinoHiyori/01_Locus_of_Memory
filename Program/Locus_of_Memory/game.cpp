@@ -365,8 +365,8 @@ void UpdateGame(void)
 			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
 		}
 	}
-	// Iで失敗遷移
-	if (GetKeyboardTrigger(DIK_I) == true && *pFade == FADE_NONE)
+	// Uで失敗遷移
+	if (GetKeyboardTrigger(DIK_U) == true && *pFade == FADE_NONE)
 	{// 0以下になった
 		SetGameState(GAMESTATE_BATTERYOVER, 0);
 		// フェード設定(リザルト画面に移行)

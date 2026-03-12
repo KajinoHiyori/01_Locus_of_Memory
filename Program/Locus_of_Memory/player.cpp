@@ -22,6 +22,7 @@
 #include "spellui.h"
 #include "magicui.h"
 #include "magicbubble.h"
+#include "sound.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -204,6 +205,7 @@ void UpdatePlayer(void)
 		// 落ちてる魔法との判定 (保管)
 		nDropMagicIdx = CollisionMagic(g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius,nCntPlayer);
 
+		// UI表示処理=======================================================================================================================================================
 		// プレイヤーのステートを決定[空中で pause / spell は開けないようにする]
 		if (MagicType != MAGICTYPE_NONE)
 		{
@@ -351,6 +353,13 @@ void UpdatePlayer(void)
 
 				// 移動状態を求める(fMoveDir == 0は移動していない)
 				fMoveDir = SQRTF(moveDir.x, moveDir.z);
+
+				// TAB押されている間( = SPELL中)は移動をしない
+				if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
+					&& g_aPlayer[nCntPlayer].bJump == false)
+				{
+					fMoveDir = 0.0f;
+				}
 			}
 			break;
 
@@ -396,7 +405,7 @@ void UpdatePlayer(void)
 
 			if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
 			{// Xボタンを押したかつ何かしらのコマンドが近くにある
-				OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
+				//OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
 			}
 
 			// 移動方向の正規化
@@ -443,10 +452,26 @@ void UpdatePlayer(void)
 				if (g_aPlayer[nCntPlayer].fSpeed == ACCELEMOVE)
 				{
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, true, true, BLENDFRAME);
+					if (nCntPlayer == 0)	// 1P
+					{
+						PlaySound(SOUND_LABEL_RUN0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						PlaySound(SOUND_LABEL_RUN1);
+					}
 				}
 				else
 				{
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE, true, true, BLENDFRAME);
+					if (nCntPlayer == 0)	// 1P
+					{
+						PlaySound(SOUND_LABEL_WALK0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						PlaySound(SOUND_LABEL_WALK1);
+					}
 				}
 			}
 		}
@@ -454,6 +479,30 @@ void UpdatePlayer(void)
 		else if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE || g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING)
 		{// もし歩行中だったら
 			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
+			switch (g_aPlayer[nCntPlayer].motion.motionType)
+			{
+			case (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE:
+				if (nCntPlayer == 0)	// 1P
+				{
+					StopSound(SOUND_LABEL_WALK0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					StopSound(SOUND_LABEL_WALK1);
+				}
+				break;
+
+			case (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING:
+				if (nCntPlayer == 0)	// 1P
+				{
+					StopSound(SOUND_LABEL_RUN0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					StopSound(SOUND_LABEL_RUN1);
+				}
+				break;
+			}
 		}
 
 		// プレイヤーの方向を補正

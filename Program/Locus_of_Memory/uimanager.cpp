@@ -18,6 +18,7 @@
 #include "title.h"
 #include "debugproc.h"
 #include "fade.h"
+#include "sound.h"
 
 // マクロ定義
 #define MAXUI_TEX			(UITEX_MAX)		// テクスチャの最大数
@@ -384,13 +385,6 @@ void UpdateUIManager(void)
 			{
 				g_aUIManager[nCntPlayer].aUITexture[nCntUI].bDisp = false;
 			}
-#if 0
-			if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && pPlayer->bJump == false)
-			{
-				SetUIAppear(nCntPlayer);	// UIを出現状態にする
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);
-			}
-#endif
 			break;
 
 		case UISTATE_APPEAR:	// 出現状態

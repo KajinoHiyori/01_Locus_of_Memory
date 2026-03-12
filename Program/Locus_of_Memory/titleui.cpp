@@ -211,18 +211,18 @@ void UpdateTitleUI(void)
 	FADE *pfade = GetFade();
 
 	// ëIëèÛë‘ÇÃïœçX(Repeat)
-	if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true)
+	if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true || GetJoypadStickRepeatL(JOYSTICK_UP, 0) == true)
 	{
-		PlaySound(SOUND_LABEL_SELECT);
+		PlaySound(SOUND_LABEL_SELECT0);
 		g_nSelectOperation--;
 		if (g_nSelectOperation < TITLEUITYPE_1PPLAY)
 		{
 			g_nSelectOperation = TITLEUITYPE_KEYBOARD;
 		}
 	}
-	else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true)
+	else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, 0) == true)
 	{
-		PlaySound(SOUND_LABEL_SELECT);
+		PlaySound(SOUND_LABEL_SELECT0);
 		g_nSelectOperation++;
 		if (g_nSelectOperation > TITLEUITYPE_KEYBOARD)
 		{

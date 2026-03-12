@@ -488,6 +488,14 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FLOATONG, true, true, BLENDFRAME);
 				SetMagicUIDisappear(nIdx);
 				SetSpellUIDisappear(nIdx);
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_LEVITATION0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_LEVITATION1);
+				}
 				break;
 
 				//”RÄ
@@ -534,6 +542,14 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
 				SetParticle(pPlayer->pos, 300, PARTICLETYPE_RAINPRAY, nIdx);
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_RAINPRAY0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_RAINPRAY1);
+				}
 				break;
 
 				//“€Œ‹
@@ -557,7 +573,15 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_ACCELERATION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING, true, true, BLENDFRAME);
+				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_ACCELERATION0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_ACCELERATION1);
+				}
 				break;
 
 				//ŽžŠÔ‚ÌŠª‚«–ß‚µ(‰ñ‹A)
@@ -704,7 +728,10 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 		
 		}
 	}
-	SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD, false, true, BLENDFRAME);
+	if (type != MAGICTYPE_LEVITATION && type != MAGICTYPE_GROWTH)
+	{
+		SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD, false, true, BLENDFRAME);
+	}
 	return false;
 }
 

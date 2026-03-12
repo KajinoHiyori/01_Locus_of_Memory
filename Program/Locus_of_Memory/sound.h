@@ -13,6 +13,8 @@
 //*****************************************************************************
 // サウンド一覧
 //*****************************************************************************
+// 
+// 1Pと2Pとで、再生と停止を分ける必要があるためこのような形式を取っています
 typedef enum
 {
 	SOUND_LABEL_TITLEBGM = 0,		// titleBGM
@@ -21,19 +23,32 @@ typedef enum
 	SOUND_LABEL_DIAGNOSISBGM,		// dignosisBGM
 	SOUND_LABEL_FAILDRESULTBGM,		// faildBGM
 	SOUND_LABEL_GOALRESULTBGM,		// goalBGM
-	SOUND_LABEL_ENTER,				// 決定
-	SOUND_LABEL_SELECT,				// 選択
-	SOUND_LABEL_LEVITATION,			// 浮遊
-	SOUND_LABEL_COMBUSTION,			// 燃焼
-	SOUND_LABEL_FLASH,				// フラッシュ
-	SOUND_LABEL_SUNSETDELAY,		// 時間停止
-	SOUND_LABEL_RAINPRAY,			// 雨乞い
-	SOUND_LABEL_FREEZE,				// 凍結
-	SOUND_LABEL_GROWTH,				// 成長
-	SOUND_LABEL_ACCELERATION,		// 加速
-	SOUND_LABEL_TIMEREVERT,			// 巻き戻し
-	SOUND_LABEL_WALK,				// 歩き
-	SOUND_LABEL_RUN,				// 走り
+	SOUND_LABEL_ENTER0,				// 決定[1P]
+	SOUND_LABEL_ENTER1,				// 決定[2P]
+	SOUND_LABEL_SELECT0,			// 選択[1P]
+	SOUND_LABEL_SELECT1,			// 選択[2P]
+	SOUND_LABEL_LEVITATION0,		// 浮遊[1P]
+	SOUND_LABEL_LEVITATION1,		// 浮遊[2P]
+	SOUND_LABEL_COMBUSTION0,		// 燃焼[1P]
+	SOUND_LABEL_COMBUSTION1,		// 燃焼[2P]
+	SOUND_LABEL_FLASH0,				// フラッシュ[1P]
+	SOUND_LABEL_FLASH1,				// フラッシュ[2P]
+	SOUND_LABEL_SUNSETDELAY0,		// 時間停止[1P]
+	SOUND_LABEL_SUNSETDELAY1,		// 時間停止[2P]
+	SOUND_LABEL_RAINPRAY0,			// 雨乞い[1P]
+	SOUND_LABEL_RAINPRAY1,			// 雨乞い[2P]
+	SOUND_LABEL_FREEZE0,			// 凍結[1P]
+	SOUND_LABEL_FREEZE1,			// 凍結[2P]
+	SOUND_LABEL_GROWTH0,			// 成長[1P]
+	SOUND_LABEL_GROWTH1,			// 成長[2P]
+	SOUND_LABEL_ACCELERATION0,		// 加速[1P]
+	SOUND_LABEL_ACCELERATION1,		// 加速[2P]
+	SOUND_LABEL_TIMEREVERT0,		// 巻き戻し[1P]
+	SOUND_LABEL_TIMEREVERT1,		// 巻き戻し[2P]
+	SOUND_LABEL_WALK0,				// 歩き[1P]
+	SOUND_LABEL_WALK1,				// 歩き[2P]
+	SOUND_LABEL_RUN0,				// 走り[1P]
+	SOUND_LABEL_RUN1,				// 走り[2P]
 	SOUND_LABEL_MAX,
 } SOUND_LABEL;
 
