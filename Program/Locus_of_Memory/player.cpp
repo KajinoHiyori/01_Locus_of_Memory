@@ -215,6 +215,18 @@ void UpdatePlayer(void)
 		}
 		else if (((GetKeyboardTrigger(DIK_P) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_START, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
 		{
+			// SEの停止
+			if (nCntPlayer == 0)	// 1P
+			{
+				StopSound(SOUND_LABEL_WALK0);
+				StopSound(SOUND_LABEL_RUN0);
+			}
+			else if (nCntPlayer == 1)	// 2P
+			{
+				StopSound(SOUND_LABEL_WALK1);
+				StopSound(SOUND_LABEL_RUN1);
+			}
+
 			switch (bPause)
 			{
 			case true:	// ポーズ状態から通常状態に変更
@@ -276,6 +288,18 @@ void UpdatePlayer(void)
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_SPELL;	// 呪文状態に変更
 				if ((GetKeyboardTrigger(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadTrigger(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
 				{
+					// SEの停止
+					if (nCntPlayer == 0)	// 1P
+					{
+						StopSound(SOUND_LABEL_WALK0);
+						StopSound(SOUND_LABEL_RUN0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						StopSound(SOUND_LABEL_WALK1);
+						StopSound(SOUND_LABEL_RUN1);
+					}
+
 					// Spellメニューを表示状態にする
  					SetSpellUIAppear(nCntPlayer);
 					SetMagicUIAppear(nCntPlayer);

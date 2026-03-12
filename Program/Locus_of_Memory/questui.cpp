@@ -574,7 +574,11 @@ void ClearQuest(QUESTTYPE questType)
 		g_aQuest[QUESTTYPE_STREETLIGHT].state = QUESTSTATE_CLEAR;
 		break;
 	}
-	PlaySound(SOUND_LABEL_QUESTCLEAR);
+	MODE mode = GetMode();
+	if (mode == MODE_GAME)
+	{
+		PlaySound(SOUND_LABEL_QUESTCLEAR);
+	}
 }
 
 //======================================================================================

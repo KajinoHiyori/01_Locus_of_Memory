@@ -397,4 +397,24 @@ MAGICEVENTSET
 	RADIUS = 500.0
 	EVENT = 7
 END_MAGICEVENTSET
+
+#------------------------------------------------------------------------------
+# 階層構造のあるドラゴン
+#------------------------------------------------------------------------------
+
+MODELSET
+	PARENTTYPE = 3
+	POS = 2476.0 349.0 -4812.0
+	ROT = 0 149 0
+	SHADOW = 1
+	COLLISION = 1
+	MOTIONTYPE = 2
+END_MODELSET
+
+MAGICEVENTSET
+	POS = 2476.0 349.0 -4812.0
+	RADIUS = 1500.0
+	EVENT = 9
+END_MAGICEVENTSET
+
 END_SCRIPT		# この行は絶対消さないこと！

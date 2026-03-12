@@ -758,6 +758,98 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 
 		if (SetMagicEvent(pMagicLocus[nIdxLocus].MagicEvent, type, pMagicLocus[nIdxLocus].nIdxObject) == true)
 		{// 魔法と対応するイベントかどうかチェック
+			
+		 // SEの再生
+			switch (type)
+			{
+			case MAGICTYPE_LEVITATION:	// 浮遊
+
+				break;
+
+			case MAGICTYPE_COMBUSTION:	// 燃焼
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_COMBUSTION0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_COMBUSTION1);
+				}
+				break;
+
+			case MAGICTYPE_FLOOD:	// 洪水
+
+				break;
+
+			case MAGICTYPE_FLASH:	// フラッシュ
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_FLASH0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_FLASH1);
+				}
+				break;
+
+			case MAGICTYPE_FIREBALL:	// 火球
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_COMBUSTION0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_COMBUSTION1);
+				}
+				break;
+
+			case MAGICTYPE_SUNSETDELAY:	// 時間停止
+
+				break;
+
+			case MAGICTYPE_RAINPRAY:	// 雨乞い
+
+				break;
+
+			case MAGICTYPE_FREEZE:	// 凍結
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_FREEZE0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_FREEZE1);
+				}
+				break;
+
+			case MAGICTYPE_GROWTH:	// 成長
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_GROWTH0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_GROWTH1);
+				}
+				break;
+
+			case MAGICTYPE_ACCELERATION:	// 加速
+
+				break;
+
+			case MAGICTYPE_TIMEREVERT:	// 時間巻き戻し
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_TIMEREVERT0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_TIMEREVERT1);
+				}
+				break;
+			}
+
+
 			pMagicLocus[nIdxLocus].bUse = false;
 			return true;
 		}

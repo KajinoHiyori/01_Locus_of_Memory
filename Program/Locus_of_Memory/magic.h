@@ -107,6 +107,7 @@ typedef enum MAGICEVENT
 	MAGICEVENT_006,				// –¼Ì–¢’è
 	MAGICEVENT_007,				// –¼Ì–¢’è
 	MAGICEVENT_008,				// –¼Ì–¢’è
+	MAGICEVENT_009,				// –¼Ì–¢’è
 	MAGICEVENT_MAX,
 }MAGICEVENT;
 

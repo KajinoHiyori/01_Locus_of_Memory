@@ -34,6 +34,7 @@ typedef enum EVENTTYPE
 	EVENTTYPE_007_0,	// 花の水やり
 	EVENTTYPE_007_1,	// 花の成長
 	EVENTTYPE_008_0,	// 花が萎む
+	EVENTTYPE_009_0,	// ドラゴンが眩しがる
 	EVENTTYPE_MAX,
 }EVENTTYPE;
 
@@ -53,6 +54,7 @@ bool SetMagicEvent005(MAGICTYPE type, int nIdx);
 bool SetMagicEvent006(MAGICTYPE type, int nIdx);
 bool SetMagicEvent007(MAGICTYPE type, int nIdx);
 bool SetMagicEvent008(MAGICTYPE type, int nIdx);
+bool SetMagicEvent009(MAGICTYPE type, int nIdx);
 
 //*****************************************************************************
 // イベントの更新処理

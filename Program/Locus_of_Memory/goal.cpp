@@ -18,7 +18,7 @@
 // マクロ定義
 //*****************************************************************************
 #define GOAL_SIZE	(120.0f)	// ゴール判定のサイズ
-#define FADE_INTERVAL	(0)	// フェードに入るまでの間隔
+#define FADE_INTERVAL	(240)	// フェードに入るまでの間隔
 
 //*****************************************************************************
 // グローバル変数
@@ -135,7 +135,6 @@ void CollisionGoal(void)
 		{ // 遷移完了状態に移行できる範囲にいる
 			if (g_abGoal[0] == true)
 			{ // ゴールフラグが立っている
-				SetGameState(GAMESTATE_CLEAR, FADE_INTERVAL);
 				SetReadyUI(0, READYUITYPE_GOAL);
 				g_NextMode = true;
 			}
@@ -177,7 +176,6 @@ void CollisionGoal(void)
 
 		if (g_abGoal[0] == true && g_abGoal[1] == true)
 		{
-			SetGameState(GAMESTATE_CLEAR, FADE_INTERVAL);
 			g_NextMode = true;
 		}
 		break;
@@ -188,7 +186,6 @@ void CollisionGoal(void)
 			if (g_abGoal[0] == true)
 			{ // ゴールフラグが立っている
 				SetReadyUI(0, READYUITYPE_GOAL);
-				SetGameState(GAMESTATE_CLEAR, FADE_INTERVAL);
 				g_NextMode = true;
 			}
 			else
@@ -203,8 +200,10 @@ void CollisionGoal(void)
 		break;
 	}
 
-	if (g_NextMode == true)
+	GAMESTATE gameState = GetGameState();
+	if (g_NextMode == true && gameState == GAMESTATE_NORMAL)
 	{
+		SetGameState(GAMESTATE_CLEAR, FADE_INTERVAL);
 		ClearQuest(QUESTTYPE_TEMPLE);
 	}
 }
