@@ -80,7 +80,7 @@ MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall000.x	# [46]ƒ`ƒ…[ƒgƒŠƒAƒ‹•
 MODEL_FILENAME = data/MODEL/tutorialwall/tutorialwall002.x	# [47]ƒ`ƒ…[ƒgƒŠƒAƒ‹•ª’f•Ç
 MODEL_FILENAME = data/MODEL/fence/fence.x					# [48]ì‚ğˆÍ‚¤ƒtƒFƒ“ƒX
 MODEL_FILENAME = data/MODEL/sled/sled000.x					# [49]‚»‚è
-MODEL_FILENAME = data/MODEL/landmark/x/landmark003.x		# [50]‰Œ“Ë(‰¼)
+MODEL_FILENAME = data/MODEL/landmark/x/landmark0103.x		# [50]‰Œ“Ë(‰¼)[“Ç‚İ‚Ü‚È‚¢]
 
 #------------------------------------------------------------------------------
 # ƒ‚ƒfƒ‹”z’uî•ñ
@@ -377,7 +377,7 @@ MODELSET
 
 MODELSET
 	TYPE = 45
-	POS = -2800 0 950
+	POS = -3200 0 950
 	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 1
