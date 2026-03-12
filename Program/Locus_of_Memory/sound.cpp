@@ -66,6 +66,19 @@ SOUNDINFO g_aSoundInfo[SOUND_LABEL_MAX] =
 	{"data/SE/11_walk.wav", -1},		// 歩き
 	{"data/SE/12_run.wav", -1},			// 走り
 	{"data/SE/12_run.wav", -1},			// 走り
+	{"data/SE/13_pause.wav", 0},		// ポーズ
+	{"data/SE/13_pause.wav", 0},		// ポーズ
+	{"data/SE/14_spell.wav", 0},		// spell
+	{"data/SE/14_spell.wav", 0},		// spell
+	{"data/SE/15_magicfaild.wav", 0},	// 魔法イベント不発
+	{"data/SE/15_magicfaild.wav", 0},	// 魔法イベント不発
+	{"data/SE/16_jump.wav", 0},			// ジャンプ
+	{"data/SE/16_jump.wav", 0},			// ジャンプ
+	{"data/SE/17_landing.wav", 0},		// 着地
+	{"data/SE/17_landing.wav", 0},		// 着地
+	{"data/SE/18_command.wav", 0},		// コマンド入力
+	{"data/SE/18_command.wav", 0},		// コマンド入力
+	{"data/SE/19_questclear.wav", 0},	// クエストクリア
 };
 
 //=============================================================================
