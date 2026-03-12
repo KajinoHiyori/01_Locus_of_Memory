@@ -631,6 +631,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				break;
 			}
 
+			// 魔法使用可能場所との当たり判定
 			CollisionMagicLocus(type, pos, 25.0f, nIdx);
 
 			break;
@@ -765,8 +766,16 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 		
 		}
 	}
-	if (type != MAGICTYPE_LEVITATION && type != MAGICTYPE_GROWTH && type != MAGICTYPE_SUNSETDELAY)
+	if (type != MAGICTYPE_LEVITATION && type != MAGICTYPE_ACCELERATION && type != MAGICTYPE_SUNSETDELAY)
 	{
+		if (nIdx == 0)	// 1P
+		{
+			PlaySound(SOUND_LABEL_MAGICFAILD0);
+		}
+		else if (nIdx == 1)	// 2P
+		{
+			PlaySound(SOUND_LABEL_MAGICFAILD1);
+		}
 		SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD, false, true, BLENDFRAME);
 	}
 	return false;
