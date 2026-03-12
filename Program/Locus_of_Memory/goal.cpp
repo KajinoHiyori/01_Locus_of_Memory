@@ -11,6 +11,7 @@
 #include "readyui.h"
 #include "input.h"
 #include "title.h"
+#include "sound.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -108,6 +109,14 @@ void CollisionGoal(void)
 			if ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true)
 			{
 				g_abGoal[nCntPlayer] = true;
+				if (nCntPlayer == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_ENTER0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_ENTER1);
+				}
 			}
 		}
 		else

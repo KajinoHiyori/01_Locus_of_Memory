@@ -9,6 +9,7 @@
 #include "main.h"
 #include "debugproc.h"
 #include "input.h"
+#include "sound.h"
 
 // テクスチャの種類
 typedef enum
@@ -536,6 +537,11 @@ void DrawQuestUI(void)
 //======================================================================================
 void ClearQuest(QUESTTYPE questType)
 {
+	if (g_aQuest[questType].bClear == true)
+	{ // そのクエストがクリア状態であればリターンする
+		return;
+	}
+
 	switch (questType)
 	{
 	case QUESTTYPE_TEMPLE:	// 神殿
@@ -568,6 +574,7 @@ void ClearQuest(QUESTTYPE questType)
 		g_aQuest[QUESTTYPE_STREETLIGHT].state = QUESTSTATE_CLEAR;
 		break;
 	}
+	PlaySound(SOUND_LABEL_QUESTCLEAR);
 }
 
 //======================================================================================

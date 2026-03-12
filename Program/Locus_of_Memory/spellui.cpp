@@ -14,6 +14,7 @@
 #include "debugproc.h"
 #include "camera.h"
 #include "color.h"
+#include "sound.h"
 
 // マクロ定義
 #define MAX_COMMAND			(3)					// 受け付けるコマンドの最大数
@@ -892,6 +893,15 @@ void SetSpellUIAppear(int nIdx)
 			break;
 		}
 	}
+	if (nIdx == 0)	// 1P
+	{
+		PlaySound(SOUND_LABEL_SPELL0);
+	}
+	else if (nIdx == 1)	// 2P
+	{
+		PlaySound(SOUND_LABEL_SPELL1);
+	}
+
 	g_aSpellUI[nIdx].bSpell = true;
 	g_aSpellUI[nIdx].state = SPELLUISTATE_APPEAR;
 	g_aSpellUI[nIdx].rot = D3DXVECTOR3(0.0f, 3.14f, 0.0f);	// 中心位置
@@ -1017,6 +1027,11 @@ void SetSpellUIDisappear(int nIdx)
 	OPERATIONTYPE operationType = GetOperationType();
 	Player* pPlayer = GetPlayer();
 
+	if (g_aSpellUI[nIdx].bSpell == false)
+	{
+		return;
+	}
+
 	for (int nCntUI = 0; nCntUI < MAXSPELL_TYPE; nCntUI++)
 	{
 		// 各種情報の設定
@@ -1123,6 +1138,14 @@ void SetSpellUIDisappear(int nIdx)
 			g_aSpellUI[nIdx].aSpellUI[nCntUI].bDisp = true;			// 表示状態
 			break;
 		}
+	}
+	if (nIdx == 0)	// 1P
+	{
+		PlaySound(SOUND_LABEL_SPELL0);
+	}
+	else if (nIdx == 1)	// 2P
+	{
+		PlaySound(SOUND_LABEL_SPELL1);
 	}
 	g_aSpellUI[nIdx].state = SPELLUISTATE_DISAPPEAR;
 	g_aSpellUI[nIdx].rot = D3DXVECTOR3(0.0f, 3.14f, 0.0f);	// 中心位置

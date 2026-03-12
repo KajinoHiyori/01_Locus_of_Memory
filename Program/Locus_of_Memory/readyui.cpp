@@ -16,10 +16,10 @@
 
 // マクロ定義
 #define MAXREADYUI_TYPE		(READYUITYPE_MAX)	// テクスチャの最大数
-#define READY_WIDTH		(30.0f)				// 準備完了状態の幅
+#define READY_WIDTH			(30.0f)				// 準備完了状態の幅
 #define READY_HEIGHT		(READY_WIDTH / 2)	// 準備完了状態の高さ
-#define READY_X			(-10.0f)			// 準備完了状態のX軸
-#define READY_Y			(100.0f)				// 準備完了状態のY高度
+#define READY_X				(-10.0f)			// 準備完了状態のX軸
+#define READY_Y				(100.0f)			// 準備完了状態のY高度
 #define NUM_KEY				(30)				// 処理を行うキー数
 #define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 

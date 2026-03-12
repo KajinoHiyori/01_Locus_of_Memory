@@ -141,24 +141,56 @@ COMMANDOREDER PressCommand(int nIdx)
 	{//ÉRÉ}ÉìÉhÇ™âΩÇ‡ì¸óÕÇ≥ÇÍÇƒÇ¢Ç»Ç¢Ç∆Ç´
 		if (GetJoypadTrigger(JOYKEY_B, nIdx) == true || (GetKeyboardTrigger(DIK_L) == true && nIdx == 0))
 		{//B(ê‘)Ç™ì¸óÕÇ≥ÇÍÇΩ
+			if (nIdx == 0)	// 1P
+			{
+				PlaySound(SOUND_LABEL_COMMAND0);
+			}
+			else if (nIdx == 1)	// 2P
+			{
+				PlaySound(SOUND_LABEL_COMMAND1);
+			}
 			SetCommandTex(nIdx, g_aCntCommand[nIdx]);
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_R;
 			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_R;
 		}
 		else if (GetJoypadTrigger(JOYKEY_A, nIdx) == true || (GetKeyboardTrigger(DIK_K) == true && nIdx == 0))
 		{//A(óŒ)Ç™ì¸óÕÇ≥ÇÍÇΩ
+			if (nIdx == 0)	// 1P
+			{
+				PlaySound(SOUND_LABEL_COMMAND0);
+			}
+			else if (nIdx == 1)	// 2P
+			{
+				PlaySound(SOUND_LABEL_COMMAND1);
+			}
 			SetCommandTex(nIdx, g_aCntCommand[nIdx]);
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_G;
 			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_G;
 		}
 		else if (GetJoypadTrigger(JOYKEY_X, nIdx) == true || (GetKeyboardTrigger(DIK_J) == true && nIdx == 0))
 		{//X(ê¬)Ç™ì¸óÕÇ≥ÇÍÇΩ
+			if (nIdx == 0)	// 1P
+			{
+				PlaySound(SOUND_LABEL_COMMAND0);
+			}
+			else if (nIdx == 1)	// 2P
+			{
+				PlaySound(SOUND_LABEL_COMMAND1);
+			}
 			SetCommandTex(nIdx, g_aCntCommand[nIdx]);
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_B;
 			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_B;
 		}
 		else if (GetJoypadTrigger(JOYKEY_Y, nIdx) == true || (GetKeyboardTrigger(DIK_I) == true && nIdx == 0))
 		{//Y(â©)Ç™ì¸óÕÇ≥ÇÍÇΩ
+			if (nIdx == 0)	// 1P
+			{
+				PlaySound(SOUND_LABEL_COMMAND0);
+			}
+			else if (nIdx == 1)	// 2P
+			{
+				PlaySound(SOUND_LABEL_COMMAND1);
+			}
 			SetCommandTex(nIdx, g_aCntCommand[nIdx]);
 			g_aCommand[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_Y;
 			g_aCommandSave[nIdx][g_aCntCommand[nIdx]] = COMMANDTYPE_Y;

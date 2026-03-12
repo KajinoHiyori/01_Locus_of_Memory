@@ -334,6 +334,24 @@ void UpdatePlayer(void)
 				// ジャンプ処理
 				if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
 				{
+					// 歩いていたら歩行音を停止
+					if (nCntPlayer == 0)	// 1P
+					{
+						StopSound(SOUND_LABEL_WALK0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						StopSound(SOUND_LABEL_WALK1);
+					}
+
+					if (nCntPlayer == 0)	// 1P
+					{
+						PlaySound(SOUND_LABEL_JUMP0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						PlaySound(SOUND_LABEL_JUMP1);
+					}
 					g_aPlayer[nCntPlayer].move.y = JUMP;
 					g_aPlayer[nCntPlayer].bJump = true;
 					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
@@ -398,6 +416,24 @@ void UpdatePlayer(void)
 			// ジャンプ処理
 			if ((GetKeyboardTrigger(DIK_SPACE) == true || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
 			{
+				// 歩いていたら歩行音を停止
+				if (nCntPlayer == 0)	// 1P
+				{
+					StopSound(SOUND_LABEL_WALK0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					StopSound(SOUND_LABEL_WALK1);
+				}
+
+				if (nCntPlayer == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_JUMP0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_JUMP1);
+				}
 				g_aPlayer[nCntPlayer].move.y = JUMP;
 				g_aPlayer[nCntPlayer].bJump = true;
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_JUMP, false, true, BLENDFRAME);
@@ -478,31 +514,17 @@ void UpdatePlayer(void)
 
 		else if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE || g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING)
 		{// もし歩行中だったら
-			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
-			switch (g_aPlayer[nCntPlayer].motion.motionType)
+			if (nCntPlayer == 0)	// 1P
 			{
-			case (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE:
-				if (nCntPlayer == 0)	// 1P
-				{
-					StopSound(SOUND_LABEL_WALK0);
-				}
-				else if (nCntPlayer == 1)	// 2P
-				{
-					StopSound(SOUND_LABEL_WALK1);
-				}
-				break;
-
-			case (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING:
-				if (nCntPlayer == 0)	// 1P
-				{
-					StopSound(SOUND_LABEL_RUN0);
-				}
-				else if (nCntPlayer == 1)	// 2P
-				{
-					StopSound(SOUND_LABEL_RUN1);
-				}
-				break;
+				StopSound(SOUND_LABEL_WALK0);
+				StopSound(SOUND_LABEL_RUN0);
 			}
+			else if (nCntPlayer == 1)	// 2P
+			{
+				StopSound(SOUND_LABEL_WALK1);
+				StopSound(SOUND_LABEL_RUN1);
+			}
+			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);
 		}
 
 		// プレイヤーの方向を補正
@@ -556,9 +578,16 @@ void UpdatePlayer(void)
 			if (g_aPlayer[nCntPlayer].bJump == true)
 			{// ジャンプしている状態で判定があったら
 				// 着地モーション
+				if (nCntPlayer == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_LANDING0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_LANDING1);
+				}
 				SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
-
 				if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true))
 				{
 					SetSpellUIAppear(nCntPlayer);

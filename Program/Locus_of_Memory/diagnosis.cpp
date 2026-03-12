@@ -16,6 +16,7 @@
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
+#include "sound.h"
 
 // マクロ定義
 #define WIDTH			(650.0f)	// 幅
@@ -103,6 +104,7 @@ void UpdateDiagnosis(void)
 	{ // ENTERキー / Aボタン / STARTボタンが押された場合、ゲーム画面に遷移
 		g_bFadeScane = true;
 		SetFade(MODE_TITLE, COLOR_WHITE);
+		PlaySound(SOUND_LABEL_ENTER0);
 	}
 	
 }

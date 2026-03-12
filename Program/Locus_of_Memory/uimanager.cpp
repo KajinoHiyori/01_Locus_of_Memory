@@ -451,11 +451,27 @@ void UpdateUIManager(void)
 				switch (g_aUIManager[nCntPlayer].nSelect)
 				{
 				case UITYPE_CLOCK:	// 時計状態を選択
+					if (nCntPlayer == 0)	// 1P
+					{
+						PlaySound(SOUND_LABEL_ENTER0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						PlaySound(SOUND_LABEL_ENTER1);
+					}
 					SetUIDissapear(nCntPlayer);
 					g_aUIManager[nCntPlayer].stateNext = UISTATE_CLOCKAPPEAR;
 					break;
 
 				case UITYPE_CONTINUE:	// CONTINUEを選択
+					if (nCntPlayer == 0)	// 1P
+					{
+						PlaySound(SOUND_LABEL_ENTER0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						PlaySound(SOUND_LABEL_ENTER1);
+					}
 					SetUIDissapear(nCntPlayer);
 					if ((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true)
 					{
@@ -478,9 +494,25 @@ void UpdateUIManager(void)
 						SetFade(MODE_GAME, COLOR_WHITE);
 						break;
 					}
+					if (nCntPlayer == 0)	// 1P
+					{
+						PlaySound(SOUND_LABEL_ENTER0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						PlaySound(SOUND_LABEL_ENTER1);
+					}
 					break;
 
 				case UITYPE_QUIT:	// QUITを選択
+					if (nCntPlayer == 0)	// 1P
+					{
+						PlaySound(SOUND_LABEL_ENTER0);
+					}
+					else if (nCntPlayer == 1)	// 2P
+					{
+						PlaySound(SOUND_LABEL_ENTER1);
+					}
 					SetFade(MODE_TITLE, COLOR_WHITE);
 					break;
 				}
@@ -513,6 +545,14 @@ void UpdateUIManager(void)
 		case UISTATE_CLOCK:	// 時計
 			if ((GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0) || GetJoypadTrigger(JOYKEY_A, nCntPlayer) == true)
 			{
+				if (nCntPlayer == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_ENTER0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_ENTER1);
+				}
 				SetClockDissapear(nCntPlayer);
 				g_aUIManager[nCntPlayer].stateNext = UISTATE_APPEAR;
 			}
@@ -785,6 +825,15 @@ void UpdateUIBG(int nIdx)
 //========================================================================
 void SetUIAppear(int nIdx)
 {
+	if (nIdx == 0)	// 1P
+	{
+		PlaySound(SOUND_LABEL_PAUSE0);
+	}
+	else if (nIdx == 1)	// 2P
+	{
+		PlaySound(SOUND_LABEL_PAUSE1);
+	}
+
 	g_aUIManager[nIdx].bPause = true;
 	g_aUIManager[nIdx].state = UISTATE_APPEAR;
 	g_aUIManager[nIdx].nKey = 0;
@@ -804,6 +853,15 @@ void SetUIAppear(int nIdx)
 //========================================================================
 void SetUIDissapear(int nIdx)
 {
+	if (nIdx == 0)	// 1P
+	{
+		PlaySound(SOUND_LABEL_PAUSE0);
+	}
+	else if (nIdx == 1)	// 2P
+	{
+		PlaySound(SOUND_LABEL_PAUSE1);
+	}
+
 	for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 	{
 		g_aUIManager[nIdx].aUITexture[nCntUI].bDisp = false;
@@ -869,6 +927,14 @@ void SetUINonDisp(int nIdx)
 //========================================================================
 void SetClockAppear(int nIdx)
 {
+	if (nIdx == 0)	// 1P
+	{
+		PlaySound(SOUND_LABEL_PAUSE0);
+	}
+	else if (nIdx == 1)	// 2P
+	{
+		PlaySound(SOUND_LABEL_PAUSE1);
+	}
 	g_aUIManager[nIdx].bPause = true;
 	g_aUIManager[nIdx].state = UISTATE_CLOCKAPPEAR;
 	g_aUIManager[nIdx].nKey = 0;
@@ -905,6 +971,14 @@ void SetClockMenu(int nIdx)
 //========================================================================
 void SetClockDissapear(int nIdx)
 {
+	if (nIdx == 0)	// 1P
+	{
+		PlaySound(SOUND_LABEL_PAUSE0);
+	}
+	else if (nIdx == 1)	// 2P
+	{
+		PlaySound(SOUND_LABEL_PAUSE1);
+	}
 	DissapearBattery(nIdx);
 	DisappearClock(nIdx);
 	g_aUIManager[nIdx].aUITexture[UITEX_BATTERY].bDisp = false;			// 表示状態の管理
