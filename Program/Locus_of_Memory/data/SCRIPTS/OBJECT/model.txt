@@ -43,7 +43,7 @@ MODEL_FILENAME = data/MODEL/lectern/lectern.x   			# [9]èëå©ë‰
 MODEL_FILENAME = data/MODEL/castle/castle100.x  			# [10]èÈ
 MODEL_FILENAME = data/MODEL/tree/x/trees000.x				# [11]ñÿ (ï°êî)
 MODEL_FILENAME = data/MODEL/tree/x/tree000.x				# [12]ñÿ
-MODEL_FILENAME = data/MODEL/streetlight/streetlight001.x	# [13]äXìî
+MODEL_FILENAME = data/MODEL/streetlight/streetlight001.x	# [13]äXìî[ìîÇËñ≥]
 MODEL_FILENAME = data/MODEL/gate/gate001.x					# [14]ñÂ
 MODEL_FILENAME = data/MODEL/animal/dragon_All.x				# [15]ÉhÉâÉSÉì
 MODEL_FILENAME = data/MODEL/benti/benti.x					# [16]ÉxÉìÉ`
@@ -594,46 +594,43 @@ END_MODELSET
 #------------------------------------------------------------------------------
 # äXìî
 #------------------------------------------------------------------------------
+
 MODELSET
-	TYPE = 13
-	POS = 628 0 -799
-	ROT = 0 0 0
+	TYPE = 29
+	POS = -189 0 1280
+	ROT = 0 90 0
 	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
+	COLLISION = 1
 END_MODELSET
 
 MODELSET
-	TYPE = 13
-	POS = -275 0 -1039
+	TYPE = 29
+	POS = -189 0 689
 	ROT = 0 90 0
 	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 29
+	POS = 319 0 424
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
+END_MODELSET
+
+MODELSET
+	TYPE = 29
+	POS = 319 0 1070
+	ROT = 0 90 0
+	SHADOW = 0
+	COLLISION = 1
 END_MODELSET
 
 MODELSET
 	TYPE = 29
 	POS = 511 0 -417
 	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
-END_MODELSET
-
-MODELSET
-	TYPE = 13
-	POS = 175 0 -940
-	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 0
 	COLLIDERSET
@@ -655,33 +652,9 @@ MODELSET
 END_MODELSET
 
 MODELSET
-	TYPE = 13
-	POS = -267 0 -1544
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
-END_MODELSET
-
-MODELSET
 	TYPE = 29
 	POS = -247 0 -533
 	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
-END_MODELSET
-
-MODELSET
-	TYPE = 13
-	POS = -1247 0 -4565
-	ROT = 0 0 0
 	SHADOW = 0
 	COLLISION = 0
 	COLLIDERSET
@@ -3489,71 +3462,10 @@ MODELSET
 END_MODELSET
 
 #------------------------------------------------------------------------------
-# ì±ê¸
+# ìîÇËÇÃÇ»Ç¢äXìî
 #------------------------------------------------------------------------------
-MODELSET
-	TYPE = 29
-	POS = -189 0 1280
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
 
-MODELSET
-	TYPE = 13
-	POS = -189 0 424
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
 
-MODELSET
-	TYPE = 29
-	POS = -189 0 689
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 13
-	POS = -189 0 1070
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 29
-	POS = 319 0 424
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 13
-	POS = 319 0 689
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 29
-	POS = 319 0 1070
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 13
-	POS = 319 0 1280
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
 
 #------------------------------------------------------------------------------
 # äKëwç\ë¢ÇÃÇ†ÇÈêÖé‘è¨âÆ

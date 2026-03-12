@@ -34,6 +34,7 @@ bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type, int nIdx) =
 	SetMagicEvent007,
 	SetMagicEvent008,
 	SetMagicEvent009,
+	SetMagicEvent010,
 };
 
 //========================================================================
@@ -355,6 +356,32 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 
 	return isSuccess;
 }
+
+//========================================================================
+// 各魔法イベント処理[街灯置き換え処理]
+//========================================================================
+bool SetMagicEvent010(MAGICTYPE type, int nIdx)
+{
+	EventObject* pEventObject = GetEventObject(nIdx);
+	ObjectModel* pObjectModel = GetObjectModel(OBJECTTYPE_STREETLIGHT001);	// 
+	bool isSuccess = false;
+	switch (type)
+	{
+	case MAGICTYPE_FLASH:	// フラッシュ
+		pEventObject->EventType = EVENTTYPE_010_0;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_FLASH, nIdx);
+		pEventObject->ObjectInfo.NormalObject.type = OBJECTTYPE_STREETLIGHT001;
+		pEventObject->ObjectInfo.NormalObject.pModelData = pObjectModel;
+		isSuccess = true;
+		ClearQuest(QUESTTYPE_STREETLIGHT);
+		break;
+	}
+
+	pEventObject->isEvent = isSuccess;
+
+	return isSuccess;
+}
+
 
 //========================================================================
 // イベントの設置
