@@ -25,6 +25,7 @@ typedef enum
 	EVENTSTATE_NORMAL = 0,
 	EVENTSTATE_LOOKDOWN,	// å©â∫ÇÎÇµèÛë‘
 	EVENTSTATE_BOOK,		// ñ{Çå©ÇÈèÛë‘
+	EVENTSTATE_SUNSETDELAY,	// éûä‘í‚é~
 	EVENTSTATE_MAX
 }EVENTSTATE;
 
@@ -34,6 +35,7 @@ void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
 void SetGameState(GAMESTATE state, int nCounter);
+void SetTimerStop(int nCounter);
 GAMESTATE GetGameState(void);
 EVENTSTATE *GetEventState(void);
 

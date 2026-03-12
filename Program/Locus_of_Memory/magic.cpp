@@ -18,6 +18,7 @@
 #include "spellui.h"
 #include "magicui.h"
 #include "sound.h"
+#include "game.h"
 
 //マクロ定義
 #define MAX_MAGIC				(128)		//魔法の最大数
@@ -26,6 +27,7 @@
 #define DROPMAGIC_MEDIUMRADIUS	(100.0f)	//落ちてる魔法の半径
 #define DROPMAGIC_FARRADIUS		(130.0f)	//落ちてる魔法の半径
 #define DISP_MAGIC				(30)		// UIの発動魔法表示時間管理
+#define SUNSETDELAY_TIME		(840)		// 時間停止魔法の継続時間
 
 //グローバル変数宣言
 Magic g_aMagic[MAX_PLAYER];								//魔法の情報
@@ -463,6 +465,7 @@ MAGICTYPE ChangeMagic(COMMANDOREDER commandorder)
 void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nIdx)
 {
 	Player* pPlayer = GetPlayer();
+	EVENTSTATE* pEventState = GetEventState();
 
 	pPlayer += nIdx;
 
@@ -533,6 +536,8 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R]++;
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
+				SetTimerStop(SUNSETDELAY_TIME);
+				*pEventState = EVENTSTATE_SUNSETDELAY;
 				break;
 
 				//雨乞い
@@ -728,7 +733,7 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 		
 		}
 	}
-	if (type != MAGICTYPE_LEVITATION && type != MAGICTYPE_GROWTH)
+	if (type != MAGICTYPE_LEVITATION && type != MAGICTYPE_GROWTH && type != MAGICTYPE_SUNSETDELAY)
 	{
 		SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD, false, true, BLENDFRAME);
 	}

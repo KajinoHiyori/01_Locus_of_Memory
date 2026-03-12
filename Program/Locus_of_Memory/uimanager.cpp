@@ -401,6 +401,14 @@ void UpdateUIManager(void)
 			// ‘I‘ğ‚É‡‚í‚¹‚Äƒƒjƒ…[‚ğØ‚è‘Ö‚¦
 			if ((GetKeyboardRepeat(DIK_W) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_UP, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_UP, nCntPlayer) == true)
 			{
+				if (nCntPlayer == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_SELECT0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_SELECT1);
+				}
 				g_aUIManager[nCntPlayer].nSelect--;
 				if (g_aUIManager[nCntPlayer].nSelect < UITYPE_CLOCK)
 				{
@@ -409,6 +417,14 @@ void UpdateUIManager(void)
 			}
 			else if ((GetKeyboardRepeat(DIK_S) == true && nCntPlayer == 0) || GetJoypadRepeat(JOYKEY_DOWN, nCntPlayer) == true || GetJoypadStickRepeatL(JOYSTICK_DOWN, nCntPlayer) == true)
 			{
+				if (nCntPlayer == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_SELECT0);
+				}
+				else if (nCntPlayer == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_SELECT1);
+				}
 				g_aUIManager[nCntPlayer].nSelect++;
 				if (g_aUIManager[nCntPlayer].nSelect > UITYPE_QUIT)
 				{

@@ -230,7 +230,7 @@ void UpdateGameCamera(void)
 
 	for (int nCntCamera = 0; nCntCamera < g_nNumCamera; nCntCamera++, pCamera++, pPlayer++)
 	{
-		if (*pEventState == EVENTSTATE_NORMAL)
+		if (*pEventState == EVENTSTATE_NORMAL || *pEventState == EVENTSTATE_SUNSETDELAY)
 		{
 			//if (GetJoypadAny(nCntCamera) == false)
 			//{// ‰½‚à‚µ‚Ä‚¢‚È‚¯‚ê‚Î

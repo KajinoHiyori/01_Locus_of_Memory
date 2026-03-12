@@ -56,7 +56,8 @@
 
 GAMESTATE g_gameState = GAMESTATE_NONE;		// ゲームの状態
 EVENTSTATE g_eventState;
-int g_nCounterGameState = 0;				// 状態管理カウンター
+int g_nCounterGameState = 0;	// 状態管理カウンター
+int g_nCounterTimerStop = 0;	// 時間停止魔法の効果時間
 
 //=======================================================
 // ゲームの初期化処理
@@ -132,6 +133,9 @@ void InitGame(void)
 
 	//俯瞰状態に
 	g_eventState = EVENTSTATE_LOOKDOWN;
+
+	g_nCounterGameState = 0;	// 状態管理カウンターの初期化
+	g_nCounterTimerStop = 0;	// 時間停止魔法の効果時間の初期化
 
 	// プレイヤーの設置
 	OPERATIONTYPE operationtyoe = GetOperationType();
@@ -295,6 +299,17 @@ void UpdateGame(void)
 	case EVENTSTATE_BOOK:
 		break;
 
+	case EVENTSTATE_SUNSETDELAY:
+		// 時間停止状態
+		g_nCounterTimerStop--;
+		PrintDebugProc("時間停止魔法中 %d\n", g_nCounterTimerStop);
+		SetClockState(CLOCKSTATE_STOP);	// 時間停止状態に設定
+		if (g_nCounterTimerStop < 0)
+		{
+			SetClockState(CLOCKSTATE_OPERATION);	// 時間停止状態に設定
+			g_eventState = EVENTSTATE_NORMAL;
+		}
+		break;
 	}
 
 	bool bNextMode = GetGoalState();
@@ -496,6 +511,14 @@ void SetGameState(GAMESTATE state, int nCounter)
 {
 	g_gameState = state;				// ゲーム状態設定
 	g_nCounterGameState = nCounter;		// 状態管理カウンター設定
+}
+
+//=======================================================
+// 時間停止魔法の時間を設定
+//=======================================================
+void SetTimerStop(int nCounter)
+{
+	g_nCounterTimerStop = nCounter;
 }
 
 //=======================================================
