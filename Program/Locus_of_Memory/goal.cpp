@@ -51,7 +51,7 @@ void UninitGoal(void)
 //=============================================================================
 void UpdateGoal(void)
 {
-	g_NextMode = false;
+	//g_NextMode = false;
 	// ƒS[ƒ‹‚Ì“–‚½‚è”»’è
 	CollisionGoal();
 
@@ -121,7 +121,7 @@ void CollisionGoal(void)
 				}
 			}
 		}
-		else
+		else if (afLength[nCntPlayer] > GOAL_SIZE && g_NextMode == false)
 		{
 			g_abGoal[nCntPlayer] = false;
 		}
@@ -143,7 +143,7 @@ void CollisionGoal(void)
 				SetReadyUI(0, READYUITYPE_GAMEX);
 			}
 		}
-		else
+		else if (g_NextMode == false)
 		{ // ‘JˆÚŠ®—¹ó‘Ô‚ÉˆÚs‚Å‚«‚é”ÍˆÍ‚É‚¢‚È‚¢
 			ResetReadyUI(0);
 		}
@@ -176,6 +176,8 @@ void CollisionGoal(void)
 
 		if (g_abGoal[0] == true && g_abGoal[1] == true)
 		{
+			SetReadyUI(0, READYUITYPE_GOAL);
+			SetReadyUI(1, READYUITYPE_GOAL);
 			g_NextMode = true;
 		}
 		break;
@@ -193,7 +195,7 @@ void CollisionGoal(void)
 				SetReadyUI(0, READYUITYPE_GAMEENTER);
 			}
 		}
-		else
+		else if (g_NextMode == false)
 		{ // ‘JˆÚŠ®—¹ó‘Ô‚ÉˆÚs‚Å‚«‚é”ÍˆÍ‚É‚¢‚È‚¢
 			ResetReadyUI(0);
 		}

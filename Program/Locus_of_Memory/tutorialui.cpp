@@ -218,7 +218,7 @@ void UpdateTutorialUI(void)
 			if (g_aTutorialUI[nCntUI].type == TUTORIALUITYPE_MAGICCIRCLE)
 			{
 				g_aTutorialUI[nCntUI].rot.x += CIRCLE_ROTATE;
-				g_aTutorialUI[nCntUI].rot.y += CIRCLE_ROTATE;
+				//g_aTutorialUI[nCntUI].rot.y += CIRCLE_ROTATE;
 				g_aTutorialUI[nCntUI].rot.z += CIRCLE_ROTATE;
 				g_aTutorialUI[nCntUI].fWidth = CIRCLE_SIZE;
 				g_aTutorialUI[nCntUI].fHeight = CIRCLE_SIZE;

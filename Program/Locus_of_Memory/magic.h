@@ -103,12 +103,13 @@ typedef enum MAGICEVENT
 	MAGICEVENT_002,				// ‹´
 	MAGICEVENT_003,				// A•¨[¬’·/”RÄ]
 	MAGICEVENT_004,				// A•¨[Šª‚«–ß‚µ]
-	MAGICEVENT_005,				// –¼Ì–¢’è
-	MAGICEVENT_006,				// –¼Ì–¢’è
-	MAGICEVENT_007,				// –¼Ì–¢’è
-	MAGICEVENT_008,				// –¼Ì–¢’è
-	MAGICEVENT_009,				// –¼Ì–¢’è
-	MAGICEVENT_010,				// –¼Ì–¢’è
+	MAGICEVENT_005,				// ’r‚Ì•XŒ‹
+	MAGICEVENT_006,				// ’r‚ª—n‚¯‚é
+	MAGICEVENT_007,				// ‰Ô[¬’·/”RÄ]
+	MAGICEVENT_008,				// ‰Ô[Šª‚«–ß‚µ]
+	MAGICEVENT_009,				// ƒhƒ‰ƒSƒ“‚ªá¿‚µ‚ª‚é
+	MAGICEVENT_010,				// ŠX“”‚É“”‚è‚ð‚Æ‚à‚·
+	MAGICEVENT_011,				// ’b–èê‚É‰Î‚ð‚Â‚¯‚é
 	MAGICEVENT_MAX,
 }MAGICEVENT;
 

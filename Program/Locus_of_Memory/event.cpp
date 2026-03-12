@@ -17,6 +17,8 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
+#define BLACKSMITH_POS	(D3DXVECTOR3(-3200.0f, 0.0f, 950.0f))	// 鍛冶場の位置
+#define FIRE_PARTICLE	(D3DXVECTOR3(BLACKSMITH_POS.x - 100.0f, BLACKSMITH_POS.y + 20.0f, BLACKSMITH_POS.z))
 
 //*****************************************************************************
 // グローバル変数
@@ -35,6 +37,7 @@ bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type, int nIdx) =
 	SetMagicEvent008,
 	SetMagicEvent009,
 	SetMagicEvent010,
+	SetMagicEvent011,
 };
 
 //========================================================================
@@ -379,6 +382,31 @@ bool SetMagicEvent010(MAGICTYPE type, int nIdx)
 
 	pEventObject->isEvent = isSuccess;
 
+	return isSuccess;
+}
+
+//========================================================================
+// 各魔法イベント処理[鍛冶場に火をつける]
+//========================================================================
+bool SetMagicEvent011(MAGICTYPE type, int nIdx)
+{
+	// EventObject* pEventObject = GetEventObject(nIdx);
+	bool isSuccess = false;
+	switch (type)
+	{
+	case MAGICTYPE_COMBUSTION:	// 燃焼
+		//pEventObject->EventType = EVENTTYPE_008_0;
+		SetParticle(FIRE_PARTICLE, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		isSuccess = true;
+		break;
+
+	case MAGICTYPE_FIREBALL:	// 燃焼
+	//pEventObject->EventType = EVENTTYPE_008_0;
+		SetParticle(FIRE_PARTICLE, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		isSuccess = true;
+		break;
+	}
+	ClearQuest(QUESTTYPE_BLACKSMITH);
 	return isSuccess;
 }
 
