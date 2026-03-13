@@ -74,11 +74,13 @@ void UninitParticle(void)
 void UpdateParticle(void)
 {
 	D3DXVECTOR3 pos[3];
-	D3DXVECTOR3 move[3][PARTICLETYPE_MAX];		//パーティクルのmove
+	D3DXVECTOR3 move[4][PARTICLETYPE_MAX];		//パーティクルのmove
 	D3DXVECTOR3 rot;							//向き
 	float fSpeed;								//速度調整
 	float fAngle = 0.0f;
 	float fRadius = 0.0f;
+	float theta = 0.0f;							//シータ
+	float phi = 0.0f;							//ファイ
 	int nCountParticle = 0;
 
 	for (int nCntMovetype = 0; nCntMovetype < 3; nCntMovetype++)
@@ -281,26 +283,45 @@ void UpdateParticle(void)
 				case PARTICLETYPE_FLASH:
 					for (int nCntAppear = 0; nCntAppear < MAX_APPEAR; nCntAppear++)
 					{
-						//位置の設定
-						pos[0].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
-						pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
-						pos[0].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+						theta = 2.0f * D3DX_PI * RandFloat(); 
+						phi = acosf(2.0f * RandFloat() - 1.0f);
 
 						//位置の設定
-						pos[1].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
-						pos[1].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
-						pos[1].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+						pos[0].x = sinf(phi) * cosf(theta);
+						pos[0].y = sinf(phi) * sinf(theta);
+						pos[0].z = cosf(phi);
 
-						rot.x = ((float)(rand() % 629 - 314) / pos[0].x);
+						fSpeed = 1.0f + RandFloat() * 2.0f;
+
+						//pos[0].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100))) * (float)(rand() % 40 + 1);
+						//pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + (cosf((float)(rand() % 629 - 314 / 100))) * (float)(rand() % 40 + 1);
+						//pos[0].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + (sinf((float)(rand() % 629 - 314 / 100))) * (float)(rand() % 40 + 1);
+
+						//位置の設定
+						pos[1].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100))) * (float)(rand() % 45 + 1);
+						pos[1].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + (cosf((float)(rand() % 629 - 314 / 100))) * (float)(rand() % 45 + 1);
+						pos[1].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + (sinf((float)(rand() % 629 - 314 / 100))) * (float)(rand() % 45 + 1);
+
+						/*rot.x = ((float)(rand() % 629 - 314) / pos[0].x);
 						rot.y = ((float)(rand() % 629 - 314) / pos[0].y);
-						rot.z = ((float)(rand() % 629 - 314) / pos[0].z);
+						rot.z = ((float)(rand() % 629 - 314) / pos[0].z);*/
 
-						move[0][PARTICLETYPE_FLASH].x = (sinf(rot.z)) * 5;
-						move[0][PARTICLETYPE_FLASH].y = (cosf(rot.z)) * 5;
-						/*move[0][PARTICLETYPE_FLASH].z = (sinf(rot.z)) * 5;*/
+						move[0][PARTICLETYPE_FLASH].x = (pos[0].x) * 3;
+						move[0][PARTICLETYPE_FLASH].y = (pos[0].y) * 3;
+						move[0][PARTICLETYPE_FLASH].z = (pos[0].z) * 3;
 
-						SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 15);
-						SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_DIAMOND, pos[1], move[0][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 10);
+						move[1][PARTICLETYPE_FLASH].x = (sinf(pos[1].y)) * 3;
+						move[1][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 3;
+
+						move[2][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 3;
+						move[2][PARTICLETYPE_FLASH].z = (sinf(pos[1].y)) * 3;
+
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 12);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 20);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[1][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 8);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[1][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 12);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[2][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 8);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[2][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 12);
 					}
 					//move.x = (sinf((float)(rand() % ANGLE_DOUBLE - MAX_ANGLE) / ANGLE_ADJUST) * (float)(rand() % MOVE_PARTICLE) / MOVE_ADJUST + MOVE_MIN) * SPEED_EXPLOSION;	// 移動量X
 					//move.y = (cosf((float)(rand() % ANGLE_DOUBLE - MAX_ANGLE) / ANGLE_ADJUST) * (float)(rand() % MOVE_PARTICLE) / MOVE_ADJUST + MOVE_MIN) * SPEED_EXPLOSION;	// 移動量Y
@@ -523,4 +544,11 @@ void SetParticle(D3DXVECTOR3 pos, int nLife, PARTICLETYPE type, int nIdx)
 			}
 		}
 	}
+}
+
+//========================================================================
+//0.0～1.0の乱数
+float RandFloat(void)
+{
+	return (float)rand() / (float)RAND_MAX;
 }

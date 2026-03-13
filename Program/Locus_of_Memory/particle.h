@@ -36,5 +36,8 @@ void UninitParticle(void);
 void UpdateParticle(void);
 void DrawParticle(void);
 void SetParticle(D3DXVECTOR3 pos, int nLife, PARTICLETYPE type, int nIdx);
+
+float RandFloat(void);
+
 #endif 
 

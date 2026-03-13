@@ -189,7 +189,7 @@ void UpdateEffect(void)
 
 		if (pEffect->bUse == true)
 		{
-			if (pEffect->type == EFFECT_TYPE_RAIN)
+			if (pEffect->type == EFFECT_TYPE_RAIN || pEffect->type == EFFECT_TYPE_FLASH)
 			{
 				if (pEffect->pos.y <= 0)
 				{
