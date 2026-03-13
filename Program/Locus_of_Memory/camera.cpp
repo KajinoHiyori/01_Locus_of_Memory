@@ -561,6 +561,14 @@ void SetModeCamera(MODE mode)
 		break;
 
 	case MODE_RESULT:
+		SetNumCamera();
+		pCamera->posV = INIT_TITLECAMERA_POSV;
+		pCamera->posVDest = INIT_TITLECAMERA_POSV;
+		pCamera->posR = INIT_TITLECAMERA_POSR;
+		pCamera->posRDest = INIT_TITLECAMERA_POSR;
+		pCamera->vecU = INIT_VECU;
+		pCamera->rot = INIT_TITLECAMERA_ROT;
+		pCamera->rotDest = INIT_TITLECAMERA_ROT;
 		break;
 
 	case MODE_DIAGNOSIS:
@@ -575,9 +583,15 @@ void SetNumCamera(void)
 {
 	Camera* pCamera = &g_acamera[0];
 	CameraInfo* pCameraInfo = &g_acameraInfo[0];
-
+	MODE mode = GetMode();	// 現在のモードを取得
 	OPERATIONTYPE operationtype = GetOperationType();		// 今の操作タイプ
-	if(operationtype == OPERATIONTYPE_2P)
+
+	if (mode == MODE_GAME)
+	{
+		g_nNumCamera = INIT_NUMCAMERA;
+		pCamera->viewport = DEFAULT_VEIWPORT;
+	}
+	else if(operationtype == OPERATIONTYPE_2P)
 	{// 2Pプレイだったら
 		g_nNumCamera = CAMERA_2PPLAY;
 		for (int nCntCamera = 0; nCntCamera < g_nNumCamera; nCntCamera++, pCamera++, pCameraInfo++)
