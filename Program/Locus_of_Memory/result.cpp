@@ -21,6 +21,7 @@
 #include "color.h"
 #include "animal.h"
 #include"sound.h"
+#include "field.h"
 
 // グローバル変数
 LPDIRECT3DTEXTURE9    g_pTextureResult = NULL;        // テクスチャへのポインタ
@@ -105,6 +106,9 @@ void DrawResult(void)
 
     // 塀の描画処理
     DrawBrickWall();
+
+    // 地面の描画処理
+    DrawField();
 
     // リザルトUIの描画処理
     DrawResultUI();
