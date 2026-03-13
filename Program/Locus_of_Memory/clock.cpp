@@ -16,6 +16,7 @@
 
 // マクロ定義
 #define NUM_PLACE		(4)				// 時計の最大数
+#define MAX_TEXTURE		(1)				// テクスチャの最大数
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 #define PHONE_WIDTH		(28.125f)			// スマホの幅
 #define PHONE_HEIGHT	(50.0f)				// スマホの高さ
@@ -56,13 +57,13 @@ typedef struct
 	CLOCKSTATE state;	// 稼働状態
 }Time;
 
-const char* c_pFilenameclock[1] =
+const char* c_pFilenameclock[MAX_TEXTURE] =
 {
 	"data\\TEXTURE\\number.png",
 };
 
 // グローバル変数
-LPDIRECT3DTEXTURE9 g_apTextureClock[NUM_PLACE] = {};
+LPDIRECT3DTEXTURE9 g_apTextureClock[MAX_TEXTURE] = {};
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffClock = NULL;
 Clock g_aClock[MAX_PLAYER];
 Time g_time;
@@ -83,7 +84,7 @@ void InitClock(void)
 	Player* pPlayer = GetPlayer();
 
 	// テクスチャの読み込み
-	for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
+	for (int nCntClock = 0; nCntClock < MAX_TEXTURE; nCntClock++)
 	{
 		if (g_apTextureClock[nCntClock] == NULL)
 		{
@@ -156,7 +157,7 @@ void InitClock(void)
 void UninitClock(void)
 {
 	// テクスチャの破棄
-	for (int nCntClock = 0; nCntClock < NUM_PLACE; nCntClock++)
+	for (int nCntClock = 0; nCntClock < MAX_TEXTURE; nCntClock++)
 	{
 		if (g_apTextureClock[nCntClock] != NULL)
 		{

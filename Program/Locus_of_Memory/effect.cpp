@@ -179,11 +179,6 @@ void UpdateEffect(void)
 		SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXVECTOR3(0.0f, 5.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20, 50.0f);
 	}
 
-	VERTEX_3D* pVtx;    //頂点情報の設定
-
-	//頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffEffect->Lock(0, 0, (void**)&pVtx, 0);
-
 	for (int nCntEffect = 0; nCntEffect < g_nNumEffect; nCntEffect++)
 	{
 		if (pEffect->bUse == false)
