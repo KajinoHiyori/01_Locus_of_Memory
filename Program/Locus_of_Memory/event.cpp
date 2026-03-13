@@ -349,7 +349,19 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
-			MOTIONTYPE_MOVE, true, false, 10);
+			MOTIONTYPE_MOVE, false, false, 10);
+		isSuccess = true;
+		ClearQuest(QUESTTYPE_DRAGON);
+		break;
+
+	case MAGICTYPE_RAINPRAY:	// ‰JŒî‚¢
+		pEventObject->EventType = EVENTTYPE_009_1;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_RAINPRAY, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		SetMagicLocus(MAGICEVENT_008, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		ClearQuest(QUESTTYPE_DRAGON);
 		break;

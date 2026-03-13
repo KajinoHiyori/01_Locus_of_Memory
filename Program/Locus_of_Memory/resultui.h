@@ -37,6 +37,7 @@ typedef enum
 }RESULTUITEX;
 
 // プロトタイプ宣言
+#if 0
 void InitResultUI(void);
 void UninitResultUI(void);
 void UpdateResultUI(void);
@@ -45,4 +46,5 @@ void SetResultUI(RESULTUITYPE type, OPERATIONTYPE operationType);
 
 void SetResultUIAppear(int nIdx);
 void SetResultUIDisp(int nIdx);
+#endif
 #endif

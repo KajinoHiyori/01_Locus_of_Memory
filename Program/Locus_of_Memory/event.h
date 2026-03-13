@@ -35,6 +35,7 @@ typedef enum EVENTTYPE
 	EVENTTYPE_007_1,	// ‰Ô‚Ì¬’·
 	EVENTTYPE_008_0,	// ‰Ô‚ªˆÞ‚Þ
 	EVENTTYPE_009_0,	// ƒhƒ‰ƒSƒ“‚ªá¿‚µ‚ª‚é
+	EVENTTYPE_009_1,	// ƒhƒ‰ƒSƒ“‚ªá¿‚µ‚ª‚é
 	EVENTTYPE_010_0,	// ŠX“”‚É“”‚è‚ð‚Æ‚à‚·
 	EVENTTYPE_011_0,	// ’b–èê‚É‰Î‚ð‚Â‚¯‚é
 	EVENTTYPE_011_1,	// ’b–èê‚É‰Î‚ð‚Â‚¯‚é
