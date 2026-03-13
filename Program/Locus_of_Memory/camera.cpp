@@ -562,13 +562,13 @@ void SetModeCamera(MODE mode)
 
 	case MODE_RESULT:
 		SetNumCamera();
-		pCamera->posV = INIT_TITLECAMERA_POSV;
-		pCamera->posVDest = INIT_TITLECAMERA_POSV;
-		pCamera->posR = INIT_TITLECAMERA_POSR;
-		pCamera->posRDest = INIT_TITLECAMERA_POSR;
-		pCamera->vecU = INIT_VECU;
-		pCamera->rot = INIT_TITLECAMERA_ROT;
-		pCamera->rotDest = INIT_TITLECAMERA_ROT;
+		pCamera->posV		= INIT_RESULTCAMERA_POSV;
+		pCamera->posVDest	= INIT_RESULTCAMERA_POSV;
+		pCamera->posR		= INIT_RESULTCAMERA_POSR;
+		pCamera->posRDest	= INIT_RESULTCAMERA_POSR;
+		pCamera->vecU		= INIT_VECU;
+		pCamera->rot		= INIT_RESULTCAMERA_ROT;
+		pCamera->rotDest	= INIT_RESULTCAMERA_ROT;
 		break;
 
 	case MODE_DIAGNOSIS:

@@ -1,6 +1,6 @@
 //======================================================================================
 // 
-// リザルトの2DUI処理[resultui.h]
+// リザルトのUI処理[resultui.h]
 // Author : Kajino Hiyori
 //
 //======================================================================================
@@ -15,71 +15,71 @@
 #include "player.h"
 #include "debugproc.h"
 
-#if 0
-// リザルトUI演出の管理
-typedef enum
-{
-	RESULTUISTATE_NONDISPLAY = 0,	// 非表示
-	RESULTUISTATE_APPEAR,			// 出現
-	RESULTUISTATE_DISPLAY,		// 表示
-	RESULTUISTATE_DISAPPEAR,		// 収縮
-}RESULTUISTATE;
-
 // リザルトUIの構造体
 typedef struct
 {
 	D3DXMATRIX		mtxWorld;	// ワールドマトリックス
 	D3DXVECTOR3		pos;		// 位置
-	D3DXVECTOR3		rot;		// 向き
 	RESULTUITYPE	type;		// 種類
-	RESULTUISTATE state;		// 状態
-	float	fWidth;			// 幅
-	float	fWidthDest;		// 幅の目的値
-	float	fHeight;		// 高さ
-	float	fHeightDest;	// 高さの目的値
-	int		nNumKey;		// 浮遊感をカウントするキー数
-	int		nKey;			// 現在のキー数
-	bool	bDisp;			// 表示状態
+	RESULTUITEX		tex;		// テクスチャ
+	float	fWidth;		// 幅
+	float	fHeight;	// 高さ
+	int		nKey;		// 現在の処理キー
+	int		nNumKey;	// フレーム数
+	bool	bDisp;		// 表示状態
 }ResultUI;
 
 // マクロ定義
-#define NUM_RESULTUI		(RESULTUITYPE_MAX - 2)						// リザルトUIの表示数
-#define MAX_RESULTUI		(RESULTUITYPE_MAX)	// テクスチャの最大数
+#define NUM_RESULTUI		(RESULTUITYPE_MAX)	// リザルトUIの表示数
+#define MAXRESULT_TEX		(RESULTUITEX_MAX)	// テクスチャの最大数
 #define WIDTH				(105.0f)	// 横幅
-#define HEIGHT				(70.0f)	// 縦幅
+#define HEIGHT				(70.0f)		// 縦幅
 #define UI_KEY				(30)		// UIのキー数
-#define CIRCLE_SIZE			(90.0f)	// 魔法陣の大きさ
 #define UI_ROT				(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 表示方向
-#define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))		// 法線ベクトル
-#define PLAY_POS			(D3DXVECTOR3(-3480.0f, 120.0f, -3100.0f))	// 操作方法の表示位置
-#define MAGIC_POS			(D3DXVECTOR3(-3080.0f, 120.0f, -3100.0f))	// 魔法の使い方の表示位置
-#define LIMIT_POS			(D3DXVECTOR3(-2480.0f, 120.0f, -3100.0f))	// 制限時間の表示位置
-#define BOOK_POS			(D3DXVECTOR3(-1880.0f, 120.0f, -3100.0f))	// 魔導書の表示位置
-#define HOUSE_POS			(D3DXVECTOR3(-2130.0f, 120.0f, -3900.0f))	// 燃える家の表示位置
-#define CIRCLE_POS			(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// 魔法陣の表示位置
-#define PLANTS_POS			(D3DXVECTOR3(-3300.0f, 120.0f, -3630.0f))	// 植物の表示位置
-#define BRIDGE_POS			(D3DXVECTOR3(-2800.0f, 120.0f, -3100.0f))	// 橋の表示位置
-#define CIRCLE_ROT			(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f))		// 魔法陣の表示角度
-#define CIRCLE_ROTATE		(0.05f)		// 魔法陣の回転速度
-#define APPEAR_SIZE			(250.0f)	// 出現の当たり判定を管理するサイズ
+#define NORMAL				(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 
 // テクスチャの読み込み
-const char* c_apFilenameResultUI[MAX_RESULTUI] =
+const char* c_apFilenameResultUI[MAXRESULT_TEX] =
 {
-	"data\\TEXTURE\\result\\resultui000.png",	// RESULTUITYPE_PLAYPAD
-	"data\\TEXTURE\\result\\resultui001.png",	// RESULTUITYPE_PLAYKEY	
-	"data\\TEXTURE\\result\\resultui002.png",	// RESULTUITYPE_MAGICPAD
-	"data\\TEXTURE\\result\\resultui003.png",	// RESULTUITYPE_MAGICKEY
-	"data\\TEXTURE\\result\\resultui004.png",	// RESULTUITYPE_TIMELIMIT
-	"data\\TEXTURE\\result\\resultui005.png",	// RESULTUITYPE_MAGICBOOK
-	"data\\TEXTURE\\result\\resultui006.png",	// RESULTUITYPE_FIREHOUSE
-	"data\\TEXTURE\\result\\resultui007.png",	// RESULTUITYPE_PLANTS
-	"data\\TEXTURE\\result\\resultui008.png",	// RESULTUITYPE_PLANTS
-	"data\\TEXTURE\\SpellUI\\19_SunsetDelay.png",	// RESULTUITYPE_MAGICCIRCLE
+	"data\\TEXTURE\\result\\result000.png",		// 診断結果
+	"data\\TEXTURE\\result\\result001.png",		// 1番使ったコマンド
+	"data\\TEXTURE\\SpellUI\\01_Red.png",		// 赤魔法
+	"data\\TEXTURE\\SpellUI\\02_Green.png",		// 緑魔法
+	"data\\TEXTURE\\SpellUI\\03_Blue.png",		// 青魔法
+	"data\\TEXTURE\\SpellUI\\04_Yellow.png",	// 黄魔法
+	"data\\TEXTURE\\result\\result002.png",		// 神殿到達時刻
+	"data\\TEXTURE\\number.png",				// 数字
+	"data\\TEXTURE\\result\\result003.png",		// あなたは
+	"data\\TEXTURE\\result\\result004_00.png",	// コマンド使用数に応じたリザルト[R]
+	"data\\TEXTURE\\result\\result004_01.png",	// コマンド使用数に応じたリザルト[G]
+	"data\\TEXTURE\\result\\result004_02.png",	// コマンド使用数に応じたリザルト[B]
+	"data\\TEXTURE\\result\\result004_03.png",	// コマンド使用数に応じたリザルト[Y]
+	"data\\TEXTURE\\result\\result005_00.png",	// クリア時間に応じたリザルト[早い]
+	"data\\TEXTURE\\result\\result005_01.png",	// クリア時間に応じたリザルト[普通]
+	"data\\TEXTURE\\result\\result005_02.png",	// クリア時間に応じたリザルト[遅い]
+	"data\\TEXTURE\\result\\result006_00.png",	// イベント発生回数に応じたリザルト[多い]
+	"data\\TEXTURE\\result\\result006_01.png",	// イベント発生回数に応じたリザルト[普通]
+	"data\\TEXTURE\\result\\result006_02.png",	// イベント発生回数に応じたリザルト[少ない]
+	"data\\TEXTURE\\result\\result007.png",		// あなたたちは
+	"data\\TEXTURE\\result\\result008_RR.png",	// コマンド相性[RR]
+	"data\\TEXTURE\\result\\result008_RG.png",	// コマンド相性[RG]
+	"data\\TEXTURE\\result\\result008_RB.png",	// コマンド相性[RB]
+	"data\\TEXTURE\\result\\result008_RY.png",	// コマンド相性[RY]
+	"data\\TEXTURE\\result\\result008_BB.png",	// コマンド相性[BB]
+	"data\\TEXTURE\\result\\result008_BG.png",	// コマンド相性[BG]
+	"data\\TEXTURE\\result\\result008_BY.png",	// コマンド相性[BY]
+	"data\\TEXTURE\\result\\result008_GG.png",	// コマンド相性[GG]
+	"data\\TEXTURE\\result\\result008_GY.png",	// コマンド相性[GY]
+	"data\\TEXTURE\\result\\result008_YY.png",	// コマンド相性[YY]
+	"data\\TEXTURE\\result\\result009_00.png",	// ペアリザルト[早い]
+	"data\\TEXTURE\\result\\result009_01.png",	// ペアリザルト[遅い]
+	"data\\TEXTURE\\result\\result010.png",		// :
+	"data\\TEXTURE\\result\\result011.png",		// 1P
+	"data\\TEXTURE\\result\\result012.png",		// 2P
 };
 
 // グローバル変数
-LPDIRECT3DTEXTURE9 g_apTextureResultUI[MAX_RESULTUI] = {};	// テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_apTextureResultUI[MAXRESULT_TEX] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffResultUI = NULL; // 頂点バッファへのポインタ
 ResultUI g_aResultUI[NUM_RESULTUI];	// 構造体
 
@@ -94,26 +94,33 @@ void InitResultUI(void)
 	OPERATIONTYPE operationType = GetOperationType();
 
 	// テクスチャの読み込み
-	for (int nCntUI = 0; nCntUI < MAX_RESULTUI; nCntUI++)
+	for (int nCntUI = 0; nCntUI < MAXRESULT_TEX; nCntUI++)
 	{
 		D3DXCreateTextureFromFile(pDevice, c_apFilenameResultUI[nCntUI], &g_apTextureResultUI[nCntUI]);
 	}
 
+	// 各種初期化
 	for (int nCntUI = 0; nCntUI < NUM_RESULTUI; nCntUI++)
 	{
-		g_aResultUI[nCntUI].pos = INIT_D3DXVEC3;				// 位置
-		g_aResultUI[nCntUI].rot = UI_ROT;						// 向き
-		g_aResultUI[nCntUI].type = RESULTUITYPE_PLAYPAD;		// 種類
-		g_aResultUI[nCntUI].state = RESULTUISTATE_NONDISPLAY;	// 出現モード
-		g_aResultUI[nCntUI].fWidth = WIDTH;						// 幅
-		g_aResultUI[nCntUI].fWidthDest = WIDTH;						// 幅の目的値
-		g_aResultUI[nCntUI].fHeight = HEIGHT;						// 高さ
-		g_aResultUI[nCntUI].fHeightDest = HEIGHT;						// 高さの目的値
-		g_aResultUI[nCntUI].nNumKey = UI_KEY;						// 浮遊感をカウントするキー数
-		g_aResultUI[nCntUI].nKey = 0;							// 現在のキー数
-		g_aResultUI[nCntUI].bDisp = false;						// 表示状態
+		g_aResultUI[nCntUI].pos		= INIT_D3DXVEC3;			// 位置
+		g_aResultUI[nCntUI].type	= RESULTUITYPE_DIAGNOSIS;	// 種類
+		g_aResultUI[nCntUI].tex		= RESULTUITEX_DIAGNOSIS;	// テクスチャ
+		g_aResultUI[nCntUI].fWidth	= 0.0f;		// 幅
+		g_aResultUI[nCntUI].fHeight = 0.0f;		// 高さ
+		g_aResultUI[nCntUI].nKey	= 0;		// 現在の処理キー
+		g_aResultUI[nCntUI].nNumKey	= 0;		// フレーム数
+		g_aResultUI[nCntUI].bDisp	= false;	// 表示状態
+	}
 
-		SetResultUINonDisp(nCntUI);
+	switch (operationType)
+	{
+	case OPERATIONTYPE_2P:	// 2人操作
+		SetResultUI2P();
+		break;
+
+	default:	// 1人操作
+		SetResultUI1P();
+		break;
 	}
 
 	// 頂点バッファの生成
@@ -138,10 +145,10 @@ void InitResultUI(void)
 		pVtx[3].nor = NORMAL;
 
 		// 頂点カラーの設定
-		pVtx[0].col = COLOR_UIBUBBLE;
-		pVtx[1].col = COLOR_UIBUBBLE;
-		pVtx[2].col = COLOR_UIBUBBLE;
-		pVtx[3].col = COLOR_UIBUBBLE;
+		pVtx[0].col = COLOR_WHITE;
+		pVtx[1].col = COLOR_WHITE;
+		pVtx[2].col = COLOR_WHITE;
+		pVtx[3].col = COLOR_WHITE;
 
 		// テクスチャ座標の設定
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -152,26 +159,6 @@ void InitResultUI(void)
 	}
 	// 頂点バッファをアンロック
 	g_pVtxBuffResultUI->Unlock();
-
-	switch (operationType)
-	{
-	case OPERATIONTYPE_KEYBOARD:	// キーボード操作
-		SetResultUI(RESULTUITYPE_MAGICKEY, MAGIC_POS, UI_ROT);
-		SetResultUI(RESULTUITYPE_PLAYKEY, PLAY_POS, UI_ROT);
-		break;
-
-	default:	// パッド操作
-		SetResultUI(RESULTUITYPE_MAGICPAD, MAGIC_POS, UI_ROT);
-		SetResultUI(RESULTUITYPE_PLAYPAD, PLAY_POS, UI_ROT);
-		break;
-	}
-
-	SetResultUI(RESULTUITYPE_TIMELIMIT, LIMIT_POS, UI_ROT);
-	SetResultUI(RESULTUITYPE_MAGICBOOK, BOOK_POS, UI_ROT);
-	SetResultUI(RESULTUITYPE_FIREHOUSE, HOUSE_POS, UI_ROT);
-	SetResultUI(RESULTUITYPE_PLANTS, PLANTS_POS, UI_ROT);
-	SetResultUI(RESULTUITYPE_BRIDGES, BRIDGE_POS, UI_ROT);
-	SetResultUI(RESULTUITYPE_MAGICCIRCLE, CIRCLE_POS, CIRCLE_ROT);
 }
 
 //======================================================================================
@@ -180,7 +167,7 @@ void InitResultUI(void)
 void UninitResultUI(void)
 {
 	// テクスチャの破棄
-	for (int nCntUI = 0; nCntUI < MAX_RESULTUI; nCntUI++)
+	for (int nCntUI = 0; nCntUI < MAXRESULT_TEX; nCntUI++)
 	{
 		if (g_apTextureResultUI[nCntUI] != NULL)
 		{
@@ -203,142 +190,7 @@ void UninitResultUI(void)
 //======================================================================================
 void UpdateResultUI(void)
 {
-	Player* pPlayer = GetPlayer();	// プレイヤーの情報を取得
-	float fDiffKey, fRateKey = 0.0f;
-	bool bDisp[NUM_RESULTUI] = { false, false, false, false };
-	OPERATIONTYPE operationType = GetOperationType();
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
-	{
-		if (pPlayer->bUse == false)
-		{
-			continue;
-		}
-		for (int nCntUI = 0; nCntUI < NUM_RESULTUI; nCntUI++)
-		{
-			if (g_aResultUI[nCntUI].type == RESULTUITYPE_MAGICCIRCLE)
-			{
-				g_aResultUI[nCntUI].rot.x += CIRCLE_ROTATE;
-				//g_aResultUI[nCntUI].rot.y += CIRCLE_ROTATE;
-				g_aResultUI[nCntUI].rot.z += CIRCLE_ROTATE;
-				g_aResultUI[nCntUI].fWidth = CIRCLE_SIZE;
-				g_aResultUI[nCntUI].fHeight = CIRCLE_SIZE;
-				g_aResultUI[nCntUI].state = RESULTUISTATE_DISPLAY;
-			}
-			else
-			{
-				// プレイヤーが設置位置に近づいた場合展開する
-				if (pPlayer->pos.x >= g_aResultUI[nCntUI].pos.x - APPEAR_SIZE &&	// 一定範囲より右にある
-					pPlayer->pos.x <= g_aResultUI[nCntUI].pos.x + APPEAR_SIZE &&	// 一定範囲より左にある
-					pPlayer->pos.z >= g_aResultUI[nCntUI].pos.z - APPEAR_SIZE &&	// 一定範囲より奥にある
-					pPlayer->pos.z <= g_aResultUI[nCntUI].pos.z + APPEAR_SIZE)
-				{
-					bDisp[nCntUI] = true;
-					if (g_aResultUI[nCntUI].state == RESULTUISTATE_NONDISPLAY)
-					{
-						SetResultUIAppear(nCntUI);
-					}
-				}
-				else if (g_aResultUI[nCntUI].state == RESULTUISTATE_APPEAR || // 出現状態
-					g_aResultUI[nCntUI].state == RESULTUISTATE_DISPLAY)	// 表示状態
-
-				{ // 2人プレイの場合の非表示処理
-
-					switch (operationType)
-					{
-					case OPERATIONTYPE_2P:	// 2人操作
-						if (bDisp[nCntUI] == false && nCntPlayer == 0)
-						{
-							SetResultUIDisappear(nCntUI);
-						}
-						break;
-
-					default:
-						SetResultUIDisappear(nCntUI);
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	for (int nCntUI = 0; nCntUI < NUM_RESULTUI; nCntUI++)
-	{
-		switch (g_aResultUI[nCntUI].state)
-		{
-		case RESULTUISTATE_NONDISPLAY:	// 非表示
-			g_aResultUI[nCntUI].bDisp = false;
-			break;
-
-		case RESULTUISTATE_APPEAR:	// 出現
-			// 背景の高度変更
-			fRateKey = (float)g_aResultUI[nCntUI].nKey / (float)g_aResultUI[nCntUI].nNumKey;
-			fDiffKey = g_aResultUI[nCntUI].fHeightDest - g_aResultUI[nCntUI].fHeight;
-			g_aResultUI[nCntUI].fHeight = g_aResultUI[nCntUI].fHeight + fDiffKey * fRateKey;
-
-			// 中心位置からの位置を求める
-			g_aResultUI[nCntUI].nKey++;
-
-			if (g_aResultUI[nCntUI].nKey > g_aResultUI[nCntUI].nNumKey)
-			{
-				SetResultUIDisp(nCntUI);
-			}
-			break;
-
-		case RESULTUISTATE_DISPLAY:	// 表示
-			g_aResultUI[nCntUI].bDisp = true;
-			break;
-
-		case RESULTUISTATE_DISAPPEAR:	// 収縮
-			// 背景の高度変更
-			fRateKey = (float)g_aResultUI[nCntUI].nKey / (float)g_aResultUI[nCntUI].nNumKey;
-			fDiffKey = g_aResultUI[nCntUI].fHeightDest - g_aResultUI[nCntUI].fHeight;
-			g_aResultUI[nCntUI].fHeight = g_aResultUI[nCntUI].fHeight + fDiffKey * fRateKey;
-
-			// 中心位置からの位置を求める
-			g_aResultUI[nCntUI].nKey++;
-
-			if (g_aResultUI[nCntUI].nKey > g_aResultUI[nCntUI].nNumKey)
-			{
-				SetResultUINonDisp(nCntUI);
-			}
-			break;
-		}
-	}
-
-	VERTEX_3D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffResultUI->Lock(0, 0, (void**)&pVtx, 0);
-
-	for (int nCntUI = 0; nCntUI < NUM_RESULTUI; nCntUI++, pVtx += 4)
-	{
-		// 頂点座標の設定
-		pVtx[0].pos = D3DXVECTOR3(-g_aResultUI[nCntUI].fWidth, g_aResultUI[nCntUI].fHeight, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(g_aResultUI[nCntUI].fWidth, g_aResultUI[nCntUI].fHeight, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(-g_aResultUI[nCntUI].fWidth, -g_aResultUI[nCntUI].fHeight, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(g_aResultUI[nCntUI].fWidth, -g_aResultUI[nCntUI].fHeight, 0.0f);
-
-		// rhwの設定
-		pVtx[0].nor = NORMAL;
-		pVtx[1].nor = NORMAL;
-		pVtx[2].nor = NORMAL;
-		pVtx[3].nor = NORMAL;
-
-		// 頂点カラーの設定
-		pVtx[0].col = COLOR_UIBUBBLE;
-		pVtx[1].col = COLOR_UIBUBBLE;
-		pVtx[2].col = COLOR_UIBUBBLE;
-		pVtx[3].col = COLOR_UIBUBBLE;
-
-		// テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
-	}
-	// 頂点バッファをアンロック
-	g_pVtxBuffResultUI->Unlock();
 }
 
 //======================================================================================
@@ -346,158 +198,151 @@ void UpdateResultUI(void)
 //======================================================================================
 void DrawResultUI(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
-	D3DXMATRIX UIMatrix, mtxRot, mtxView;	// UIのマトリックス情報を取得
+//LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
+//D3DXMATRIX UIMatrix, mtxTrans, mtxView;	// UIのマトリックス情報を取得
+//
+//// アルファテストを有効にする
+//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
+//pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法を設定(基準値より大きい場合描画)
+//pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
+//
+//// ライトをオフにする
+//pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+//
+//for (int nCntUI = 0; nCntUI < NUM_RESULTUI; nCntUI++)
+//{
+//	if (g_aResultUI[nCntUI].bDisp == false)
+//	{
+//		continue;
+//	}
+//
+//	// ポリゴンのワールドマトリックスを初期化
+//	D3DXMatrixIdentity(&g_aResultUI[nCntUI].mtxWorld);
+//
+//	// ビューマトリックスを取得する
+//	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+//
+//	// ポリゴンをカメラに対して正面に向ける
+//	D3DXMatrixInverse(&g_aResultUI[nCntUI].mtxWorld, NULL, &mtxView);	//逆行列を求める
+//
+//	g_aResultUI[nCntUI].mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
+//	g_aResultUI[nCntUI].mtxWorld._42 = 0.0f;
+//	g_aResultUI[nCntUI].mtxWorld._43 = 0.0f;
+//	
+//	// パーツの位置を反映
+//	D3DXMatrixTranslation(&mtxTrans, g_aResultUI[nCntUI].pos.x, g_aResultUI[nCntUI].pos.y, g_aResultUI[nCntUI].pos.z);
+//	D3DXMatrixMultiply(&g_aResultUI[nCntUI].mtxWorld, &g_aResultUI[nCntUI].mtxWorld, &mtxTrans);
+//
+//	// パーツのワールドマトリックスを設定
+//	pDevice->SetTransform(D3DTS_WORLD, &g_aResultUI[nCntUI].mtxWorld);
+//
+//	// 頂点バッファをデータストリームに設定
+//	pDevice->SetStreamSource(0, g_pVtxBuffResultUI, 0, sizeof(VERTEX_3D));
+//
+//	// 頂点フォーマットの設定
+//	pDevice->SetFVF(FVF_VERTEX_3D);
+//
+//	// テクスチャの設定
+//	pDevice->SetTexture(0, g_apTextureResultUI[g_aResultUI[nCntUI].type]);
+//
+//	// UIの描画
+//	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4, 2);
+//
+//}
+//// ライトをオンにする
+//pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+//
+//// アルファテストを無効にする
+//pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
+//pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
+//pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
+}
 
-	// ワールドマトリックスの初期化(デフォルトの値にする)
-	D3DXMatrixIdentity(&UIMatrix);
+//======================================================================================
+// 1PのUI表示処理
+//======================================================================================
+void SetResultUI1P(void)
+{
+	// 診断結果
+	SetResultUI(RESULTUITYPE_DIAGNOSIS, RESULTUITEX_DIAGNOSIS, INIT_D3DXVEC3);
+	// 1番使ったコマンド
+	SetResultUI(RESULTUITYPE_MOSTCOMMANDSOLO, RESULTUITEX_MOSTCOMMAND, INIT_D3DXVEC3);
+	// コマンドの種類[solo]
+	SetResultUI(RESULTUITYPE_COMMMANDTYPESOLO, RESULTUITEX_R, INIT_D3DXVEC3);
+	// 神殿到達時刻
+	SetResultUI(RESULTUITYPE_CLEARTIME, RESULTUITEX_TEMPLE, INIT_D3DXVEC3);
+	// 神殿到達時刻[時間]
+	SetResultUI(RESULTUITYPE_HOUR0, RESULTUITEX_CLEARTIME, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_HOUR1, RESULTUITEX_CLEARTIME, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_COLON, RESULTUITEX_COLON, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_COLON, RESULTUITEX_COLON, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_MIN0, RESULTUITEX_CLEARTIME, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_MIN1, RESULTUITEX_CLEARTIME, INIT_D3DXVEC3);
+	// あなたは
+	SetResultUI(RESULTUITYPE_YOUARE, RESULTUITEX_YOUARE, INIT_D3DXVEC3);
+	// コマンド数に応じたリザルト
+	SetResultUI(RESULTUITYPE_COMMANDRESULT, RESULTUITEX_COMMANDR, INIT_D3DXVEC3);
+	// クリア時間に応じたリザルト
+	SetResultUI(RESULTUITYPE_CLEARRESULT, RESULTUITEX_CLEAREARLY, INIT_D3DXVEC3);
+	// イベント発生回数に応じたリザルト
+	SetResultUI(RESULTUITYPE_EVENTRESULT, RESULTUITEX_EVENTMANY, INIT_D3DXVEC3);
 
-	// アルファテストを有効にする
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);	// アルファテストを有効にする
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 比較方法を設定(基準値より大きい場合描画)
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
+}
 
-	// ライトをオフにする
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+//======================================================================================
+// 2PのUI表示処理
+//======================================================================================
+void SetResultUI2P(void)
+{
+	// 診断結果
+	SetResultUI(RESULTUITYPE_DIAGNOSIS, RESULTUITEX_DIAGNOSIS, INIT_D3DXVEC3);
+	// 1番使ったコマンド[1P]
+	SetResultUI(RESULTUITYPE_MOSTCOMMAND1P, RESULTUITEX_MOSTCOMMAND, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_1P, RESULTUITEX_1P, INIT_D3DXVEC3);
+	// 1番使ったコマンド[2P]
+	SetResultUI(RESULTUITYPE_MOSTCOMMAND2P, RESULTUITEX_MOSTCOMMAND, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_2P, RESULTUITEX_2P, INIT_D3DXVEC3);
+	// コマンドの種類[1P]
+	SetResultUI(RESULTUITYPE_COMMMANDTYPE1P, RESULTUITEX_R, INIT_D3DXVEC3);
+	// コマンドの種類[2P]
+	SetResultUI(RESULTUITYPE_COMMMANDTYPE2P, RESULTUITEX_R, INIT_D3DXVEC3);
+	// 神殿到達時刻
+	SetResultUI(RESULTUITYPE_CLEARTIME, RESULTUITEX_TEMPLE, INIT_D3DXVEC3);
+	// 神殿到達時刻[時間]
+	SetResultUI(RESULTUITYPE_HOUR0, RESULTUITEX_CLEARTIME, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_HOUR1, RESULTUITEX_CLEARTIME, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_COLON, RESULTUITEX_COLON, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_COLON, RESULTUITEX_COLON, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_MIN0, RESULTUITEX_CLEARTIME, INIT_D3DXVEC3);
+	SetResultUI(RESULTUITYPE_MIN1, RESULTUITEX_CLEARTIME, INIT_D3DXVEC3);
+	// あなたたちは
+	SetResultUI(RESULTUITYPE_THEYARE, RESULTUITEX_THEYARE, INIT_D3DXVEC3);
+	// コマンド相性[pair]
+	SetResultUI(RESULTUITYPE_COMPATIBILITY, RESULTUITEX_COMMANDRR, INIT_D3DXVEC3);
+	// ペアリザルト[pair]
+	SetResultUI(RESULTUITYPE_PAIRCLEAR, RESULTUITEX_PAIREARLY, INIT_D3DXVEC3);
+}
 
-	// カリングをオフにする
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
+//======================================================================================
+// UI設置処理
+//======================================================================================
+void SetResultUI(RESULTUITYPE type, RESULTUITEX tex, D3DXVECTOR3 pos)
+{
 	for (int nCntUI = 0; nCntUI < NUM_RESULTUI; nCntUI++)
 	{
-		if (g_aResultUI[nCntUI].bDisp == false)
+		if (g_aResultUI[nCntUI].bDisp == true)
 		{
 			continue;
 		}
 
-		// ワールドマトリックスの設定
-
-		D3DXMATRIX	mtxRotModel, mtxTransModel;	// 計算用マトリックス
-		D3DXMATRIX	mtxParent;					// 親のマトリックス
-
-		// ポリゴンのワールドマトリックスを初期化
-		D3DXMatrixIdentity(&g_aResultUI[nCntUI].mtxWorld);
-
-		if (g_aResultUI[nCntUI].type != RESULTUITYPE_MAGICCIRCLE)	// 魔法陣以外はビルボードにする
-		{
-			// ビューマトリックスを取得する
-			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
-
-			// ポリゴンをカメラに対して正面に向ける
-			D3DXMatrixInverse(&g_aResultUI[nCntUI].mtxWorld, NULL, &mtxView);	//逆行列を求める
-
-			g_aResultUI[nCntUI].mtxWorld._41 = 0.0f;		//マトリックス(行列)の内容
-			g_aResultUI[nCntUI].mtxWorld._42 = 0.0f;
-			g_aResultUI[nCntUI].mtxWorld._43 = 0.0f;
-		}
-		else
-		{
-			// 向きを反映
-			D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aResultUI[nCntUI].rot.y, g_aResultUI[nCntUI].rot.x, g_aResultUI[nCntUI].rot.z);
-			D3DXMatrixMultiply(&g_aResultUI[nCntUI].mtxWorld, &g_aResultUI[nCntUI].mtxWorld, &mtxRot);
-		}
-
-		// パーツの位置を反映
-		D3DXMatrixTranslation(&mtxTransModel, g_aResultUI[nCntUI].pos.x, g_aResultUI[nCntUI].pos.y, g_aResultUI[nCntUI].pos.z);
-		D3DXMatrixMultiply(&g_aResultUI[nCntUI].mtxWorld, &g_aResultUI[nCntUI].mtxWorld, &mtxTransModel);
-
-		// パーツのワールドマトリックスを設定
-		pDevice->SetTransform(D3DTS_WORLD, &g_aResultUI[nCntUI].mtxWorld);
-
-		// 頂点バッファをデータストリームに設定
-		pDevice->SetStreamSource(0, g_pVtxBuffResultUI, 0, sizeof(VERTEX_3D));
-
-		// 頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_3D);
-
-		// テクスチャの設定
-		pDevice->SetTexture(0, g_apTextureResultUI[g_aResultUI[nCntUI].type]);
-
-		// UIの描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntUI * 4, 2);
-
-	}
-	// ライトをオンにする
-	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-	// カリングを元に戻す
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
-	// アルファテストを無効にする
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);	// アルファテストを無効にする
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);	// 比較方法を設定(条件に関わらず描画)
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);	// アルファテストの参照値を設定(この場合、0より大きい場合は描画)
-}
-
-//======================================================================================
-// ResultUIの設置
-//======================================================================================
-void SetResultUI(RESULTUITYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
-{
-	for (int nCntUI = 0; nCntUI < NUM_RESULTUI; nCntUI++)
-	{
-		if (g_aResultUI[nCntUI].bDisp == false)
-		{
-			g_aResultUI[nCntUI].type = type;
-			g_aResultUI[nCntUI].pos = pos;
-			g_aResultUI[nCntUI].rot = rot;
-			g_aResultUI[nCntUI].bDisp = true;
-			break;
-		}
+		g_aResultUI[nCntUI].fHeight = HEIGHT;
+		g_aResultUI[nCntUI].fWidth = WIDTH;
+		g_aResultUI[nCntUI].nKey = 0;
+		g_aResultUI[nCntUI].nNumKey = UI_KEY;
+		g_aResultUI[nCntUI].pos = pos;
+		g_aResultUI[nCntUI].tex = tex;
+		g_aResultUI[nCntUI].type = type;
+		g_aResultUI[nCntUI].bDisp = true;
+		break;
 	}
 }
-
-//======================================================================================
-// ResultUIを出現状態にする
-//======================================================================================
-void SetResultUIAppear(int nIdx)
-{
-	g_aResultUI[nIdx].state = RESULTUISTATE_APPEAR;
-	g_aResultUI[nIdx].fWidth = WIDTH;		// 幅
-	g_aResultUI[nIdx].fWidthDest = WIDTH;	// 幅の目的値
-	g_aResultUI[nIdx].fHeightDest = HEIGHT;	// 高さの目的値
-	g_aResultUI[nIdx].nKey = 0;		// 現在のキー数
-	g_aResultUI[nIdx].bDisp = true;		// 表示状態
-}
-
-//======================================================================================
-// ResultUIを表示状態にする
-//======================================================================================
-void SetResultUIDisp(int nIdx)
-{
-	g_aResultUI[nIdx].state = RESULTUISTATE_DISPLAY;
-	g_aResultUI[nIdx].fWidth = WIDTH;	// 幅
-	g_aResultUI[nIdx].fWidthDest = WIDTH;	// 幅の目的値
-	g_aResultUI[nIdx].fHeight = HEIGHT;	// 高さの目的値
-	g_aResultUI[nIdx].fHeightDest = HEIGHT;	// 高さの目的値
-	g_aResultUI[nIdx].nKey = 0;		// 現在のキー数
-	g_aResultUI[nIdx].bDisp = true;		// 表示状態
-}
-
-//======================================================================================
-// ResultUIを収縮状態にする
-//======================================================================================
-void SetResultUIDisappear(int nIdx)
-{
-	g_aResultUI[nIdx].state = RESULTUISTATE_DISAPPEAR;
-	g_aResultUI[nIdx].fWidth = WIDTH;	// 幅
-	g_aResultUI[nIdx].fWidthDest = WIDTH;	// 幅の目的値
-	g_aResultUI[nIdx].fHeightDest = 0.0f;		// 高さの目的値
-	g_aResultUI[nIdx].nKey = 0;		// 現在のキー数
-	g_aResultUI[nIdx].bDisp = true;		// 表示状態
-}
-
-//======================================================================================
-// ResultUIを非表示状態にする
-//======================================================================================
-void SetResultUINonDisp(int nIdx)
-{
-	g_aResultUI[nIdx].state = RESULTUISTATE_NONDISPLAY;
-	g_aResultUI[nIdx].fWidth = WIDTH;			// 幅
-	g_aResultUI[nIdx].fWidthDest = WIDTH;		// 幅の目的値
-	g_aResultUI[nIdx].fHeight = 0.0f;			// 高さ
-	g_aResultUI[nIdx].fHeightDest = HEIGHT;	// 高さの目的値
-	g_aResultUI[nIdx].nKey = 0;				// 現在のキー数
-	g_aResultUI[nIdx].bDisp = false;			// 表示状態
-}
-#endif
