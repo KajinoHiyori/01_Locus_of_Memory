@@ -6,6 +6,7 @@
 //=============================================================================
 #include"main.h"
 #include"result.h"
+#include "resultui.h"
 #include "game.h"
 #include"input.h"
 #include"fade.h"
@@ -32,6 +33,9 @@ void InitResult(void)
 {
     GAMESTATE gameState = GetGameState();
 
+    // リザルトUIの初期化処理
+    InitResultUI();
+
     switch (gameState)
     {
     case GAMESTATE_CLEAR:
@@ -51,6 +55,9 @@ void InitResult(void)
 //=======================================================
 void UninitResult(void)
 {
+    // リザルトUIの終了処理
+    UninitResultUI();
+
     StopSound();
 
     UninitAnimal();
@@ -65,6 +72,9 @@ void UpdateResult(void)
 
     // 動物の更新処理
     UpdateAnimal();
+
+    // リザルトUIの更新処理
+    UpdateResultUI();
 
     if (GetKeyboardTrigger(DIK_RETURN) == true && *pFade == FADE_NONE || GetJoypadTrigger(JOYKEY_A, 0) == true && *pFade == FADE_NONE)
     {
@@ -95,5 +105,8 @@ void DrawResult(void)
 
     // 塀の描画処理
     DrawBrickWall();
+
+    // リザルトUIの描画処理
+    DrawResultUI();
 
 }

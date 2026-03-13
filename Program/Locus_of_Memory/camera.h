@@ -12,6 +12,7 @@
 
 #include "title.h"
 #include "player.h"
+#include "goal.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -41,9 +42,18 @@
 #define INIT_TITLECAMERA_ROT	(D3DXVECTOR3(0.0f, 2.44f, 0.0f))			// タイトルカメラの向き
 
 // ロゴ
-#define INIT_LOGOCAMERA_POSV	(D3DXVECTOR3(10000.0f, 100.0f, -10000.0f))	// タイトルカメラの視点
-#define INIT_LOGOCAMERA_POSR	(D3DXVECTOR3(10000.0f, 50.0f, -10300.0f))		// タイトルカメラの注視点
-#define INIT_LOGOCAMERA_ROT		(D3DXVECTOR3(0.0f, 0.00f, 0.0f))				// タイトルカメラの向き
+#define INIT_LOGOCAMERA_POSV	(D3DXVECTOR3(10000.0f, 100.0f, -10000.0f))		// ロゴカメラの視点
+#define INIT_LOGOCAMERA_POSR	(D3DXVECTOR3(10000.0f, 50.0f, -10300.0f))		// ロゴカメラの注視点
+#define INIT_LOGOCAMERA_ROT		(D3DXVECTOR3(0.0f, 0.00f, 0.0f))				// ロゴカメラの向き
+
+// リザルト
+//#define INIT_RESULTCAMERA_POSV	(D3DXVECTOR3(1400.0f, 20.0f, 2000.0f))		// リザルトカメラの視点
+//#define INIT_RESULTCAMERA_POSR	(D3DXVECTOR3(1400.0f, 100.0f, 2800.0f))		// リザルトカメラの注視点
+//#define INIT_RESULTCAMERA_ROT	(D3DXVECTOR3(0.0f, 0.00f, 0.0f))			// リザルトカメラの向き
+
+#define INIT_RESULTCAMERA_POSV	(D3DXVECTOR3(INIT_RESULTCAMERA_POSR.x, INIT_RESULTCAMERA_POSR.y - 10.0f, INIT_RESULTCAMERA_POSR.z - 100.0f))	// リザルトカメラの視点
+#define INIT_RESULTCAMERA_POSR	(D3DXVECTOR3(GOAL_POS.x, GOAL_POS.y + 10.0f, GOAL_POS.z))	// リザルトカメラの注視点[本の位置 + y方向に100?]
+#define INIT_RESULTCAMERA_ROT	(INIT_D3DXVEC3)	// リザルトカメラの向き
 
 // ビューポート生成用マクロ
 #define DEFAULT_VEIWPORT		(SetViewPort((DWORD)0.0f, (DWORD)0.0f, (DWORD)SCREEN_WIDTH, (DWORD)SCREEN_HEIGHT))
