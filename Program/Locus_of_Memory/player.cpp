@@ -384,7 +384,14 @@ void UpdatePlayer(void)
 				if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
 				{// Xボタンを押したかつ何かしらのコマンドが近くにある
 					OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
-					
+					if (nCntPlayer == 0)	// 1P
+					{
+						PlaySound(SOUND_LABEL_GETMAGIC0);
+					}
+					else if (nCntPlayer == 1)
+					{
+						PlaySound(SOUND_LABEL_GETMAGIC1);
+					}
 				}
 
 				// 移動方向の正規化
