@@ -14,6 +14,7 @@
 // マクロ定義
 //*****************************************************************************
 #define MAX_ONECOLLIDER			(5)		// ひとつのオブジェクトが持てるコライダーの最大
+#define MAX_TRIANGLE			(256)	// メッシュの三角形の最大数
 
 //*****************************************************************************
 // タグの種類
@@ -82,6 +83,27 @@ typedef struct CapsuleCollider
 	float fRadius;		// 半径
 	float fHeight;		// 高さ
 }CapsuleCollider;
+
+//*****************************************************************************
+// 三角形の構造体定義
+//*****************************************************************************
+typedef struct Triangle
+{
+	D3DXVECTOR3 posA;
+	D3DXVECTOR3 posB;
+	D3DXVECTOR3 posC;
+	D3DXVECTOR3 vecNor;
+}Triangle;
+
+//*****************************************************************************
+// メッシュコライダーの構造体定義
+//*****************************************************************************
+typedef struct MeshCollider
+{
+	Triangle aTriangle[MAX_TRIANGLE];
+	int nNumTriangle;
+	bool bUse;
+}MeshCollider;
 
 //*****************************************************************************
 // コライダーの共用体定義
@@ -183,5 +205,9 @@ bool CollisionSphereToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyColl
 //=============================================================================
 //	カプセルの当たり判定 (ない)
 //=============================================================================
+
+
+bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXVECTOR3 posOld);
+void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 #endif // !_COLLISION_H_

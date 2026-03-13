@@ -13,16 +13,18 @@
 //*****************************************************************************
 #define MAX_COLLISION			(256)									// 当たり判定の最大数
 #define MAX_COLLIDER			(MAX_COLLISION * MAX_ONECOLLIDER)		// コライダーの最大数
+#define MAX_MESHCOLLIDER		(32)									// メッシュコライダーの最大数
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-Collider g_aCollider[MAX_COLLIDER] = {};		// コライダーの情報
-Collision g_aCollision[MAX_COLLISION] = {};		// 当たり判定の情報
-int g_aUseColliderIdx[MAX_COLLIDER] = {};		// 使用しているコライダーの識別番号
-int g_aUseCollisionIdx[MAX_COLLISION] = {};		// 使用している当たり判定の識別番号
-int g_nNumCollider;								// 使用しているコライダーの数
-int g_nNumCollision;							// 使用している当たり判定の数
+Collider g_aCollider[MAX_COLLIDER] = {};				// コライダーの情報
+MeshCollider g_aMeshCollider[MAX_MESHCOLLIDER] = {};	// メッシュコライダーの情報
+Collision g_aCollision[MAX_COLLISION] = {};				// 当たり判定の情報
+int g_aUseColliderIdx[MAX_COLLIDER] = {};				// 使用しているコライダーの識別番号
+int g_aUseCollisionIdx[MAX_COLLISION] = {};				// 使用している当たり判定の識別番号
+int g_nNumCollider;										// 使用しているコライダーの数
+int g_nNumCollision;									// 使用している当たり判定の数
 
 //*****************************************************************************
 // 関数ポインタの定義
@@ -79,15 +81,19 @@ void InitCollision(void)
 	// 各種ポインタ
 	Collider* pCollider = &g_aCollider[0];
 	Collision* pCollision = &g_aCollision[0];
+	MeshCollider* pMeshCollider = &g_aMeshCollider[0];
 
 	// 初期化
 	memset(pCollider, NULL, sizeof(Collider) * MAX_COLLIDER);
 	memset(pCollision, NULL, sizeof(Collision) * MAX_COLLISION);
+	memset(pMeshCollider, NULL, sizeof(MeshCollider) * MAX_MESHCOLLIDER);
 	memset(&g_aUseColliderIdx[0], -1, sizeof(int) * MAX_COLLIDER);
 	memset(&g_aUseCollisionIdx[0], -1, sizeof(int) * MAX_COLLISION);
 
 	g_nNumCollider = 0;
 	g_nNumCollision = 0;
+
+	LoadMeshColldier("data\\SCRIPTS\\MESH\\ColliderTest.bin", D3DXVECTOR3(-120.0f, -6.0f, -2400.0f), INIT_D3DXVEC3);
 }
 
 //=============================================================================
@@ -694,4 +700,191 @@ bool CollisionSphereToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyColl
 {
 	// 未実装
 	return false;
+}
+
+//=============================================================================
+//	メッシュコライダーの当たり判定処理
+//=============================================================================
+bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXVECTOR3 posOld)
+{
+	MeshCollider* pMeshCollider = &g_aMeshCollider[0];
+
+	D3DXVECTOR3 vecMove = pos - posOld;			// 移動ベクトル
+	D3DXVECTOR3 vecLineA, vecLineB, vecLineC;	// 境界線ベクトル
+	D3DXVECTOR3 vecToPos, vecToPosOld;			// 一点から移動前、移動後の点へのベクトル
+	float fDist, fDistOld;						// それぞれの点と平面の距離
+	bool isRand = false;						// 着地判定
+
+	PrintDebugProc("vecmove = { %f %f %f } \n", vecMove.x, vecMove.y, vecMove.z);
+
+	for (int nCntMeshColldier = 0; nCntMeshColldier < MAX_MESHCOLLIDER; nCntMeshColldier++)
+	{
+		if (pMeshCollider->bUse == false)
+		{
+			continue;
+		}
+
+		// 三角形の数分
+		for (int nCntTriangle = 0; nCntTriangle < pMeshCollider->nNumTriangle; nCntTriangle++)
+		{
+			// 3辺の境界線ベクトルを算出
+			vecLineA = pMeshCollider->aTriangle[nCntTriangle].posB - pMeshCollider->aTriangle[nCntTriangle].posA;
+			vecLineB = pMeshCollider->aTriangle[nCntTriangle].posC - pMeshCollider->aTriangle[nCntTriangle].posB;
+			vecLineC = pMeshCollider->aTriangle[nCntTriangle].posA - pMeshCollider->aTriangle[nCntTriangle].posC;
+
+			// 三角形の一点から移動後、移動前の位置へのベクトル
+			vecToPos = pos - pMeshCollider->aTriangle[nCntTriangle].posA;
+			vecToPosOld = posOld - pMeshCollider->aTriangle[nCntTriangle].posA;
+
+			// 法線とそれぞれの点とのベクトルで内積を取り距離を算出
+			fDist = D3DXVec3Dot(&vecToPos, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+			fDistOld = D3DXVec3Dot(&vecToPosOld, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+
+			// 
+			fDist = fDist * fDistOld;
+
+			if (fDist > 0.00001f && fDist < 1.0f)
+			{// 誤差は切り捨て
+				fDist = floorf(fDist);
+			}
+
+			if (fDist < -0.00001f && fDist > -1.0f)
+			{// 誤差は切り捨て
+				fDist = ceilf(fDist);		// 負の数は切り上げ
+			}
+
+			if (fDist <= 0.0f)
+			{// それぞれの距離をかけてマイナスが入っていれば交差している (符号が違っているパターン)
+				// 交点を算出する
+				D3DXVECTOR3 Intersection = pMeshCollider->aTriangle[nCntTriangle].posA + vecToPosOld;
+
+				// 交点と三角形のそれぞれの点とのベクトル
+				D3DXVECTOR3 vecToPosA = Intersection - pMeshCollider->aTriangle[nCntTriangle].posA;
+				D3DXVECTOR3 vecToPosB = Intersection - pMeshCollider->aTriangle[nCntTriangle].posB;
+				D3DXVECTOR3 vecToPosC = Intersection - pMeshCollider->aTriangle[nCntTriangle].posC;
+
+				// 点と移動後、移動前位置とのベクトルと交点と三角形のそれぞれの点とのベクトルで外積
+				D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
+				D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
+				D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
+
+				// 外積の結果と法線ベクトルで内積
+				float fDotA = D3DXVec3Dot(&vecToPosA, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+				float fDotB = D3DXVec3Dot(&vecToPosB, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+				float fDotC = D3DXVec3Dot(&vecToPosC, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+
+				if (fDotA > 0.00001f && fDotA < 1.0f)
+				{// 誤差は切り捨て
+					fDotA = floorf(fDotA);
+				}
+
+				if (fDotB > 0.00001f && fDotB < 1.0f)
+				{// 誤差は切り捨て
+					fDotB = floorf(fDotB);
+				}
+
+				if (fDotC > 0.00001f && fDotC < 1.0f)
+				{// 誤差は切り捨て
+					fDotC = floorf(fDotC);
+				}
+
+				if (fDotA < -0.00001f && fDotA > -1.0f)
+				{// 誤差は切り捨て
+					fDotA = ceilf(fDotA);		// 負の数は切り上げ
+				}
+
+				if (fDotB < -0.00001f && fDotB > -1.0f)
+				{// 誤差は切り捨て
+					fDotB = ceilf(fDotB);		// 負の数は切り上げ
+				}
+
+				if (fDotC < -0.00001f && fDotC > -1.0f)
+				{// 誤差は切り捨て
+					fDotC = ceilf(fDotC);		// 負の数は切り上げ
+				}
+
+				if (-fDotA >= 0.0f &&
+					-fDotB >= 0.0f &&
+					-fDotC >= 0.0f)
+				{// 交点が三角形の範囲に含まれていれば
+					// 面の角度をチェック
+
+					PrintDebugProc("venNor.Y %f\n", pMeshCollider->aTriangle[nCntTriangle].vecNor.y);
+					if (pMeshCollider->aTriangle[nCntTriangle].vecNor.y >= 0.75f)
+					{// なだらかだったら
+						isRand = true;
+
+						// 移動ベクトルのY軸方向を打ち消す
+						vecMove.y = -(vecMove.x * pMeshCollider->aTriangle[nCntTriangle].vecNor.x
+							+ vecMove.z * pMeshCollider->aTriangle[nCntTriangle].vecNor.z)
+							/ pMeshCollider->aTriangle[nCntTriangle].vecNor.y;
+					}
+
+					// 壁刷り距離
+					float fDot = D3DXVec3Dot(&vecMove, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+
+					// 交点に壁刷りベクトルを足して代入
+ 					_CollisionInfo.Intersection = Intersection + (vecMove - (pMeshCollider->aTriangle[nCntTriangle].vecNor * fDot));
+					_CollisionInfo.isCollision = true;
+					break;
+				}
+			}
+		}
+	}
+
+	return isRand;
+}
+
+//=============================================================================
+//	メッシュコライダーの読み込み処理
+//=============================================================================
+void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+{
+	D3DXMATRIX mtx, mtxRot, mtxTrans;			// 計算用マトリックス
+
+	FILE* pColliderFile = fopen(pColliderScript, "rb");
+
+	if (pColliderFile == NULL)
+	{// ファイルが開けなかったら
+		return;
+	}
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&mtx);
+
+	// 向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(&mtx, &mtx, &mtxRot);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(&mtx, &mtx, &mtxTrans);
+
+	MeshCollider* pMeshCollider = &g_aMeshCollider[0];
+
+	for (int nCntMeshCollider = 0; nCntMeshCollider < MAX_MESHCOLLIDER; nCntMeshCollider++, pMeshCollider++)
+	{
+		if (pMeshCollider->bUse == true)
+		{// 使っていたら弾く
+			continue;
+		}
+
+		fread(&pMeshCollider->nNumTriangle, sizeof(int), 1, pColliderFile);
+		fread(&pMeshCollider->aTriangle[0], sizeof(Triangle), pMeshCollider->nNumTriangle, pColliderFile);
+		pMeshCollider->bUse = true;
+
+		for (int nCntTriangle = 0; nCntTriangle < pMeshCollider->nNumTriangle; nCntTriangle++)
+		{
+			pMeshCollider->aTriangle[nCntTriangle].vecNor = -pMeshCollider->aTriangle[nCntTriangle].vecNor;
+
+			// 位置と向きを反映した頂点座標を入れる
+			D3DXVec3TransformCoord(&pMeshCollider->aTriangle[nCntTriangle].posA, &pMeshCollider->aTriangle[nCntTriangle].posA, &mtx);
+			D3DXVec3TransformCoord(&pMeshCollider->aTriangle[nCntTriangle].posB, &pMeshCollider->aTriangle[nCntTriangle].posB, &mtx);
+			D3DXVec3TransformCoord(&pMeshCollider->aTriangle[nCntTriangle].posC, &pMeshCollider->aTriangle[nCntTriangle].posC, &mtx);
+		}
+
+		break;
+	}
+
+	fclose(pColliderFile);
 }

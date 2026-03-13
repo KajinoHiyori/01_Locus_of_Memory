@@ -29,7 +29,7 @@ MeshField g_ameshfield[MAX_MESHFIELD];									// メッシュフィールドの情報
 
 const char* c_pMeshFieldTextureName[MESHFIELDTYPE_MAX] =
 {
-	"data\\TEXTURE\\road000.jpg",
+	"data\\TEXTURE\\clock001.png",
 	"data\\TEXTURE\\road000.jpg",
 	"data\\TEXTURE\\road000.jpg",
 };
@@ -64,7 +64,12 @@ void InitMeshField(void)
 	}
 
 	// いったん直
+	//SetMeshField(D3DXVECTOR3(-3250.0f, -50.0f, -3000.0f), D3DXVECTOR3(D3DX_PI * 0.115f, D3DX_PI * 0.25f, 0.0f), 100.0f, 100.0f, 10, 10, MESHFIELDTYPE_000);
 	//SetMeshField(D3DXVECTOR3(-5000.1f, 0.0f, 5000.1f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 500.0f, 500.0f, 20, 20, MESHFIELDTYPE_000);
+	MeshInfo MeshInfo = {};
+	//LoadMesh("data\\SCRIPTS\\MESH\\bridge000.bin", &MeshInfo);
+	//LoadMesh("data\\SCRIPTS\\MESH\\test.bin", &MeshInfo);
+	//SetMesh(D3DXVECTOR3(0.0f, 0.0f, 0.0f), INIT_D3DXVEC3, MeshInfo.nVtx, &MeshInfo.VtxPos[0], MeshInfo.nSplitWidth, MeshInfo.nSplitDepth, MESHFIELDTYPE_000, NULL);
 }
 
 //=============================================================================
@@ -114,7 +119,7 @@ void DrawMeshField(void)
 
 	for (int nCntMeshField = 0; nCntMeshField < MAX_MESHFIELD; nCntMeshField++, pMeshField++)
 	{
-		if (pMeshField->bUse == false || pMeshField->bMesh == true)
+		if (pMeshField->bUse == false/* || pMeshField->bMesh == true*/)
 		{// 使っていないもしくは当たり判定用メッシュなら弾く
 			continue;
 		}
@@ -272,10 +277,17 @@ void SetMeshField(D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fWidth, float fDepth, 
 bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove)
 {
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
-	D3DXVECTOR3 vecNor, VecMove;
-	PMESHFIELD pMeshField = &g_ameshfield[0];
+	D3DXVECTOR3 vecNor;							// 法線ベクトル
+	D3DXVECTOR3 vecMove = *pPos - *pPosOld;		// 移動ベクトル
+	PMESHFIELD pMeshField = &g_ameshfield[0];	// メッシュフィールドへのポインタ
 	PMESHFIELD pRideMeshField = NULL;
 	float fRidePosY = 0.0f;
+
+	float fDist, fDistOld;
+
+	bool isRand = false;
+
+	PrintDebugProc("vecmove = { %f %f %f } \n", vecMove.x, vecMove.y, vecMove.z);
 
 	for (int nCntMeshField = 0; nCntMeshField < MAX_MESHFIELD; nCntMeshField++, pMeshField++)
 	{
@@ -323,72 +335,59 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 				D3DXVECTOR3 vecLineB = PosC - PosB;
 				D3DXVECTOR3 vecLineC = PosA - PosC;
 
+				// 三角形の一点から移動後、移動前の位置へのベクトル
 				D3DXVECTOR3 vecToPos = *pPos - PosA;
 				D3DXVECTOR3 vecToPosOld = *pPosOld - PosA;
-
-				// それぞれの始点から位置へのベクトルを算出
-				D3DXVECTOR3 vecToPosA = *pPos - PosA;
-				D3DXVECTOR3 vecToPosB = *pPos - PosB;
-				D3DXVECTOR3 vecToPosC = *pPos - PosC;
 
 				// 面の法線
 				vecNor = { (-vecLineA.y * vecLineB.z) - (-vecLineA.z * vecLineB.y), (-vecLineA.z * vecLineB.x) - (-vecLineA.x * vecLineB.z), (-vecLineA.x * vecLineB.y) - (-vecLineA.y * vecLineB.x) };
 
 				D3DXVec3Normalize(&vecNor, &vecNor);	// 正規化
 
-				if ((vecLineA.z * vecToPosA.x) - (vecLineA.x * vecToPosA.z) < 0 &&
-					(vecLineB.z * vecToPosB.x) - (vecLineB.x * vecToPosB.z) < 0 &&
-					(vecLineC.z * vecToPosC.x) - (vecLineC.x * vecToPosC.z) < 0)
-				{// もし全ての境界線ベクトルの内側にいたら
+				fDist = D3DXVec3Dot(&vecToPos, &vecNor);
+				fDistOld = D3DXVec3Dot(&vecToPosOld, &vecNor);
 
-					// 高さ
-					float fPosY = PosA.y - ((vecNor.x * (pPos->x - PosA.x) + vecNor.z * (pPos->z - PosA.z)) / vecNor.y);
+				if (fDist * fDistOld <= 0.0f)
+				{
+					float fRate = fDist / (fDist + fDistOld);
 
-					float fDist = D3DXVec3Dot(&vecToPos, &vecNor);
-					float fDistOld = D3DXVec3Dot(&vecToPosOld, &vecNor);
+					D3DXVECTOR3 Intersection = PosA + vecToPosOld;
 
-					if (fDist * fDistOld <= 0.0f)
-					{
-						float fRate = fDist / (fDist + fDistOld);
+					D3DXVECTOR3 vecToPosA = Intersection - PosA;
+					D3DXVECTOR3 vecToPosB = Intersection - PosB;
+					D3DXVECTOR3 vecToPosC = Intersection - PosC;
 
-						D3DXVECTOR3 Intersection = PosA + (vecToPos * (1.0f - fRate) + vecToPosOld * fRate);
+					D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
+					D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
+					D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
 
-						D3DXVECTOR3 vecToPosA = Intersection - PosA;
-						D3DXVECTOR3 vecToPosB = Intersection - PosB;
-						D3DXVECTOR3 vecToPosC = Intersection - PosC;
+					float fDotA = D3DXVec3Dot(&vecToPosA, &vecNor);
+					float fDotB = D3DXVec3Dot(&vecToPosB, &vecNor);
+					float fDotC = D3DXVec3Dot(&vecToPosC, &vecNor);
 
-						D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
-						D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
-						D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
+					if (-fDotA >= 0.0f &&
+						-fDotB >= 0.0f &&
+						-fDotC >= 0.0f)
+					{// 交点が三角形の範囲に含まれていれば
+						// 面の角度をチェック
+						if (vecNor.y >= 0.707f)
+						{// なだらかだったら
+							if (pMove->y < 0.0f)
+							{// 着地判定のため移動量を0に
+								pMove->y = 0.0f;
+							}
+							isRand = true;
 
-						float fDotA = D3DXVec3Dot(&vecToPosA, &vecNor);
-						float fDotB = D3DXVec3Dot(&vecToPosB, &vecNor);
-						float fDotC = D3DXVec3Dot(&vecToPosC, &vecNor);
-						
-						if (-fDotA >= 0.0f &&
-							-fDotB >= 0.0f &&
-							-fDotC >= 0.0f)
-						{
-							PrintDebugProc("%f %f %f \n", Intersection.x, Intersection.y, Intersection.z);
+							// 移動ベクトルのY軸方向を打ち消す
+							vecMove.y = -(vecMove.x * vecNor.x + vecMove.z * vecNor.z) / vecNor.y;
 						}
+
+						float fDot = D3DXVec3Dot(&vecMove, &vecNor);
+
+						// 交点に壁刷りを足して代入
+						*pPos = Intersection + (vecMove - (vecNor * fDot));
 					}
-
-					//if (pPos->y <= fPosY)
-					//{
-					//	if (pRideMeshField != NULL)
-					//	{
-					//		if (fRidePosY > fPosY)
-					//		{
-					//			break;
-					//		}
-					//	}
-
-					//	fRidePosY = fPosY;
-					//	pRideMeshField = pMeshField;
-					//	break;
-					//}
 				}
-
 				// 位置と向きを反映した頂点座標を入れる
 				D3DXVec3TransformCoord(&PosB, &pVtx[nCntVtxWidht + 1].pos, &pMeshField->mtxWorld);
 
@@ -397,78 +396,55 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 				vecLineB = PosC - PosB;
 				vecLineC = PosA - PosC;
 
-				// それぞれの始点から位置へのベクトルを算出
-				vecToPosA = *pPos - PosA;
-				vecToPosB = *pPos - PosB;
-				vecToPosC = *pPos - PosC;
+				// 法線ベクトルを算出
+				vecNor = { (vecLineB.y * -vecLineA.z) - (vecLineB.z * -vecLineA.y), (vecLineB.z * -vecLineA.x) - (vecLineB.x * -vecLineA.z), (vecLineB.x * -vecLineA.y) - (vecLineB.y * -vecLineA.x) };
 
-				//// 正規化
-				//D3DXVec3Normalize(&vecLineA, &vecLineA);
-				//D3DXVec3Normalize(&vecLineB, &vecLineB);
-				//D3DXVec3Normalize(&vecLineC, &vecLineC);
+				D3DXVec3Normalize(&vecNor, &vecNor);
 
-				if ((vecLineA.z * vecToPosA.x) - (vecLineA.x * vecToPosA.z) > 0 &&
-					(vecLineB.z * vecToPosB.x) - (vecLineB.x * vecToPosB.z) > 0 &&
-					(vecLineC.z * vecToPosC.x) - (vecLineC.x * vecToPosC.z) > 0)
-				{// もし全ての境界線ベクトルの内側にいたら
+				fDist = D3DXVec3Dot(&vecToPos, &vecNor);
+				fDistOld = D3DXVec3Dot(&vecToPosOld, &vecNor);
 
-					vecNor = { (vecLineB.y * -vecLineA.z) - (vecLineB.z * -vecLineA.y), (vecLineB.z * -vecLineA.x) - (vecLineB.x * -vecLineA.z), (vecLineB.x * -vecLineA.y) - (vecLineB.y * -vecLineA.x) };
+				if (fDist * fDistOld <= 0.0f)
+				{
+					float fRate = fDist / (fDist + fDistOld);
 
-					D3DXVec3Normalize(&vecNor, &vecNor);
+					D3DXVECTOR3 Intersection = PosA + vecToPosOld;
 
-					float fPosY = PosA.y - ((vecNor.x * (pPos->x - PosA.x) + vecNor.z * (pPos->z - PosA.z)) / vecNor.y);
+					D3DXVECTOR3 vecToPosA = Intersection - PosA;
+					D3DXVECTOR3 vecToPosB = Intersection - PosB;
+					D3DXVECTOR3 vecToPosC = Intersection - PosC;
 
-					float fDist = D3DXVec3Dot(&vecToPos, &vecNor);
-					float fDistOld = D3DXVec3Dot(&vecToPosOld, &vecNor);
+					D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
+					D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
+					D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
 
-					if (fDist * fDistOld <= 0.0f)
-					{
-						float fRate = fDist / (fDist + fDistOld);
+					float fDotA = D3DXVec3Dot(&vecToPosA, &vecNor);
+					float fDotB = D3DXVec3Dot(&vecToPosB, &vecNor);
+					float fDotC = D3DXVec3Dot(&vecToPosC, &vecNor);
 
-						D3DXVECTOR3 Intersection = PosA + (vecToPos * (1.0f - fRate) + vecToPosOld * fRate);
+					if (fDotA >= 0.0f &&
+						fDotB >= 0.0f &&
+						fDotC >= 0.0f)
+					{// 交点が三角形の範囲に含まれていれば
+						// 面の角度をチェック
+						if (vecNor.y >= 0.707f)
+						{// なだらかだったら
+							if (pMove->y < 0.0f)
+							{// 着地判定のため移動量を0に
+								pMove->y = 0.0f;
+							}
+							isRand = true;
 
-						D3DXVECTOR3 vecToPosA = Intersection - PosA;
-						D3DXVECTOR3 vecToPosB = Intersection - PosB;
-						D3DXVECTOR3 vecToPosC = Intersection - PosC;
-
-						D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
-						D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
-						D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
-
-						float fDotA = D3DXVec3Dot(&vecToPosA, &vecNor);
-						float fDotB = D3DXVec3Dot(&vecToPosB, &vecNor);
-						float fDotC = D3DXVec3Dot(&vecToPosC, &vecNor);
-
-						if (fDotA >= 0.0f &&
-							fDotB >= 0.0f &&
-							fDotC >= 0.0f)
-						{
-							PrintDebugProc("%f %f %f \n", Intersection.x, Intersection.y, Intersection.z);
-
-							//D3DXVECTOR3 vecMove = *pPosOld - *pPos;
-
-							//float fDot = D3DXVec3Dot(&vecMove, &vecNor);
-
-							//*pPos = Intersection + (vecMove * fDot);
+							// 移動ベクトルのY軸方向を打ち消す
+							vecMove.y = -(vecMove.x * vecNor.x + vecMove.z * vecNor.z) / vecNor.y;
 						}
+
+						float fDot = D3DXVec3Dot(&vecMove, &vecNor);
+
+						// 交点に壁刷りを足して代入
+						*pPos = Intersection + (vecMove - (vecNor * fDot));
 					}
-
-					//if (pPos->y <= fPosY)
-					//{
-					//	if (pRideMeshField != NULL)
-					//	{
-					//		if (fRidePosY > fPosY)
-					//		{
-					//			break;
-					//		}
-					//	}
-
-					//	fRidePosY = fPosY;
-					//	pRideMeshField = pMeshField;
-					//	break;
-					//}
 				}
-
 			}
 
 			pVtx += pMeshField->nSplitWidth;		// ポインタをずらす
@@ -478,18 +454,7 @@ bool CollisionMeshField(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pM
 		pMeshField->pVtxBuff->Unlock();
 	}
 
-	//if (pRideMeshField != NULL)
-	//{
-	//	//if (pRideMeshField->type != MESHFIELDTYPE_SEA)
-	//	//{
-	//	//	pPos->y = fRidePosY;
-	//	//	pMove->y = 0.0f;
-	//	//}
-
-	//	return pRideMeshField;
-	//}
-
-	return NULL;
+	return isRand;
 }
 
 //=============================================================================
