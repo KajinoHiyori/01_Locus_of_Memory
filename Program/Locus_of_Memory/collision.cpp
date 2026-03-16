@@ -93,7 +93,7 @@ void InitCollision(void)
 	g_nNumCollider = 0;
 	g_nNumCollision = 0;
 
-	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(-120.0f, -6.0f, -2400.0f), INIT_D3DXVEC3);
+	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(-122.5f, -6.0f, -2400.0f), INIT_D3DXVEC3);
 	LoadMeshColldier("data\\SCRIPTS\\MESH\\riverwallcollision.bin", D3DXVECTOR3(1800.0f, -50.0f, 3500.0f), INIT_D3DXVEC3);
 }
 
@@ -277,7 +277,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	D3DXMatrixRotationYawPitchRoll(&MymtxRot, MyCollider.box.rot.y, MyCollider.box.rot.x, MyCollider.box.rot.z);
 	D3DXMatrixRotationYawPitchRoll(&TargetmtxRot, TargetCollider.box.rot.y, TargetCollider.box.rot.x, TargetCollider.box.rot.z);
 
-	// 向き行列から各方向ベクトルの確保 (正規化Nと長さ)
+	// 向き行列から各方向ベクトルの確保 (正規化Norと長さ)
 	// 自分の矩形のX方面ベクトル
 	D3DXVECTOR3 MyAxisXNor = { MymtxRot._11, MymtxRot._12, MymtxRot._13 },
 		MyAxisX = MyAxisXNor * MyCollider.box.fWidth;

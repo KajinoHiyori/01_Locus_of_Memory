@@ -80,6 +80,7 @@ void InitEventObject(void);
 void UninitEventObject(void);
 void UpdateEventObject(void);
 void DrawEventObject(void);
+bool CollisionEventObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, int nCollisionIdx);
 void SetEventObjectNormal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, OBJECTTYPE type, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision, bool isCollider);
 void SetEventObjectParent(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype, MOTIONDATATYPE motiondatatype, ColliderInfo* pColliderInfo, int nNumCollider, bool isCollision, bool isCollider);
 EventObject* GetEventObject(int nIdx);

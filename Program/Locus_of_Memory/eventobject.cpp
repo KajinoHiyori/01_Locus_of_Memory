@@ -271,6 +271,36 @@ void DrawEventObject(void)
 	}
 }
 
+//=============================================================================
+//	オブジェクトの当たり判定処理
+//=============================================================================
+bool CollisionEventObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, int nCollisionIdx)
+{
+	EventObject* pEventObject = &g_aEventObject[0];	// 先頭アドレス
+	bool isRand = false;							// 着地判定
+
+	for (int nCntModel = 0; nCntModel < MAX_EVENTOBJECT; nCntModel++, pEventObject++)
+	{
+		if (pEventObject->bUse == false)
+		{// 使用していなかったら戻る
+			continue;
+		}
+
+		if (pEventObject->nCollisionIdx != -1)
+		{// 当たり判定が設定されていれば
+			CollisionInfo CollisionInfo = UpdateCollision(nCollisionIdx, pEventObject->nCollisionIdx);
+
+			if (CollisionInfo.isCollision)
+			{// 当たっていれば
+				*pPos = CollisionInfo.Intersection;
+				break;
+			}
+		}
+	}
+
+	return isRand;	// 着地したかどうかを返す
+}
+
 //==============================================================================
 // イベント用オブジェクトの設定処理
 //==============================================================================

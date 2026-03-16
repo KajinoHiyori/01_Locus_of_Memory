@@ -23,6 +23,7 @@
 #include "magicui.h"
 #include "magicbubble.h"
 #include "sound.h"
+#include "eventobject.h"
 
 // マクロ定義
 #define MAX_MODEL		(1)					// モデルの最大数
@@ -657,6 +658,9 @@ void UpdatePlayer(void)
 			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
 			g_aPlayer[nCntPlayer].bJump = false;
 		}
+
+		// イベントオブジェクトとの当たり判定
+		CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision);
 
 		// 使用したコマンドと所持コマンドを判定
 		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)

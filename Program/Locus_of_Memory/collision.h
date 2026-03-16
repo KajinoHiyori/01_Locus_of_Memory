@@ -206,7 +206,9 @@ bool CollisionSphereToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyColl
 //	カプセルの当たり判定 (ない)
 //=============================================================================
 
-
+//=============================================================================
+//	メッシュの当たり判定
+//=============================================================================
 bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXVECTOR3 posOld);
 void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
