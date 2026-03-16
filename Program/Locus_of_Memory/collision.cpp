@@ -93,7 +93,7 @@ void InitCollision(void)
 	g_nNumCollider = 0;
 	g_nNumCollision = 0;
 
-	LoadMeshColldier("data\\SCRIPTS\\MESH\\ColliderTest.bin", D3DXVECTOR3(-120.0f, -6.0f, -2400.0f), INIT_D3DXVEC3);
+	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(-120.0f, -6.0f, -2400.0f), INIT_D3DXVEC3);
 }
 
 //=============================================================================
@@ -717,7 +717,7 @@ bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXV
 
 	PrintDebugProc("vecmove = { %f %f %f } \n", vecMove.x, vecMove.y, vecMove.z);
 
-	for (int nCntMeshColldier = 0; nCntMeshColldier < MAX_MESHCOLLIDER; nCntMeshColldier++)
+	for (int nCntMeshColldier = 0; nCntMeshColldier < MAX_MESHCOLLIDER; nCntMeshColldier++, pMeshCollider++)
 	{
 		if (pMeshCollider->bUse == false)
 		{
@@ -753,81 +753,84 @@ bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXV
 				fDist = ceilf(fDist);		// 負の数は切り上げ
 			}
 
-			if (fDist <= 0.0f)
-			{// それぞれの距離をかけてマイナスが入っていれば交差している (符号が違っているパターン)
-				// 交点を算出する
-				D3DXVECTOR3 Intersection = pMeshCollider->aTriangle[nCntTriangle].posA + vecToPosOld;
+			// それぞれの距離をかけてマイナスが入っていれば交差している (符号が違っているパターン)
+			if (fDist > 0.0f)
+			{// 符号が同じだったなら
+				continue;
+			}
 
-				// 交点と三角形のそれぞれの点とのベクトル
-				D3DXVECTOR3 vecToPosA = Intersection - pMeshCollider->aTriangle[nCntTriangle].posA;
-				D3DXVECTOR3 vecToPosB = Intersection - pMeshCollider->aTriangle[nCntTriangle].posB;
-				D3DXVECTOR3 vecToPosC = Intersection - pMeshCollider->aTriangle[nCntTriangle].posC;
+			// 交点を算出する
+			D3DXVECTOR3 Intersection = pMeshCollider->aTriangle[nCntTriangle].posA + vecToPosOld;
 
-				// 点と移動後、移動前位置とのベクトルと交点と三角形のそれぞれの点とのベクトルで外積
-				D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
-				D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
-				D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
+			// 交点と三角形のそれぞれの点とのベクトル
+			D3DXVECTOR3 vecToPosA = Intersection - pMeshCollider->aTriangle[nCntTriangle].posA;
+			D3DXVECTOR3 vecToPosB = Intersection - pMeshCollider->aTriangle[nCntTriangle].posB;
+			D3DXVECTOR3 vecToPosC = Intersection - pMeshCollider->aTriangle[nCntTriangle].posC;
 
-				// 外積の結果と法線ベクトルで内積
-				float fDotA = D3DXVec3Dot(&vecToPosA, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
-				float fDotB = D3DXVec3Dot(&vecToPosB, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
-				float fDotC = D3DXVec3Dot(&vecToPosC, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+			// 点と移動後、移動前位置とのベクトルと交点と三角形のそれぞれの点とのベクトルで外積
+			D3DXVec3Cross(&vecToPosA, &vecLineA, &vecToPosA);
+			D3DXVec3Cross(&vecToPosB, &vecLineB, &vecToPosB);
+			D3DXVec3Cross(&vecToPosC, &vecLineC, &vecToPosC);
 
-				if (fDotA > 0.00001f && fDotA < 1.0f)
-				{// 誤差は切り捨て
-					fDotA = floorf(fDotA);
+			// 外積の結果と法線ベクトルで内積
+			float fDotA = D3DXVec3Dot(&vecToPosA, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+			float fDotB = D3DXVec3Dot(&vecToPosB, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+			float fDotC = D3DXVec3Dot(&vecToPosC, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+
+			if (fDotA > 0.00001f && fDotA < 1.0f)
+			{// 誤差は切り捨て
+				fDotA = floorf(fDotA);
+			}
+
+			if (fDotB > 0.00001f && fDotB < 1.0f)
+			{// 誤差は切り捨て
+				fDotB = floorf(fDotB);
+			}
+
+			if (fDotC > 0.00001f && fDotC < 1.0f)
+			{// 誤差は切り捨て
+				fDotC = floorf(fDotC);
+			}
+
+			if (fDotA < -0.00001f && fDotA > -1.0f)
+			{// 誤差は切り捨て
+				fDotA = ceilf(fDotA);		// 負の数は切り上げ
+			}
+
+			if (fDotB < -0.00001f && fDotB > -1.0f)
+			{// 誤差は切り捨て
+				fDotB = ceilf(fDotB);		// 負の数は切り上げ
+			}
+
+			if (fDotC < -0.00001f && fDotC > -1.0f)
+			{// 誤差は切り捨て
+				fDotC = ceilf(fDotC);		// 負の数は切り上げ
+			}
+
+			if (-fDotA >= 0.0f &&
+				-fDotB >= 0.0f &&
+				-fDotC >= 0.0f)
+			{// 交点が三角形の範囲に含まれていれば
+				// 面の角度をチェック
+				PrintDebugProc("venNor.Y %f\n", pMeshCollider->aTriangle[nCntTriangle].vecNor.y);
+
+				if (pMeshCollider->aTriangle[nCntTriangle].vecNor.y >= 0.75f)
+				{// なだらかだったら
+					isRand = true;
+
+					// 移動ベクトルのY軸方向を打ち消す
+					vecMove.y = -(vecMove.x * pMeshCollider->aTriangle[nCntTriangle].vecNor.x
+						+ vecMove.z * pMeshCollider->aTriangle[nCntTriangle].vecNor.z)
+						/ pMeshCollider->aTriangle[nCntTriangle].vecNor.y;
 				}
 
-				if (fDotB > 0.00001f && fDotB < 1.0f)
-				{// 誤差は切り捨て
-					fDotB = floorf(fDotB);
-				}
+				// 壁刷り距離
+				float fDot = D3DXVec3Dot(&vecMove, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
 
-				if (fDotC > 0.00001f && fDotC < 1.0f)
-				{// 誤差は切り捨て
-					fDotC = floorf(fDotC);
-				}
-
-				if (fDotA < -0.00001f && fDotA > -1.0f)
-				{// 誤差は切り捨て
-					fDotA = ceilf(fDotA);		// 負の数は切り上げ
-				}
-
-				if (fDotB < -0.00001f && fDotB > -1.0f)
-				{// 誤差は切り捨て
-					fDotB = ceilf(fDotB);		// 負の数は切り上げ
-				}
-
-				if (fDotC < -0.00001f && fDotC > -1.0f)
-				{// 誤差は切り捨て
-					fDotC = ceilf(fDotC);		// 負の数は切り上げ
-				}
-
-				if (-fDotA >= 0.0f &&
-					-fDotB >= 0.0f &&
-					-fDotC >= 0.0f)
-				{// 交点が三角形の範囲に含まれていれば
-					// 面の角度をチェック
-
-					PrintDebugProc("venNor.Y %f\n", pMeshCollider->aTriangle[nCntTriangle].vecNor.y);
-					if (pMeshCollider->aTriangle[nCntTriangle].vecNor.y >= 0.75f)
-					{// なだらかだったら
-						isRand = true;
-
-						// 移動ベクトルのY軸方向を打ち消す
-						vecMove.y = -(vecMove.x * pMeshCollider->aTriangle[nCntTriangle].vecNor.x
-							+ vecMove.z * pMeshCollider->aTriangle[nCntTriangle].vecNor.z)
-							/ pMeshCollider->aTriangle[nCntTriangle].vecNor.y;
-					}
-
-					// 壁刷り距離
-					float fDot = D3DXVec3Dot(&vecMove, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
-
-					// 交点に壁刷りベクトルを足して代入
- 					_CollisionInfo.Intersection = Intersection + (vecMove - (pMeshCollider->aTriangle[nCntTriangle].vecNor * fDot));
-					_CollisionInfo.isCollision = true;
-					break;
-				}
+				// 交点に壁刷りベクトルを足して代入
+				_CollisionInfo.Intersection = Intersection + (vecMove - (pMeshCollider->aTriangle[nCntTriangle].vecNor * fDot));
+				_CollisionInfo.isCollision = true;
+				break;
 			}
 		}
 	}

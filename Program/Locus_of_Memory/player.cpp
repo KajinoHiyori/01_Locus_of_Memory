@@ -160,6 +160,9 @@ void UpdatePlayer(void)
 	COMMANDOREDER InputCommand = COMMANDOREDER_NONE;	// 入力したコマンド
 	MAGICTYPE CurrentMagictype;							// 今使っている魔法
 
+	CollisionInfo CollisionInfo;						// 衝突情報
+	bool isRand = false;								// 着地判定
+
 	bool bPause = false;	// ポーズ状態の確認
 	bool bSpell = false;	// スペルメニューの表示状態の確認
 
@@ -602,9 +605,18 @@ void UpdatePlayer(void)
 		// 位置の更新
 		g_aPlayer[nCntPlayer].pos += g_aPlayer[nCntPlayer].move;
 
-		// メッシュフィールドとの当たり判定
-		if (CollisionMeshField(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move) == true || 
-			g_aPlayer[nCntPlayer].pos.y <= 0.0f)
+		// メッシュコライダーとの当たり判定
+		isRand = CollisionMeshCollider(CollisionInfo, g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].posOld);
+
+		if (CollisionInfo.isCollision == true)
+		{// もしメッシュコライダーと衝突していたら
+			// 位置を合わせる
+			g_aPlayer[nCntPlayer].pos = CollisionInfo.Intersection;
+			CollisionInfo.isCollision = false;
+		}
+
+		// 着地判定
+		if (isRand == true)
 		{
 			if (g_aPlayer[nCntPlayer].bJump == true)
 			{// ジャンプしている状態で判定があったら
@@ -624,9 +636,17 @@ void UpdatePlayer(void)
 					SetSpellUIAppear(nCntPlayer);
 				}
 			}
+			g_aPlayer[nCntPlayer].move.y = 0.0f;
+			g_aPlayer[nCntPlayer].bJump = false;
+			isRand = false;
+		}
+
+		if (g_aPlayer[nCntPlayer].pos.y <= 0.0f)
+		{
 			g_aPlayer[nCntPlayer].pos.y = 0.0f;
 			g_aPlayer[nCntPlayer].move.y = 0.0f;
 			g_aPlayer[nCntPlayer].bJump = false;
+			isRand = false;
 		}
 
 		// 当たり判定の位置の更新

@@ -39,6 +39,7 @@
 #include "field.h"
 #include "riverwall.h"
 #include "clock.h"
+#include "collision.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -425,6 +426,9 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// 時計の初期化処理
 	InitClock();
 
+	// 当たり判定の初期化処理
+	InitCollision();
+
 #ifndef _DEBUG
 	// マウスカーソルを非表示
 	ShowCursor(false);
@@ -525,6 +529,9 @@ void Uninit(void)
 
 	// 時計の終了処理
 	UninitClock();
+
+	// 当たり判定の終了処理
+	UninitCollision();
 
 	// Direct3Dデバイスの破棄
 	if (g_pD3DDevice != NULL)
