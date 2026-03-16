@@ -8,6 +8,7 @@
 #include "object.h"
 #include "eventobject.h"
 #include "particle.h"
+#include "magiceffect.h"
 #include "motion.h"
 #include "magic.h"
 #include "debugproc.h"
@@ -435,13 +436,13 @@ bool SetMagicEvent012(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_COMBUSTION:	// ”RÄ
 		//pEventObject->EventType = EVENTTYPE_008_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		SetMagicEffect(pEventObject->pos, MAGICEF_TYPE_FORGE, nIdx);
 		isSuccess = true;
 		break;
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ
 	//pEventObject->EventType = EVENTTYPE_008_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		SetMagicEffect(pEventObject->pos, MAGICEF_TYPE_FORGE, nIdx);
 		isSuccess = true;
 		break;
 	}
