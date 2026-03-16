@@ -270,6 +270,9 @@
     <ClCompile Include="readyui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="destinationui.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -447,6 +450,9 @@
       <Filter>object\h</Filter>
     </ClInclude>
     <ClInclude Include="readyui.h">
+      <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="destinationui.h">
       <Filter>UI\h</Filter>
     </ClInclude>
   </ItemGroup>

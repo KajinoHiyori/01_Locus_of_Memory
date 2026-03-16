@@ -170,6 +170,7 @@
     <ClCompile Include="clock.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="custommesh.cpp" />
+    <ClCompile Include="destinationui.cpp" />
     <ClCompile Include="diagnosis.cpp" />
     <ClCompile Include="diagnosisui.cpp" />
     <ClCompile Include="effect.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="collision.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="custommesh.h" />
+    <ClInclude Include="destinationui.h" />
     <ClInclude Include="diagnosis.h" />
     <ClInclude Include="diagnosisui.h" />
     <ClInclude Include="effect.h" />
