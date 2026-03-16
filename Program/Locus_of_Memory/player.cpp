@@ -315,7 +315,10 @@ void UpdatePlayer(void)
 			}
 		}
 		
-		if (((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true)
+		if (((GetKeyboardRelease(DIK_TAB) == true && nCntPlayer == 0) 
+			|| (GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true && GetJoypadPress(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == false)
+			|| (GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true && GetJoypadPress(JOYKEY_LEFT_TRIGGER, nCntPlayer) == false)
+			|| (GetJoypadRelease(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true && GetJoypadRelease(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true))
 			&& g_aPlayer[nCntPlayer].bJump == false)
 		{
 			// SpellÉÅÉjÉÖÅ[ÇîÒï\é¶Ç…Ç∑ÇÈ
