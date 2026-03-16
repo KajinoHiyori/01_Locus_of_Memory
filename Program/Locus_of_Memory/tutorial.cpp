@@ -57,11 +57,11 @@
 #include "tutorialui.h"
 #include "questionmark.h"
 #include "readyui.h"
+#include "destinationui.h"
 
 // マクロ定義
 #define TUTORIALPOS_1P	(D3DXVECTOR3(-3530.0f, 0.0f, -3245.0f))		// 1Pの位置[TUTORIAL]			
 #define TUTORIALPOS_2P	(D3DXVECTOR3(-3550.0f, 0.0f, -3245.0f))		// 2Pの位置[TUTORIAL]
-#define GATE_POS		(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// ゲートの位置
 #define GATE_SIZE		(120.0f)	// ゲートの大きさ
 
 int g_nCounterTutorialState = 0;				// 状態管理カウンター
@@ -137,6 +137,9 @@ void InitTutorial(void)
 
 	// プレイヤーの初期化処理
 	InitPlayer();
+
+	// 目的地の初期化処理
+	InitDestinationUI();
 
 	//InitModel();
 
@@ -222,6 +225,9 @@ void UninitTutorial(void)
 	// ドラゴンの終了処理
 	UninitAnimal();
 
+	// 目的地の終了処理
+	UninitDestinationUI();
+
 	//UninitModel();
 
 	//UninitBlock();
@@ -299,6 +305,9 @@ void UpdateTutorial(void)
 
 	// 吹き出しの更新処理
 	UpdateMagicBubble();
+
+	// 目的地の更新処理
+	UpdateDestinationUI();
 
 	// ?の更新処理
 	UpdateQuestionMark();
@@ -467,6 +476,9 @@ void DrawTutorial(void)
 
 	// 準備完了状態の描画処理
 	DrawReadyUI();
+
+	// 目的地の描画処理
+	DrawDestinationUI();
 
 	//DrawModel();
 

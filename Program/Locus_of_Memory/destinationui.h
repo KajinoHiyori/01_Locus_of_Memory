@@ -1,23 +1,18 @@
 //========================================================
 // 
-// 魔法の位置に合わせたアイコン表示処理[questionmark.h]
+// 目的地の方向を示すUI表示処理[destinationui.h]
 // Author : KajinoHiyori
 // 
 //========================================================
-#if 0
-#ifndef _QUESTIONMARK_H_
-#define	_QUESTIONMARK_H_
-
-#include "magic.h"
+#ifndef _DESTINATIONUI_H_
+#define	_DESTINATIONUI_H_
 
 // プロトタイプ宣言
-void InitQuestionMark(void);
-void UninitQuestionMark(void);
-void UpdateQuestionMark(void);
-void DrawQuestionMark(void);
-float DistanceMagicAndMark(int nIdx);
-void UpdateMarkPos(int nIdx);
-void SetMarkColor(int nIdx, COMMANDOREDER commandType, float fDistance);
+void InitDestinationUI(void);
+void UninitDestinationUI(void);
+void UpdateDestinationUI(void);
+void DrawDestinationUI(void);
+float DistanceDestination(int nIdx);
+void UpdateArrowPos(int nIdx);
 
-#endif
 #endif

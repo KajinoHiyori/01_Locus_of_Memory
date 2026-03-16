@@ -46,6 +46,7 @@
 #include "key.h"
 #include "riverwall.h"
 #include "questionmark.h"
+#include "destinationui.h"
 #include "aura.h"
 #include "questui.h"
 
@@ -123,6 +124,9 @@ void InitGame(void)
 	// クエストUIの初期化処理
 	InitQuestUI();
 
+	// 目的地の初期化処理
+	InitDestinationUI();
+
 	pVibration->Vibration = false;
 
 	// 魔法関連オブジェクトの読み込み
@@ -194,6 +198,9 @@ void UninitGame(void)
 
 	// ?の終了処理
 	UninitQuestionMark();
+
+	// 目的地の終了処理
+	UninitDestinationUI();
 
 	// 準備完了状態の終了処理
 	UninitReadyUI();
@@ -295,6 +302,9 @@ void UpdateGame(void)
 
 	// クエストUIの更新処理
 	UpdateQuestUI();
+
+	// 目的地の更新処理
+	UpdateDestinationUI();
 
 	switch (g_eventState)
 	{
@@ -513,6 +523,9 @@ void DrawGame(void)
 
 	// クエストUIの描画処理
 	DrawQuestUI();
+
+	// 目的地の描画処理
+	DrawDestinationUI();
 
 	SetFogEnable(true);			// 霧を有効
 
