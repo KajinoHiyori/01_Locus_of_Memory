@@ -59,8 +59,8 @@
 #include "readyui.h"
 
 // マクロ定義
-#define TUTORIALPOS_1P	(D3DXVECTOR3(-2820.0f, 0.0f, -3790.0f))		// 1Pの位置[TUTORIAL]			
-#define TUTORIALPOS_2P	(D3DXVECTOR3(-2850.0f, 0.0f, -3790.0f))		// 2Pの位置[TUTORIAL]
+#define TUTORIALPOS_1P	(D3DXVECTOR3(-3530.0f, 0.0f, -3245.0f))		// 1Pの位置[TUTORIAL]			
+#define TUTORIALPOS_2P	(D3DXVECTOR3(-3550.0f, 0.0f, -3245.0f))		// 2Pの位置[TUTORIAL]
 #define GATE_POS		(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// ゲートの位置
 #define GATE_SIZE		(120.0f)	// ゲートの大きさ
 

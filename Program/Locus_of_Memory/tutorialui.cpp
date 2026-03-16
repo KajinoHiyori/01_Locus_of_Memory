@@ -54,9 +54,9 @@ typedef struct
 #define MAGIC_POS			(D3DXVECTOR3(-3080.0f, 120.0f, -3100.0f))	// 魔法の使い方の表示位置
 #define LIMIT_POS			(D3DXVECTOR3(-2480.0f, 120.0f, -3100.0f))	// 制限時間の表示位置
 #define BOOK_POS			(D3DXVECTOR3(-1880.0f, 120.0f, -3100.0f))	// 魔導書の表示位置
-#define HOUSE_POS			(D3DXVECTOR3(-2130.0f, 120.0f, -3900.0f))	// 燃える家の表示位置
+#define HOUSE_POS			(D3DXVECTOR3(-1995.0f, 120.0f, -4140.0f))	// 燃える家の表示位置
 #define CIRCLE_POS			(D3DXVECTOR3(-1000.0f, 120.0f, -3650.0f))	// 魔法陣の表示位置
-#define PLANTS_POS			(D3DXVECTOR3(-3300.0f, 120.0f, -3630.0f))	// 植物の表示位置
+#define PLANTS_POS			(D3DXVECTOR3(-2160.0f, 120.0f, -3520.0f))	// 植物の表示位置
 #define BRIDGE_POS			(D3DXVECTOR3(-2800.0f, 120.0f, -3100.0f))	// 橋の表示位置
 #define CIRCLE_ROT			(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f))		// 魔法陣の表示角度
 #define CIRCLE_ROTATE		(0.05f)		// 魔法陣の回転速度
