@@ -110,6 +110,7 @@ typedef enum MAGICEVENT
 	MAGICEVENT_009,				// ƒhƒ‰ƒSƒ“‚ªá¿‚µ‚ª‚é
 	MAGICEVENT_010,				// ŠX“”‚É“”‚è‚ð‚Æ‚à‚·
 	MAGICEVENT_011,				// ’b–èê‚É‰Î‚ð‚Â‚¯‚é
+	MAGICEVENT_012,				// •°‰Î‚É‰Î‚ð‚Â‚¯‚é
 	MAGICEVENT_MAX,
 }MAGICEVENT;
 

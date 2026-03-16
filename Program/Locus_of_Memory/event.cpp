@@ -38,6 +38,7 @@ bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type, int nIdx) =
 	SetMagicEvent009,
 	SetMagicEvent010,
 	SetMagicEvent011,
+	SetMagicEvent012,
 };
 
 //========================================================================
@@ -419,6 +420,30 @@ bool SetMagicEvent011(MAGICTYPE type, int nIdx)
 		break;
 	}
 	ClearQuest(QUESTTYPE_BLACKSMITH);
+	return isSuccess;
+}
+
+//========================================================================
+// 各魔法イベント処理[焚火に火をつける]
+//========================================================================
+bool SetMagicEvent011(MAGICTYPE type, int nIdx)
+{
+	// EventObject* pEventObject = GetEventObject(nIdx);
+	bool isSuccess = false;
+	switch (type)
+	{
+	case MAGICTYPE_COMBUSTION:	// 燃焼
+		//pEventObject->EventType = EVENTTYPE_008_0;
+		SetParticle(FIRE_PARTICLE, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		isSuccess = true;
+		break;
+
+	case MAGICTYPE_FIREBALL:	// 燃焼
+	//pEventObject->EventType = EVENTTYPE_008_0;
+		SetParticle(FIRE_PARTICLE, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		isSuccess = true;
+		break;
+	}
 	return isSuccess;
 }
 

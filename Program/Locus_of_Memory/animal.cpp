@@ -74,9 +74,6 @@ void UpdateAnimal(void)
 			UpdateFireDragon(nCntDragon);
 			break;
 		}
-
-		ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
-
 	}
 }
 
@@ -165,4 +162,8 @@ void UpdateFlyDragon(int nCntDragon)
 void UpdateFireDragon(int nCntDragon)
 {
 	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[nCntDragon].nIdx);
+	if (pParentObject->motion.motionType == MOTIONTYPE_MOVE && pParentObject->motion.nKey == 10)
+	{
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, true, 10);
+	}
 }
