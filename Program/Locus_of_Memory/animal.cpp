@@ -76,10 +76,14 @@ void UpdateAnimal(void)
 		}
 	}
 
-	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[0].nIdx);
-	if (pParentObject->motion.motionType == MOTIONTYPE_MOVE && pParentObject->motion.nKey == 10)
+	for (int nCntObj = 0; nCntObj < MAX_PARENTOBJECT; nCntObj++)
 	{
-		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, true, 10);
+		//EventObject* pParentObject = GetParentObjectInfo(nCntObj);
+		//if (pParentObject->type == PARENTMODELTYPE_DRAGON && pParentObject->motion.bFinishMotion == true)
+		//{
+		//	SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, true, 10);
+		//	break;
+		//}
 	}
 }
 

@@ -428,19 +428,19 @@ bool SetMagicEvent011(MAGICTYPE type, int nIdx)
 //========================================================================
 bool SetMagicEvent012(MAGICTYPE type, int nIdx)
 {
-	// EventObject* pEventObject = GetEventObject(nIdx);
+	EventObject* pEventObject = GetEventObject(nIdx);
 	bool isSuccess = false;
 	switch (type)
 	{
 	case MAGICTYPE_COMBUSTION:	// ”RÄ
 		//pEventObject->EventType = EVENTTYPE_008_0;
-		SetParticle(FIRE_PARTICLE, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		isSuccess = true;
 		break;
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ
 	//pEventObject->EventType = EVENTTYPE_008_0;
-		SetParticle(FIRE_PARTICLE, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		isSuccess = true;
 		break;
 	}
