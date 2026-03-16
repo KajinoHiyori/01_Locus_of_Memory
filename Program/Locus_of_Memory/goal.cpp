@@ -13,6 +13,8 @@
 #include "title.h"
 #include "sound.h"
 #include "questui.h"
+#include "clock.h"
+#include "resultui.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -95,6 +97,7 @@ void CollisionGoal(void)
 	Player* pPlayer = GetPlayer();
 	OPERATIONTYPE operationType = GetOperationType();
 	float afLength[MAX_PLAYER] = { 0.0f };
+	int nTime = GetTime();
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
@@ -205,6 +208,7 @@ void CollisionGoal(void)
 	GAMESTATE gameState = GetGameState();
 	if (g_NextMode == true && gameState == GAMESTATE_NORMAL)
 	{
+		SetClearTime(nTime);
 		SetGameState(GAMESTATE_CLEAR, FADE_INTERVAL);
 		ClearQuest(QUESTTYPE_TEMPLE);
 	}
@@ -216,4 +220,12 @@ void CollisionGoal(void)
 bool GetGoalState(void)
 {
 	return g_NextMode;
+}
+
+//==============================================================================
+// 遷移可能状態の初期化
+//==============================================================================
+void ResetGoalState(void)
+{
+	g_NextMode = false;
 }

@@ -54,6 +54,7 @@ typedef enum
 	RESULTUITEX_CLEAREARLY,		// クリア時間に応じたリザルト[早い]
 	RESULTUITEX_CLEARNORMAL,	// クリア時間に応じたリザルト[普通]
 	RESULTUITEX_CLEARSLOWLY,	// クリア時間に応じたリザルト[遅い]
+	RESULTUITEX_FAILED,			// クリア時間に応じたリザルト[失敗]
 	RESULTUITEX_EVENTMANY,		// イベント発生回数に応じたリザルト[多い]
 	RESULTUITEX_EVENTNORMAL,	// イベント発生回数に応じたリザルト[普通]
 	RESULTUITEX_EVENTLESS,		// イベント発生回数に応じたリザルト[少ない]
@@ -84,4 +85,8 @@ void DrawResultUI(void);
 void SetResultUI1P(void);
 void SetResultUI2P(void);
 void SetResultUI(RESULTUITYPE type, RESULTUITEX tex, D3DXVECTOR3 pos);
+void SetClearTime(int nTime);
+RESULTUITEX MostCommand(int nIdx);
+RESULTUITEX CommandResult(int nIdx);
+RESULTUITEX ClearResult(void);
 #endif

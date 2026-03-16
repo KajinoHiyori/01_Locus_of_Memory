@@ -155,6 +155,8 @@ void InitGame(void)
 	ResetDragon(0);
 
 	//ResetObject();
+
+	ResetGoalState();
 }
 //=======================================================
 // ƒQ[ƒ€‚ÌI—¹ˆ—

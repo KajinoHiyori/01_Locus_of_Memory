@@ -41,5 +41,6 @@ void DrawGoal(void);
 void SetGoal(D3DXVECTOR3 pos, float fRadius);
 void CollisionGoal(void);
 bool GetGoalState(void);
+void ResetGoalState(void);
 
 #endif // !_GOAL_H_

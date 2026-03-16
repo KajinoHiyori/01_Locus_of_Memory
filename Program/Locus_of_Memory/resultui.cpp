@@ -5,6 +5,7 @@
 //
 //======================================================================================
 #include "main.h"
+#include "game.h"
 #include "color.h"
 #include "fade.h"
 #include "resultui.h"
@@ -14,6 +15,7 @@
 #include "fog.h"
 #include "goal.h"
 #include "debugproc.h"
+#include "magic.h"
 
 // リザルトUIの構造体
 typedef struct
@@ -35,9 +37,13 @@ typedef struct
 #define NORMAL					(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
 #define NUM_RESULTUI			(RESULTUITYPE_MAX)	// リザルトUIの表示数
 #define MAXRESULT_TEX			(RESULTUITEX_MAX)	// テクスチャの最大数
+#define UI_KEY					(30)	// UIのキー数
+#define EARLY					(1200)	// 早いクリア
+#define SLOWLY					(1700)	// 遅いクリア
+
+// テクスチャのサイズ管理
 #define WIDTH					(32.5f)	// 横幅
-#define HEIGHT					(5.0f)		// 縦幅
-#define UI_KEY					(30)		// UIのキー数
+#define HEIGHT					(5.0f)	// 縦幅
 #define DIAGNOSIS_W				(650.0f * 0.075f)		// 診断結果の幅
 #define DIAGNOSIS_H				(100.0f * 0.075f)		// 診断結果の高さ
 #define MOSTCOMMANDSOLO_W		(DIAGNOSIS_W * 0.7f)		// 1番使ったコマンド[solo]
@@ -64,7 +70,7 @@ typedef struct
 #define MIN1_POS				(D3DXVECTOR3(MIN0_POS.x + NUM_W + 5.0f, MIN0_POS.y, MIN0_POS.z))
 #define COLON_POS				(D3DXVECTOR3(HOUR1_POS.x + 5.125f, HOUR1_POS.y, HOUR1_POS.z))
 #define YOUARE_POS				(D3DXVECTOR3(-40.0f, 25.0f, -10.0f))
-#define COMMANDRESULT_POS		(D3DXVECTOR3(-40.0f, 10.0f, -10.0f))
+#define COMMANDRESULT_POS		(D3DXVECTOR3(-30.0f, 10.0f, -10.0f))
 #define CLEARRESULT_POS			(D3DXVECTOR3(-10.0f, -5.0f, -10.0f))
 #define EVENTRESULT_POS			(D3DXVECTOR3(15.0f, -20.0f, -10.0f))
 
@@ -97,6 +103,7 @@ const char* c_apFilenameResultUI[MAXRESULT_TEX] =
 	"data\\TEXTURE\\result\\result005_00.png",	// クリア時間に応じたリザルト[早い]
 	"data\\TEXTURE\\result\\result005_01.png",	// クリア時間に応じたリザルト[普通]
 	"data\\TEXTURE\\result\\result005_02.png",	// クリア時間に応じたリザルト[遅い]
+	"data\\TEXTURE\\result\\result005_03.png",	// クリア時間に応じたリザルト[失敗]
 	"data\\TEXTURE\\result\\result006_00.png",	// イベント発生回数に応じたリザルト[多い]
 	"data\\TEXTURE\\result\\result006_01.png",	// イベント発生回数に応じたリザルト[普通]
 	"data\\TEXTURE\\result\\result006_02.png",	// イベント発生回数に応じたリザルト[少ない]
@@ -122,6 +129,7 @@ const char* c_apFilenameResultUI[MAXRESULT_TEX] =
 LPDIRECT3DTEXTURE9 g_apTextureResultUI[MAXRESULT_TEX] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffResultUI = NULL; // 頂点バッファへのポインタ
 ResultUI g_aResultUI[NUM_RESULTUI];	// 構造体
+int g_nClearTime = 0;	// クリア時間
 
 //======================================================================================
 // ResultUIの初期化処理
@@ -303,26 +311,31 @@ void DrawResultUI(void)
 //======================================================================================
 void SetResultUI1P(void)
 {
+	GAMESTATE gameState = GetGameState();
+
 	// 診断結果
 	SetResultUI(RESULTUITYPE_DIAGNOSIS, RESULTUITEX_DIAGNOSIS, DIAGNOSIS_POS);
 	// 1番使ったコマンド
 	SetResultUI(RESULTUITYPE_MOSTCOMMAND, RESULTUITEX_MOSTCOMMAND, MOSTCOMMANDPAIR_POS);
 	// コマンドの種類[solo]
-	SetResultUI(RESULTUITYPE_COMMMANDTYPESOLO, RESULTUITEX_R, COMMANDTYPESOLO_POS);
-	// 神殿到達時刻
-	SetResultUI(RESULTUITYPE_CLEARTIME, RESULTUITEX_TEMPLE, CLEARTIME_POS);
-	// 神殿到達時刻[時間]
-	SetResultUI(RESULTUITYPE_HOUR0, RESULTUITEX_CLEARTIME, HOUR0_POS);
-	SetResultUI(RESULTUITYPE_HOUR1, RESULTUITEX_CLEARTIME, HOUR1_POS);
-	SetResultUI(RESULTUITYPE_COLON, RESULTUITEX_COLON, COLON_POS);
-	SetResultUI(RESULTUITYPE_MIN0, RESULTUITEX_CLEARTIME, MIN0_POS);
-	SetResultUI(RESULTUITYPE_MIN1, RESULTUITEX_CLEARTIME, MIN1_POS);
+	SetResultUI(RESULTUITYPE_COMMMANDTYPESOLO, MostCommand(0), COMMANDTYPESOLO_POS);
+	if (gameState == GAMESTATE_CLEAR)
+	{
+		// 神殿到達時刻
+		SetResultUI(RESULTUITYPE_CLEARTIME, RESULTUITEX_TEMPLE, CLEARTIME_POS);
+		// 神殿到達時刻[時間]
+		SetResultUI(RESULTUITYPE_HOUR0, RESULTUITEX_CLEARTIME, HOUR0_POS);
+		SetResultUI(RESULTUITYPE_HOUR1, RESULTUITEX_CLEARTIME, HOUR1_POS);
+		SetResultUI(RESULTUITYPE_COLON, RESULTUITEX_COLON, COLON_POS);
+		SetResultUI(RESULTUITYPE_MIN0, RESULTUITEX_CLEARTIME, MIN0_POS);
+		SetResultUI(RESULTUITYPE_MIN1, RESULTUITEX_CLEARTIME, MIN1_POS);
+	}
 	// あなたは
 	SetResultUI(RESULTUITYPE_YOUARE, RESULTUITEX_YOUARE, YOUARE_POS);
 	// コマンド数に応じたリザルト
-	SetResultUI(RESULTUITYPE_COMMANDRESULT, RESULTUITEX_COMMANDR, COMMANDRESULT_POS);
+	SetResultUI(RESULTUITYPE_COMMANDRESULT, CommandResult(0), COMMANDRESULT_POS);
 	// クリア時間に応じたリザルト
-	SetResultUI(RESULTUITYPE_CLEARRESULT, RESULTUITEX_CLEAREARLY, CLEARRESULT_POS);
+	SetResultUI(RESULTUITYPE_CLEARRESULT, ClearResult(), CLEARRESULT_POS);
 	// イベント発生回数に応じたリザルト
 	SetResultUI(RESULTUITYPE_EVENTRESULT, RESULTUITEX_EVENTMANY, EVENTRESULT_POS);
 
@@ -333,22 +346,27 @@ void SetResultUI1P(void)
 //======================================================================================
 void SetResultUI2P(void)
 {
+	GAMESTATE gameState = GetGameState();
+
 	// 診断結果
 	SetResultUI(RESULTUITYPE_DIAGNOSIS, RESULTUITEX_DIAGNOSIS, DIAGNOSIS_POS);
 	// 1番使ったコマンド
 	SetResultUI(RESULTUITYPE_MOSTCOMMAND, RESULTUITEX_MOSTCOMMAND, MOSTCOMMANDPAIR_POS);
-	SetResultUI(RESULTUITYPE_1P, RESULTUITEX_1P, COMMAND1P_POS);
+	SetResultUI(RESULTUITYPE_1P, MostCommand(0), COMMAND1P_POS);
 	SetResultUI(RESULTUITYPE_COMMMANDTYPE1P, RESULTUITEX_R, COMMANDTYPE1P_POS);
-	SetResultUI(RESULTUITYPE_2P, RESULTUITEX_2P, COMMAND2P_POS);
+	SetResultUI(RESULTUITYPE_2P, MostCommand(1), COMMAND2P_POS);
 	SetResultUI(RESULTUITYPE_COMMMANDTYPE2P, RESULTUITEX_R, COMMANDTYPE2P_POS);
-	// 神殿到達時刻
-	SetResultUI(RESULTUITYPE_CLEARTIME, RESULTUITEX_TEMPLE, CLEARTIME_POS);
-	// 神殿到達時刻[時間]
-	SetResultUI(RESULTUITYPE_HOUR0, RESULTUITEX_CLEARTIME, HOUR0_POS);
-	SetResultUI(RESULTUITYPE_HOUR1, RESULTUITEX_CLEARTIME, HOUR1_POS);
-	SetResultUI(RESULTUITYPE_COLON, RESULTUITEX_COLON, COLON_POS);
-	SetResultUI(RESULTUITYPE_MIN0, RESULTUITEX_CLEARTIME, MIN0_POS);
-	SetResultUI(RESULTUITYPE_MIN1, RESULTUITEX_CLEARTIME, MIN1_POS);
+	if (gameState == GAMESTATE_CLEAR)
+	{
+		// 神殿到達時刻
+		SetResultUI(RESULTUITYPE_CLEARTIME, RESULTUITEX_TEMPLE, CLEARTIME_POS);
+		// 神殿到達時刻[時間]
+		SetResultUI(RESULTUITYPE_HOUR0, RESULTUITEX_CLEARTIME, HOUR0_POS);
+		SetResultUI(RESULTUITYPE_HOUR1, RESULTUITEX_CLEARTIME, HOUR1_POS);
+		SetResultUI(RESULTUITYPE_COLON, RESULTUITEX_COLON, COLON_POS);
+		SetResultUI(RESULTUITYPE_MIN0, RESULTUITEX_CLEARTIME, MIN0_POS);
+		SetResultUI(RESULTUITYPE_MIN1, RESULTUITEX_CLEARTIME, MIN1_POS);
+	}
 	// あなたたちは
 	SetResultUI(RESULTUITYPE_THEYARE, RESULTUITEX_THEYARE, THEYARE_POS);
 	// コマンド相性[pair]
@@ -475,24 +493,168 @@ void SetResultUI(RESULTUITYPE type, RESULTUITEX tex, D3DXVECTOR3 pos)
 		g_aResultUI[nCntUI].type = type;
 		g_aResultUI[nCntUI].bDisp = true;
 
-		if (type == RESULTUITYPE_HOUR0 || type == RESULTUITYPE_HOUR1 || type == RESULTUITYPE_MIN0 || type == RESULTUITYPE_MIN1)
+		// テクスチャの読み込みを管理
+		float TexU = 0;
+		switch (type)
 		{
-			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-			pVtx[1].tex = D3DXVECTOR2(0.1f, 0.0f);
-			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-			pVtx[3].tex = D3DXVECTOR2(0.1f, 1.0f);
-		}
-		else
-		{
+		case RESULTUITYPE_HOUR0:	// X0:00
+			TexU = g_nClearTime % 10000 / 1000;
+			pVtx[0].tex = D3DXVECTOR2(TexU * 0.1f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(TexU * 0.1f + 0.1f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(TexU * 0.1f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(TexU * 0.1f + 0.1f, 1.0f);
+			break;
+
+		case RESULTUITYPE_HOUR1:	// 0X:00
+			TexU = g_nClearTime % 1000 / 100;
+			pVtx[0].tex = D3DXVECTOR2(TexU * 0.1f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(TexU * 0.1f + 0.1f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(TexU * 0.1f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(TexU * 0.1f + 0.1f, 1.0f);
+			break;
+
+		case RESULTUITYPE_MIN0:	// 00:X0
+			TexU = g_nClearTime % 100 / 10;
+			pVtx[0].tex = D3DXVECTOR2(TexU * 0.1f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(TexU * 0.1f + 0.1f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(TexU * 0.1f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(TexU * 0.1f + 0.1f, 1.0f);
+			break;
+
+		case RESULTUITYPE_MIN1:	// 00:0X
+			TexU = g_nClearTime % 100 / 10;
+			pVtx[0].tex = D3DXVECTOR2(TexU * 0.1f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(TexU * 0.1f + 0.1f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(TexU * 0.1f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(TexU * 0.1f + 0.1f, 1.0f);
+			break;
+
+		default:
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
 			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			break;
 		}
-
 		break;
 	}
 
 	// 頂点バッファをアンロック
 	g_pVtxBuffResultUI->Unlock();
+}
+
+//======================================================================================
+// クリア時間の確認
+//======================================================================================
+void SetClearTime(int nTime)
+{
+	g_nClearTime = nTime;
+}
+
+//======================================================================================
+// 1番使われたコマンドの判定
+//======================================================================================
+RESULTUITEX MostCommand(int nIdx)
+{
+	RESULTUITEX tex = RESULTUITEX_DIAGNOSIS;
+	// コマンドの使用回数を取得
+	MagicCounter* pMagicCounter = GetMagicCounter(nIdx);
+	int nMax = -10;	// 1番多いコマンドの回数を保存
+	COMMANDTYPE commandType = COMMANDTYPE_R;	// 1番多いコマンドの種類を保存
+
+	// 1番使われたものを判定
+	for (int nCntCommand = 0; nCntCommand < COMMANDTYPE_MAX; nCntCommand++)
+	{
+		if (nMax < pMagicCounter->nCommandCounter[nCntCommand])
+		{
+			nMax = pMagicCounter->nCommandCounter[nCntCommand];
+			commandType = (COMMANDTYPE)nCntCommand;
+		}
+	}
+
+	switch (commandType)
+	{
+	case COMMANDTYPE_R:	// R
+		tex = RESULTUITEX_R;
+		break;
+	case COMMANDTYPE_G:	// G
+		tex = RESULTUITEX_G;
+		break;
+	case COMMANDTYPE_B:	// B
+		tex = RESULTUITEX_B;
+		break;
+	case COMMANDTYPE_Y:	// Y
+		tex = RESULTUITEX_Y;
+		break;
+	default:
+		tex = RESULTUITEX_R;
+		break;
+	}
+
+	return tex;
+}
+
+//======================================================================================
+// コマンドの種類に応じたリザルト
+//======================================================================================
+RESULTUITEX CommandResult(int nIdx)
+{
+	RESULTUITEX command = MostCommand(nIdx);	// 1番多いコマンドを取得
+	RESULTUITEX tex = RESULTUITEX_DIAGNOSIS;
+
+	// コマンドの種類に応じてテクスチャを変更
+	switch (command)
+	{
+	case RESULTUITEX_R:	// R
+		tex = RESULTUITEX_COMMANDR;
+		break;
+
+	case RESULTUITEX_G:	// G
+		tex = RESULTUITEX_COMMANDG;
+		break;
+
+	case RESULTUITEX_B:	// B
+		tex = RESULTUITEX_COMMANDB;
+		break;
+
+	case RESULTUITEX_Y:	// Y
+		tex = RESULTUITEX_COMMANDY;
+		break;
+
+	default:
+		tex = RESULTUITEX_COMMANDR;
+		break;
+	}
+
+	return tex;
+}
+
+//======================================================================================
+// クリア時間に応じたリザルト
+//======================================================================================
+RESULTUITEX ClearResult(void)
+{
+	RESULTUITEX tex = RESULTUITEX_DIAGNOSIS;
+	GAMESTATE gameState = GetGameState();
+	
+	// クリア時間に応じてテクスチャを変化
+	if (g_nClearTime < EARLY)	// 規定時間より早くクリア
+	{
+		tex = RESULTUITEX_CLEAREARLY;
+	}
+	else if (g_nClearTime >= EARLY && g_nClearTime <= SLOWLY)
+	{
+		tex = RESULTUITEX_CLEARSLOWLY;
+	}
+	else if (g_nClearTime > SLOWLY)
+	{ 
+		tex = RESULTUITEX_CLEARSLOWLY;
+	}
+	
+	if (gameState != GAMESTATE_CLEAR)
+	{
+		tex = RESULTUITEX_FAILED;
+	}
+
+	return tex;
 }
