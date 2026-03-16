@@ -273,6 +273,9 @@
     <ClCompile Include="destinationui.cpp">
       <Filter>UI\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="gimmck.cpp">
+      <Filter>UI\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -453,6 +456,9 @@
       <Filter>UI\h</Filter>
     </ClInclude>
     <ClInclude Include="destinationui.h">
+      <Filter>UI\h</Filter>
+    </ClInclude>
+    <ClInclude Include="gimmck.h">
       <Filter>UI\h</Filter>
     </ClInclude>
   </ItemGroup>

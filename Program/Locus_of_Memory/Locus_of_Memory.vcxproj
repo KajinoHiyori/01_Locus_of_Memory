@@ -178,6 +178,7 @@
     <ClCompile Include="eventobject.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="flash.cpp" />
+    <ClCompile Include="gimmck.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="grain.cpp" />
     <ClCompile Include="key.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="eventobject.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="flash.h" />
+    <ClInclude Include="gimmck.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="grain.h" />
     <ClInclude Include="key.h" />

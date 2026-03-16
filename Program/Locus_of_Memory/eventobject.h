@@ -21,7 +21,8 @@
 //*****************************************************************************
 typedef enum EVENTOBJECTTYPE
 {
-	EVENTOBJECTTYPE_NORMAL = 0,	// í èÌ
+	EVENTOBJECTTYPE_NONE = -1,// âΩÇ‡Ç»Ç¢
+	EVENTOBJECTTYPE_NORMAL,		// í èÌ
 	EVENTOBJECTTYPE_PARENT,		// äKëwç\ë¢
 	EVENTOBJECTTYPE_MAX
 }EVENTOBJECTTYPE;
