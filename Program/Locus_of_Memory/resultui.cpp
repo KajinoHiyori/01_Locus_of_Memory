@@ -644,13 +644,43 @@ RESULTUITEX ClearResult(void)
 	}
 	else if (g_nClearTime >= EARLY && g_nClearTime <= SLOWLY)
 	{
-		tex = RESULTUITEX_CLEARSLOWLY;
+		tex = RESULTUITEX_CLEARNORMAL;
 	}
 	else if (g_nClearTime > SLOWLY)
 	{ 
 		tex = RESULTUITEX_CLEARSLOWLY;
 	}
 	
+	if (gameState != GAMESTATE_CLEAR)
+	{
+		tex = RESULTUITEX_FAILED;
+	}
+
+	return tex;
+}
+
+//======================================================================================
+// 発生させたイベント数に応じたリザルト
+//======================================================================================
+RESULTUITEX EventResult(int nIdx)
+{
+	RESULTUITEX tex = RESULTUITEX_DIAGNOSIS;
+	GAMESTATE gameState = GetGameState();
+
+	// クリア時間に応じてテクスチャを変化
+	if (g_nClearTime < EARLY)	// 規定時間より早くクリア
+	{
+		tex = RESULTUITEX_CLEAREARLY;
+	}
+	else if (g_nClearTime >= EARLY && g_nClearTime <= SLOWLY)
+	{
+		tex = RESULTUITEX_CLEARNORMAL;
+	}
+	else if (g_nClearTime > SLOWLY)
+	{
+		tex = RESULTUITEX_CLEARSLOWLY;
+	}
+
 	if (gameState != GAMESTATE_CLEAR)
 	{
 		tex = RESULTUITEX_FAILED;

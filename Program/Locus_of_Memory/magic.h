@@ -210,4 +210,10 @@ void ResetCommand(int nIdx);
 // 魔法の種類を取得==========================
 MAGICTYPE GetMagicType(int nIdx);
 
+// 発生したイベントの回数を取得========================
+int nGetMagicEvent(int nIdx);
+
+// 発生したイベントの回数を加算========================
+void AddMagicEvent(int nIdx);
+
 #endif

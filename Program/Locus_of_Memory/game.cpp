@@ -156,7 +156,12 @@ void InitGame(void)
 
 	//ResetObject();
 
+	// Šeí•Ï”‚Ì‰Šú‰»
 	ResetGoalState();
+	SetClockNonDisp(0);
+	SetClockNonDisp(1);
+	SetUINonDisp(0);
+	SetUINonDisp(1);
 }
 //=======================================================
 // ƒQ[ƒ€‚ÌI—¹ˆ—

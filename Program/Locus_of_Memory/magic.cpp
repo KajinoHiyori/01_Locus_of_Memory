@@ -37,6 +37,7 @@ COMMANDTYPE g_aCommandSave[MAX_PLAYER][MAX_COMMAND];		//コマンドの過去の情報
 MagicCounter g_aCounter[MAX_PLAYER];					//リザルト用魔法回数カウント
 MagicLocus g_aMagicLocus[MAX_MAGICLOCUS];				//魔法使用場所の情報
 int g_aCntCommand[MAX_PLAYER] = {};						//
+int g_aEventCounter[MAX_PLAYER] = { 0 };	// 発生させたイベント数を保存
 
 //魔法の初期化処理=============================
 void InitMagic(void)
@@ -56,6 +57,7 @@ void InitMagic(void)
 		g_aMagic[nCntPlayerType].mType = MAGICTYPE_NONE;
 		g_aMagic[nCntPlayerType].bUse = false;
 		g_aMagic[nCntPlayerType].nLife = 0;
+		g_aEventCounter[nCntPlayerType] = 0;
 	}
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
@@ -117,6 +119,7 @@ void UpdateMagic(void)
 				g_aMagic[nCntPlayerType].bUse = false;
 			}
 		}
+		PrintDebugProc("イベント数 %d\n", g_aEventCounter[nCntPlayerType]);
 	}
 
 	PrintDebugProc("入力コマンド数 : %d\n", g_aCntCommand[0]);
@@ -523,6 +526,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FLOATONG, true, true, BLENDFRAME);
 				SetMagicUIDisappear(nIdx);
 				SetSpellUIDisappear(nIdx);
+				AddMagicEvent(nIdx);
 				if (nIdx == 0)	// 1P
 				{
 					PlaySound(SOUND_LABEL_LEVITATION0);
@@ -570,6 +574,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
 				SetTimerStop(SUNSETDELAY_TIME);
 				*pEventState = EVENTSTATE_SUNSETDELAY;
+				AddMagicEvent(nIdx); 
 				break;
 
 				//雨乞い
@@ -611,6 +616,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y]++;
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
+				AddMagicEvent(nIdx);
 				if (nIdx == 0)	// 1P
 				{
 					PlaySound(SOUND_LABEL_ACCELERATION0);
@@ -849,7 +855,7 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 				break;
 			}
 
-
+			AddMagicEvent(nIdx);
 			pMagicLocus[nIdxLocus].bUse = false;
 			return true;
 		}
@@ -1002,4 +1008,16 @@ void ResetCommand(int nIdx)
 MAGICTYPE GetMagicType(int nIdx)
 {
 	return g_aMagic[nIdx].mType;
+}
+
+// 発生したイベントの回数を取得========================
+int nGetMagicEvent(int nIdx)
+{
+	return g_aEventCounter[nIdx];
+}
+
+// 発生したイベントの回数を加算========================
+void AddMagicEvent(int nIdx)
+{
+	g_aEventCounter[nIdx]++;
 }

@@ -89,4 +89,5 @@ void SetClearTime(int nTime);
 RESULTUITEX MostCommand(int nIdx);
 RESULTUITEX CommandResult(int nIdx);
 RESULTUITEX ClearResult(void);
+RESULTUITEX EventResult(int nIdx);
 #endif
