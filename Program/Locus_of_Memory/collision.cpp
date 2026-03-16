@@ -652,25 +652,25 @@ bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 
 	// ローカル座標
 	D3DXVECTOR3 MyCenter = D3DXVECTOR3(D3DXVec3Dot(&Distance, &TargetAxisXNor), 
-		D3DXVec3Dot(&Distance, &TargetAxisXNor), 
-		D3DXVec3Dot(&Distance, &TargetAxisXNor));
+		D3DXVec3Dot(&Distance, &TargetAxisYNor), 
+		D3DXVec3Dot(&Distance, &TargetAxisZNor));
 
 	// 交点
 	D3DXVECTOR3 Intersection;
 
 	// クランプ処理
-	Intersection.x = max(-TargetCollider.box.fWidth, min(TargetCollider.box.fWidth, Distance.x));
-	Intersection.y = max(-TargetCollider.box.fHeight, min(TargetCollider.box.fWidth, Distance.y));
-	Intersection.z = max(-TargetCollider.box.fDepth, min(TargetCollider.box.fWidth, Distance.z));
+	Intersection.x = max(-TargetCollider.box.fWidth, min(TargetCollider.box.fWidth, MyCenter.x));
+	Intersection.y = max(-TargetCollider.box.fHeight, min(TargetCollider.box.fHeight, MyCenter.y));
+	Intersection.z = max(-TargetCollider.box.fDepth, min(TargetCollider.box.fDepth, MyCenter.z));
 
 	// 距離
-	D3DXVECTOR3 diff = Distance - Intersection;
+	D3DXVECTOR3 diff = MyCenter - Intersection;
 	float fDiff = D3DXVec3LengthSq(&diff);
 
 	if (fDiff < (MyCollider.sphere.fRadius * MyCollider.sphere.fRadius))
 	{
 		PrintDebugProc("test\n");
-		float fDistance = (fDiff);
+		float fDistance = sqrt(fDiff);
 		D3DXVECTOR3 vecPushNor = diff / fDistance;
 		float fPush = MyCollider.sphere.fRadius - fDistance;
 
