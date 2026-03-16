@@ -287,11 +287,11 @@ void SetGimmick(int nIdx, EVENTOBJECTTYPE eType, int nDistance)
 			type = GIMMICKTYPE_NONE;
 			break;
 
-		case EVENTOBJECTTYPE_NORMAL:	// GGG
+		case EVENTOBJECTTYPE_NORMAL:	// í èÌ
 			type = GIMMICKTYPE_NORMAL;
 			break;
 
-		case EVENTOBJECTTYPE_PARENT:	// RRR
+		case EVENTOBJECTTYPE_PARENT:	// äKëw
 			type = GIMMICKTYPE_PARENT;
 			break;
 		}
