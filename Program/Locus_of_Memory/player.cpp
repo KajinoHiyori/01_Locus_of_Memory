@@ -616,7 +616,7 @@ void UpdatePlayer(void)
 		}
 
 		// ’…’n”»’è
-		if (isRand == true)
+		if (isRand == true || g_aPlayer[nCntPlayer].pos.y <= 0.0f)
 		{
 			if (g_aPlayer[nCntPlayer].bJump == true)
 			{// ƒWƒƒƒ“ƒv‚µ‚Ä‚¢‚éó‘Ô‚Å”»’è‚ª‚ ‚Á‚½‚ç
@@ -636,14 +636,12 @@ void UpdatePlayer(void)
 					SetSpellUIAppear(nCntPlayer);
 				}
 			}
-			g_aPlayer[nCntPlayer].move.y = 0.0f;
-			g_aPlayer[nCntPlayer].bJump = false;
-			isRand = false;
-		}
+			
+			if (g_aPlayer[nCntPlayer].pos.y <= 0.0f)
+			{
+				g_aPlayer[nCntPlayer].pos.y = 0.0f;
+			}
 
-		if (g_aPlayer[nCntPlayer].pos.y <= 0.0f)
-		{
-			g_aPlayer[nCntPlayer].pos.y = 0.0f;
 			g_aPlayer[nCntPlayer].move.y = 0.0f;
 			g_aPlayer[nCntPlayer].bJump = false;
 			isRand = false;
