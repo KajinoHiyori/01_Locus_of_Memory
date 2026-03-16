@@ -6,6 +6,7 @@
 //========================================================================
 #include "animal.h"
 #include "motion.h"
+#include "eventobject.h"
 #include "input.h"
 
 // É}ÉNÉçíËã`
@@ -78,12 +79,12 @@ void UpdateAnimal(void)
 
 	for (int nCntObj = 0; nCntObj < MAX_PARENTOBJECT; nCntObj++)
 	{
-		//EventObject* pParentObject = GetParentObjectInfo(nCntObj);
-		//if (pParentObject->type == PARENTMODELTYPE_DRAGON && pParentObject->motion.bFinishMotion == true)
-		//{
-		//	SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, true, 10);
-		//	break;
-		//}
+		EventObject* pParentObject = GetEventObject(nCntObj);
+		if (mode == MODE_GAME && pParentObject->ObjectInfo.ParentObject.type == PARENTMODELTYPE_DRAGON && pParentObject->ObjectInfo.ParentObject.motion.bFinishMotion == true)
+		{
+			SetMotion(&pParentObject->ObjectInfo.ParentObject.motion, pParentObject->ObjectInfo.ParentObject.pModelData, &pParentObject->ObjectInfo.ParentObject.OffSetData, MOTIONTYPE_NEUTRAL, true, true, 10);
+			break;
+		}
 	}
 }
 

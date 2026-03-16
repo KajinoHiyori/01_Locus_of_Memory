@@ -352,6 +352,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_MOVE, false, false, 10);
 		isSuccess = true;
+		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx); 
 		ClearQuest(QUESTTYPE_DRAGON);
 		break;
 
@@ -362,7 +363,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
 			MOTIONTYPE_MOVE, false, false, 10);
-		SetMagicLocus(MAGICEVENT_008, pEventObject->pos, 500.0f, nIdx);
+		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		ClearQuest(QUESTTYPE_DRAGON);
 		break;
