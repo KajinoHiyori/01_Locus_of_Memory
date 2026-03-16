@@ -75,6 +75,12 @@ void UpdateAnimal(void)
 			break;
 		}
 	}
+
+	ParentObject* pParentObject = GetParentObjectInfo(g_aDragon[0].nIdx);
+	if (pParentObject->motion.motionType == MOTIONTYPE_MOVE && pParentObject->motion.nKey == 10)
+	{
+		SetMotion(&pParentObject->motion, pParentObject->pModelData, &pParentObject->OffSetData, MOTIONTYPE_NEUTRAL, true, true, 10);
+	}
 }
 
 //===============================

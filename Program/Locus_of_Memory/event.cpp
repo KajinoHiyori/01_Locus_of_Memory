@@ -426,7 +426,7 @@ bool SetMagicEvent011(MAGICTYPE type, int nIdx)
 //========================================================================
 // 各魔法イベント処理[焚火に火をつける]
 //========================================================================
-bool SetMagicEvent011(MAGICTYPE type, int nIdx)
+bool SetMagicEvent012(MAGICTYPE type, int nIdx)
 {
 	// EventObject* pEventObject = GetEventObject(nIdx);
 	bool isSuccess = false;
