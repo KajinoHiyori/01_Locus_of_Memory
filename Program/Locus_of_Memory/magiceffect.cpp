@@ -1,6 +1,7 @@
 //========================================================================
 // 
 // パーティクル描画[magiceffct.cpp]
+// Author : KAIRI MANABE
 //
 //========================================================================
 
@@ -109,39 +110,44 @@ void UpdateMagicEffect(void)
 #endif
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
-	{
+	{//プレイヤーの数
 		for (int nCntMagicEffect = 0; nCntMagicEffect < MAX_MAGIC_PARTICLE; nCntMagicEffect++)
 		{
 			if (g_aMagicEffect[nCntPlayerType][nCntMagicEffect].bUse == true)
-			{
+			{//使用されていたら
 				switch (g_aMagicEffect[nCntPlayerType][nCntMagicEffect].Type)
 				{
 					//ギミック=========================================================================
 				case MAGICEF_TYPE_GIMMICK:
 					//位置の設定
-					pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
-					pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
-					pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+					pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 60 + 1);
+					pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 60 + 1) + 20;
+					pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 60 + 1);
 
-					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 15);
+					//位置の設定
+					pos[1].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 50 + 1);
+					pos[1].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 50 + 1) + 20;
+					pos[1].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 50 + 1);
+
+					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_GIMMICK], COLOR_WHITE, 100, 8);
+					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[1], move[0][MAGICEF_TYPE_GIMMICK], COLOR_YELLOW, 100, 5);
 					break;
 					//落ちている魔法===================================================================
 				case MAGICEF_TYPE_MAGIC:
 					//位置の設定
 					pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
-					pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
+					pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1) + 20;
 					pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
 
 					//位置の設定
 					pos[1].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
-					pos[1].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+					pos[1].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1) + 20;
 					pos[1].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
 
-					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 15);
-					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[1], move[0][MAGICEF_TYPE_MAGIC], COLOR_YELLOW, 100, 10);
+					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 8);
+					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[1], move[0][MAGICEF_TYPE_MAGIC], COLOR_YELLOW, 100, 5);
 					break;
 				}
-				nCountMagicEffect++;
 			}
 		}
 	}

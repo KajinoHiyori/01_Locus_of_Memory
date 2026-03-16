@@ -1,6 +1,7 @@
 //========================================================================
 // 
 // パーティクル描画[particle.cpp]
+// Author : KAIRI MANABE
 //
 //========================================================================
 
@@ -443,8 +444,6 @@ void UpdateParticle(void)
 
 					//成長(植物など)===================================================================
 				case PARTICLETYPE_GROWTH:
-					for (int nCntAppear = 0; nCntAppear < 2; nCntAppear++)
-					{
 						//位置の設定
 						pos[0].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + sinf((float)(rand() % 100)) * 50;
 						pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y;
@@ -463,8 +462,7 @@ void UpdateParticle(void)
 						//半径の設定
 						fRadius = g_aParticle[nCntPlayerType][nCntParticle].fRadius;
 
-						SetEffect(EFFECT_TYPE_GROWTH, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_GROWTH], COLOR_GREEN, 60, 30);
-					}
+						SetEffect(EFFECT_TYPE_GROWTH, EFFECT_TEX_DIAMOND, pos[0], move[0][PARTICLETYPE_GROWTH], COLOR_GREEN, 60, 20);
 					break;
 
 					//加速=============================================================================
