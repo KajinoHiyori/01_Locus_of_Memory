@@ -94,6 +94,7 @@ void InitCollision(void)
 	g_nNumCollision = 0;
 
 	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(-120.0f, -6.0f, -2400.0f), INIT_D3DXVEC3);
+	LoadMeshColldier("data\\SCRIPTS\\MESH\\riverwallcollision.bin", D3DXVECTOR3(1800.0f, -50.0f, 3500.0f), INIT_D3DXVEC3);
 }
 
 //=============================================================================
