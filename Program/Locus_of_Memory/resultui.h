@@ -69,8 +69,8 @@ typedef enum
 	RESULTUITEX_COMMANDGG,		// コマンド相性[GG]
 	RESULTUITEX_COMMANDGY,		// コマンド相性[GY]
 	RESULTUITEX_COMMANDYY,		// コマンド相性[YY]
-	RESULTUITEX_PAIREARLY,		// ペアリザルト[早い]
-	RESULTUITEX_PAIRSLOWLY,		// ペアリザルト[遅い]
+	RESULTUITEX_PAIREVENTMORE,	// ペアリザルト[多い]
+	RESULTUITEX_PAIREVENTLESS,	// ペアリザルト[少ない]
 	RESULTUITEX_COLON,			// :
 	RESULTUITEX_1P,				// 1P
 	RESULTUITEX_2P,				// 2P
@@ -90,4 +90,6 @@ RESULTUITEX MostCommand(int nIdx);
 RESULTUITEX CommandResult(int nIdx);
 RESULTUITEX ClearResult(void);
 RESULTUITEX EventResult(int nIdx);
+RESULTUITEX PairCommand(void);
+RESULTUITEX PairResult(void);
 #endif

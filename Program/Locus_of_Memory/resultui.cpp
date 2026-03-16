@@ -33,13 +33,16 @@ typedef struct
 }ResultUI;
 
 // マクロ定義
-#define UI_ROT					(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 表示方向
-#define NORMAL					(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
-#define NUM_RESULTUI			(RESULTUITYPE_MAX)	// リザルトUIの表示数
-#define MAXRESULT_TEX			(RESULTUITEX_MAX)	// テクスチャの最大数
-#define UI_KEY					(30)	// UIのキー数
-#define EARLY					(1200)	// 早いクリア
-#define SLOWLY					(1700)	// 遅いクリア
+#define UI_ROT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 表示方向
+#define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
+#define NUM_RESULTUI	(RESULTUITYPE_MAX)	// リザルトUIの表示数
+#define MAXRESULT_TEX	(RESULTUITEX_MAX)	// テクスチャの最大数
+#define UI_KEY			(30)	// UIのキー数
+#define EARLY_CLEAR		(1200)	// 早いクリア
+#define SLOWLY_CLEAR	(1700)	// 遅いクリア
+#define MANY_EVENT		(10)	// イベント回数が多い
+#define LESS_EVENT		(3)		// イベント回数が少ない
+#define PAIR_RESULT		(10)	// 2人で発生させたイベント数の分岐
 
 // テクスチャのサイズ管理
 #define WIDTH					(32.5f)	// 横幅
@@ -337,7 +340,7 @@ void SetResultUI1P(void)
 	// クリア時間に応じたリザルト
 	SetResultUI(RESULTUITYPE_CLEARRESULT, ClearResult(), CLEARRESULT_POS);
 	// イベント発生回数に応じたリザルト
-	SetResultUI(RESULTUITYPE_EVENTRESULT, RESULTUITEX_EVENTMANY, EVENTRESULT_POS);
+	SetResultUI(RESULTUITYPE_EVENTRESULT, EventResult(0), EVENTRESULT_POS);
 
 }
 
@@ -352,10 +355,10 @@ void SetResultUI2P(void)
 	SetResultUI(RESULTUITYPE_DIAGNOSIS, RESULTUITEX_DIAGNOSIS, DIAGNOSIS_POS);
 	// 1番使ったコマンド
 	SetResultUI(RESULTUITYPE_MOSTCOMMAND, RESULTUITEX_MOSTCOMMAND, MOSTCOMMANDPAIR_POS);
-	SetResultUI(RESULTUITYPE_1P, MostCommand(0), COMMAND1P_POS);
-	SetResultUI(RESULTUITYPE_COMMMANDTYPE1P, RESULTUITEX_R, COMMANDTYPE1P_POS);
-	SetResultUI(RESULTUITYPE_2P, MostCommand(1), COMMAND2P_POS);
-	SetResultUI(RESULTUITYPE_COMMMANDTYPE2P, RESULTUITEX_R, COMMANDTYPE2P_POS);
+	SetResultUI(RESULTUITYPE_1P, RESULTUITEX_1P, COMMAND1P_POS);
+	SetResultUI(RESULTUITYPE_COMMMANDTYPE1P, MostCommand(0), COMMANDTYPE1P_POS);
+	SetResultUI(RESULTUITYPE_2P, RESULTUITEX_2P, COMMAND2P_POS);
+	SetResultUI(RESULTUITYPE_COMMMANDTYPE2P, MostCommand(1), COMMANDTYPE2P_POS);
 	if (gameState == GAMESTATE_CLEAR)
 	{
 		// 神殿到達時刻
@@ -370,9 +373,9 @@ void SetResultUI2P(void)
 	// あなたたちは
 	SetResultUI(RESULTUITYPE_THEYARE, RESULTUITEX_THEYARE, THEYARE_POS);
 	// コマンド相性[pair]
-	SetResultUI(RESULTUITYPE_COMPATIBILITY, RESULTUITEX_COMMANDGG, COMPATIBILITY_POS);
+	SetResultUI(RESULTUITYPE_COMPATIBILITY, PairCommand(), COMPATIBILITY_POS);
 	// ペアリザルト[pair]
-	SetResultUI(RESULTUITYPE_PAIRCLEAR, RESULTUITEX_PAIREARLY, CLEARPAIR_POS);
+	SetResultUI(RESULTUITYPE_PAIRCLEAR, PairResult(), CLEARPAIR_POS);
 }
 
 //======================================================================================
@@ -638,15 +641,15 @@ RESULTUITEX ClearResult(void)
 	GAMESTATE gameState = GetGameState();
 	
 	// クリア時間に応じてテクスチャを変化
-	if (g_nClearTime < EARLY)	// 規定時間より早くクリア
+	if (g_nClearTime < EARLY_CLEAR)	// 規定時間より早くクリア
 	{
 		tex = RESULTUITEX_CLEAREARLY;
 	}
-	else if (g_nClearTime >= EARLY && g_nClearTime <= SLOWLY)
+	else if (g_nClearTime >= EARLY_CLEAR && g_nClearTime <= SLOWLY_CLEAR)
 	{
 		tex = RESULTUITEX_CLEARNORMAL;
 	}
-	else if (g_nClearTime > SLOWLY)
+	else if (g_nClearTime > SLOWLY_CLEAR)
 	{ 
 		tex = RESULTUITEX_CLEARSLOWLY;
 	}
@@ -665,25 +668,108 @@ RESULTUITEX ClearResult(void)
 RESULTUITEX EventResult(int nIdx)
 {
 	RESULTUITEX tex = RESULTUITEX_DIAGNOSIS;
-	GAMESTATE gameState = GetGameState();
+	int nNumEvent = nGetMagicEvent(nIdx);
 
 	// クリア時間に応じてテクスチャを変化
-	if (g_nClearTime < EARLY)	// 規定時間より早くクリア
+	if (nNumEvent < LESS_EVENT)	// 規定時間より早くクリア
 	{
-		tex = RESULTUITEX_CLEAREARLY;
+		tex = RESULTUITEX_EVENTLESS;
 	}
-	else if (g_nClearTime >= EARLY && g_nClearTime <= SLOWLY)
+	else if (nNumEvent >= LESS_EVENT && nNumEvent <= MANY_EVENT)
 	{
-		tex = RESULTUITEX_CLEARNORMAL;
+		tex = RESULTUITEX_EVENTNORMAL;
 	}
-	else if (g_nClearTime > SLOWLY)
+	else if (nNumEvent > MANY_EVENT)
 	{
-		tex = RESULTUITEX_CLEARSLOWLY;
+		tex = RESULTUITEX_EVENTMANY;
 	}
 
-	if (gameState != GAMESTATE_CLEAR)
+	return tex;
+}
+
+//======================================================================================
+// コマンド相性に応じたリザルト
+//======================================================================================
+RESULTUITEX PairCommand(void)
+{
+	RESULTUITEX tex = RESULTUITEX_DIAGNOSIS;
+	RESULTUITEX command0 = MostCommand(0);
+	RESULTUITEX command1 = MostCommand(1);
+	
+	// 相性ごとによって判定=======================================
+	// コマンド相性[RR]
+	if (command0 == RESULTUITEX_R && command1 == RESULTUITEX_R)
 	{
-		tex = RESULTUITEX_FAILED;
+		tex = RESULTUITEX_COMMANDRR;
+	}
+	// コマンド相性[RG]
+	else if ((command0 == RESULTUITEX_R && command1 == RESULTUITEX_G) || (command0 == RESULTUITEX_G && command1 == RESULTUITEX_R))
+	{
+		tex = RESULTUITEX_COMMANDRG;
+	}
+	// コマンド相性[RB]
+	else if ((command0 == RESULTUITEX_R && command1 == RESULTUITEX_B) || (command0 == RESULTUITEX_B && command1 == RESULTUITEX_R))
+	{
+		tex = RESULTUITEX_COMMANDRB;
+	}
+	// コマンド相性[RY]
+	else if ((command0 == RESULTUITEX_R && command1 == RESULTUITEX_Y) || (command0 == RESULTUITEX_Y && command1 == RESULTUITEX_R))
+	{
+		tex = RESULTUITEX_COMMANDRY;
+	}
+	// コマンド相性[BB]
+	else if (command0 == RESULTUITEX_B && command1 == RESULTUITEX_B)
+	{
+		tex = RESULTUITEX_COMMANDBB;
+	}
+	// コマンド相性[BG]
+	else if ((command0 == RESULTUITEX_B && command1 == RESULTUITEX_G) || (command0 == RESULTUITEX_G && command1 == RESULTUITEX_B))
+	{
+		tex = RESULTUITEX_COMMANDBG;
+	}
+	// コマンド相性[BY]
+	else if ((command0 == RESULTUITEX_B && command1 == RESULTUITEX_Y) || (command0 == RESULTUITEX_Y && command1 == RESULTUITEX_B))
+	{
+		tex = RESULTUITEX_COMMANDBY;
+	}
+	// コマンド相性[GG]
+	else if (command0 == RESULTUITEX_G && command1 == RESULTUITEX_G)
+	{
+		tex = RESULTUITEX_COMMANDGG;
+	}
+	// コマンド相性[GY]
+	else if ((command0 == RESULTUITEX_G && command1 == RESULTUITEX_Y) || (command0 == RESULTUITEX_Y && command1 == RESULTUITEX_G))
+	{
+		tex = RESULTUITEX_COMMANDGY;
+	}
+	// コマンド相性[YY]
+	else if (command0 == RESULTUITEX_Y && command1 == RESULTUITEX_Y)
+	{
+		tex = RESULTUITEX_COMMANDYY;
+	}
+	else
+	{
+		tex = RESULTUITEX_COMMANDRR;
+	}
+	return tex;
+}
+
+//======================================================================================
+// 2人のイベント発生回数に応じたリザルト
+//======================================================================================
+RESULTUITEX PairResult(void)
+{
+	RESULTUITEX tex = RESULTUITEX_DIAGNOSIS;
+	int nNumEvent = nGetMagicEvent(0) + nGetMagicEvent(1);
+
+	// クリア時間に応じてテクスチャを変化
+	if (nNumEvent < PAIR_RESULT)	// 規定時間より早くクリア
+	{
+		tex = RESULTUITEX_PAIREVENTLESS;
+	}
+	else
+	{
+		tex = RESULTUITEX_PAIREVENTMORE;
 	}
 
 	return tex;
