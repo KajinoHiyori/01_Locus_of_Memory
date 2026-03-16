@@ -161,8 +161,6 @@ void UpdateSparkle(void)
 		SetSparkle();
 	}
 
-	PrintDebugProc("NumSparkle %d\n", g_nNumSparkle);
-
 	for (int nCntSparkle = 0; nCntSparkle < g_nNumSparkle; nCntSparkle++)
 	{
 		if (pSparkle->bUse == false)

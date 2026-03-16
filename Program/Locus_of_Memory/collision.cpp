@@ -312,7 +312,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	float rA = D3DXVec3Length(&MyAxisX);
 	float rB = Sep.x + Sep.y + Sep.z;
-	float L = fabs(D3DXVec3Dot(&Distance, &MyAxisXNor));
+	float L = fabsf(D3DXVec3Dot(&Distance, &MyAxisXNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("AX %f\n", L);
@@ -324,7 +324,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = D3DXVec3Length(&MyAxisY);
 	rB = Sep.x + Sep.y + Sep.z;
-	L = fabs(D3DXVec3Dot(&Distance, &MyAxisYNor));
+	L = fabsf(D3DXVec3Dot(&Distance, &MyAxisYNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("AY %f\n", L);
@@ -336,7 +336,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = D3DXVec3Length(&MyAxisZ);
 	rB = Sep.x + Sep.y + Sep.z;
-	L = fabs(D3DXVec3Dot(&Distance, &MyAxisZNor));
+	L = fabsf(D3DXVec3Dot(&Distance, &MyAxisZNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("AZ %f\n", L);
@@ -348,7 +348,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y + Sep.z;
 	rB = D3DXVec3Length(&TargetAxisX);
-	L = fabs(D3DXVec3Dot(&Distance, &TargetAxisXNor));
+	L = fabsf(D3DXVec3Dot(&Distance, &TargetAxisXNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("BX %f\n", L);
@@ -360,7 +360,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y + Sep.z;
 	rB = D3DXVec3Length(&TargetAxisY);
-	L = fabs(D3DXVec3Dot(&Distance, &TargetAxisYNor));
+	L = fabsf(D3DXVec3Dot(&Distance, &TargetAxisYNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("BY %f\n", L);
@@ -372,7 +372,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y + Sep.z;
 	rB = D3DXVec3Length(&TargetAxisZ);
-	L = fabs(D3DXVec3Dot(&Distance, &TargetAxisZNor));
+	L = fabsf(D3DXVec3Dot(&Distance, &TargetAxisZNor));
 	if (L > rA + rB)
 	{
 		PrintDebugProc("BZ %f\n", L);
@@ -388,7 +388,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -402,7 +402,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -416,7 +416,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -430,7 +430,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -444,7 +444,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -458,7 +458,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -472,7 +472,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -486,7 +486,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -500,7 +500,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 
 	rA = Sep.x + Sep.y;
 	rB = Sep2.x + Sep2.y;
-	L = fabs(D3DXVec3Dot(&Distance, &Cross));
+	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
 		return false;
@@ -626,6 +626,32 @@ bool CollisionCylinderToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyCo
 //=============================================================================
 bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, ColliderType TargetCollider, bool isTrigger)
 {
+	// 計算用マトリックス
+	D3DXMATRIX TargetmtxRot;
+
+	// マトリックスの初期化
+	D3DXMatrixIdentity(&TargetmtxRot);
+
+	// 向きを算出
+	D3DXMatrixRotationYawPitchRoll(&TargetmtxRot, TargetCollider.box.rot.y, TargetCollider.box.rot.x, TargetCollider.box.rot.z);
+
+	// 対象の矩形のX方面ベクトル
+	D3DXVECTOR3 TargetAxisXNor = { TargetmtxRot._11, TargetmtxRot._12, TargetmtxRot._13 },
+		TargetAxisX = TargetAxisXNor * TargetCollider.box.fWidth;
+
+	// 対象の矩形のY方面ベクトル
+	D3DXVECTOR3 TargetAxisYNor = { TargetmtxRot._21, TargetmtxRot._22, TargetmtxRot._23 },
+		TargetAxisY = TargetAxisYNor * TargetCollider.box.fHeight;
+
+	// 対象の矩形のZ方面ベクトル
+	D3DXVECTOR3 TargetAxisZNor = { TargetmtxRot._31, TargetmtxRot._32, TargetmtxRot._33 },
+		TargetAxisZ = TargetAxisZNor * TargetCollider.box.fDepth;
+
+	// 自分と対象の中心点の距離
+	D3DXVECTOR3 Distance = MyCollider.sphere.pos - TargetCollider.box.pos;
+
+
+
 	// 未実装
 	return false;
 }
@@ -708,20 +734,20 @@ bool CollisionSphereToCapsule(CollisionInfo& _CollisionInfo, ColliderType MyColl
 //=============================================================================
 bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXVECTOR3 posOld)
 {
-	MeshCollider* pMeshCollider = &g_aMeshCollider[0];
+	MeshCollider* pMeshCollider = &g_aMeshCollider[0];	// メッシュコライダーへのポインタ
 
-	D3DXVECTOR3 vecMove = pos - posOld;			// 移動ベクトル
-	D3DXVECTOR3 vecLineA, vecLineB, vecLineC;	// 境界線ベクトル
-	D3DXVECTOR3 vecToPos, vecToPosOld;			// 一点から移動前、移動後の点へのベクトル
-	float fDist, fDistOld;						// それぞれの点と平面の距離
-	bool isRand = false;						// 着地判定
+	D3DXVECTOR3 vecMove = pos - posOld;					// 移動ベクトル
+	D3DXVECTOR3 vecLineA, vecLineB, vecLineC;			// 境界線ベクトル
+	D3DXVECTOR3 vecToPos, vecToPosOld;					// 一点から移動前、移動後の点へのベクトル
+	float fDist, fDistOld;								// それぞれの点と平面の距離
+	bool isRand = false;								// 着地判定
 
 	PrintDebugProc("vecmove = { %f %f %f } \n", vecMove.x, vecMove.y, vecMove.z);
 
 	for (int nCntMeshColldier = 0; nCntMeshColldier < MAX_MESHCOLLIDER; nCntMeshColldier++, pMeshCollider++)
 	{
 		if (pMeshCollider->bUse == false)
-		{
+		{// 使っていないメッシュは弾く
 			continue;
 		}
 
@@ -778,34 +804,36 @@ bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXV
 			float fDotB = D3DXVec3Dot(&vecToPosB, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
 			float fDotC = D3DXVec3Dot(&vecToPosC, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
 
+			// 誤差は切り捨て
 			if (fDotA > 0.00001f && fDotA < 1.0f)
-			{// 誤差は切り捨て
+			{
 				fDotA = floorf(fDotA);
 			}
 
 			if (fDotB > 0.00001f && fDotB < 1.0f)
-			{// 誤差は切り捨て
+			{
 				fDotB = floorf(fDotB);
 			}
 
 			if (fDotC > 0.00001f && fDotC < 1.0f)
-			{// 誤差は切り捨て
+			{
 				fDotC = floorf(fDotC);
 			}
 
+			// 負の数は切り上げ
 			if (fDotA < -0.00001f && fDotA > -1.0f)
-			{// 誤差は切り捨て
-				fDotA = ceilf(fDotA);		// 負の数は切り上げ
+			{
+				fDotA = ceilf(fDotA);
 			}
 
 			if (fDotB < -0.00001f && fDotB > -1.0f)
-			{// 誤差は切り捨て
-				fDotB = ceilf(fDotB);		// 負の数は切り上げ
+			{
+				fDotB = ceilf(fDotB);
 			}
 
 			if (fDotC < -0.00001f && fDotC > -1.0f)
-			{// 誤差は切り捨て
-				fDotC = ceilf(fDotC);		// 負の数は切り上げ
+			{
+				fDotC = ceilf(fDotC);
 			}
 
 			if (-fDotA >= 0.0f &&

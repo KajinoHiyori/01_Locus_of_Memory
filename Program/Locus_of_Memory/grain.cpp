@@ -161,8 +161,6 @@ void UpdateGrain(void)
 		SetGrain();
 	}
 
-	PrintDebugProc("NumGrain %d\n", g_nNumGrain);
-
 	for (int nCntGrain = 0; nCntGrain < g_nNumGrain; nCntGrain++)
 	{
 		if (pGrain->bUse == false)
