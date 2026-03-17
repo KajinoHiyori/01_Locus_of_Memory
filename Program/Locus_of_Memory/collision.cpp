@@ -93,7 +93,13 @@ void InitCollision(void)
 	g_nNumCollider = 0;
 	g_nNumCollision = 0;
 
+	float f = DegreeToRadian(110.0f);
+	f = DegreeToRadian(90.0f);
+
 	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(-122.5f, -6.0f, -2400.0f), INIT_D3DXVEC3);
+	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(2200.0f, -6.0f, -833.0f), D3DXVECTOR3(0.0f, DegreeToRadian(110.0f), 0.0f));
+	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(2000.0f, -6.0f, 940.0f), D3DXVECTOR3(0.0f, DegreeToRadian(90.0f), 0.0f));
+	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(-2844.0f, -6.0f, -2600.0f), INIT_D3DXVEC3);
 	LoadMeshColldier("data\\SCRIPTS\\MESH\\riverwallcollision.bin", D3DXVECTOR3(1800.0f, -50.0f, 3500.0f), INIT_D3DXVEC3);
 }
 
@@ -950,6 +956,7 @@ bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXV
 void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	D3DXMATRIX mtx, mtxRot, mtxTrans;			// 計算用マトリックス
+	D3DXVECTOR3 vecLineB, vecLineC;
 
 	FILE* pColliderFile = fopen(pColliderScript, "rb");
 
@@ -984,12 +991,17 @@ void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 
 
 		for (int nCntTriangle = 0; nCntTriangle < pMeshCollider->nNumTriangle; nCntTriangle++)
 		{
-			pMeshCollider->aTriangle[nCntTriangle].vecNor = -pMeshCollider->aTriangle[nCntTriangle].vecNor;
-
 			// 位置と向きを反映した頂点座標を入れる
 			D3DXVec3TransformCoord(&pMeshCollider->aTriangle[nCntTriangle].posA, &pMeshCollider->aTriangle[nCntTriangle].posA, &mtx);
 			D3DXVec3TransformCoord(&pMeshCollider->aTriangle[nCntTriangle].posB, &pMeshCollider->aTriangle[nCntTriangle].posB, &mtx);
 			D3DXVec3TransformCoord(&pMeshCollider->aTriangle[nCntTriangle].posC, &pMeshCollider->aTriangle[nCntTriangle].posC, &mtx);
+
+			vecLineB = pMeshCollider->aTriangle[nCntTriangle].posB - pMeshCollider->aTriangle[nCntTriangle].posA;
+			vecLineC = pMeshCollider->aTriangle[nCntTriangle].posC - pMeshCollider->aTriangle[nCntTriangle].posB;
+			pMeshCollider->aTriangle[nCntTriangle].vecNor = { (vecLineB.y * vecLineC.z) - (vecLineB.z * vecLineC.y), (vecLineB.z * vecLineC.x) - (vecLineB.x * vecLineC.z), (vecLineB.x * vecLineC.y) - (vecLineB.y * vecLineC.x) };
+			D3DXVec3Normalize(&pMeshCollider->aTriangle[nCntTriangle].vecNor, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
+
+			pMeshCollider->aTriangle[nCntTriangle].vecNor = -pMeshCollider->aTriangle[nCntTriangle].vecNor;
 		}
 
 		break;
