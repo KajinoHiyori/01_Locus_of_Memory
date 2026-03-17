@@ -640,7 +640,10 @@ void UpdatePlayer(void)
 		UpdateCollider(g_aPlayer[nCntPlayer].nIdxCollision, g_aPlayer[nCntPlayer].pos);
 
 		// イベントオブジェクトとの当たり判定
-		isRand = CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision);
+		if (CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision))
+		{
+			isRand = isRand ? false : true;
+		}
 
 		// オブジェクトとの当たり判定
 		if (CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
