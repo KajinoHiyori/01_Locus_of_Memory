@@ -33,15 +33,13 @@
 *.lib
 
 # Executables
-SoloResult.txt
-PairResult.txt
-TotalResult.txt
 *.exe
 *.out
 *.app
 
 # debug information files
 *.dwo
+/data/SCRIPTS/DIAGNOSIS
 /Debug
 /Release
 /.vs
