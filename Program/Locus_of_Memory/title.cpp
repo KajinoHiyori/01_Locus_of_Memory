@@ -134,7 +134,7 @@ void UpdateTitle(void)
 		{
 			g_nModeResult = 0;
 		}
-		if (g_nModeResult >= NEXT_MODE)
+		if ((g_nModeResult >= NEXT_MODE || GetKeyboardTrigger(DIK_BACKSPACE) == true) && *pfade == FADE_NONE )
 		{
 			SetFade(MODE_DIAGNOSIS, COLOR_WHITE);
 			g_bFade = true;

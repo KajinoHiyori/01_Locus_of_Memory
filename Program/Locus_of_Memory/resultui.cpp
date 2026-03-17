@@ -1108,5 +1108,24 @@ TotalData LoadTotalData(void)
 		fread(&totalData, sizeof(TotalData), 1, pFile);
 		fclose(pFile);
 	}
+	else
+	{
+		totalData.nRed = 0;
+		totalData.nGreen = 0;
+		totalData.nBlue = 0;
+		totalData.nYellow = 0;
+		totalData.nLevitation = 0;
+		totalData.nCombustion = 0;
+		totalData.nFlood = 0;
+		totalData.nFlash = 0;
+		totalData.nFireBall = 0;
+		totalData.nSunsetDelay = 0;
+		totalData.nRainPray = 0;
+		totalData.nFreeze = 0;
+		totalData.nGrowth = 0;
+		totalData.nAcceleration = 0;
+		totalData.nTimeRevert = 0;
+		totalData.nEvent = 0;
+	}
 	return totalData;
 }
