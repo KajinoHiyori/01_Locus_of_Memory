@@ -33,9 +33,6 @@
 *.lib
 
 # Executables
-PairResult.txt
-SoloResult.txt
-TotalResult.txt
 *.exe
 *.out
 *.app
