@@ -33,9 +33,9 @@
 *.lib
 
 # Executables
-data\\SCRIPTS\\DIAGNOSIS\\SoloResult.txt
-data\\SCRIPTS\\DIAGNOSIS\\PairResult.txt
-data\\SCRIPTS\\DIAGNOSIS\\TotalResult.txt
+SoloResult.txt
+PairResult.txt
+TotalResult.txt
 *.exe
 *.out
 *.app
