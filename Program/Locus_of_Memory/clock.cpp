@@ -488,7 +488,7 @@ void InitTimer(void)
 		break;
 
 	case MODE_DIAGNOSIS:	// êfífåãâ 
-		SetClockState(CLOCKSTATE_STOP);
+		SetClockState(CLOCKSTATE_REVERSE);
 		SetTime(20, 0);
 		break;
 	}

@@ -572,6 +572,13 @@ void SetModeCamera(MODE mode)
 		break;
 
 	case MODE_DIAGNOSIS:
+		pCamera->posV = INIT_TITLECAMERA_POSV;
+		pCamera->posVDest = INIT_TITLECAMERA_POSV;
+		pCamera->posR = INIT_TITLECAMERA_POSR;
+		pCamera->posRDest = INIT_TITLECAMERA_POSR;
+		pCamera->vecU = INIT_VECU;
+		pCamera->rot = INIT_TITLECAMERA_ROT;
+		pCamera->rotDest = INIT_TITLECAMERA_ROT;
 		break;
 	}
 }

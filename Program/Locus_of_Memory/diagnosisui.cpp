@@ -11,6 +11,7 @@
 #include "diagnosis.h"
 #include "input.h"
 #include "fog.h"
+#include "color.h"
 
 // 診断結果UIの種類
 typedef enum
@@ -88,8 +89,8 @@ typedef struct
 // マクロ定義
 #define NUM_DIAGNOSISTYPE	(DIAGNOSISTYPE_MAX)	// 診断結果UIの表示種類
 #define DIAGNOSIS_TEX		(DIAGNOSISTEX_MAX)	// テクスチャの種類
-#define TITLE_W				(460.0f)	// プレイヤーたちの軌跡[幅]
-#define TITLE_H				(60.0f)		// プレイヤーたちの軌跡[高]
+#define TITLE_W				(460.0f * 0.65f)	// プレイヤーたちの軌跡[幅]
+#define TITLE_H				(60.0f * 0.65f)		// プレイヤーたちの軌跡[高]
 #define COMMAND_W			(50.0f)		// コマンドの幅
 #define COMMAND_H			(50.0f)		// コマンドの高さ
 #define MAGICCIRCLE_SIZE	(60.0f)		// 魔法陣の大きさ
@@ -97,8 +98,12 @@ typedef struct
 #define TIMES_H				(40.0f)		// 回の高さ
 #define NUMBER_W			(TIMES_W)	// 数字の幅
 #define NUMBER_H			(TIMES_H)	// 数字の高さ
-#define TEXT_W				(460.0f * 0.8f)	// タイトル以外の題字
-#define TEXT_H				(60.0f * 0.8f)	// タイトル以外の題字
+#define TEXT_W				(TITLE_W * 0.8f)	// タイトル以外の題字
+#define TEXT_H				(TITLE_H * 0.8f)	// タイトル以外の題字
+
+// 配置
+#define TITLE_POS	(D3DXVECTOR3(350.0f, 50.0f, 0.0f))	// 診断結果
+#define USED_POS	(D3DXVECTOR3(300.0f, 100.0f, 0.0f))	// 使われたコマンド数
 
 // テクスチャの読み込み
 const char* c_apFilenameDiagnosisUI[DIAGNOSIS_TEX] =
@@ -151,31 +156,6 @@ void InitDiagnosisUI(void)
 
 	// UIの配置
 	SetDiagnosisUI();
-
-	//for (int nCntDiagnosis = 0; nCntDiagnosis < NUM_DIAGNOSISTYPE; nCntDiagnosis++, pVtx += 4)
-	//{
-	//	// 頂点座標の設定
-	//	pVtx[0].pos = D3DXVECTOR3(g_aDiagnosis[nCntDiagnosis].pos.x - g_aDiagnosis[nCntDiagnosis].fWidth, g_aDiagnosis[nCntDiagnosis].pos.y - g_aDiagnosis[nCntDiagnosis].fHeight, 0.0f);
-	//	pVtx[1].pos = D3DXVECTOR3(g_aDiagnosis[nCntDiagnosis].pos.x + g_aDiagnosis[nCntDiagnosis].fWidth, g_aDiagnosis[nCntDiagnosis].pos.y - g_aDiagnosis[nCntDiagnosis].fHeight, 0.0f);
-	//	pVtx[2].pos = D3DXVECTOR3(g_aDiagnosis[nCntDiagnosis].pos.x - g_aDiagnosis[nCntDiagnosis].fWidth, g_aDiagnosis[nCntDiagnosis].pos.y + g_aDiagnosis[nCntDiagnosis].fHeight, 0.0f);
-	//	pVtx[3].pos = D3DXVECTOR3(g_aDiagnosis[nCntDiagnosis].pos.x + g_aDiagnosis[nCntDiagnosis].fWidth, g_aDiagnosis[nCntDiagnosis].pos.y + g_aDiagnosis[nCntDiagnosis].fHeight, 0.0f);
-	//	// 頂点カラーの設定
-	//	pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-	//	pVtx[1].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-	//	pVtx[2].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-	//	pVtx[3].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-	//	// rhwの設定
-	//	pVtx[0].rhw = 1.0f;
-	//	pVtx[1].rhw = 1.0f;
-	//	pVtx[2].rhw = 1.0f;
-	//	pVtx[3].rhw = 1.0f;
-	//	// テクスチャ座標の設定
-	//	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	//	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	//	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	//	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-	//	g_aDiagnosis[nCntDiagnosis].bDisp = true;
-	//}
 }
 
 //========================================================================
@@ -253,16 +233,71 @@ void SetDiagnosisUI(void)
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	g_pVtxBuffDiagnosisUI->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntUI = 0; nCntUI < NUM_DIAGNOSISTYPE; nCntUI++)
+	for (int nCntUI = 0; nCntUI < NUM_DIAGNOSISTYPE; nCntUI++, pVtx += 4)
 	{
 		switch (nCntUI)
 		{
-		case DIAGNOSISTEX_TITLE:	// 診断結果
+		case DIAGNOSISTYPE_TITLE:	// 診断結果
 			g_aDiagnosis[nCntUI].bDisp = true;
 			g_aDiagnosis[nCntUI].fHeight = TITLE_H;
 			g_aDiagnosis[nCntUI].fWidth = TITLE_W;
-			g_aDiagnosis[nCntUI].pos = INIT_D3DXVEC3;
-				break;
+			g_aDiagnosis[nCntUI].pos = TITLE_POS;
+			g_aDiagnosis[nCntUI].tex = DIAGNOSISTEX_TITLE;
+			g_aDiagnosis[nCntUI].type = DIAGNOSISTYPE_TITLE;
+
+			// 頂点座標の設定
+			pVtx[0].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x - g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y - g_aDiagnosis[nCntUI].fHeight, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x + g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y - g_aDiagnosis[nCntUI].fHeight, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x - g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y + g_aDiagnosis[nCntUI].fHeight, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x + g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y + g_aDiagnosis[nCntUI].fHeight, 0.0f);
+			// 頂点カラーの設定
+			pVtx[0].col = COLOR_WHITE;
+			pVtx[1].col = COLOR_WHITE;
+			pVtx[2].col = COLOR_WHITE;
+			pVtx[3].col = COLOR_WHITE;
+			// rhwの設定
+			pVtx[0].rhw = 1.0f;
+			pVtx[1].rhw = 1.0f;
+			pVtx[2].rhw = 1.0f;
+			pVtx[3].rhw = 1.0f;
+			// テクスチャ座標の設定
+			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			break;
+
+		case DIAGNOSISTYPE_USEDCOMMAND:	// 使われたコマンド数
+			g_aDiagnosis[nCntUI].bDisp = true;
+			g_aDiagnosis[nCntUI].fHeight = TEXT_H;
+			g_aDiagnosis[nCntUI].fWidth = TEXT_W;
+			g_aDiagnosis[nCntUI].pos = USED_POS;
+			g_aDiagnosis[nCntUI].tex = DIAGNOSISTEX_USEDCOMMAND;
+			g_aDiagnosis[nCntUI].type = DIAGNOSISTYPE_USEDCOMMAND;
+
+			// 頂点座標の設定
+			pVtx[0].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x - g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y - g_aDiagnosis[nCntUI].fHeight, 0.0f);
+			pVtx[1].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x + g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y - g_aDiagnosis[nCntUI].fHeight, 0.0f);
+			pVtx[2].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x - g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y + g_aDiagnosis[nCntUI].fHeight, 0.0f);
+			pVtx[3].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x + g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y + g_aDiagnosis[nCntUI].fHeight, 0.0f);
+			// 頂点カラーの設定
+			pVtx[0].col = COLOR_WHITE;
+			pVtx[1].col = COLOR_WHITE;
+			pVtx[2].col = COLOR_WHITE;
+			pVtx[3].col = COLOR_WHITE;
+			// rhwの設定
+			pVtx[0].rhw = 1.0f;
+			pVtx[1].rhw = 1.0f;
+			pVtx[2].rhw = 1.0f;
+			pVtx[3].rhw = 1.0f;
+			// テクスチャ座標の設定
+			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+			pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+			pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+			break;
+
+
 
 		default:
 			break;
@@ -288,6 +323,36 @@ void SetDiagnosisUI(void)
 		// DIAGNOSISTEX_HAPPENDEVENT,	// 発生したイベント数
 		// DIAGNOSISTEX_TIMES,			// 回
 		// DIAGNOSISTEX_NUMBER,		// 数字
+
+		// DIAGNOSISTYPE_TITLE = 0,		// 診断結果ロゴ
+		// DIAGNOSISTYPE_USEDCOMMAND,		// 使われたコマンド
+		// DIAGNOSISTYPE_R_COMMANDTYPE,	// Rコマンドの種類
+		// DIAGNOSISTYPE_R_COMMAND100,		// Rコマンド回数[X00]
+		// DIAGNOSISTYPE_R_COMMAND010,		// Rコマンド回数[0X0]
+		// DIAGNOSISTYPE_R_COMMAND001,		// Rコマンド回数[00X]
+		// DIAGNOSISTYPE_R_COMMANDTIMES,	// RXXX回
+		// DIAGNOSISTYPE_G_COMMANDTYPE,	// Gコマンドの種類
+		// DIAGNOSISTYPE_G_COMMAND100,		// Gコマンド回数[X00]
+		// DIAGNOSISTYPE_G_COMMAND010,		// Gコマンド回数[0X0]
+		// DIAGNOSISTYPE_G_COMMAND001,		// Gコマンド回数[00X]
+		// DIAGNOSISTYPE_G_COMMANDTIMES,	// GXXX回
+		// DIAGNOSISTYPE_B_COMMANDTYPE,	// Bコマンドの種類
+		// DIAGNOSISTYPE_B_COMMAND100,		// Bコマンド回数[X00]
+		// DIAGNOSISTYPE_B_COMMAND010,		// Bコマンド回数[0X0]
+		// DIAGNOSISTYPE_B_COMMAND001,		// Bコマンド回数[00X]
+		// DIAGNOSISTYPE_B_COMMANDTIMES,	// BXXX回
+		// DIAGNOSISTYPE_Y_COMMANDTYPE,	// Yコマンドの種類
+		// DIAGNOSISTYPE_Y_COMMAND100,		// Yコマンド回数[X00]
+		// DIAGNOSISTYPE_Y_COMMAND010,		// Yコマンド回数[0X0]
+		// DIAGNOSISTYPE_Y_COMMAND001,		// Yコマンド回数[00X]
+		// DIAGNOSISTYPE_Y_COMMANDTIMES,	// YXXX回
+		// DIAGNOSISTYPE_MOSTMAGIC,		// 1番使われた魔法
+		// DIAGNOSISTYPE_MAGICCIRCLE,		// 魔法陣
+		// DIAGNOSISTYPE_HAPPENDEVENT,		// 発生したイベント数
+		// DIAGNOSISTYPE_EVENT100,			// イベント数[X00]
+		// DIAGNOSISTYPE_EVENT010,			// イベント数[0X0]
+		// DIAGNOSISTYPE_EVENT001,			// イベント数[00X]
+		// DIAGNOSISTYPE_EVENTTIMES,		// イベントXXX回
 	}
 
 	// 頂点バッファをアンロック
