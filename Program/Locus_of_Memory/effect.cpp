@@ -208,6 +208,16 @@ void UpdateEffect(void)
 					continue;
 				}
 			}
+			if (pEffect->type == EFFECT_TYPE_FIRE)
+			{
+				pEffect->fRadius -= 0.2f;
+				if (pEffect->fRadius <= 0)
+				{
+					ReleaseEffect(nCntEffect);
+					nCntEffect--;
+					continue;
+				}
+			}
 		}
 
 		/*g_aEffect[nCntEffect].fRadius -= 0.01f;*/

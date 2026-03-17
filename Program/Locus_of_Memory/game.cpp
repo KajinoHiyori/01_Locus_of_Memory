@@ -23,6 +23,7 @@
 #include "readyui.h"
 #include "magiccircle.h"
 #include "magiceffect.h"
+#include "effectfire.h"
 #include "spellui.h"
 #include "clock.h"
 #include "battery.h"
@@ -117,6 +118,9 @@ void InitGame(void)
 
 	// マジックエフェクトの初期化
 	InitMagicEffect();
+
+	// 炎の表現エフェクトの初期化
+	InitEffectFire();
 
 	// オーラの初期化処理
 	InitAura();
@@ -281,6 +285,9 @@ void UpdateGame(void)
 
 	// マジックエフェクトの更新処理
 	UpdateMagicEffect();
+
+	// 炎のエフェクトの更新
+	UpdateEffectFire();
 
 	// 吹き出しの更新処理
 	UpdateMagicBubble();
@@ -469,6 +476,9 @@ void DrawGame(void)
 
 	// マジックエフェクトの描画処理
 	DrawMagicEffect();
+
+	// 炎エフェクトの描画処理
+	DrawEffectFire();
 
 	// 文字の描画処理
 	DrawGrain();

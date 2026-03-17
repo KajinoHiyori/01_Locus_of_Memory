@@ -102,11 +102,6 @@ void UpdateMagicEffect(void)
 	{
 		SetMagicEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MAGICEF_TYPE_GIMMICK, 2);
 	}
-
-	if (GetKeyboardTrigger(DIK_V) == true)
-	{
-		SetMagicEffect(D3DXVECTOR3(0.0f, 0.0f, 0.0f), MAGICEF_TYPE_FORGE, 1);
-	}
 #endif
 
 	for (int nCntPlayerType = 0; nCntPlayerType < MAX_PLAYER; nCntPlayerType++)
@@ -146,20 +141,6 @@ void UpdateMagicEffect(void)
 
 					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[0], move[0][MAGICEF_TYPE_MAGIC], COLOR_WHITE, 100, 8);
 					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_DIAMOND, pos[1], move[0][MAGICEF_TYPE_MAGIC], COLOR_YELLOW, 100, 5);
-					break;
-				case MAGICEF_TYPE_FORGE:
-					//ˆÊ’u‚ÌÝ’è
-					pos[0].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
-					pos[0].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1) + 30;
-					pos[0].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
-
-					//ˆÊ’u‚ÌÝ’è
-					pos[1].x = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 15 + 1);
-					pos[1].y = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 15 + 1) + 15;
-					pos[1].z = g_aMagicEffect[nCntPlayerType][nCntMagicEffect].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 15 + 1);
-
-					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_CIRCLE, pos[0], move[0][MAGICEF_TYPE_FORGE], COLOR_RED, 100, 20);
-					SetEffect(EFFECT_TYPE_MAGICEF, EFFECT_TEX_CIRCLE, pos[1], move[0][MAGICEF_TYPE_FORGE], COLOR_ORANGE, 100, 10);
 					break;
 				}
 			}

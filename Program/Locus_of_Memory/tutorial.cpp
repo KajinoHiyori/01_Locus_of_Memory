@@ -14,6 +14,7 @@
 #include "object.h"
 #include "eventobject.h"
 #include "magiceffect.h"
+#include "effectfire.h"
 #include "skybox.h"
 #include "effect.h"
 #include "particle.h"
@@ -92,6 +93,9 @@ void InitTutorial(void)
 
 	// マジックエフェクトの初期化処理
 	InitMagicEffect();
+
+	// 炎エフェクトの初期化
+	InitEffectFire();
 
 	//InitField();
 
@@ -303,6 +307,9 @@ void UpdateTutorial(void)
 	// マジックエフェクトの更新処理
 	UpdateMagicEffect();
 
+	// 炎エフェクトの更新処理
+	UpdateEffectFire();
+
 	// 吹き出しの更新処理
 	UpdateMagicBubble();
 
@@ -434,6 +441,9 @@ void DrawTutorial(void)
 
 	// マジックエフェクトの描画処理
 	DrawMagicEffect();
+
+	// 炎エフェクトの描画
+	DrawEffectFire();
 
 	// エフェクトの描画処理
 	DrawEffect();

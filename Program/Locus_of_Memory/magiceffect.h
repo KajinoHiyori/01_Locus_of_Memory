@@ -14,12 +14,6 @@ typedef enum
 	MAGICEF_TYPE_GIMMICK,
 	//—Ž‚¿‚Ä‚¢‚é–‚–@—p
 	MAGICEF_TYPE_MAGIC,
-	//’b–èê‚Ì‚©‚Ü‚Ç
-	MAGICEF_TYPE_FORGE,
-	//•°‰Î
-	MAGICEF_TYPE_BONFIRE,
-	//‰Œ
-	MAGICEF_TYPE_SMOKE,
 
 	MAGICEF_TYPE_MAX
 }MAGICEF_TYPE;
