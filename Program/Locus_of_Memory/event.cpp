@@ -442,7 +442,7 @@ bool SetMagicEvent012(MAGICTYPE type, int nIdx)
 		break;
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ
-	//pEventObject->EventType = EVENTTYPE_008_0;
+		//pEventObject->EventType = EVENTTYPE_008_0;
 		SetEffectFire(pEventObject->pos, FIRE_TYPE_FORGE, nIdx);
 		isSuccess = true;
 		break;
