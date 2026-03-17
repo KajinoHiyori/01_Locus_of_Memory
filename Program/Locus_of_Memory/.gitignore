@@ -32,6 +32,9 @@
 *.a
 *.lib
 
+
+git rm --cached -r </data/SCRIPTS/DIAGNOSIS>
+
 # Executables
 *.exe
 *.out
