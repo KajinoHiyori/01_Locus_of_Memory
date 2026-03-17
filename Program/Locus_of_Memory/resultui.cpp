@@ -32,6 +32,79 @@ typedef struct
 	bool	bDisp;		// •\¦ó‘Ô
 }ResultUI;
 
+// ŠO•”ƒtƒ@ƒCƒ‹•Û‘¶—p‚Ì\‘¢‘Ì[solo]
+typedef struct
+{
+	int nRed;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Ô]
+	int nGreen;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[—Î]
+	int nBlue;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Â]
+	int nYellow;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[‰©]
+	int nLevitation;	// g‚í‚ê‚½–‚–@”[•‚—V]
+	int nCombustion;	// g‚í‚ê‚½–‚–@”[”RÄ]
+	int nFlood;			// g‚í‚ê‚½–‚–@”[^…]
+	int nFlash;			// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+	int nFireBall;		// g‚í‚ê‚½–‚–@”[‰Î‹…]
+	int nSunsetDelay;	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+	int nRainPray;		// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+	int nFreeze;		// g‚í‚ê‚½–‚–@”[“€Œ‹]
+	int nGrowth;		// g‚í‚ê‚½–‚–@”[¬’·]
+	int nAcceleration;	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+	int nTimeRevert;	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+	int nEvent;			// —İŒvƒCƒxƒ“ƒg”­¶‰ñ”
+}SoloData;
+
+// ŠO•”ƒtƒ@ƒCƒ‹•Û‘¶—p‚Ì\‘¢‘Ì[pair]
+typedef struct
+{
+	int nRed;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Ô]
+	int nGreen;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[—Î]
+	int nBlue;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Â]
+	int nYellow;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[‰©]
+	int nLevitation;	// g‚í‚ê‚½–‚–@”[•‚—V]
+	int nCombustion;	// g‚í‚ê‚½–‚–@”[”RÄ]
+	int nFlood;			// g‚í‚ê‚½–‚–@”[^…]
+	int nFlash;			// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+	int nFireBall;		// g‚í‚ê‚½–‚–@”[‰Î‹…]
+	int nSunsetDelay;	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+	int nRainPray;		// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+	int nFreeze;		// g‚í‚ê‚½–‚–@”[“€Œ‹]
+	int nGrowth;		// g‚í‚ê‚½–‚–@”[¬’·]
+	int nAcceleration;	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+	int nTimeRevert;	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+	int nEvent;			// —İŒvƒCƒxƒ“ƒg”­¶‰ñ”
+	int nRR;			// ƒRƒ}ƒ“ƒh‘Š«[RR]
+	int nRG;			// ƒRƒ}ƒ“ƒh‘Š«[RG]
+	int nRB;			// ƒRƒ}ƒ“ƒh‘Š«[RB]
+	int nRY;			// ƒRƒ}ƒ“ƒh‘Š«[RY]
+	int nBB;			// ƒRƒ}ƒ“ƒh‘Š«[BB]
+	int nBG;			// ƒRƒ}ƒ“ƒh‘Š«[BG]
+	int nBY;			// ƒRƒ}ƒ“ƒh‘Š«[BY]
+	int nGG;			// ƒRƒ}ƒ“ƒh‘Š«[GG]
+	int nGY;			// ƒRƒ}ƒ“ƒh‘Š«[GY]
+	int nYY;			// ƒRƒ}ƒ“ƒh‘Š«[YY]
+}PairData;
+
+// ŠO•”ƒtƒ@ƒCƒ‹•Û‘¶—p‚Ì\‘¢‘Ì[solo / pair‡•¹]
+typedef struct
+{
+	int nRed;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Ô]
+	int nGreen;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[—Î]
+	int nBlue;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Â]
+	int nYellow;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[‰©]
+	int nLevitation;	// g‚í‚ê‚½–‚–@”[•‚—V]
+	int nCombustion;	// g‚í‚ê‚½–‚–@”[”RÄ]
+	int nFlood;			// g‚í‚ê‚½–‚–@”[^…]
+	int nFlash;			// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+	int nFireBall;		// g‚í‚ê‚½–‚–@”[‰Î‹…]
+	int nSunsetDelay;	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+	int nRainPray;		// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+	int nFreeze;		// g‚í‚ê‚½–‚–@”[“€Œ‹]
+	int nGrowth;		// g‚í‚ê‚½–‚–@”[¬’·]
+	int nAcceleration;	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+	int nTimeRevert;	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+	int nEvent;			// —İŒvƒCƒxƒ“ƒg”­¶‰ñ”
+}TotalData;
+
 // ƒ}ƒNƒ’è‹`
 #define UI_ROT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// •\¦•ûŒü
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// –@üƒxƒNƒgƒ‹
@@ -133,6 +206,9 @@ LPDIRECT3DTEXTURE9 g_apTextureResultUI[MAXRESULT_TEX] = {};	// ƒeƒNƒXƒ`ƒƒ‚Ö‚Ìƒ|ƒ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffResultUI = NULL; // ’¸“_ƒoƒbƒtƒ@‚Ö‚Ìƒ|ƒCƒ“ƒ^
 ResultUI g_aResultUI[NUM_RESULTUI];	// \‘¢‘Ì
 int g_nClearTime = 0;	// ƒNƒŠƒAŠÔ
+SoloData g_SoloData;	// ŠO•”ƒtƒ@ƒCƒ‹•Û‘¶[solo]
+PairData g_PairData;	// ŠO•”ƒtƒ@ƒCƒ‹•Û‘¶[pair]
+TotalData g_TotalData;	// ŠO•”ƒtƒ@ƒCƒ‹•Û‘¶[total]
 
 //======================================================================================
 // ResultUI‚Ì‰Šú‰»ˆ—
@@ -171,12 +247,18 @@ void InitResultUI(void)
 	{
 	case OPERATIONTYPE_2P:	// 2l‘€ì
 		SetResultUI2P();
+		// ƒf[ƒ^•Û‘¶
+		SavaPairData();
 		break;
 
 	default:	// 1l‘€ì
 		SetResultUI1P();
+		// ƒf[ƒ^•Û‘¶
+		SavaPairData();
 		break;
 	}
+	// ƒf[ƒ^•Û‘¶
+	SavaTotalData();
 
 	VERTEX_3D* pVtx;
 	// ’¸“_ƒoƒbƒtƒ@‚ğƒƒbƒN‚µA’¸“_î•ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğæ“¾
@@ -773,4 +855,295 @@ RESULTUITEX PairResult(void)
 	}
 
 	return tex;
+}
+
+//======================================================================================
+// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚É‹L˜^‚·‚é[1lƒvƒŒƒC]
+//======================================================================================
+void SavaSoloData(void)
+{
+	// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş[1lƒvƒŒƒC]
+	LoadSoloData();
+
+	FILE* pFile;
+	// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	pFile = fopen(SCRIPTS_SOLORESULT, "w");
+
+	if (pFile != NULL)
+	{ // ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚½ê‡
+		// î•ñ‚ğŠi”[‚·‚é================================================================
+		MagicCounter* pMagicCounter = GetMagicCounter(0);
+		// ƒRƒ}ƒ“ƒh‚Ìg—p‰ñ”
+		g_SoloData.nRed		= g_SoloData.nRed		+ pMagicCounter->nCommandCounter[COMMANDTYPE_R];
+		g_SoloData.nGreen	= g_SoloData.nGreen		+ pMagicCounter->nCommandCounter[COMMANDTYPE_G];
+		g_SoloData.nBlue	= g_SoloData.nBlue		+ pMagicCounter->nCommandCounter[COMMANDTYPE_B];
+		g_SoloData.nYellow	= g_SoloData.nYellow	+ pMagicCounter->nCommandCounter[COMMANDTYPE_Y];
+		// –‚–@‚Ìg—p‰ñ”
+		g_SoloData.nLevitation		= g_SoloData.nLevitation	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_LEVITATION];	// g‚í‚ê‚½–‚–@”[•‚—V]
+		g_SoloData.nCombustion		= g_SoloData.nCombustion	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_COMBUSTION];	// g‚í‚ê‚½–‚–@”[”RÄ]
+		g_SoloData.nFlood			= g_SoloData.nFlood			+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_FLOOD];		// g‚í‚ê‚½–‚–@”[^…]
+		g_SoloData.nFlash			= g_SoloData.nFlash			+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_FLASH];		// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+		g_SoloData.nFireBall		= g_SoloData.nFireBall		+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_FIREBALL];		// g‚í‚ê‚½–‚–@”[‰Î‹…]
+		g_SoloData.nSunsetDelay		= g_SoloData.nSunsetDelay	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_SUNSETDELAY];	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+		g_SoloData.nRainPray		= g_SoloData.nRainPray		+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_RAINPRAY];		// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+		g_SoloData.nFreeze			= g_SoloData.nFreeze		+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_FREEZE];		// g‚í‚ê‚½–‚–@”[“€Œ‹]
+		g_SoloData.nGrowth			= g_SoloData.nGrowth		+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_GROWTH];		// g‚í‚ê‚½–‚–@”[¬’·]
+		g_SoloData.nAcceleration	= g_SoloData.nAcceleration	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_ACCELERATION];	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+		g_SoloData.nTimeRevert		= g_SoloData.nTimeRevert	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_TIMEREVERT];	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+		// ƒCƒxƒ“ƒg‚Ì”­¶‰ñ”
+		g_SoloData.nEvent	= g_SoloData.nEvent	+ nGetMagicEvent(0);
+
+		// ŠO•”ƒtƒ@ƒCƒ‹‚Éî•ñ‚ğ‘‚«o‚·
+		fwrite(&g_SoloData, sizeof(SoloData), 1, pFile);
+		fclose(pFile);
+	}
+}
+
+//======================================================================================
+// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚É‹L˜^‚·‚é[2lƒvƒŒƒC]
+//======================================================================================
+void SavaPairData(void)
+{
+	// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş[2lƒvƒŒƒC]
+	LoadPairData();
+
+	FILE* pFile;
+	// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	pFile = fopen(SCRIPTS_PAIRRESULT, "w");
+
+	if (pFile != NULL)
+	{ // ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚½ê‡
+		// î•ñ‚ğŠi”[‚·‚é================================================================
+		MagicCounter* pMagicCounter0 = GetMagicCounter(0);
+		MagicCounter* pMagicCounter1 = GetMagicCounter(1);
+		// ƒRƒ}ƒ“ƒh‚Ìg—p‰ñ”‚ğæ“¾
+		g_PairData.nRed		= g_PairData.nRed		+ pMagicCounter0->nCommandCounter[COMMANDTYPE_R]	+ pMagicCounter1->nCommandCounter[COMMANDTYPE_R];	// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Ô]
+		g_PairData.nGreen	= g_PairData.nGreen		+ pMagicCounter0->nCommandCounter[COMMANDTYPE_G]	+ pMagicCounter1->nCommandCounter[COMMANDTYPE_G];	// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[—Î]
+		g_PairData.nBlue	= g_PairData.nBlue		+ pMagicCounter0->nCommandCounter[COMMANDTYPE_B]	+ pMagicCounter1->nCommandCounter[COMMANDTYPE_B];	// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Â]
+		g_PairData.nYellow	= g_PairData.nYellow	+ pMagicCounter0->nCommandCounter[COMMANDTYPE_Y]	+ pMagicCounter1->nCommandCounter[COMMANDTYPE_Y];	// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[‰©]
+		// –‚–@‚Ìg—p‰ñ”
+		g_PairData.nLevitation		= g_PairData.nLevitation	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_LEVITATION]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_LEVITATION]	;	// g‚í‚ê‚½–‚–@”[•‚—V]
+		g_PairData.nCombustion		= g_PairData.nCombustion	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_COMBUSTION]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_COMBUSTION]	;	// g‚í‚ê‚½–‚–@”[”RÄ]
+		g_PairData.nFlood			= g_PairData.nFlood			+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_FLOOD]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_FLOOD]		;	// g‚í‚ê‚½–‚–@”[^…]
+		g_PairData.nFlash			= g_PairData.nFlash			+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_FLASH]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_FLASH]		;	// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+		g_PairData.nFireBall		= g_PairData.nFireBall		+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_FIREBALL]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_FIREBALL]		;	// g‚í‚ê‚½–‚–@”[‰Î‹…]
+		g_PairData.nSunsetDelay		= g_PairData.nSunsetDelay	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_SUNSETDELAY]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_SUNSETDELAY]	;	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+		g_PairData.nRainPray		= g_PairData.nRainPray		+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_RAINPRAY]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_RAINPRAY]		;	// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+		g_PairData.nFreeze			= g_PairData.nFreeze		+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_FREEZE]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_FREEZE]		;	// g‚í‚ê‚½–‚–@”[“€Œ‹]
+		g_PairData.nGrowth			= g_PairData.nGrowth		+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_GROWTH]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_GROWTH]		;	// g‚í‚ê‚½–‚–@”[¬’·]
+		g_PairData.nAcceleration	= g_PairData.nAcceleration	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_ACCELERATION]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_ACCELERATION]	;	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+		g_PairData.nTimeRevert		= g_PairData.nTimeRevert	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_TIMEREVERT]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_TIMEREVERT]	;	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+		// ƒRƒ}ƒ“ƒh‘Š«
+		switch (PairCommand())
+		{
+		case RESULTUITEX_COMMANDRR:	// ƒRƒ}ƒ“ƒh‘Š«[RR]
+			g_PairData.nRR++;
+			break;
+
+		case RESULTUITEX_COMMANDRG:	// ƒRƒ}ƒ“ƒh‘Š«[RG]
+			g_PairData.nRG++;
+			break;
+
+		case RESULTUITEX_COMMANDRB:	// ƒRƒ}ƒ“ƒh‘Š«[RB]
+			g_PairData.nRB++;
+			break;
+
+		case RESULTUITEX_COMMANDRY:	// ƒRƒ}ƒ“ƒh‘Š«[RY]
+			g_PairData.nRY++;
+			break;
+
+		case RESULTUITEX_COMMANDBB:	// ƒRƒ}ƒ“ƒh‘Š«[BB]
+			g_PairData.nBB++;
+			break;
+
+		case RESULTUITEX_COMMANDBG:	// ƒRƒ}ƒ“ƒh‘Š«[BG]
+			g_PairData.nBG++;
+			break;
+
+		case RESULTUITEX_COMMANDBY:	// ƒRƒ}ƒ“ƒh‘Š«[BY]
+			g_PairData.nBY++;
+			break;
+
+		case RESULTUITEX_COMMANDGG:	// ƒRƒ}ƒ“ƒh‘Š«[GG]
+			g_PairData.nGG++;
+			break;
+
+		case RESULTUITEX_COMMANDGY:	// ƒRƒ}ƒ“ƒh‘Š«[GY]
+			g_PairData.nGY++;
+			break;
+
+		case RESULTUITEX_COMMANDYY:	// ƒRƒ}ƒ“ƒh‘Š«[YY]
+			g_PairData.nYY++;
+			break;
+		}			
+		// ƒCƒxƒ“ƒg”­¶‰ñ”
+		g_PairData.nEvent	= g_PairData.nEvent + nGetMagicEvent(0) + nGetMagicEvent(1);
+
+		// ŠO•”ƒtƒ@ƒCƒ‹‚Éî•ñ‚ğ‘‚«o‚·
+		fwrite(&g_PairData, sizeof(PairData), 1, pFile);
+		fclose(pFile);
+	}
+}
+
+//======================================================================================
+// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚É‹L˜^‚·‚é[—İŒv]
+//======================================================================================
+void SavaTotalData(void)
+{
+	// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş[1lƒvƒŒƒC]
+	LoadSoloData();
+	// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş[2lƒvƒŒƒC]
+	LoadPairData();
+	// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş[—İŒv]
+	LoadTotalData();
+
+	FILE* pFile;
+	// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	pFile = fopen(SCRIPTS_TOTALRESULT, "w");
+
+	if (pFile != NULL)
+	{ // ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚½ê‡
+		// î•ñ‚ğŠi”[‚·‚é================================================================
+		// ƒRƒ}ƒ“ƒh‚Ìg—p‰ñ”‚ğæ“¾
+		g_TotalData.nRed	= g_TotalData.nRed		+ g_SoloData.nRed		+ g_PairData.nRed;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Ô]
+		g_TotalData.nGreen	= g_TotalData.nGreen	+ g_SoloData.nGreen		+ g_PairData.nGreen;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[—Î]
+		g_TotalData.nBlue	= g_TotalData.nBlue		+ g_SoloData.nBlue		+ g_PairData.nBlue;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Â]
+		g_TotalData.nYellow	= g_TotalData.nYellow	+ g_SoloData.nYellow	+ g_PairData.nYellow;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[‰©]
+		// –‚–@‚Ìg—p‰ñ”
+		g_TotalData.nLevitation		= g_TotalData.nLevitation	+ g_SoloData.nLevitation	+ g_PairData.nLevitation;	// g‚í‚ê‚½–‚–@”[•‚—V]
+		g_TotalData.nCombustion		= g_TotalData.nCombustion	+ g_SoloData.nCombustion	+ g_PairData.nCombustion;	// g‚í‚ê‚½–‚–@”[”RÄ]
+		g_TotalData.nFlood			= g_TotalData.nFlood		+ g_SoloData.nFlood			+ g_PairData.nFlood;		// g‚í‚ê‚½–‚–@”[^…]
+		g_TotalData.nFlash			= g_TotalData.nFlash		+ g_SoloData.nFlash			+ g_PairData.nFlash;		// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+		g_TotalData.nFireBall		= g_TotalData.nFireBall		+ g_SoloData.nFireBall		+ g_PairData.nFireBall;		// g‚í‚ê‚½–‚–@”[‰Î‹…]
+		g_TotalData.nSunsetDelay	= g_TotalData.nSunsetDelay	+ g_SoloData.nSunsetDelay	+ g_PairData.nSunsetDelay;	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+		g_TotalData.nRainPray		= g_TotalData.nRainPray		+ g_SoloData.nRainPray		+ g_PairData.nRainPray;		// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+		g_TotalData.nFreeze			= g_TotalData.nFreeze		+ g_SoloData.nFreeze		+ g_PairData.nFreeze;		// g‚í‚ê‚½–‚–@”[“€Œ‹]
+		g_TotalData.nGrowth			= g_TotalData.nGrowth		+ g_SoloData.nGrowth		+ g_PairData.nGrowth;		// g‚í‚ê‚½–‚–@”[¬’·]
+		g_TotalData.nAcceleration	= g_TotalData.nAcceleration + g_SoloData.nAcceleration	+ g_PairData.nAcceleration;	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+		g_TotalData.nTimeRevert		= g_TotalData.nTimeRevert	+ g_SoloData.nTimeRevert	+ g_PairData.nTimeRevert;	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+		// ƒCƒxƒ“ƒg‚Ì”­¶‰ñ”
+		g_TotalData.nEvent	= g_TotalData.nEvent + g_SoloData.nEvent + g_PairData.nEvent;			// —İŒvƒCƒxƒ“ƒg”­¶‰ñ”
+
+		// ŠO•”ƒtƒ@ƒCƒ‹‚Éî•ñ‚ğ‘‚«o‚·
+		fwrite(&g_TotalData, sizeof(TotalData), 1, pFile);
+		fclose(pFile);
+	}
+}
+
+//======================================================================================
+// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş[1lƒvƒŒƒC]
+//======================================================================================
+void LoadSoloData(void)
+{
+	FILE* pFile;
+	// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	pFile = fopen(SCRIPTS_SOLORESULT, "r");
+
+	if (pFile != NULL)
+	{
+		fread(&g_SoloData, sizeof(SoloData), 1, pFile);
+		fclose(pFile);
+	}
+	else
+	{ // ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚È‚©‚Á‚½ê‡
+		// ƒRƒ}ƒ“ƒh‚Ìg—p‰ñ”
+		g_SoloData.nRed		= 0;
+		g_SoloData.nGreen	= 0;
+		g_SoloData.nBlue	= 0;
+		g_SoloData.nYellow	= 0;
+		// –‚–@‚Ìg—p‰ñ”
+		g_SoloData.nLevitation		= 0;	// g‚í‚ê‚½–‚–@”[•‚—V]
+		g_SoloData.nCombustion		= 0;	// g‚í‚ê‚½–‚–@”[”RÄ]
+		g_SoloData.nFlood			= 0;	// g‚í‚ê‚½–‚–@”[^…]
+		g_SoloData.nFlash			= 0;	// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+		g_SoloData.nFireBall		= 0;	// g‚í‚ê‚½–‚–@”[‰Î‹…]
+		g_SoloData.nSunsetDelay		= 0;	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+		g_SoloData.nRainPray		= 0;	// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+		g_SoloData.nFreeze			= 0;	// g‚í‚ê‚½–‚–@”[“€Œ‹]
+		g_SoloData.nGrowth			= 0;	// g‚í‚ê‚½–‚–@”[¬’·]
+		g_SoloData.nAcceleration	= 0;	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+		g_SoloData.nTimeRevert		= 0;	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+		// ƒCƒxƒ“ƒg‚Ì”­¶‰ñ”
+		g_SoloData.nEvent = 0;
+	}
+}
+
+//======================================================================================
+// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş[2lƒvƒŒƒC]
+//======================================================================================
+void LoadPairData(void)
+{
+	FILE* pFile;
+	// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	pFile = fopen(SCRIPTS_PAIRRESULT, "r");
+
+	if (pFile != NULL)
+	{
+		fread(&g_PairData, sizeof(PairData), 1, pFile);
+		fclose(pFile);
+	}
+	else
+	{ // ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚È‚©‚Á‚½ê‡
+		g_PairData.nRed		= 0;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Ô]
+		g_PairData.nGreen	= 0;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[—Î]
+		g_PairData.nBlue	= 0;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Â]
+		g_PairData.nYellow	= 0;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[‰©]
+		g_PairData.nLevitation		= 0;	// g‚í‚ê‚½–‚–@”[•‚—V]
+		g_PairData.nCombustion		= 0;	// g‚í‚ê‚½–‚–@”[”RÄ]
+		g_PairData.nFlood			= 0;	// g‚í‚ê‚½–‚–@”[^…]
+		g_PairData.nFlash			= 0;	// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+		g_PairData.nFireBall		= 0;	// g‚í‚ê‚½–‚–@”[‰Î‹…]
+		g_PairData.nSunsetDelay		= 0;	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+		g_PairData.nRainPray		= 0;	// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+		g_PairData.nFreeze			= 0;	// g‚í‚ê‚½–‚–@”[“€Œ‹]
+		g_PairData.nGrowth			= 0;	// g‚í‚ê‚½–‚–@”[¬’·]
+		g_PairData.nAcceleration	= 0;	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+		g_PairData.nTimeRevert		= 0;	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+		g_PairData.nEvent	= 0;	// —İŒvƒCƒxƒ“ƒg”­¶‰ñ”
+		g_PairData.nRR	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[RR]
+		g_PairData.nRG	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[RG]
+		g_PairData.nRB	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[RB]
+		g_PairData.nRY	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[RY]
+		g_PairData.nBB	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[BB]
+		g_PairData.nBG	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[BG]
+		g_PairData.nBY	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[BY]
+		g_PairData.nGG	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[GG]
+		g_PairData.nGY	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[GY]
+		g_PairData.nYY	= 0;	// ƒRƒ}ƒ“ƒh‘Š«[YY]
+	}
+}
+
+//======================================================================================
+// ƒf[ƒ^‚ğŠO•”ƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚Ş[—İŒv]
+//======================================================================================
+void LoadTotalData(void)
+{
+	FILE* pFile;
+	// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
+	pFile = fopen(SCRIPTS_TOTALRESULT, "r");
+
+	if (pFile != NULL)
+	{
+		fread(&g_TotalData, sizeof(TotalData), 1, pFile);
+		fclose(pFile);
+	}
+	else
+	{ // ƒtƒ@ƒCƒ‹‚ªŠJ‚¯‚È‚©‚Á‚½ê‡
+		g_TotalData.nRed	= 0;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Ô]
+		g_TotalData.nGreen	= 0;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[—Î]
+		g_TotalData.nBlue	= 0;			// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[Â]
+		g_TotalData.nYellow	= 0;		// g‚í‚ê‚½ƒRƒ}ƒ“ƒh”[‰©]
+		g_TotalData.nLevitation		= 0;	// g‚í‚ê‚½–‚–@”[•‚—V]
+		g_TotalData.nCombustion		= 0;	// g‚í‚ê‚½–‚–@”[”RÄ]
+		g_TotalData.nFlood			= 0;	// g‚í‚ê‚½–‚–@”[^…]
+		g_TotalData.nFlash			= 0;	// g‚í‚ê‚½–‚–@”[ƒtƒ‰ƒbƒVƒ…]
+		g_TotalData.nFireBall		= 0;	// g‚í‚ê‚½–‚–@”[‰Î‹…]
+		g_TotalData.nSunsetDelay	= 0;	// g‚í‚ê‚½–‚–@”[ŠÔ’â~]
+		g_TotalData.nRainPray		= 0;	// g‚í‚ê‚½–‚–@”[‰JŒî‚¢]
+		g_TotalData.nFreeze			= 0;	// g‚í‚ê‚½–‚–@”[“€Œ‹]
+		g_TotalData.nGrowth			= 0;	// g‚í‚ê‚½–‚–@”[¬’·]
+		g_TotalData.nAcceleration	= 0;	// g‚í‚ê‚½–‚–@”[‰Á‘¬]
+		g_TotalData.nTimeRevert		= 0;	// g‚í‚ê‚½–‚–@”[Šª‚«–ß‚µ]
+		g_TotalData.nEvent	= 0;	// —İŒvƒCƒxƒ“ƒg”­¶‰ñ”
+	}
 }

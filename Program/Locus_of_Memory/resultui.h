@@ -77,6 +77,11 @@ typedef enum
 	RESULTUITEX_MAX
 }RESULTUITEX;
 
+// マクロ定義
+#define SCRIPTS_SOLORESULT	("data\\SCRIPTS\\DIAGNOSIS\\SoloResult.txt")	// 1人プレイでの操作
+#define SCRIPTS_PAIRRESULT	("data\\SCRIPTS\\DIAGNOSIS\\PairResult.txt")	// 2人プレイでの操作
+#define SCRIPTS_TOTALRESULT	("data\\SCRIPTS\\DIAGNOSIS\\TotalResult.txt")	// 累計データの保存
+
 // プロトタイプ宣言
 void InitResultUI(void);
 void UninitResultUI(void);
@@ -92,4 +97,10 @@ RESULTUITEX ClearResult(void);
 RESULTUITEX EventResult(int nIdx);
 RESULTUITEX PairCommand(void);
 RESULTUITEX PairResult(void);
+void SavaSoloData(void);
+void SavaPairData(void);
+void SavaTotalData(void);
+void LoadSoloData(void);
+void LoadPairData(void);
+void LoadTotalData(void);
 #endif
