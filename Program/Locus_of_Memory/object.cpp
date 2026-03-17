@@ -571,6 +571,39 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 	return isRand;	// 着地したかどうかを返す
 }
 
+//=============================================================================
+//	階層構造オブジェクトの当たり判定処理
+//=============================================================================
+bool CollisionParentObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove, float fRadius, int nCollisionIdx)
+{
+	ParentObject* pParentObject = &g_aParentObject[0];	// 先頭アドレス
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale;				// 計算用マトリックス
+	D3DXVECTOR3 posMax, posMin;							// 頂点の最大と最小位置
+	D3DXVECTOR3 posA, posB, posC, posD;					// 各頂点情報
+	bool isRand = false;								// 着地判定
+
+	for (int nCntParentModel = 0; nCntParentModel < MAX_PARENTOBJECT; nCntParentModel++, pParentObject++)
+	{
+		if (pParentObject->bUse == false)
+		{// 使用していなかったら戻る
+			continue;
+		}
+
+		if (pParentObject->nCollisionIdx != -1)
+		{// 当たり判定が設定されていれば
+			CollisionInfo CollisionInfo = UpdateCollision(nCollisionIdx, pParentObject->nCollisionIdx);
+
+			if (CollisionInfo.isCollision)
+			{// 当たっていれば
+				*pPos = CollisionInfo.Intersection;
+				break;
+			}
+		}
+	}
+
+	return isRand;	// 着地したかどうかを返す
+}
+
 //======================================================================================
 // オブジェクトを配置
 //======================================================================================

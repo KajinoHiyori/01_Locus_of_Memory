@@ -640,7 +640,13 @@ void UpdatePlayer(void)
 		UpdateCollider(g_aPlayer[nCntPlayer].nIdxCollision, g_aPlayer[nCntPlayer].pos);
 
 		// イベントオブジェクトとの当たり判定
-		if (CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision))
+		if (CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
+		{
+			isRand = isRand ? false : true;
+		}
+
+		// 階層構造オブジェクトとの当たり判定
+		if (CollisionParentObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
 		{
 			isRand = isRand ? false : true;
 		}
@@ -648,9 +654,7 @@ void UpdatePlayer(void)
 		// オブジェクトとの当たり判定
 		if (CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
 		{
-			// 着地モーション
-			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
-			g_aPlayer[nCntPlayer].bJump = false;
+			isRand = isRand ? false : true;
 		}
 
 		// 着地判定
