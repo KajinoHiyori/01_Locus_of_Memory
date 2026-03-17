@@ -254,7 +254,7 @@ void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 
 		if (ColliderInfo.type != COLLIDERTYPE_SPHERE)
 		{
-			pCollider->Collidertype.rot = g_aCollision[nIdx].rot;
+			pCollider->Collidertype.rot = g_aCollision[nIdx].rot + pCollider->Collidertype.rot;
 		}
 
 		pCollider->type = ColliderInfo.type;
