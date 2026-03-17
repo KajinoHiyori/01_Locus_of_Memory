@@ -167,6 +167,23 @@ void UpdatePlayer(void)
 	bool bPause = false;	// ポーズ状態の確認
 	bool bSpell = false;	// スペルメニューの表示状態の確認
 
+	static int nCollIdx = -1;
+
+	//if (nCollIdx == -1)
+	//{
+	//	nCollIdx = SetCollision(INIT_D3DXVEC3, INIT_D3DXVEC3);
+
+	//	ColliderInfo BoxColliderInfo = {};
+	//	BoxColliderInfo.Collidertype.box.fWidth = 50.0f;
+	//	BoxColliderInfo.Collidertype.box.fHeight = 50.0f;
+	//	BoxColliderInfo.Collidertype.box.fDepth = 50.0f;
+	//	BoxColliderInfo.Collidertype.box.pos = D3DXVECTOR3(0.0f, 0.0f, 100.0f);
+	//	BoxColliderInfo.Collidertype.box.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	//	BoxColliderInfo.type = COLLIDERTYPE_BOX;
+
+	//	SetCollider(nCollIdx, BoxColliderInfo);
+	//}
+
 	if (*pEventState == EVENTSTATE_LOOKDOWN)
 	{
 		return;	// 見下ろし状態では一切の処理を弾く
@@ -661,6 +678,15 @@ void UpdatePlayer(void)
 			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
 			g_aPlayer[nCntPlayer].bJump = false;
 		}
+
+		//CollisionInfo = UpdateCollision(g_aPlayer[nCntPlayer].nIdxCollision, nCollIdx);
+
+		//if (CollisionInfo.isCollision == true)
+		//{// もしメッシュコライダーと衝突していたら
+		//	// 位置を合わせる
+		//	g_aPlayer[nCntPlayer].pos = CollisionInfo.Intersection;
+		//	CollisionInfo.isCollision = false;
+		//}
 
 		// イベントオブジェクトとの当たり判定
 		CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision);

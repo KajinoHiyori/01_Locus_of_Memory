@@ -513,6 +513,7 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 		}
 		else
 		{
+
 			ObjectModel* pObjectModel = &g_aObjectModel[pObject->type];	// モデルタイプ
 
 			// 各頂点位置を代入
@@ -596,8 +597,6 @@ void SetObject(OBJECTTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, bool isShadow,
 				g_nIdxRandObj[g_nNumRandObj] = nCntObject;
 				g_nNumRandObj++;
 			}
-
-			pColliderInfo->Collidertype.pos = pos;
 
 #if 1
 			// 当たり判定

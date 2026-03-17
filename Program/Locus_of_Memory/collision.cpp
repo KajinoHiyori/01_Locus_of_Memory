@@ -245,12 +245,36 @@ void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 			continue;
 		}
 
+		// 計算用マトリックス
+		D3DXMATRIX mtxRot;
+
+		// マトリックスの初期化
+		D3DXMatrixIdentity(&mtxRot);
+
+		// 向きを算出
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, g_aCollision[nIdx].rot.y + pCollider->Collidertype.rot.y, 
+			g_aCollision[nIdx].rot.x + pCollider->Collidertype.rot.x, 
+			g_aCollision[nIdx].rot.z + pCollider->Collidertype.rot.z);
+
+		// X方面ベクトル
+		D3DXVECTOR3 AxisXNor = { mtxRot._11, mtxRot._12, mtxRot._13 };
+
+		// Y方面ベクトル
+		D3DXVECTOR3 AxisYNor = { mtxRot._21, mtxRot._22, mtxRot._23 };
+
+		// Z方面ベクトル
+		D3DXVECTOR3 AxisZNor = { mtxRot._31, mtxRot._32, mtxRot._33 };
+
+		D3DXVECTOR3 OffSet = D3DXVECTOR3(ColliderInfo.Collidertype.pos.x * AxisXNor) +
+			(ColliderInfo.Collidertype.pos.y * AxisYNor) +
+			(ColliderInfo.Collidertype.pos.z * AxisZNor);
+
 		// 指定された当たり判定にコライダーのインデックスを追加
 		g_aCollision[nIdx].nColliderIdx[g_aCollision[nIdx].nNumCollider] = nCntCollider;
 
 		// 各値代入
 		pCollider->Collidertype = ColliderInfo.Collidertype;
-		pCollider->Collidertype.pos = g_aCollision[nIdx].pos + pCollider->Collidertype.pos;
+		pCollider->Collidertype.pos = g_aCollision[nIdx].pos + OffSet;
 
 		if (ColliderInfo.type != COLLIDERTYPE_SPHERE)
 		{
