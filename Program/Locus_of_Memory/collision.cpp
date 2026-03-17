@@ -129,7 +129,7 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx, bool isTrigger)
 				isCollision = BoxCollision[g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].type]
 				(CollisionInfo, 
 				g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].Collidertype, 
-				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype, 
+				g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].Collidertype,
 				isTrigger);
 				break;
 
@@ -138,7 +138,7 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx, bool isTrigger)
 				isCollision = CylinderCollision[g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].type]
 				(CollisionInfo,
 				g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].Collidertype,
-				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype,
+				g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].Collidertype,
 				isTrigger);
 				break;
 
@@ -147,7 +147,7 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx, bool isTrigger)
 				isCollision = SphereCollision[g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].type]
 				(CollisionInfo, 
 				g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].Collidertype, 
-				g_aCollider[pTargetCollision->nColliderIdx[nCntMyCollider]].Collidertype,
+				g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].Collidertype,
 				isTrigger);
 				break;
 
@@ -250,6 +250,13 @@ void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 
 		// 各値代入
 		pCollider->Collidertype = ColliderInfo.Collidertype;
+		pCollider->Collidertype.pos = g_aCollision[nIdx].pos + pCollider->Collidertype.pos;
+
+		if (ColliderInfo.type != COLLIDERTYPE_SPHERE)
+		{
+			pCollider->Collidertype.rot = g_aCollision[nIdx].rot;
+		}
+
 		pCollider->type = ColliderInfo.type;
 		pCollider->bUse = true;
 
@@ -667,22 +674,33 @@ bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 	D3DXVECTOR3 diff = MyCenter - Intersection;
 	float fDiff = D3DXVec3LengthSq(&diff);
 
+	if (fDiff <= 0.0f)
+	{// セーフティ
+		fDiff += 0.001f;
+	}
+
 	if (fDiff < (MyCollider.sphere.fRadius * MyCollider.sphere.fRadius))
 	{
 		PrintDebugProc("test\n");
-		float fDistance = sqrt(fDiff);
+		float fDistance = sqrtf(fDiff);
+
+		// 押し出しベクトル (ローカル)
 		D3DXVECTOR3 vecPushNor = diff / fDistance;
+
+		// 押し出し距離
 		float fPush = MyCollider.sphere.fRadius - fDistance;
 
+		// 押し出しベクトル (ワールド)
 		D3DXVECTOR3 vecPush = (vecPushNor.x * TargetAxisXNor) + (vecPushNor.y * TargetAxisYNor) + (vecPushNor.z * TargetAxisZNor);
 
+		// 距離を含んだ押し出しベクトル
 		vecPush = vecPush * fPush;
 		
 		_CollisionInfo.Intersection = MyCollider.sphere.pos + vecPush;
 		_CollisionInfo.isCollision = true;
 	}
 
-	// 未実装
+	// 
 	return _CollisionInfo.isCollision;
 }
 

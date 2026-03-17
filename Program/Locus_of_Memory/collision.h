@@ -118,6 +118,7 @@ union ColliderType
 	{
 		D3DXVECTOR3 pos;		// ˆÊ’u‚¾‚¯Ý’è‚µ‚½‚¢‚Æ‚«‚Ì‚½‚ß
 		D3DXVECTOR3 posOld;		// ˆÊ’u‚¾‚¯Ý’è‚µ‚½‚¢‚Æ‚«‚Ì‚½‚ß
+		D3DXVECTOR3 rot;		// Œü‚«‚¾‚¯Ý’è‚µ‚½‚¢‚Æ‚«‚Ì‚½‚ß
 	};
 };
 
