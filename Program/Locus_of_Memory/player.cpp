@@ -636,6 +636,20 @@ void UpdatePlayer(void)
 			CollisionInfo.isCollision = false;
 		}
 
+		// 当たり判定の位置の更新
+		UpdateCollider(g_aPlayer[nCntPlayer].nIdxCollision, g_aPlayer[nCntPlayer].pos);
+
+		// イベントオブジェクトとの当たり判定
+		isRand = CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision);
+
+		// オブジェクトとの当たり判定
+		if (CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
+		{
+			// 着地モーション
+			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
+			g_aPlayer[nCntPlayer].bJump = false;
+		}
+
 		// 着地判定
 		if (isRand == true || g_aPlayer[nCntPlayer].pos.y <= 0.0f)
 		{
@@ -657,7 +671,7 @@ void UpdatePlayer(void)
 					SetSpellUIAppear(nCntPlayer);
 				}
 			}
-			
+
 			if (g_aPlayer[nCntPlayer].pos.y <= 0.0f)
 			{
 				g_aPlayer[nCntPlayer].pos.y = 0.0f;
@@ -667,29 +681,6 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].bJump = false;
 			isRand = false;
 		}
-
-		// 当たり判定の位置の更新
-		UpdateCollider(g_aPlayer[nCntPlayer].nIdxCollision, g_aPlayer[nCntPlayer].pos);
-
-		// オブジェクトとの当たり判定
-		if (CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
-		{
-			// 着地モーション
-			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING, false, true, BLENDFRAME);
-			g_aPlayer[nCntPlayer].bJump = false;
-		}
-
-		//CollisionInfo = UpdateCollision(g_aPlayer[nCntPlayer].nIdxCollision, nCollIdx);
-
-		//if (CollisionInfo.isCollision == true)
-		//{// もしメッシュコライダーと衝突していたら
-		//	// 位置を合わせる
-		//	g_aPlayer[nCntPlayer].pos = CollisionInfo.Intersection;
-		//	CollisionInfo.isCollision = false;
-		//}
-
-		// イベントオブジェクトとの当たり判定
-		CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision);
 
 		// 使用したコマンドと所持コマンドを判定
 		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)

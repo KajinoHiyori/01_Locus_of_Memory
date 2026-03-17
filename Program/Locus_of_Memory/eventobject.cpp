@@ -293,6 +293,7 @@ bool CollisionEventObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* 
 			if (CollisionInfo.isCollision)
 			{// “–‚½‚Á‚Ä‚¢‚ê‚Î
 				*pPos = CollisionInfo.Intersection;
+				isRand = CollisionInfo.isRand;
 				break;
 			}
 		}

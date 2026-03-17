@@ -161,6 +161,7 @@ typedef struct CollisionInfo
 {
 	D3DXVECTOR3 Intersection;		// Œğ“_
 	bool isCollision;				// Õ“Ë‚µ‚½‚©‚Ç‚¤‚©
+	bool isRand;					// ’n–Ê‚É‚Â‚¢‚Ä‚é‚©‚Ç‚¤‚©
 }CollisionInfo;
 
 //*****************************************************************************

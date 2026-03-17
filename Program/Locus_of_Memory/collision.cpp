@@ -265,7 +265,7 @@ void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 		// Z•û–ÊƒxƒNƒgƒ‹
 		D3DXVECTOR3 AxisZNor = { mtxRot._31, mtxRot._32, mtxRot._33 };
 
-		D3DXVECTOR3 OffSet = D3DXVECTOR3(ColliderInfo.Collidertype.pos.x * AxisXNor) +
+		D3DXVECTOR3 OffSet = (ColliderInfo.Collidertype.pos.x * AxisXNor) +
 			(ColliderInfo.Collidertype.pos.y * AxisYNor) +
 			(ColliderInfo.Collidertype.pos.z * AxisZNor);
 
@@ -722,6 +722,11 @@ bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 		
 		_CollisionInfo.Intersection = MyCollider.sphere.pos + vecPush;
 		_CollisionInfo.isCollision = true;
+
+		if (vecPush.y > 0.0f)
+		{
+			_CollisionInfo.isRand = true;
+		}
 	}
 
 	// 
