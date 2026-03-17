@@ -32,9 +32,6 @@
 *.a
 *.lib
 
-
-git rm --cached -r </data/SCRIPTS/DIAGNOSIS>
-
 # Executables
 *.exe
 *.out
@@ -42,7 +39,7 @@ git rm --cached -r </data/SCRIPTS/DIAGNOSIS>
 
 # debug information files
 *.dwo
-/data/SCRIPTS/DIAGNOSIS
+/Diagnosis
 /Debug
 /Release
 /.vs

@@ -78,9 +78,9 @@ typedef enum
 }RESULTUITEX;
 
 // マクロ定義
-#define SCRIPTS_SOLORESULT	("data\\SCRIPTS\\DIAGNOSIS\\SoloResult.txt")	// 1人プレイでの操作
-#define SCRIPTS_PAIRRESULT	("data\\SCRIPTS\\DIAGNOSIS\\PairResult.txt")	// 2人プレイでの操作
-#define SCRIPTS_TOTALRESULT	("data\\SCRIPTS\\DIAGNOSIS\\TotalResult.txt")	// 累計データの保存
+#define SCRIPTS_SOLORESULT	("Diagnosis\\SoloResult.txt")	// 1人プレイでの操作
+#define SCRIPTS_PAIRRESULT	("Diagnosis\\PairResult.txt")	// 2人プレイでの操作
+#define SCRIPTS_TOTALRESULT	("Diagnosis\\TotalResult.txt")	// 累計データの保存
 
 // プロトタイプ宣言
 void InitResultUI(void);
