@@ -99,6 +99,20 @@ void UpdateEffectFire(void)
 			{
 			case FIRE_TYPE_FORGE:
 				//位置の設定
+				pos[0].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+				pos[0].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 17 + 1) + 30;
+				pos[0].z = g_aEffectFire[nCntEffectFire].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+
+				//位置の設定
+				pos[1].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 15 + 1);
+				pos[1].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 8 + 1) + 15;
+				pos[1].z = g_aEffectFire[nCntEffectFire].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 15 + 1);
+
+				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_DIAMOND, pos[0], move[0][FIRE_TYPE_FORGE], COLOR_RED, 100, 18);
+				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_CIRCLE, pos[1], move[0][FIRE_TYPE_FORGE], COLOR_ORANGE, 100, 10);
+				break;
+			case FIRE_TYPE_BONFIRE:
+				//位置の設定
 				pos[0].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
 				pos[0].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1) + 30;
 				pos[0].z = g_aEffectFire[nCntEffectFire].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
@@ -108,8 +122,16 @@ void UpdateEffectFire(void)
 				pos[1].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 15 + 1) + 15;
 				pos[1].z = g_aEffectFire[nCntEffectFire].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 15 + 1);
 
-				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_DIAMOND, pos[0], move[0][FIRE_TYPE_FORGE], COLOR_RED, 100, 18);
-				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_CIRCLE, pos[1], move[0][FIRE_TYPE_FORGE], COLOR_ORANGE, 100, 10);
+				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_DIAMOND, pos[0], move[0][FIRE_TYPE_BONFIRE], COLOR_RED, 100, 18);
+				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_CIRCLE, pos[1], move[0][FIRE_TYPE_BONFIRE], COLOR_ORANGE, 100, 10);
+				break;
+			case FIRE_TYPE_SMOKE:
+				//位置の設定
+				pos[0].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 20 + 1);
+				pos[0].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 50 + 1) + 50;
+				pos[0].z = g_aEffectFire[nCntEffectFire].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 20 + 1);
+
+				SetEffect(EFFECT_TYPE_SMOKE, EFFECT_TEX_CIRCLE, pos[0], move[0][FIRE_TYPE_SMOKE], COLOR_DARKGRAY, 100, 15);
 				break;
 			}
 		}

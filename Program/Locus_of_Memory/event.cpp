@@ -19,7 +19,8 @@
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
 //*****************************************************************************
-#define BLACKSMITH_POS	(D3DXVECTOR3(-3200.0f, 0.0f, 950.0f))	// ’b–èê‚ÌˆÊ’u
+#define BLACKSMITH_POS_FIRE		(D3DXVECTOR3(-3200.0f, 40.0f, 950.0f))	// ’b–èê‚ÌˆÊ’u
+#define BLACKSMITH_POS_SMOKE	(D3DXVECTOR3(-3200.0f, 500.0f, 980.0f))	// ’b–èê‚ÌˆÊ’u
 #define FIRE_PARTICLE	(D3DXVECTOR3(BLACKSMITH_POS.x - 100.0f, BLACKSMITH_POS.y + 20.0f, BLACKSMITH_POS.z))
 
 //*****************************************************************************
@@ -406,19 +407,21 @@ bool SetMagicEvent010(MAGICTYPE type, int nIdx)
 //========================================================================
 bool SetMagicEvent011(MAGICTYPE type, int nIdx)
 {
-	EventObject* pEventObject = GetEventObject(nIdx);
+	//EventObject* pEventObject = GetEventObject(nIdx);
 	bool isSuccess = false;
 	switch (type)
 	{
 	case MAGICTYPE_COMBUSTION:	// ”RÄ
 		//pEventObject->EventType = EVENTTYPE_008_0;
-		SetEffectFire(pEventObject->pos, FIRE_TYPE_FORGE, nIdx);
+		SetEffectFire(BLACKSMITH_POS_FIRE, FIRE_TYPE_FORGE, nIdx);
+		SetEffectFire(BLACKSMITH_POS_SMOKE, FIRE_TYPE_SMOKE, nIdx);
 		isSuccess = true;
 		break;
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ
 	//pEventObject->EventType = EVENTTYPE_008_0;
-		SetEffectFire(pEventObject->pos, FIRE_TYPE_FORGE, nIdx);
+		SetEffectFire(BLACKSMITH_POS_FIRE, FIRE_TYPE_FORGE, nIdx);
+		SetEffectFire(BLACKSMITH_POS_SMOKE, FIRE_TYPE_SMOKE, nIdx);
 		isSuccess = true;
 		break;
 	}
@@ -437,13 +440,13 @@ bool SetMagicEvent012(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_COMBUSTION:	// ”RÄ
 		//pEventObject->EventType = EVENTTYPE_008_0;
-		SetEffectFire(pEventObject->pos, FIRE_TYPE_FORGE, nIdx);
+		SetEffectFire(pEventObject->pos, FIRE_TYPE_BONFIRE, nIdx);
 		isSuccess = true;
 		break;
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ
 		//pEventObject->EventType = EVENTTYPE_008_0;
-		SetEffectFire(pEventObject->pos, FIRE_TYPE_FORGE, nIdx);
+		SetEffectFire(pEventObject->pos, FIRE_TYPE_BONFIRE, nIdx);
 		isSuccess = true;
 		break;
 	}

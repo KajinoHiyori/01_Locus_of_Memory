@@ -288,9 +288,9 @@ void UpdateParticle(void)
 						phi = acosf(2.0f * RandFloat() - 1.0f);
 
 						//à íuÇÃê›íË
-						pos[0].x = sinf(phi) * cosf(theta);
-						pos[0].y = sinf(phi) * sinf(theta);
-						pos[0].z = cosf(phi);
+						pos[0].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + sinf(phi) * cosf(theta);
+						pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + sinf(phi) * sinf(theta);
+						pos[0].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + cosf(phi);
 
 						fSpeed = 1.0f + RandFloat() * 2.0f;
 

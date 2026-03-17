@@ -30,6 +30,7 @@ typedef struct
 	EFFECT_TYPE	type;			// エフェクトの種類
 	EFFECT_TEX	tex;			// エフェクトのテクスチャの種類
 	float		fRadius;		// 半径
+	float nCountSmoke;			// 煙に使用
 	int			nLife;			// 寿命（色）
 	bool		bUse;			// 使用しているか
 }Effect;
@@ -74,6 +75,7 @@ void InitEffect(void)
 		g_aEffect[nCntEffect].type = EFFECT_TYPE_NORMAL;
 		g_aEffect[nCntEffect].tex = EFFECT_TEX_CIRCLE;
 		g_aEffect[nCntEffect].fRadius = EFFECT_RADIUS;
+		g_aEffect[nCntEffect].nCountSmoke = 0.0f;
 		g_aEffect[nCntEffect].nLife = 0;
 		g_aEffect[nCntEffect].bUse = false;
 	}
@@ -212,6 +214,25 @@ void UpdateEffect(void)
 			{
 				pEffect->fRadius -= 0.2f;
 				if (pEffect->fRadius <= 0)
+				{
+					ReleaseEffect(nCntEffect);
+					nCntEffect--;
+					continue;
+				}
+			}
+			else if (pEffect->type == EFFECT_TYPE_SMOKE)
+			{
+				pEffect->pos.y += 0.8f;
+				pEffect->pos.x += (float)(rand() % 2);
+				pEffect->fRadius -= 0.05f;
+				pEffect->nCountSmoke += 0.8f;
+				if (pEffect->nCountSmoke >= 250.0f)
+				{
+					ReleaseEffect(nCntEffect);
+					nCntEffect--;
+					continue;
+				}
+				else if (pEffect->fRadius <= 0)
 				{
 					ReleaseEffect(nCntEffect);
 					nCntEffect--;
