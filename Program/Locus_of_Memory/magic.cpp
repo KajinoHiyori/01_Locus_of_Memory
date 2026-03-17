@@ -102,9 +102,9 @@ void UpdateMagic(void)
 			{
 				if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayerType == 0) || GetJoypadRightTriggePress(nCntPlayerType) == true || GetJoypadLeftTriggePress(nCntPlayerType) == true) && pPlayer->bJump == false)
 				{
-					// Spellメニューを表示状態にする
-					SetSpellUIAppear(nCntPlayerType);
-					SetMagicUIAppear(nCntPlayerType);
+					//// Spellメニューを表示状態にする
+					//SetSpellUIAppear(nCntPlayerType);
+					//SetMagicUIAppear(nCntPlayerType);
 					if (pPlayer->motion.motionType != PLAYERMOTIONTYPE_COMMAND)
 					{
 						SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_COMMAND, true, true, BLENDFRAME);

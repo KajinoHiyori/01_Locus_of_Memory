@@ -668,7 +668,7 @@ void UpdatePlayer(void)
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_NORMAL;
 				if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true))
 				{
-					SetSpellUIAppear(nCntPlayer);
+					//SetSpellUIAppear(nCntPlayer);
 				}
 			}
 

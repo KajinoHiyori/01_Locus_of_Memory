@@ -32,7 +32,6 @@
 
 // グローバル変数
 bool g_bFadeScane;				// フェード状態を管理
-DIAGNOSISTYPE g_diagnosisType;	// 操作方法
 int g_nCounterTitle = 0;	// タイトル画面への遷移間隔をカウント
 
 //======================================================================================
@@ -64,7 +63,6 @@ void InitDiagnosis(void)
 	// タイトルUIの表示
 	InitDiagnosisUI();
 
-	g_diagnosisType = DIAGNOSISTYPE_1P;
 	g_nCounterTitle = 0;	// 遷移間隔の初期化
 
 	 // ドラゴンのタイプを決定
@@ -141,20 +139,4 @@ void DrawDiagnosis(void)
 
 	// タイトルUIの描画処理
 	DrawDiagnosisUI();
-}
-
-//======================================================================================
-// 操作方法の決定
-//======================================================================================
-void SetDiagnosisType(DIAGNOSISTYPE type)
-{
-	g_diagnosisType = type;
-}
-
-//======================================================================================
-// 操作方法の取得
-//======================================================================================
-DIAGNOSISTYPE GetDiagnosisType(void)
-{
-	return g_diagnosisType;
 }

@@ -1,88 +1,138 @@
-#if 0
-
-
-
-#endif // 0
 //======================================================================================
 // 
 // 診断画面の2DUI処理[diagnosisui.h]
+// Author : Kajino Hiyori
 //
 //======================================================================================
 #include "main.h"
 #include "fade.h"
+#include "resultui.h"
 #include "diagnosisui.h"
 #include "diagnosis.h"
 #include "input.h"
+#include "fog.h"
 
-// タイトルUIの種類
+// 診断結果UIの種類
 typedef enum
 {
-	DiagnosisUITYPE_LOGO = 0,	// タイトルロゴ
-	DiagnosisUITYPE_1PPLAY,		// 1PPALY
-	DiagnosisUITYPE_2PPLAY,		// 2PPALY
-	DiagnosisUITYPE_KEYBOARD,	// KEYBOARD
-	DiagnosisUITYPE_MAX
-}DiagnosisUITYPE;
+	DIAGNOSISTYPE_TITLE = 0,		// 診断結果ロゴ
+	DIAGNOSISTYPE_USEDCOMMAND,		// 使われたコマンド
+	DIAGNOSISTYPE_R_COMMANDTYPE,	// Rコマンドの種類
+	DIAGNOSISTYPE_R_COMMAND100,		// Rコマンド回数[X00]
+	DIAGNOSISTYPE_R_COMMAND010,		// Rコマンド回数[0X0]
+	DIAGNOSISTYPE_R_COMMAND001,		// Rコマンド回数[00X]
+	DIAGNOSISTYPE_R_COMMANDTIMES,	// RXXX回
+	DIAGNOSISTYPE_G_COMMANDTYPE,	// Gコマンドの種類
+	DIAGNOSISTYPE_G_COMMAND100,		// Gコマンド回数[X00]
+	DIAGNOSISTYPE_G_COMMAND010,		// Gコマンド回数[0X0]
+	DIAGNOSISTYPE_G_COMMAND001,		// Gコマンド回数[00X]
+	DIAGNOSISTYPE_G_COMMANDTIMES,	// GXXX回
+	DIAGNOSISTYPE_B_COMMANDTYPE,	// Bコマンドの種類
+	DIAGNOSISTYPE_B_COMMAND100,		// Bコマンド回数[X00]
+	DIAGNOSISTYPE_B_COMMAND010,		// Bコマンド回数[0X0]
+	DIAGNOSISTYPE_B_COMMAND001,		// Bコマンド回数[00X]
+	DIAGNOSISTYPE_B_COMMANDTIMES,	// BXXX回
+	DIAGNOSISTYPE_Y_COMMANDTYPE,	// Yコマンドの種類
+	DIAGNOSISTYPE_Y_COMMAND100,		// Yコマンド回数[X00]
+	DIAGNOSISTYPE_Y_COMMAND010,		// Yコマンド回数[0X0]
+	DIAGNOSISTYPE_Y_COMMAND001,		// Yコマンド回数[00X]
+	DIAGNOSISTYPE_Y_COMMANDTIMES,	// YXXX回
+	DIAGNOSISTYPE_MOSTMAGIC,		// 1番使われた魔法
+	DIAGNOSISTYPE_MAGICCIRCLE,		// 魔法陣
+	DIAGNOSISTYPE_HAPPENDEVENT,		// 発生したイベント数
+	DIAGNOSISTYPE_EVENT100,			// イベント数[X00]
+	DIAGNOSISTYPE_EVENT010,			// イベント数[0X0]
+	DIAGNOSISTYPE_EVENT001,			// イベント数[00X]
+	DIAGNOSISTYPE_EVENTTIMES,		// イベントXXX回
+	DIAGNOSISTYPE_MAX
+}DIAGNOSISTYPE;
 
-// タイトルUI演出の管理
+// 診断結果UIのテクスチャの種類
 typedef enum
 {
-	TITLETEXT_MODE_NONE = 0,	// 通常
-	TITLETEXT_MODE_WIDTH,		// 横長
-	TITLETEXT_MODE_HEIGHT,		// 縦長
-	TITLETEXT_MODE_BLINKING,	// 点滅
-	TITLETEXT_MODE_BLINKING1,	// 高速点滅
-	TITLETEXT_MODE_MAX
-}TITLETEXT_MODE;
+	DIAGNOSISTEX_TITLE = 0,		// 診断結果ロゴ
+	DIAGNOSISTEX_USEDCOMMAND,	// 使われたコマンド数
+	DIAGNOSISTEX_R,				// 赤魔法
+	DIAGNOSISTEX_G,				// 緑魔法
+	DIAGNOSISTEX_B,				// 青魔法
+	DIAGNOSISTEX_Y,				// 黄魔法
+	DIAGNOSISTEX_MOSTMAGIC,		// 1番使われた魔法
+	DIAGNOSISTEX_LEVITATION,	// 浮遊
+	DIAGNOSISTEX_COMBUSTION,	// 燃焼
+	DIAGNOSISTEX_FLOOD,			// 洪水
+	DIAGNOSISTEX_FLASH,			// フラッシュ
+	DIAGNOSISTEX_FIREBALL,		// 火球
+	DIAGNOSISTEX_SUNSETDELAY,	// 時間停止
+	DIAGNOSISTEX_RAINPRAY,		// 雨乞い
+	DIAGNOSISTEX_FREEZE,		// 凍結
+	DIAGNOSISTEX_GROWTH,		// 成長
+	DIAGNOSISTEX_ACCELERATION,	// 加速
+	DIAGNOSISTEX_TIMEREVERT,	// 巻き戻し
+	DIAGNOSISTEX_HAPPENDEVENT,	// 発生したイベント数
+	DIAGNOSISTEX_TIMES,			// 回
+	DIAGNOSISTEX_NUMBER,		// 数字
+	DIAGNOSISTEX_MAX
+}DIAGNOSISTEX;
 
-// タイトルUIの状態
-typedef enum
-{
-	TITLETEXTSTATE_APPEAR = 0,	// ロゴ出現状態
-	TITLETEXTSTATE_NORMAL,		// 通常状態
-	TITLETEXTSTATE_START,		// チュートリアルへの遷移待機
-	TITLETEXTSTATE_MAX
-}TITLETEXTSTATE;
-
-// タイトルUIの構造体
+// 診断結果UIの構造体
 typedef struct
 {
-	DiagnosisUITYPE		type;	// 種類
-	TITLETEXT_MODE	mode;	// 演出
+	DIAGNOSISTYPE	type;	// 種類
+	DIAGNOSISTEX	tex;	// 停止
 	D3DXVECTOR3		pos;	// 位置
-	int nCounterState;		// 拡縮を管理
 	float	fWidth;			// 幅
 	float	fHeight;		// 高さ
 	bool	bDisp;			// 表示状態
-}TitleText;
+}DiagnosisUI;
 
 // マクロ定義
-#define NUM_DiagnosisUI			(DiagnosisUITYPE_MAX)	// タイトルUIのレイヤー数
-#define SELECT_NUM			(3)			// 操作方法選択数
-#define LOGO_POS			(D3DXVECTOR3(350.0f, 200.0f, 0.0f))	// ロゴの位置
-#define LOGO_WIDTH			(300.0f)	// ロゴの横幅
-#define LOGO_HEIGHT			(150.0f)	// ロゴの縦幅
-#define SELECT_POS			(D3DXVECTOR3(1000.0f, 400.0f, 0.0f))	// セレクトボタンの開始位置
-#define SELECT_WIDTH		(150.0f)	// セレクトボタンの横幅
-#define SELECT_HEIGHT		(75.0f)		// セレクトボタンの縦幅
-#define SELECT_MARGIN		(80.0f)		// セレクトボタンの余白
+#define NUM_DIAGNOSISTYPE	(DIAGNOSISTYPE_MAX)	// 診断結果UIの表示種類
+#define DIAGNOSIS_TEX		(DIAGNOSISTEX_MAX)	// テクスチャの種類
+#define TITLE_W				(460.0f)	// プレイヤーたちの軌跡[幅]
+#define TITLE_H				(60.0f)		// プレイヤーたちの軌跡[高]
+#define COMMAND_W			(50.0f)		// コマンドの幅
+#define COMMAND_H			(50.0f)		// コマンドの高さ
+#define MAGICCIRCLE_SIZE	(60.0f)		// 魔法陣の大きさ
+#define TIMES_W				(40.0f)		// 回の幅
+#define TIMES_H				(40.0f)		// 回の高さ
+#define NUMBER_W			(TIMES_W)	// 数字の幅
+#define NUMBER_H			(TIMES_H)	// 数字の高さ
+#define TEXT_W				(460.0f * 0.8f)	// タイトル以外の題字
+#define TEXT_H				(60.0f * 0.8f)	// タイトル以外の題字
 
 // テクスチャの読み込み
-const char* c_apFilenameDiagnosisUI[DiagnosisUITYPE_MAX] =
+const char* c_apFilenameDiagnosisUI[DIAGNOSIS_TEX] =
 {
-	"data\\TEXTURE\\title_000.png",	// [TITLETEXT_TYPE_BG]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
-	"data\\TEXTURE\\title_001.png",	// [TITLETEXT_TYPE_ENTER]
+	"data\\TEXTURE\\diagnosis\\diagnosis000.png",	// 診断結果ロゴ
+	"data\\TEXTURE\\diagnosis\\diagnosis001.png",	// 使われたコマンド数
+	"data\\TEXTURE\\SpellUI\\01_Red.png",			// 赤魔法
+	"data\\TEXTURE\\SpellUI\\02_Green.png",			// 緑魔法
+	"data\\TEXTURE\\SpellUI\\03_Blue.png",			// 青魔法
+	"data\\TEXTURE\\SpellUI\\04_Yellow.png",		// 黄魔法
+	"data\\TEXTURE\\diagnosis\\diagnosis002.png",	// 1番使われた魔法
+	"data\\TEXTURE\\SpellUI\\14_Levitation.png",	// 浮遊
+	"data\\TEXTURE\\SpellUI\\15_Combustion.png",	// 燃焼
+	"data\\TEXTURE\\SpellUI\\16_Flood.png",			// 洪水
+	"data\\TEXTURE\\SpellUI\\17_Flash.png",			// フラッシュ
+	"data\\TEXTURE\\SpellUI\\18_FireBall.png",		// 火球
+	"data\\TEXTURE\\SpellUI\\19_SunsetDelay.png",	// 時間停止
+	"data\\TEXTURE\\SpellUI\\20_RainPray.png",		// 雨乞い
+	"data\\TEXTURE\\SpellUI\\21_freeze.png",		// 凍結
+	"data\\TEXTURE\\SpellUI\\22_Grouth.png",		// 成長
+	"data\\TEXTURE\\SpellUI\\23_Acceleration.png",	// 加速
+	"data\\TEXTURE\\SpellUI\\24_TimeRevert.png",	// 巻き戻し
+	"data\\TEXTURE\\diagnosis\\diagnosis003.png",	// 発生したイベント数
+	"data\\TEXTURE\\diagnosis\\diagnosis004.png",	// 回
+	"data\\TEXTURE\\number.png",					// 数字
 };
 
 // グローバル変数
-LPDIRECT3DTEXTURE9 g_apTextureDiagnosisUI[NUM_DiagnosisUI] = {};	// テクスチャへのポインタ
+LPDIRECT3DTEXTURE9 g_apTextureDiagnosisUI[DIAGNOSIS_TEX] = {};	// テクスチャへのポインタ
 LPDIRECT3DVERTEXBUFFER9 g_pVtxBuffDiagnosisUI = NULL; // 頂点バッファへのポインタ
-TitleText g_aDiagnosisUI[NUM_DiagnosisUI];	// 構造体
+DiagnosisUI g_aDiagnosis[NUM_DIAGNOSISTYPE];	// 構造体
 
 //========================================================================
-// タイトルUIの初期化処理
+// 診断結果UIの初期化処理
 //========================================================================
 void InitDiagnosisUI(void)
 {
@@ -91,107 +141,55 @@ void InitDiagnosisUI(void)
 	pDevice = GetDevice();
 
 	// テクスチャの読み込み
-	for (int nCntUI = 0; nCntUI < NUM_DiagnosisUI; nCntUI++)
+	for (int nCntUI = 0; nCntUI < DIAGNOSIS_TEX; nCntUI++)
 	{
 		D3DXCreateTextureFromFile(pDevice, c_apFilenameDiagnosisUI[nCntUI], &g_apTextureDiagnosisUI[nCntUI]);
 	}
 
 	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_DiagnosisUI, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffDiagnosisUI, NULL);
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * NUM_DIAGNOSISTYPE, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &g_pVtxBuffDiagnosisUI, NULL);
 
-	VERTEX_2D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffDiagnosisUI->Lock(0, 0, (void**)&pVtx, 0);
+	// UIの配置
+	SetDiagnosisUI();
 
-	for (int nCntTitle = 0; nCntTitle < NUM_DiagnosisUI; nCntTitle++, pVtx += 4)
-	{
-		switch (nCntTitle)
-		{
-		case DiagnosisUITYPE_LOGO:	// タイトルロゴ
-			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(LOGO_POS.x - LOGO_WIDTH, LOGO_POS.y - LOGO_HEIGHT, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(LOGO_POS.x + LOGO_WIDTH, LOGO_POS.y - LOGO_HEIGHT, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(LOGO_POS.x - LOGO_WIDTH, LOGO_POS.y + LOGO_HEIGHT, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(LOGO_POS.x + LOGO_WIDTH, LOGO_POS.y + LOGO_HEIGHT, 0.0f);
-			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
-			break;
-
-		case DiagnosisUITYPE_1PPLAY:	// 1PPLAY
-		// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-			break;
-
-		case DiagnosisUITYPE_2PPLAY:	// 2PPLAY
-		// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			break;
-
-		case DiagnosisUITYPE_KEYBOARD:	// KEYBOARD
-			// 頂点座標の設定
-			pVtx[0].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[1].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[2].pos = D3DXVECTOR3(SELECT_POS.x - SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			pVtx[3].pos = D3DXVECTOR3(SELECT_POS.x + SELECT_WIDTH, SELECT_POS.y + SELECT_HEIGHT * 2 + (nCntTitle - 1) * SELECT_MARGIN, 0.0f);
-			// 頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-			break;
-		}
-
-		// rhwの設定
-		pVtx[0].rhw = 1.0f;
-		pVtx[1].rhw = 1.0f;
-		pVtx[2].rhw = 1.0f;
-		pVtx[3].rhw = 1.0f;
-
-		// テクスチャ座標の設定
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
-		g_aDiagnosisUI[nCntTitle].bDisp = true;
-	}
-	// 頂点バッファをアンロック
-	g_pVtxBuffDiagnosisUI->Unlock();
-
-	//g_nSelectOperation = DiagnosisUITYPE_1PPLAY;	// 1PPALYが選択されている
+	//for (int nCntDiagnosis = 0; nCntDiagnosis < NUM_DIAGNOSISTYPE; nCntDiagnosis++, pVtx += 4)
+	//{
+	//	// 頂点座標の設定
+	//	pVtx[0].pos = D3DXVECTOR3(g_aDiagnosis[nCntDiagnosis].pos.x - g_aDiagnosis[nCntDiagnosis].fWidth, g_aDiagnosis[nCntDiagnosis].pos.y - g_aDiagnosis[nCntDiagnosis].fHeight, 0.0f);
+	//	pVtx[1].pos = D3DXVECTOR3(g_aDiagnosis[nCntDiagnosis].pos.x + g_aDiagnosis[nCntDiagnosis].fWidth, g_aDiagnosis[nCntDiagnosis].pos.y - g_aDiagnosis[nCntDiagnosis].fHeight, 0.0f);
+	//	pVtx[2].pos = D3DXVECTOR3(g_aDiagnosis[nCntDiagnosis].pos.x - g_aDiagnosis[nCntDiagnosis].fWidth, g_aDiagnosis[nCntDiagnosis].pos.y + g_aDiagnosis[nCntDiagnosis].fHeight, 0.0f);
+	//	pVtx[3].pos = D3DXVECTOR3(g_aDiagnosis[nCntDiagnosis].pos.x + g_aDiagnosis[nCntDiagnosis].fWidth, g_aDiagnosis[nCntDiagnosis].pos.y + g_aDiagnosis[nCntDiagnosis].fHeight, 0.0f);
+	//	// 頂点カラーの設定
+	//	pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+	//	pVtx[1].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+	//	pVtx[2].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+	//	pVtx[3].col = D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f);
+	//	// rhwの設定
+	//	pVtx[0].rhw = 1.0f;
+	//	pVtx[1].rhw = 1.0f;
+	//	pVtx[2].rhw = 1.0f;
+	//	pVtx[3].rhw = 1.0f;
+	//	// テクスチャ座標の設定
+	//	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	//	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
+	//	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
+	//	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+	//	g_aDiagnosis[nCntDiagnosis].bDisp = true;
+	//}
 }
 
 //========================================================================
-// タイトルUIの終了処理
+// 診断結果UIの終了処理
 //========================================================================
 void UninitDiagnosisUI(void)
 {
 	// テクスチャの破棄
-	for (int nCntTitle = 0; nCntTitle < NUM_DiagnosisUI; nCntTitle++)
+	for (int nCntDiagnosis = 0; nCntDiagnosis < DIAGNOSIS_TEX; nCntDiagnosis++)
 	{
-		if (g_apTextureDiagnosisUI[nCntTitle] != NULL)
+		if (g_apTextureDiagnosisUI[nCntDiagnosis] != NULL)
 		{
-			g_apTextureDiagnosisUI[nCntTitle]->Release();
-			g_apTextureDiagnosisUI[nCntTitle] = NULL;
+			g_apTextureDiagnosisUI[nCntDiagnosis]->Release();
+			g_apTextureDiagnosisUI[nCntDiagnosis] = NULL;
 		}
 	}
 
@@ -204,79 +202,15 @@ void UninitDiagnosisUI(void)
 }
 
 //========================================================================
-// タイトルUIの更新処理
+// 診断結果UIの更新処理
 //========================================================================
 void UpdateDiagnosisUI(void)
 {
-	// 現在のフェードの状態を管理
-	FADE *pfade = GetFade();
-
-	//// 選択状態の変更(Repeat)
-	//if (GetKeyboardRepeat(DIK_W) == true || GetJoypadRepeat(JOYKEY_UP, 0) == true)
-	//{
-	//	g_nSelectOperation--;
-	//	if (g_nSelectOperation < DiagnosisUITYPE_1PPLAY)
-	//	{
-	//		g_nSelectOperation = DiagnosisUITYPE_KEYBOARD;
-	//	}
-	//}
-	//else if (GetKeyboardRepeat(DIK_S) == true || GetJoypadRepeat(JOYKEY_DOWN, 0) == true)
-	//{
-	//	g_nSelectOperation++;
-	//	if (g_nSelectOperation > DiagnosisUITYPE_KEYBOARD)
-	//	{
-	//		g_nSelectOperation = DiagnosisUITYPE_1PPLAY;
-	//	}
-	//}
-
-	if (GetKeyboardTrigger(DIK_RETURN) == true || GetJoypadTrigger(JOYKEY_A, 0) == true || GetJoypadTrigger(JOYKEY_START, 0) == true)
-	{
-		//switch (g_nSelectOperation)
-		//{
-		//case DiagnosisUITYPE_1PPLAY:	// 1PPLAY
-		//	SetDiagnosisType(DIAGNOSISTYPE_1P);
-		//	break;
-
-		//case DiagnosisUITYPE_2PPLAY:	// 2PPLAY
-		//	SetDiagnosisType(DIAGNOSISTYPE_2P);
-		//	break;
-
-		//case DiagnosisUITYPE_KEYBOARD:	// KEYBOARD
-		//	SetDiagnosisType(DIAGNOSISTYPE_KEYBOARD);
-		//	break;
-		//}
-	}
-
-	VERTEX_2D* pVtx;
-	// 頂点バッファをロックし、頂点情報へのポインタを取得
-	g_pVtxBuffDiagnosisUI->Lock(0, 0, (void**)&pVtx, 0);
-
-	pVtx += 4;	// ロゴの分だけポインタを進める
-
-	//for (int nCntUI = 0; nCntUI < SELECT_NUM; nCntUI++, pVtx += 4)
-	//{
-	//	if (nCntUI + 1 == g_nSelectOperation)	// 選択部だけ明るく表示
-	//	{
-	//		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	//		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	//		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	//		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	//	}
-	//	else
-	//	{
-	//		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-	//		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-	//		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-	//		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f);
-	//	}
-	//}
 	
-	// 頂点バッファをアンロック
-	g_pVtxBuffDiagnosisUI->Unlock();
 }
 
 //========================================================================
-// タイトルUIの描画処理
+// 診断結果UIの描画処理
 //========================================================================
 void DrawDiagnosisUI(void)
 {
@@ -284,20 +218,78 @@ void DrawDiagnosisUI(void)
 	// デバイスの取得
 	pDevice = GetDevice();
 
+	// ライトをオフにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	SetFogEnable(false);
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, g_pVtxBuffDiagnosisUI, 0, sizeof(VERTEX_2D));
 
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
-	for (int nCntTitle = 0; nCntTitle < NUM_DiagnosisUI; nCntTitle++)
+	for (int nCntDiagnosis = 0; nCntDiagnosis < NUM_DIAGNOSISTYPE; nCntDiagnosis++)
 	{
-		if (g_aDiagnosisUI[nCntTitle].bDisp == true)
+		if (g_aDiagnosis[nCntDiagnosis].bDisp == true)
 		{
 			// テクスチャの設定
-			pDevice->SetTexture(0, g_apTextureDiagnosisUI[nCntTitle]);
+			pDevice->SetTexture(0, g_apTextureDiagnosisUI[g_aDiagnosis[nCntDiagnosis].tex]);
 			// ポリゴンの描画
-			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntTitle * 4, 2);
+			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntDiagnosis * 4, 2);
 		}
 	}
+	// ライトをオンにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	SetFogEnable(true);
+}
+
+//========================================================================
+// 診断結果UIの設定
+//========================================================================
+void SetDiagnosisUI(void)
+{
+	TotalData DiagnosisData = LoadTotalData();	// セーブされている情報を格納
+
+	VERTEX_2D* pVtx;
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	g_pVtxBuffDiagnosisUI->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCntUI = 0; nCntUI < NUM_DIAGNOSISTYPE; nCntUI++)
+	{
+		switch (nCntUI)
+		{
+		case DIAGNOSISTEX_TITLE:	// 診断結果
+			g_aDiagnosis[nCntUI].bDisp = true;
+			g_aDiagnosis[nCntUI].fHeight = TITLE_H;
+			g_aDiagnosis[nCntUI].fWidth = TITLE_W;
+			g_aDiagnosis[nCntUI].pos = INIT_D3DXVEC3;
+				break;
+
+		default:
+			break;
+		}
+		// DIAGNOSISTEX_TITLE = 0,		// 診断結果ロゴ
+		// DIAGNOSISTEX_USEDCOMMAND,	// 使われたコマンド数
+		// DIAGNOSISTEX_R,				// 赤魔法
+		// DIAGNOSISTEX_G,				// 緑魔法
+		// DIAGNOSISTEX_B,				// 青魔法
+		// DIAGNOSISTEX_Y,				// 黄魔法
+		// DIAGNOSISTEX_MOSTMAGIC,		// 1番使われた魔法
+		// DIAGNOSISTEX_LEVITATION,	// 浮遊
+		// DIAGNOSISTEX_COMBUSTION,	// 燃焼
+		// DIAGNOSISTEX_FLOOD,			// 洪水
+		// DIAGNOSISTEX_FLASH,			// フラッシュ
+		// DIAGNOSISTEX_FIREBALL,		// 火球
+		// DIAGNOSISTEX_SUNSETDELAY,	// 時間停止
+		// DIAGNOSISTEX_RAINPRAY,		// 雨乞い
+		// DIAGNOSISTEX_FREEZE,		// 凍結
+		// DIAGNOSISTEX_GROWTH,		// 成長
+		// DIAGNOSISTEX_ACCELERATION,	// 加速
+		// DIAGNOSISTEX_TIMEREVERT,	// 巻き戻し
+		// DIAGNOSISTEX_HAPPENDEVENT,	// 発生したイベント数
+		// DIAGNOSISTEX_TIMES,			// 回
+		// DIAGNOSISTEX_NUMBER,		// 数字
+	}
+
+	// 頂点バッファをアンロック
+	g_pVtxBuffDiagnosisUI->Unlock();
 }

@@ -77,6 +77,27 @@ typedef enum
 	RESULTUITEX_MAX
 }RESULTUITEX;
 
+// 外部ファイル保存用の構造体[solo / pair合併]
+typedef struct
+{
+	int nRed;			// 使われたコマンド数[赤]
+	int nGreen;			// 使われたコマンド数[緑]
+	int nBlue;			// 使われたコマンド数[青]
+	int nYellow;		// 使われたコマンド数[黄]
+	int nLevitation;	// 使われた魔法数[浮遊]
+	int nCombustion;	// 使われた魔法数[燃焼]
+	int nFlood;			// 使われた魔法数[洪水]
+	int nFlash;			// 使われた魔法数[フラッシュ]
+	int nFireBall;		// 使われた魔法数[火球]
+	int nSunsetDelay;	// 使われた魔法数[時間停止]
+	int nRainPray;		// 使われた魔法数[雨乞い]
+	int nFreeze;		// 使われた魔法数[凍結]
+	int nGrowth;		// 使われた魔法数[成長]
+	int nAcceleration;	// 使われた魔法数[加速]
+	int nTimeRevert;	// 使われた魔法数[巻き戻し]
+	int nEvent;			// 累計イベント発生回数
+}TotalData;
+
 // マクロ定義
 #define SCRIPTS_SOLORESULT	("Diagnosis\\SoloResult.txt")	// 1人プレイでの操作
 #define SCRIPTS_PAIRRESULT	("Diagnosis\\PairResult.txt")	// 2人プレイでの操作
@@ -102,5 +123,5 @@ void SavaPairData(void);
 void SavaTotalData(void);
 void LoadSoloData(void);
 void LoadPairData(void);
-void LoadTotalData(void);
+TotalData LoadTotalData(void);
 #endif

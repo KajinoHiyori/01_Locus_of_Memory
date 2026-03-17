@@ -291,7 +291,10 @@ void DrawTitleUI(void)
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
+	// ライトをオフにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	SetFogEnable(false);
+
 	for (int nCntTitle = 0; nCntTitle < NUM_TITLEUI; nCntTitle++)
 	{
 		if (g_aTitleUI[nCntTitle].bDisp == true)
@@ -302,5 +305,7 @@ void DrawTitleUI(void)
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntTitle * 4, 2);
 		}
 	}
+	// ライトをオンにする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 	SetFogEnable(true);
 }

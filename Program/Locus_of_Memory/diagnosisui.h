@@ -1,10 +1,7 @@
-#if 0
-
-
-#endif // 0
 //========================================================
 // 
 // êfífâÊñ ÇÃ2DUIèàóù[diagnosisui.h]
+// Author : Kajino Hiyori
 // 
 //========================================================
 #ifndef _DIAGNOSISUI_H_
@@ -15,5 +12,5 @@ void InitDiagnosisUI(void);
 void UninitDiagnosisUI(void);
 void UpdateDiagnosisUI(void);
 void DrawDiagnosisUI(void);
-
+void SetDiagnosisUI(void);
 #endif

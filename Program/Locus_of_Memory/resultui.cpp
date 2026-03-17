@@ -84,27 +84,6 @@ typedef struct
 	int nYY;			// コマンド相性[YY]
 }PairData;
 
-// 外部ファイル保存用の構造体[solo / pair合併]
-typedef struct
-{
-	int nRed;			// 使われたコマンド数[赤]
-	int nGreen;			// 使われたコマンド数[緑]
-	int nBlue;			// 使われたコマンド数[青]
-	int nYellow;		// 使われたコマンド数[黄]
-	int nLevitation;	// 使われた魔法数[浮遊]
-	int nCombustion;	// 使われた魔法数[燃焼]
-	int nFlood;			// 使われた魔法数[洪水]
-	int nFlash;			// 使われた魔法数[フラッシュ]
-	int nFireBall;		// 使われた魔法数[火球]
-	int nSunsetDelay;	// 使われた魔法数[時間停止]
-	int nRainPray;		// 使われた魔法数[雨乞い]
-	int nFreeze;		// 使われた魔法数[凍結]
-	int nGrowth;		// 使われた魔法数[成長]
-	int nAcceleration;	// 使われた魔法数[加速]
-	int nTimeRevert;	// 使われた魔法数[巻き戻し]
-	int nEvent;			// 累計イベント発生回数
-}TotalData;
-
 // マクロ定義
 #define UI_ROT			(D3DXVECTOR3(0.0f, 0.0f, 0.0f))	// 表示方向
 #define NORMAL			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))	// 法線ベクトル
@@ -995,7 +974,7 @@ void SavaTotalData(void)
 	// データを外部ファイルから読み込む[2人プレイ]
 	LoadPairData();
 	// データを外部ファイルから読み込む[累計]
-	LoadTotalData();
+	g_TotalData = LoadTotalData();
 
 	FILE* pFile;
 	// ファイルを開く
@@ -1116,34 +1095,18 @@ void LoadPairData(void)
 //======================================================================================
 // データを外部ファイルから読み込む[累計]
 //======================================================================================
-void LoadTotalData(void)
+TotalData LoadTotalData(void)
 {
 	FILE* pFile;
 	// ファイルを開く
 	pFile = fopen(SCRIPTS_TOTALRESULT, "r");
 
+	TotalData totalData;
+
 	if (pFile != NULL)
 	{
-		fread(&g_TotalData, sizeof(TotalData), 1, pFile);
+		fread(&totalData, sizeof(TotalData), 1, pFile);
 		fclose(pFile);
 	}
-	else
-	{ // ファイルが開けなかった場合
-		g_TotalData.nRed	= 0;			// 使われたコマンド数[赤]
-		g_TotalData.nGreen	= 0;			// 使われたコマンド数[緑]
-		g_TotalData.nBlue	= 0;			// 使われたコマンド数[青]
-		g_TotalData.nYellow	= 0;		// 使われたコマンド数[黄]
-		g_TotalData.nLevitation		= 0;	// 使われた魔法数[浮遊]
-		g_TotalData.nCombustion		= 0;	// 使われた魔法数[燃焼]
-		g_TotalData.nFlood			= 0;	// 使われた魔法数[洪水]
-		g_TotalData.nFlash			= 0;	// 使われた魔法数[フラッシュ]
-		g_TotalData.nFireBall		= 0;	// 使われた魔法数[火球]
-		g_TotalData.nSunsetDelay	= 0;	// 使われた魔法数[時間停止]
-		g_TotalData.nRainPray		= 0;	// 使われた魔法数[雨乞い]
-		g_TotalData.nFreeze			= 0;	// 使われた魔法数[凍結]
-		g_TotalData.nGrowth			= 0;	// 使われた魔法数[成長]
-		g_TotalData.nAcceleration	= 0;	// 使われた魔法数[加速]
-		g_TotalData.nTimeRevert		= 0;	// 使われた魔法数[巻き戻し]
-		g_TotalData.nEvent	= 0;	// 累計イベント発生回数
-	}
+	return totalData;
 }
