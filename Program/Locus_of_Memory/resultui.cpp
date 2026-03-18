@@ -99,8 +99,8 @@ typedef struct
 // テクスチャのサイズ管理
 #define WIDTH					(32.5f)	// 横幅
 #define HEIGHT					(5.0f)	// 縦幅
-#define DIAGNOSIS_W				(650.0f * 0.075f)		// 診断結果の幅
-#define DIAGNOSIS_H				(100.0f * 0.075f)		// 診断結果の高さ
+#define DIAGNOSIS_W				(650.0f * 0.065f)		// 診断結果の幅
+#define DIAGNOSIS_H				(100.0f * 0.065f)		// 診断結果の高さ
 #define MOSTCOMMANDSOLO_W		(DIAGNOSIS_W * 0.7f)		// 1番使ったコマンド[solo]
 #define MOSTCOMMANDSOLO_H		(DIAGNOSIS_H * 0.7f)		// 1番使ったコマンド[solo]
 #define COMMANDTYPESOLO_W		(MOSTCOMMANDSOLO_H)	// コマンドの種類[0.8倍]
@@ -124,10 +124,10 @@ typedef struct
 #define MIN0_POS				(D3DXVECTOR3(HOUR1_POS.x + NUM_W + 5.0f, HOUR1_POS.y, HOUR1_POS.z))
 #define MIN1_POS				(D3DXVECTOR3(MIN0_POS.x + NUM_W + 5.0f, MIN0_POS.y, MIN0_POS.z))
 #define COLON_POS				(D3DXVECTOR3(HOUR1_POS.x + 5.125f, HOUR1_POS.y, HOUR1_POS.z))
-#define YOUARE_POS				(D3DXVECTOR3(-40.0f, 25.0f, -10.0f))
-#define COMMANDRESULT_POS		(D3DXVECTOR3(-30.0f, 10.0f, -10.0f))
-#define CLEARRESULT_POS			(D3DXVECTOR3(-10.0f, -5.0f, -10.0f))
-#define EVENTRESULT_POS			(D3DXVECTOR3(15.0f, -20.0f, -10.0f))
+#define YOUARE_POS				(D3DXVECTOR3(-40.0f, 25.0f, -20.0f))
+#define COMMANDRESULT_POS		(D3DXVECTOR3(-30.0f, 7.0f, -20.0f))
+#define CLEARRESULT_POS			(D3DXVECTOR3(-10.0f, -5.0f, -20.0f))
+#define EVENTRESULT_POS			(D3DXVECTOR3(15.0f, -17.0f, -20.0f))
 
 // 2人用のリザルトUIの配置
 #define MOSTCOMMANDPAIR_POS		(D3DXVECTOR3(40.0f, 45.0f, 0.0f))
@@ -135,9 +135,9 @@ typedef struct
 #define COMMAND2P_POS			(D3DXVECTOR3(60.0f, 37.0f, 0.0f))
 #define COMMANDTYPE1P_POS		(D3DXVECTOR3(COMMAND1P_POS.x, COMMAND1P_POS.y - 7.0f, COMMAND1P_POS.z))
 #define COMMANDTYPE2P_POS		(D3DXVECTOR3(COMMAND2P_POS.x, COMMAND2P_POS.y - 7.0f, COMMAND2P_POS.z))
-#define THEYARE_POS				(D3DXVECTOR3(-40.0f, 15.0f, -10.0f))
-#define COMPATIBILITY_POS		(D3DXVECTOR3(-15.0f, -5.0f, -10.0f))
-#define CLEARPAIR_POS			(D3DXVECTOR3(15.0f, -20.0f, -10.0f))
+#define THEYARE_POS				(D3DXVECTOR3(-40.0f, 15.0f, -20.0f))
+#define COMPATIBILITY_POS		(D3DXVECTOR3(-15.0f, -5.0f, -20.0f))
+#define CLEARPAIR_POS			(D3DXVECTOR3(15.0f, -15.0f, -20.0f))
 
 // テクスチャの読み込み
 const char* c_apFilenameResultUI[MAXRESULT_TEX] =
