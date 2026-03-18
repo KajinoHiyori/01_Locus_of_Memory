@@ -180,6 +180,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 				// 描画処理
 				Draw();
 
+				char alog[256];
+				sprintf_s(alog, "FPS : %d\n", g_nCountFPS);
+				OutputDebugStringA(alog);
+
 				dwFrameCount++;					// フレームカウントを加算
 			}
 		}

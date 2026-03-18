@@ -451,6 +451,47 @@ MODELSET
 	ROT = 0.0 90.0 0.0
 	SHADOW = 0
 	COLLISION = 0
+	COLLIDERSET
+		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
+	END_COLLIDERSET
+	
+	COLLIDERSET
+		TYPE = 1
+		POS = 515.5 0.0 423.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
+	END_COLLIDERSET
+	
+	COLLIDERSET
+		TYPE = 1
+		POS = 815.5 0.0 -158.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
+	END_COLLIDERSET
+	
+	COLLIDERSET
+		TYPE = 1
+		POS = 355.5 0.0 -479.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
+	END_COLLIDERSET
+	
+	COLLIDERSET
+		TYPE = 1
+		POS = -405.0 0.0 -307.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
+	END_COLLIDERSET
+	
+	COLLIDERSET
+		TYPE = 1
+		POS = -404.0 0.0 360.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
+	END_COLLIDERSET
 END_MODELSET
 
 MODELSET
@@ -461,7 +502,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -473,7 +516,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -485,7 +530,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -497,7 +544,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -509,7 +558,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -521,7 +572,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -533,7 +586,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -543,6 +598,12 @@ MODELSET
 	ROT = 0.0 90.0 0.0
 	SHADOW = 0
 	COLLISION = 0
+	COLLIDERSET
+		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
+	END_COLLIDERSET
 END_MODELSET
 
 MODELSET
@@ -553,7 +614,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -565,7 +628,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -577,7 +642,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 a
@@ -589,7 +656,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -601,7 +670,9 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
-		RADIUS = 50.0
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
 
@@ -613,6 +684,8 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
 		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
@@ -625,6 +698,8 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
 		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
@@ -637,6 +712,8 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
 		RADIUS = 30.0
 	END_COLLIDERSET
 END_MODELSET
@@ -651,6 +728,12 @@ MODELSET
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
+	COLLIDERSET
+		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 25.0
+	END_COLLIDERSET
 END_MODELSET
 
 MODELSET
@@ -659,6 +742,12 @@ MODELSET
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
+	COLLIDERSET
+		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 25.0
+	END_COLLIDERSET
 END_MODELSET
 
 MODELSET
@@ -667,6 +756,12 @@ MODELSET
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
+	COLLIDERSET
+		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 25.0
+	END_COLLIDERSET
 END_MODELSET
 
 MODELSET
@@ -675,6 +770,12 @@ MODELSET
 	ROT = 0 90 0
 	SHADOW = 0
 	COLLISION = 1
+	COLLIDERSET
+		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+		RADIUS = 25.0
+	END_COLLIDERSET
 END_MODELSET
 
 MODELSET
@@ -685,6 +786,8 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
 		RADIUS = 25.0
 	END_COLLIDERSET
 END_MODELSET
@@ -697,6 +800,8 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
 		RADIUS = 25.0
 	END_COLLIDERSET
 END_MODELSET
@@ -709,6 +814,8 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
 		RADIUS = 25.0
 	END_COLLIDERSET
 END_MODELSET
@@ -721,6 +828,8 @@ MODELSET
 	COLLISION = 0
 	COLLIDERSET
 		TYPE = 1
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
 		RADIUS = 25.0
 	END_COLLIDERSET
 END_MODELSET
@@ -972,85 +1081,6 @@ END_MODELSET
 #------------------------------------------------------------------------------
 # ìe
 #------------------------------------------------------------------------------
-
-
-
-#------------------------------------------------------------------------------
-# åÆ
-#------------------------------------------------------------------------------
-MODELSET
-	TYPE = 23
-	POS = 4295 0 2072
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 0
-END_MODELSET
-
-MODELSET
-	TYPE = 24
-	POS = -4200 0 -1700
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 0
-END_MODELSET
-
-MODELSET
-	TYPE = 25
-	POS = -3253 0 2000
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 0
-END_MODELSET
-
-#------------------------------------------------------------------------------
-# çΩ
-#------------------------------------------------------------------------------
-MODELSET
-	TYPE = 26
-	POS = 70 100 1700
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-#------------------------------------------------------------------------------
-# ìÏãûè˘
-#------------------------------------------------------------------------------
-MODELSET
-	TYPE = 27
-	POS = 50 65 1700
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 27
-	POS = 80 65 1700
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 27
-	POS = 20 65 1700
-	ROT = 0 0 0
-	SHADOW = 0
-	COLLISION = 1
-END_MODELSET
-
-#------------------------------------------------------------------------------
-# êÏ
-#------------------------------------------------------------------------------
-
-#MODELSET
-#	TYPE = 28
-#	POS = 2600.0 0 2500.0
-#	ROT = 0 0 0
-#	SHADOW = 0
-#	COLLISION = 0
-#END_MODELSET
 
 #------------------------------------------------------------------------------
 # ï∞âŒ
