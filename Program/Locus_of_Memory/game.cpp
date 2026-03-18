@@ -468,6 +468,25 @@ void DrawGame(void)
 	// ゴールの描画処理
 	DrawGoal();
 
+	// プレイヤーの描画処理
+	DrawPlayer();
+
+	// 魔法の描画処理
+	DrawMagic();
+
+	// UIの描画を一括管理
+	DrawGameUI();
+
+	ProcessingSpeed(false, "aaa");
+}
+
+//=======================================================
+// ゲームのUIの表示を管理
+//=======================================================
+void DrawGameUI(void)
+{
+	SetFogEnable(false);
+
 	// エフェクトの描画処理
 	DrawEffect();
 
@@ -489,26 +508,12 @@ void DrawGame(void)
 	// オーラの描画処理
 	DrawAura();
 
-	SetFogEnable(false);		// 霧を無効
-
 	// 3D空間UIの描画処理
 	DrawUIManager();
 
-	SetFogEnable(false);		// 霧を無効
-
-	// プレイヤーの描画処理
-	DrawPlayer();
-
-	// 魔法の描画処理
-	DrawMagic();
 
 	// 魔法陣の描画処理
 	DrawMagicCircle();
-
-	SetFogEnable(false);		// 霧を無効
-
-	// UIの統括管理の描画処理
-	DrawUIManager();
 
 	// 吹き出しの描画処理
 	DrawMagicBubble();
@@ -538,9 +543,8 @@ void DrawGame(void)
 	DrawDestinationUI();
 
 	SetFogEnable(true);			// 霧を有効
-
-	ProcessingSpeed(false, "aaa");
 }
+
 
 //=======================================================
 // ゲームの状態設定処理

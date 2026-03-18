@@ -275,8 +275,6 @@ void DrawSparkle(void)
 
 	g_pVtxBuffSparkle->Unlock();
 
-	SetFogEnable(false);		// 霧を消す
-
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);		// ライトを無効にする
 
 	// αブレンディングを加算合成して設定
@@ -320,8 +318,6 @@ void DrawSparkle(void)
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-	SetFogEnable(true);		// 霧を戻す
 
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);		// ライトを有効にする
 }

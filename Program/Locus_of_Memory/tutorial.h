@@ -15,6 +15,7 @@ void InitTutorial(void);
 void UninitTutorial(void);
 void UpdateTutorial(void);
 void DrawTutorial(void);
+void DrawTutorialUIs(void);
 void GoGameGate(void);
 bool GetGate(int nIdx);
 

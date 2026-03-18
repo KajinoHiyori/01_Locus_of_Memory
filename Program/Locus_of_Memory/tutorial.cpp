@@ -46,6 +46,7 @@
 #include "animal.h"
 #include "field.h"
 #include "riverwall.h"
+#include "fog.h"
 
 // UI関連の初期化
 #include "uimanager.h"
@@ -390,13 +391,6 @@ void UpdateTutorial(void)
 //=======================================================
 void DrawTutorial(void)
 {
-	// プレイヤーの描画処理
-	//DrawBG();
-
-	//DrawField();
-
-	//DrawMeshsky();
-
 	// メッシュフィールドの描画処理
 	DrawMeshField();
 
@@ -409,29 +403,8 @@ void DrawTutorial(void)
 	// カスタムメッシュの描画処理
 	DrawCustomMesh();
 
-	// イベントオブジェクトの描画処理
-	DrawEventObject();
-
-	// 魔法の描画処理
-	DrawMagic();
-
-	//DrawMashwall();
-
-	//DrawBullet();
-
 	// 影の描画処理
 	DrawShadow();
-
-	//DrawBillboard();
-
-	// 動物の描画処理
-	DrawAnimal();
-
-	// オブジェクトの描画処理（仮）
-	DrawObject();
-
-	// プレイヤーの描画処理
-	DrawPlayer();
 
 	// スカイボックスの描画処理
 	DrawSkyBox();
@@ -439,11 +412,34 @@ void DrawTutorial(void)
 	// 塀の描画処理
 	DrawBrickWall();
 
-	// マジックエフェクトの描画処理
-	DrawMagicEffect();
+	// 動物の描画処理
+	DrawAnimal();
 
-	// 炎エフェクトの描画
-	DrawEffectFire();
+	// オブジェクトの描画処理（仮）
+	DrawObject();
+
+	// イベントオブジェクトの描画処理
+	DrawEventObject();
+
+	// ゴールの描画処理
+	DrawGoal();
+
+	// プレイヤーの描画処理
+	DrawPlayer();
+
+	// 魔法の描画処理
+	DrawMagic();
+
+	// UIの描画を一括管理
+	DrawTutorialUIs();
+}
+
+//=======================================================
+// チュートリアルのUI描画を一括管理
+//=======================================================
+void DrawTutorialUIs(void)
+{
+	SetFogEnable(false);
 
 	// エフェクトの描画処理
 	DrawEffect();
@@ -451,26 +447,32 @@ void DrawTutorial(void)
 	// パーティクルの描画処理
 	DrawParticle();
 
+	// マジックエフェクトの描画処理
+	DrawMagicEffect();
+
+	// 炎エフェクトの描画処理
+	DrawEffectFire();
+
 	// 文字の描画処理
 	DrawGrain();
 
 	// 粒の描画処理
 	DrawSparkle();
 
-	// ポーズ管理UIの描画処理
+	// 3D空間UIの描画処理
 	DrawUIManager();
-
-	// 魔導書の描画処理
-	DrawMagicUI();
-
-	// 吹き出しの描画処理
-	DrawMagicBubble();
 
 	// 魔法陣の描画処理
 	DrawMagicCircle();
 
-	// spellの描画処理
+	// 吹き出しの描画処理
+	DrawMagicBubble();
+
+	// 魔法発動状態表示の描画処理
 	DrawSpellUI();
+
+	// 魔導書表示の描画処理
+	DrawMagicUI();
 
 	// 時計の描画処理
 	DrawClock();
@@ -478,26 +480,21 @@ void DrawTutorial(void)
 	// バッテリーの描画処理
 	DrawBattery();
 
-	// チュートリアルUIの描画処理
-	DrawTutorialUI();
-
 	// ?の描画処理
 	DrawQuestionMark();
 
 	// 準備完了状態の描画処理
 	DrawReadyUI();
 
+	// クエストUIの描画処理
+	DrawTutorialUI();
+
 	// 目的地の描画処理
 	DrawDestinationUI();
 
-	//DrawModel();
-
-	//DrawBlock();
-
-	//DrawWall();
-
-	//DrawScore();
+	SetFogEnable(true);			// 霧を有効
 }
+
 
 //=======================================================
 // ゲーム画面への遷移を管理

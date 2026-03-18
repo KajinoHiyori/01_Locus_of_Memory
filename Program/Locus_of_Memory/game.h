@@ -34,6 +34,7 @@ void InitGame(void);
 void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
+void DrawGameUI(void);
 void SetGameState(GAMESTATE state, int nCounter);
 void SetTimerStop(int nCounter);
 GAMESTATE GetGameState(void);
