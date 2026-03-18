@@ -1,6 +1,7 @@
 //======================================================================================
 // 
 // 診断画面のメイン処理[diagnosis.cpp]
+// Author : Nanba Hayato
 //
 //======================================================================================
 #include "main.h"
@@ -31,16 +32,15 @@
 #define VEC_U			(D3DXVECTOR3(0.0f, 1.0f, 0.0f))			// カメラの向き
 
 // グローバル変数
-bool g_bFadeScane;				// フェード状態を管理
-int g_nCounterTitle = 0;	// タイトル画面への遷移間隔をカウント
+bool g_bFadeScane;			// フェード状態を管理
+int g_nCounterTitle = 0;	// 診断結果画面への遷移間隔をカウント
 
 //======================================================================================
-// タイトルの初期化処理
+// 診断結果の初期化処理
 //======================================================================================
 void InitDiagnosis(void)
 {
-	g_bFadeScane = false;	// trueで遷移中
-
+	// バイブレーションの停止
 	SetJoypadVibration(0, 0, 0, 0);
 	SetJoypadVibration(0, 0, 0, 1);
 
@@ -60,17 +60,18 @@ void InitDiagnosis(void)
 	// ライトの初期化処理
 	InitLight();
 
-	// タイトルUIの表示
+	// 診断結果UIの表示
 	InitDiagnosisUI();
 
 	g_nCounterTitle = 0;	// 遷移間隔の初期化
+	g_bFadeScane = false;	// trueで遷移中
 
 	 // ドラゴンのタイプを決定
 	SetDragonType(0, DRAGONTYPE_FLYING);
 }
 
 //======================================================================================
-// タイトルの終了処理
+// 診断結果の終了処理
 //======================================================================================
 void UninitDiagnosis(void)
 {
@@ -80,7 +81,7 @@ void UninitDiagnosis(void)
 	// ライトの終了処理
 	UninitLight();
 
-	// タイトルUIの終了処理
+	// 診断結果UIの終了処理
 	UninitDiagnosisUI();
 
 	// ドラゴンの終了処理
@@ -88,13 +89,19 @@ void UninitDiagnosis(void)
 }
 
 //======================================================================================
-// タイトルの更新処理
+// 診断結果の更新処理
 //======================================================================================
 void UpdateDiagnosis(void)
 {
-	PrintDebugProc("ここは診断画面 %d\n", g_nCounterTitle);
-
-	g_nCounterTitle++;	// 遷移間隔をカウント
+	if (GetKeyboardAny() == true || GetJoypadAny(0) == true)
+	{
+		// なにかキーが押されている場合はカウンターを0にする
+		g_nCounterTitle = 0;
+	}
+	else
+	{
+		g_nCounterTitle++;	// 遷移間隔をカウント
+	}
 
 	// 現在のフェードの状態を管理
 	FADE *pfade = GetFade();
@@ -102,7 +109,7 @@ void UpdateDiagnosis(void)
 	// ライトの更新処理
 	UpdateLight();
 
-	// タイトルUIの更新処理
+	// 診断結果UIの更新処理
 	UpdateDiagnosisUI();
 
 	// ドラゴンの更新処理
@@ -118,7 +125,7 @@ void UpdateDiagnosis(void)
 }
 
 //======================================================================================
-// タイトルの描画処理
+// 診断結果の描画処理
 //======================================================================================
 void DrawDiagnosis(void)
 {
@@ -137,6 +144,6 @@ void DrawDiagnosis(void)
 	// スカイボックスの描画処理
 	DrawSkyBox();
 
-	// タイトルUIの描画処理
+	// 診断結果UIの描画処理
 	DrawDiagnosisUI();
 }

@@ -31,14 +31,13 @@ typedef struct
 #define TITLE_H				(60.0f * 0.65f)		// プレイヤーたちの軌跡[高]
 #define COMMAND_W			(40.0f)		// コマンドの幅
 #define COMMAND_H			(40.0f)		// コマンドの高さ
-#define MAGICCIRCLE_SIZE	(120.0f)		// 魔法陣の大きさ
+#define MAGICCIRCLE_SIZE	(120.0f)	// 魔法陣の大きさ
 #define TIMES_W				(30.0f)		// 回の幅
 #define TIMES_H				(30.0f)		// 回の高さ
 #define NUMBER_W			(TIMES_W)	// 数字の幅
 #define NUMBER_H			(TIMES_H)	// 数字の高さ
 #define TEXT_W				(TITLE_W * 0.8f)	// タイトル以外の題字
 #define TEXT_H				(TITLE_H * 0.8f)	// タイトル以外の題字
-
 // 配置
 #define TITLE_POS		(D3DXVECTOR3(350.0f, 50.0f, 0.0f))									// 診断結果
 #define USED_POS		(D3DXVECTOR3(250.0f, 150.0f, 0.0f))									// 使われたコマンド数
@@ -73,7 +72,7 @@ typedef struct
 // テクスチャの読み込み
 const char* c_apFilenameDiagnosisUI[DIAGNOSIS_TEX] =
 {
-	"data\\TEXTURE\\diagnosis\\diagnosis000.png",	// 診断結果ロゴ
+	"data\\TEXTURE\\diagnosis\\diagnosis000.png",	// 診断結果
 	"data\\TEXTURE\\diagnosis\\diagnosis001.png",	// 使われたコマンド数
 	"data\\TEXTURE\\SpellUI\\01_Red.png",			// 赤魔法
 	"data\\TEXTURE\\SpellUI\\02_Green.png",			// 緑魔法
@@ -175,6 +174,7 @@ void DrawDiagnosisUI(void)
 
 	// ライトをオフにする
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	// fogを無効化
 	SetFogEnable(false);
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, g_pVtxBuffDiagnosisUI, 0, sizeof(VERTEX_2D));
@@ -194,6 +194,7 @@ void DrawDiagnosisUI(void)
 	}
 	// ライトをオンにする
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	// fogを有効化
 	SetFogEnable(true);
 }
 
