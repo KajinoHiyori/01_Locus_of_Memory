@@ -110,12 +110,6 @@ void InitGame(void)
 	// 鍵の初期化処理
 	InitKey();
 
-	// エフェクトの初期化処理
-	InitEffect();
-
-	// パーティクルの初期化処理
-	InitParticle();
-
 	// マジックエフェクトの初期化
 	InitMagicEffect();
 
@@ -219,11 +213,12 @@ void UninitGame(void)
 	// クエストUIの終了処理
 	UninitQuestUI();
 
-	// BGM終了
-	StopSound();
-
 	// ランダムオブジェクトの解放処理
 	UninitRandomObject();
+
+	char alog[256];
+	sprintf_s(alog, "Collider : %d\n", GetNumCollider());
+	OutputDebugStringA(alog);
 }
 
 //=======================================================
@@ -346,7 +341,7 @@ void UpdateGame(void)
 	{
 		PrintDebugProc("ゴール可能状態 true");
 	}
-	
+
 	switch (g_gameState)
 	{
 	case GAMESTATE_NORMAL:		// 通常状態
@@ -425,6 +420,18 @@ void UpdateGame(void)
 		{
 			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
 		}
+	}
+
+	static bool isFade = false;
+
+	if (GetKeyboardTrigger(DIK_F))
+	{
+		isFade = !isFade;
+	}
+
+	if (*pFade == FADE_NONE && isFade)
+	{
+		SetFade(MODE_GAME, COLOR_BLACK);
 	}
 }
 

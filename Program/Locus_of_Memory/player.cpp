@@ -140,6 +140,14 @@ void UninitPlayer(void)
 			g_pBuffMatPlayer[nCntPlayer] = NULL;
 		}
 	}
+
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	{
+		if (g_aPlayer[nCntPlayer].nIdxCollision != -1)
+		{
+			ResetCollision(g_aPlayer[nCntPlayer].nIdxCollision);
+		}
+	}
 }
 
 //========================================================================

@@ -1002,3 +1002,11 @@ void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 
 
 	fclose(pColliderFile);		// ファイルを閉じる
 }
+
+//=============================================================================
+//	現在のコライダー数取得処理
+//=============================================================================
+int GetNumCollider(void)
+{
+	return g_nNumCollider;
+}

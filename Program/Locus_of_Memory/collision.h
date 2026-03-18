@@ -175,6 +175,7 @@ void DrawCollision(void);
 int SetCollision(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 void ResetCollision(int nIdx);
 void SetCollider(int nIdx, ColliderInfo ColliderInfo);
+int GetNumCollider(void);
 
 //*****************************************************************************
 // ‘“–‚½‚è‚Ì“–‚½‚è”»’è (Å“K‰»‚Ì—]—T‚È‚µ)
