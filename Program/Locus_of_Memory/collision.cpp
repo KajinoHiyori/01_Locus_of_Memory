@@ -160,6 +160,16 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx, bool isTrigger)
 				// –¢ŽÀ‘•
 				break;
 			}
+
+			if (isCollision)
+			{
+				break;
+			}
+		}
+
+		if (isCollision)
+		{
+			break;
 		}
 	}
 
