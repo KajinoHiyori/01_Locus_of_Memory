@@ -167,6 +167,13 @@ void UninitEffect(void)
 		g_pVtxBuffEffect = NULL;
 	}
 
+	//インデックスバッファを破棄
+	if (g_pIdxBuffEffect != NULL)
+	{
+		g_pIdxBuffEffect->Release();
+		g_pIdxBuffEffect = NULL;
+	}
+
 }
 
 //======================================================================================

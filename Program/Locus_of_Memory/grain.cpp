@@ -146,6 +146,12 @@ void UninitGrain(void)
 		g_pVtxBuffGrain = NULL;
 	}
 
+	// インデックスバッファを破棄
+	if (g_pIdxBuffGrain != NULL)
+	{
+		g_pIdxBuffGrain->Release();
+		g_pIdxBuffGrain = NULL;
+	}
 }
 
 //======================================================================================

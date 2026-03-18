@@ -146,6 +146,12 @@ void UninitSparkle(void)
 		g_pVtxBuffSparkle = NULL;
 	}
 
+	// インデックスバッファを破棄
+	if (g_pIdxBuffSparkle != NULL)
+	{
+		g_pIdxBuffSparkle->Release();
+		g_pIdxBuffSparkle = NULL;
+	}
 }
 
 //=============================================================================
