@@ -104,6 +104,7 @@ bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 			pEventObject->ObjectInfo.ParentObject.pModelData, 
 			&pEventObject->ObjectInfo.ParentObject.OffSetData, 
 			MOTIONTYPE_MOVE, false, false, 10);
+		ResetCollision(pEventObject->nCollisionIdx);
 		isSuccess = true;
 		break;
 	}
