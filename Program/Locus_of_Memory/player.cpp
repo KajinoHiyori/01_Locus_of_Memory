@@ -408,6 +408,7 @@ void UpdatePlayer(void)
 				if ((GetJoypadTrigger(JOYKEY_X, nCntPlayer) == true || (GetKeyboardTrigger(DIK_RETURN) == true && nCntPlayer == 0)) && nDropMagicIdx != COMMANDOREDER_NONE)
 				{// Xボタンを押したかつ何かしらのコマンドが近くにある
 					OwnCommand(&g_aPlayer[nCntPlayer].magicbook, nDropMagicIdx);
+					SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_GETMAGIC, false, true, BLENDFRAME);
 					if (nCntPlayer == 0)	// 1P
 					{
 						PlaySound(SOUND_LABEL_GETMAGIC0);
@@ -711,7 +712,8 @@ void UpdatePlayer(void)
 			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION ||		// 静止魔法
 			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION ||	// 空に魔法
 			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING ||		// しゃがんで魔法
-			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD)			// 失敗
+			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD ||			// 失敗
+			 g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_GETMAGIC)			// 魔法取得
 			&& g_aPlayer[nCntPlayer].motion.nKey + 1 >= g_aPlayer[nCntPlayer].motion.nNumKey)
 		{
 			SetMotion(&g_aPlayer[nCntPlayer].motion, g_aPlayer[nCntPlayer].pModelData, &g_aPlayer[nCntPlayer].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, true, BLENDFRAME);

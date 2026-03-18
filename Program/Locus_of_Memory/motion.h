@@ -40,6 +40,7 @@ typedef enum MOTIONTYPE
 	MOTIONTYPE_008,		// モーション[8]
 	MOTIONTYPE_009,		// モーション[9]
 	MOTIONTYPE_010,		// モーション[10]
+	MOTIONTYPE_011,		// モーション[11]
 	MOTIONTYPE_MAX
 }MOTIONTYPE;
 
