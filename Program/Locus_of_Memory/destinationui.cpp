@@ -75,8 +75,6 @@ void InitDestinationUI(void)
 	OPERATIONTYPE operationType = GetOperationType();
 	// プレイヤーの情報を取得
 	Player* pPlayer = GetPlayer();
-	// 現在のモードを取得
-	MODE mode = GetMode();
 
 	// テクスチャの読み込み
 	for (int nCntUI = 0; nCntUI < DESTINATION_TYPE; nCntUI++)
@@ -96,19 +94,6 @@ void InitDestinationUI(void)
 		g_aDestination[nCntPlayer].fWidth = MARK_WIDTH;	// 幅
 		g_aDestination[nCntPlayer].fHeight = MARK_HEIGHT;	// 高さ
 		g_aDestination[nCntPlayer].bDisp = true;			// 表示状態
-
-		switch (mode)
-		{
-		case MODE_TITLE:
-			g_aDestination[nCntPlayer].posDest = GATE_POS;	// 位置
-			g_aDestination[nCntPlayer].type = ARROWTYPE_TUTORIAL;
-			break;
-
-		case MODE_TUTORIAL:
-			g_aDestination[nCntPlayer].posDest = GOAL_POS;	// 位置
-			g_aDestination[nCntPlayer].type = ARROWTYPE_GAME;
-			break;
-		}
 	}
 
 	// 頂点バッファの生成
@@ -178,6 +163,8 @@ void UninitDestinationUI(void)
 //======================================================================================
 void UpdateDestinationUI(void)
 {
+	// 現在のモードを取得
+	MODE mode = GetMode();
 	Player* pPlayer = GetPlayer();
 	DropMagic* pDropMagic = GetDropMagic();	// 落ちている魔法を取得
 
@@ -191,6 +178,19 @@ void UpdateDestinationUI(void)
 		else
 		{
 			g_aDestination[nCntPlayer].bDisp = true;
+		}
+
+		switch (mode)
+		{
+		case MODE_TUTORIAL:
+			g_aDestination[nCntPlayer].posDest = GATE_POS;	// 位置
+			g_aDestination[nCntPlayer].type = ARROWTYPE_TUTORIAL;
+			break;
+
+		case MODE_GAME:
+			g_aDestination[nCntPlayer].posDest = GOAL_POS;	// 位置
+			g_aDestination[nCntPlayer].type = ARROWTYPE_GAME;
+			break;
 		}
 
 		// 位置の更新

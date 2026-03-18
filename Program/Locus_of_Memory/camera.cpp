@@ -1,4 +1,4 @@
-//=============================================================================
+ //=============================================================================
 //
 //	カメラ処理 [camera.cpp]
 //	Author : SHUMA AIZU
@@ -553,15 +553,15 @@ void SetModeCamera(MODE mode)
 		break;
 
 	case MODE_TUTORIAL:
-		SetNumCamera();
+		SetNumCamera(mode);
 		break;
 
 	case MODE_GAME:
-		SetNumCamera();
+		SetNumCamera(mode);
 		break;
 
 	case MODE_RESULT:
-		SetNumCamera();
+		SetNumCamera(mode);
 		pCamera->posV		= INIT_RESULTCAMERA_POSV;
 		pCamera->posVDest	= INIT_RESULTCAMERA_POSV;
 		pCamera->posR		= INIT_RESULTCAMERA_POSR;
@@ -586,17 +586,30 @@ void SetModeCamera(MODE mode)
 //=============================================================================
 //	カメラの数設定処理
 //=============================================================================
-void SetNumCamera(void)
+void SetNumCamera(MODE mode)
 {
 	Camera* pCamera = &g_acamera[0];
 	CameraInfo* pCameraInfo = &g_acameraInfo[0];
-	MODE mode = GetMode();	// 現在のモードを取得
 	OPERATIONTYPE operationtype = GetOperationType();		// 今の操作タイプ
 
-	if (mode == MODE_GAME)
+	if (mode == MODE_RESULT || mode == MODE_RESULT || mode == MODE_DIAGNOSIS)
 	{
 		g_nNumCamera = INIT_NUMCAMERA;
 		pCamera->viewport = DEFAULT_VEIWPORT;
+
+		// カメラの位置設定
+		pCamera->posV = pCameraInfo->posV;
+		pCamera->posR = pCameraInfo->posR;
+		pCamera->vecU = pCameraInfo->vecU;
+		pCamera->rot = pCameraInfo->rot;
+
+		// 目的位置
+		pCamera->posVDest = pCameraInfo->posV;
+		pCamera->posRDest = pCameraInfo->posR;
+
+		// 距離を離す
+		pCamera->posVDest.z = pCamera->posRDest.z + cosf(pCamera->rot.y) * CAMERAPOSR_DIS;
+		pCamera->posVDest.x = pCamera->posRDest.x + sinf(pCamera->rot.y) * CAMERAPOSR_DIS;
 	}
 	else if(operationtype == OPERATIONTYPE_2P)
 	{// 2Pプレイだったら

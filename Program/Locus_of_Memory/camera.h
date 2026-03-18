@@ -111,7 +111,7 @@ void UpdateDiagnosisCamera(void);
 void SetCamera(int nIdx);
 void SetModeCamera(MODE mode);
 Camera* GetCamera(void);
-void SetNumCamera(void);
+void SetNumCamera(MODE mode);
 int GetNumCamera(void);
 D3DVIEWPORT9 SetViewPort(DWORD X, DWORD Y, DWORD Width, DWORD Height);
 
