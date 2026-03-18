@@ -1,7 +1,7 @@
 //=============================================================================
 //
-//	イベント関連処理 [event.h]
-//	Author : SHUMA AIZU
+//	イベント関連処理 [event.cpp]
+//	Author : Aizu Shuma
 // 
 //=============================================================================
 #include "event.h"
@@ -16,17 +16,16 @@
 #include "sound.h"
 #include "questui.h"
 
-//*****************************************************************************
+//=============================================================================
 // マクロ定義
-//*****************************************************************************
+//=============================================================================
 #define BLACKSMITH_POS_FIRE		(D3DXVECTOR3(-3200.0f, 40.0f, 950.0f))	// 鍛冶場の位置
-#define BLACKSMITH_POS_SMOKE	(D3DXVECTOR3(-3200.0f, 500.0f, 980.0f))	// 鍛冶場の位置
-#define FIRE_PARTICLE	(D3DXVECTOR3(BLACKSMITH_POS.x - 100.0f, BLACKSMITH_POS.y + 20.0f, BLACKSMITH_POS.z))
+#define BLACKSMITH_POS_SMOKE	(D3DXVECTOR3(-3200.0f, 500.0f, 980.0f))	// 鍛冶場の煙を設置
+#define FIRE_PARTICLE			(D3DXVECTOR3(BLACKSMITH_POS.x - 100.0f, BLACKSMITH_POS.y + 20.0f, BLACKSMITH_POS.z))	// 鍛冶場の炎の設置
 
-//*****************************************************************************
+//=============================================================================
 // グローバル変数
-//*****************************************************************************
-
+//=============================================================================
 bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type, int nIdx) =
 {
 	NULL,
@@ -61,7 +60,7 @@ bool SetMagicEvent(MAGICEVENT event, MAGICTYPE type, int nIdx)
 }
 
 //========================================================================
-// 各魔法イベント処理[HOUSE_000のイベント]
+// 各魔法イベント処理[家の燃焼]
 //========================================================================
 bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 {
@@ -71,7 +70,7 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 	switch (type)
 	{
 		// 燃焼イベント
-	case MAGICTYPE_COMBUSTION:
+	case MAGICTYPE_COMBUSTION:	// 燃焼
 		pEventObject->EventType = EVENTTYPE_001_1;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION,nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -80,15 +79,24 @@ bool SetMagicEvent001(MAGICTYPE type, int nIdx)
 			MOTIONTYPE_MOVE, false, false, 10);
 		isSuccess = true;
 		break;
-	}
 
+	case MAGICTYPE_FIREBALL:	// 火球
+		pEventObject->EventType = EVENTTYPE_001_1;
+		SetParticle(pEventObject->pos, 150, PARTICLETYPE_COMBUSTION, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		isSuccess = true;
+		break;
+	}
 	pEventObject->isEvent = isSuccess;
 
 	return isSuccess;
 }
 
 //========================================================================
-// 各魔法イベント処理[BRIDGEのイベント]
+// 各魔法イベント処理[橋の修復]
 //========================================================================
 bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 {
@@ -97,7 +105,7 @@ bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 
 	switch (type)
 	{
-	case MAGICTYPE_TIMEREVERT:
+	case MAGICTYPE_TIMEREVERT:	// 巻き戻し
 		pEventObject->EventType = EVENTTYPE_002_0;
 		SetParticle(pEventObject->pos, 150, PARTICLETYPE_TIMEREVERT, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion, 
@@ -108,14 +116,13 @@ bool SetMagicEvent002(MAGICTYPE type, int nIdx)
 		isSuccess = true;
 		break;
 	}
-
 	pEventObject->isEvent = isSuccess;
 
 	return isSuccess;
 }
 
 //========================================================================
-// 各魔法イベント処理[PLANTのイベント][燃焼/成長]
+// 各魔法イベント処理[蔦のイベント][燃焼/成長]
 //========================================================================
 bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 {
@@ -166,14 +173,13 @@ bool SetMagicEvent003(MAGICTYPE type, int nIdx)
 		isSuccess = true;
 		break;
 	}
-
 	pEventObject->isEvent = isSuccess;
 
 	return isSuccess;
 }
 
 //========================================================================
-// 各魔法イベント処理[PLANTのイベント][時戻し]
+// 各魔法イベント処理[PLANTのイベント][巻き戻し]
 //========================================================================
 bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 {
@@ -193,7 +199,6 @@ bool SetMagicEvent004(MAGICTYPE type, int nIdx)
 		isSuccess = true;
 		break;
 	}
-
 	pEventObject->isEvent = isSuccess;
 
 	return isSuccess;
@@ -220,7 +225,6 @@ bool SetMagicEvent005(MAGICTYPE type, int nIdx)
 		isSuccess = true;
 		break;
 	}
-
 	pEventObject->isEvent = isSuccess;
 
 	return isSuccess;
@@ -269,7 +273,6 @@ bool SetMagicEvent006(MAGICTYPE type, int nIdx)
 		isSuccess = true;
 		break;
 	}
-
 	pEventObject->isEvent = isSuccess;
 
 	return isSuccess;
@@ -308,7 +311,6 @@ bool SetMagicEvent007(MAGICTYPE type, int nIdx)
 		ClearQuest(QUESTTYPE_FLOWER);
 		break;
 	}
-
 	pEventObject->isEvent = isSuccess;
 
 	return isSuccess;
@@ -334,7 +336,6 @@ bool SetMagicEvent008(MAGICTYPE type, int nIdx)
 		isSuccess = true;
 		break;
 	}
-
 	pEventObject->isEvent = isSuccess;
 
 	return isSuccess;
@@ -377,7 +378,6 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 	}
 
 	pEventObject->isEvent = isSuccess;
-
 	return isSuccess;
 }
 
@@ -402,7 +402,6 @@ bool SetMagicEvent010(MAGICTYPE type, int nIdx)
 	}
 
 	pEventObject->isEvent = isSuccess;
-
 	return isSuccess;
 }
 
@@ -411,25 +410,23 @@ bool SetMagicEvent010(MAGICTYPE type, int nIdx)
 //========================================================================
 bool SetMagicEvent011(MAGICTYPE type, int nIdx)
 {
-	//EventObject* pEventObject = GetEventObject(nIdx);
 	bool isSuccess = false;
 	switch (type)
 	{
 	case MAGICTYPE_COMBUSTION:	// 燃焼
-		//pEventObject->EventType = EVENTTYPE_008_0;
 		SetEffectFire(BLACKSMITH_POS_FIRE, FIRE_TYPE_FORGE, nIdx);
 		SetEffectFire(BLACKSMITH_POS_SMOKE, FIRE_TYPE_SMOKE, nIdx);
+		ClearQuest(QUESTTYPE_BLACKSMITH);
 		isSuccess = true;
 		break;
 
 	case MAGICTYPE_FIREBALL:	// 燃焼
-	//pEventObject->EventType = EVENTTYPE_008_0;
 		SetEffectFire(BLACKSMITH_POS_FIRE, FIRE_TYPE_FORGE, nIdx);
 		SetEffectFire(BLACKSMITH_POS_SMOKE, FIRE_TYPE_SMOKE, nIdx);
 		isSuccess = true;
+		ClearQuest(QUESTTYPE_BLACKSMITH);
 		break;
 	}
-	ClearQuest(QUESTTYPE_BLACKSMITH);
 	return isSuccess;
 }
 
