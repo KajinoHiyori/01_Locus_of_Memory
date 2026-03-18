@@ -148,14 +148,14 @@ void UpdateBattery(void)
 {
 	int aTexU[NUM_PLACE];	// 各桁の数値を格納
 
-	if (GetKeyboardTrigger(DIK_UPARROW) == true)
-	{
-		AddBattery(0, 10);
-	}
-	else if (GetKeyboardTrigger(DIK_DOWNARROW) == true)
-	{
-		DisBattery(0, 10);
-	}
+	//if (GetKeyboardTrigger(DIK_UPARROW) == true)
+	//{
+	//	AddBattery(0, 10);
+	//}
+	//else if (GetKeyboardTrigger(DIK_DOWNARROW) == true)
+	//{
+	//	DisBattery(0, 10);
+	//}
 
 	VERTEX_3D* pVtx;
 	// 頂点バッファをロックし、頂点情報へのポインタを取得

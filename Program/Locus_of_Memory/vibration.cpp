@@ -32,6 +32,7 @@ void UpdateVibration(void)
 	PrintDebugProc("右モーター : %d\n左モーター : %d\n", wLeftMotorSpeed, wRightMotorSpeed);
 	PrintDebugProc("持続フレーム数 : %d\n", nVibrationCounter);
 
+#if 0
 	if (GetKeyboardTrigger(DIK_TAB) == true)
 	{// TABキーを押した
 		// 振動開始
@@ -70,7 +71,7 @@ void UpdateVibration(void)
 		// 振動持続フレームをあげる
 		nVibrationCounter++;
 	}
-
+#endif
 }
 void VibrationType(VIBRATIONTYPE Type, int nDropMagic, int nPlayertype)
 {

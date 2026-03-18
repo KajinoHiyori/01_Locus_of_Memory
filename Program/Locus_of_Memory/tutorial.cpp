@@ -351,19 +351,19 @@ void UpdateTutorial(void)
 
 	//UpdateScore();
 
-	if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
-	{// 0以下になった
-		// フェード設定(ゲーム画面に移行)
-		SetFade(MODE_GAME, COLOR_WHITE);
-
-		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
-		{
-			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
-		}
-
-		// サウンド停止
-		//StopSound(SOUND_LABEL_BGM000);
-	}
+	//if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
+	//{// 0以下になった
+	//	// フェード設定(ゲーム画面に移行)
+	//	SetFade(MODE_GAME, COLOR_WHITE);
+	//
+	//	for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+	//	{
+	//		VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+	//	}
+	//
+	//	// サウンド停止
+	//	//StopSound(SOUND_LABEL_BGM000);
+	//}
 	
 	// 操作人数の取得
 	OPERATIONTYPE operationType = GetOperationType();

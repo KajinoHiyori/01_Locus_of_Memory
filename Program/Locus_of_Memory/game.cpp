@@ -395,44 +395,44 @@ void UpdateGame(void)
 		break;
 	}
 
-	// Oでクリア遷移
-	if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
-	{// 0以下になった
-		SetGameState(GAMESTATE_CLEAR, 0);
-		g_eventState = EVENTSTATE_NORMAL;
-		// フェード設定(リザルト画面に移行)
-		SetFade(MODE_RESULT, COLOR_WHITE);
-
-		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
-		{
-			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
-		}
-	}
-	// Uで失敗遷移
-	if (GetKeyboardTrigger(DIK_U) == true && *pFade == FADE_NONE)
-	{// 0以下になった
-		g_eventState = EVENTSTATE_NORMAL;
-		SetGameState(GAMESTATE_BATTERYOVER, 0);
-		// フェード設定(リザルト画面に移行)
-		SetFade(MODE_RESULT, COLOR_BLACK);
-
-		for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
-		{
-			VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
-		}
-	}
-
-	static bool isFade = false;
-
-	if (GetKeyboardTrigger(DIK_F))
-	{
-		isFade = !isFade;
-	}
-
-	if (*pFade == FADE_NONE && isFade)
-	{
-		SetFade(MODE_GAME, COLOR_BLACK);
-	}
+	//// Oでクリア遷移
+	//if (GetKeyboardTrigger(DIK_O) == true && *pFade == FADE_NONE)
+	//{// 0以下になった
+	//	SetGameState(GAMESTATE_CLEAR, 0);
+	//	g_eventState = EVENTSTATE_NORMAL;
+	//	// フェード設定(リザルト画面に移行)
+	//	SetFade(MODE_RESULT, COLOR_WHITE);
+	//
+	//	for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+	//	{
+	//		VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+	//	}
+	//}
+	//// Uで失敗遷移
+	//if (GetKeyboardTrigger(DIK_U) == true && *pFade == FADE_NONE)
+	//{// 0以下になった
+	//	g_eventState = EVENTSTATE_NORMAL;
+	//	SetGameState(GAMESTATE_BATTERYOVER, 0);
+	//	// フェード設定(リザルト画面に移行)
+	//	SetFade(MODE_RESULT, COLOR_BLACK);
+	//
+	//	for (int nCntVibration = 0; nCntVibration < MAX_PLAYER; nCntVibration++)
+	//	{
+	//		VibrationType(VIBRATIONTYPE_NOTHING, VIBRATION_CLEAR, nCntVibration);
+	//	}
+	//}
+	//
+	//static bool isFade = false;
+	//
+	//if (GetKeyboardTrigger(DIK_F))
+	//{
+	//	isFade = !isFade;
+	//}
+	//
+	//if (*pFade == FADE_NONE && isFade)
+	//{
+	//	SetFade(MODE_GAME, COLOR_BLACK);
+	//}
 }
 
 //=======================================================

@@ -183,10 +183,10 @@ void UpdateEffect(void)
 {
 	Effect* pEffect = &g_aEffect[0];
 
-	if (GetKeyboardTrigger(DIK_SPACE) == true)
-	{
-		SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXVECTOR3(0.0f, 5.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20, 50.0f);
-	}
+	//if (GetKeyboardTrigger(DIK_SPACE) == true)
+	//{
+	//	SetEffect(EFFECT_TYPE_NORMAL, EFFECT_TEX_CIRCLE, D3DXVECTOR3(0.0f, 50.0f, 0.0f), D3DXVECTOR3(0.0f, 5.0f, 0.0f), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f), 20, 50.0f);
+	//}
 
 	for (int nCntEffect = 0; nCntEffect < g_nNumEffect; nCntEffect++)
 	{

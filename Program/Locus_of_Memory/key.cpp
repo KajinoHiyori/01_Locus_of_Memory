@@ -107,7 +107,7 @@ void InitKey(void)
 	}
 
 	// åÆÇÃê›íu
-	SetKey(KEY001_POS, INIT_D3DXVEC3, KEYTYPE_ONE);
+	//SetKey(KEY001_POS, INIT_D3DXVEC3, KEYTYPE_ONE);
 }
 
 //======================================================================================
@@ -299,10 +299,10 @@ void CollisionKey(int nIdx, D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3
 		{
 			//PlaySound(SE_KEY);
 			//SetMotion(MOTIONTYPE_ACTION, true, 1);
-			if ((GetKeyboardTrigger(DIK_RETURN) == true && nIdx == 0) || GetJoypadTrigger(JOYKEY_X, nIdx) == true)
-			{
-				g_aKey[nCntKey].bUse = false;
-			}
+			//if ((GetKeyboardTrigger(DIK_RETURN) == true && nIdx == 0) || GetJoypadTrigger(JOYKEY_X, nIdx) == true)
+			//{
+			//	g_aKey[nCntKey].bUse = false;
+			//}
 			//PrintDebugProc("ÉJÉMÇ…ìñÇΩÇ¡ÇƒÇ¢ÇÈ\n");
 		}
 		else

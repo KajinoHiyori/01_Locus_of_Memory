@@ -108,11 +108,11 @@ void UpdateCamera(MODE mode)
 {
 	static bool isEdit = false;		// エディットモード
 
-	if (GetKeyboardPress(DIK_LSHIFT) == true && GetKeyboardTrigger(DIK_SPACE) == true)
-	{// 左シフトキーが押されている状態でスペースキーが押された
-		// 切り替え
-		isEdit = isEdit ? false : true;
-	}
+	//if (GetKeyboardPress(DIK_LSHIFT) == true && GetKeyboardTrigger(DIK_SPACE) == true)
+	//{// 左シフトキーが押されている状態でスペースキーが押された
+	//	// 切り替え
+	//	isEdit = isEdit ? false : true;
+	//}
 
 	//PrintDebugProc("isEdit : %d\n", isEdit);
 	Camera* pCamera = &g_acamera[0];
