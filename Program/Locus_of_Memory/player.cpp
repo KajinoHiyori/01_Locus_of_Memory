@@ -92,6 +92,7 @@ void InitPlayer(void)
 		g_aPlayer[nCntPlayer].rotDest		= INIT_D3DXVEC3;
 		g_aPlayer[nCntPlayer].move			= INIT_D3DXVEC3;
 		g_aPlayer[nCntPlayer].nIdxShadow	= -1;
+		g_aPlayer[nCntPlayer].nIdxCollision = -1;
 		g_aPlayer[nCntPlayer].fSpeed		= MOVE;
 		g_aPlayer[nCntPlayer].state			= PLAYERSTATE_NORMAL;
 		g_aPlayer[nCntPlayer].bKey1			= false;
@@ -370,19 +371,19 @@ void UpdatePlayer(void)
 			else	// キー入力を受け付ける====================================
 			{
 				// 移動方向を管理
-				if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+				if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
 				{
 					moveDir.x -= 1.0f;
 				}
-				else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+				else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
 				{
 					moveDir.x += 1.0f;
 				}
-				if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+				if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
 				{
 					moveDir.z += 1.0f;
 				}
-				else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+				else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
 				{
 					moveDir.z -= 1.0f;
 				}
@@ -460,19 +461,19 @@ void UpdatePlayer(void)
 //#if 0
 			// キー入力を受け付ける====================================
 			// 移動方向を管理
-			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_J) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
+			if ((GetKeyboardPress(DIK_A) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_LEFT, nCntPlayer) == true)	// 左に移動
 			{
 				moveDir.x -= 1.0f;
 			}
-			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_L) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
+			else if ((GetKeyboardPress(DIK_D) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_RIGHT, nCntPlayer) == true)	// 右に移動
 			{
 				moveDir.x += 1.0f;
 			}
-			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_I) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
+			if ((GetKeyboardPress(DIK_W) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_UP, nCntPlayer) == true)	// 奥に移動
 			{
 				moveDir.z += 1.0f;
 			}
-			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || (GetKeyboardPress(DIK_K) == true && nCntPlayer == 1) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
+			else if ((GetKeyboardPress(DIK_S) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_DOWN, nCntPlayer) == true)	// 手前に移動
 			{
 				moveDir.z -= 1.0f;
 			}
@@ -961,4 +962,24 @@ void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx)
 	pMagicBook->OwnCommand[0] = GetFieldMagic(nDropMagicIdx);
 	pMagicBook->nCntOwn++;
 #endif
+}
+
+#define WORLD_RADIUS		(5000.0f)		// 世界の半径
+
+//========================================================================
+// 範囲制限処理
+//========================================================================
+void RangeRestriction(D3DXVECTOR3* pPos, float fRadius)
+{
+	D3DXVECTOR3 Center = INIT_D3DXVEC3;
+
+	D3DXVECTOR3 ContractionVec = *pPos - Center;
+
+	float fDiff = D3DXVec3LengthSq(&ContractionVec);
+
+	if (fDiff + fRadius > WORLD_RADIUS * WORLD_RADIUS)
+	{
+		D3DXVec3Normalize(&ContractionVec, &ContractionVec);
+		*pPos = ContractionVec * WORLD_RADIUS;
+	}
 }

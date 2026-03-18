@@ -88,4 +88,5 @@ void DrawPlayer(void);
 Player* GetPlayer(void);
 void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE parentmodeltype);
 void OwnCommand(MagicBook* pMagicBook, int nDropMagicIdx);										// ƒRƒ}ƒ“ƒh‚ðŽæ“¾‚·‚é
+void RangeRestriction(D3DXVECTOR3* pPos, float fRadius);
 #endif
