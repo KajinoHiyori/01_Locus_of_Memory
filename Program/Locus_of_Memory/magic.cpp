@@ -494,6 +494,9 @@ MAGICTYPE ChangeMagic(COMMANDOREDER commandorder)
 	{
 		return MAGICTYPE_TIMEREVERT;
 	}
+
+	// ‚Ç‚ê‚É‚à“–‚Ä‚Í‚Ü‚ç‚È‚©‚Á‚½‚çNONE‚ğ•Ô‚·
+	return MAGICTYPE_NONE;
 }
 
 //–‚–@‚Ìİ’èˆ—==============================

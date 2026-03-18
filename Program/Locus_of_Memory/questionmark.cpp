@@ -199,8 +199,8 @@ void UpdateQuestionMark(void)
 		// êFÇÃïœçX
 		SetMarkColor(nCntPlayer, g_aQuestionMark[nCntPlayer].commandType, fDistance);
 
-		g_aQuestionMark[0].pos.x = sinf(g_aQuestionMark[nCntPlayer].rot.y) * DISTANCE;
-		g_aQuestionMark[0].pos.z = cosf(g_aQuestionMark[nCntPlayer].rot.y) * DISTANCE;
+		g_aQuestionMark[nCntPlayer].pos.x = sinf(g_aQuestionMark[nCntPlayer].rot.y) * DISTANCE;
+		g_aQuestionMark[nCntPlayer].pos.z = cosf(g_aQuestionMark[nCntPlayer].rot.y) * DISTANCE;
 
 		PrintDebugProc("?ÇÃà íu : (%f, %f, %f)\n", g_aQuestionMark[nCntPlayer].pos.x, g_aQuestionMark[nCntPlayer].pos.y, g_aQuestionMark[nCntPlayer].pos.z);
 		PrintDebugProc("?ÇÃå¸Ç´ : (%f, %f, %f)\n", g_aQuestionMark[nCntPlayer].rot.x, g_aQuestionMark[nCntPlayer].rot.y, g_aQuestionMark[nCntPlayer].rot.z);

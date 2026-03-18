@@ -401,6 +401,10 @@ bool GetJoypadLeftTriggePress(int nIdx)
 	{
 		return true;
 	}
+	else
+	{
+		return false;
+	}
 }
 
 //=============================================================================
@@ -411,6 +415,10 @@ bool GetJoypadRightTriggePress(int nIdx)
 	if (g_JoypadState[nIdx].JoykeyState.Gamepad.bRightTrigger >= ZLRTRIGGER)
 	{
 		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 

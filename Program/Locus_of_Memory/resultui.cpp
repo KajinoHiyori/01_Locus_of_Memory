@@ -558,7 +558,7 @@ void SetResultUI(RESULTUITYPE type, RESULTUITEX tex, D3DXVECTOR3 pos)
 		g_aResultUI[nCntUI].bDisp = true;
 
 		// テクスチャの読み込みを管理
-		float TexU = 0;
+		int TexU = 0;
 		switch (type)
 		{
 		case RESULTUITYPE_HOUR0:	// X0:00
