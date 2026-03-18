@@ -93,9 +93,7 @@ void InitCollision(void)
 	g_nNumCollider = 0;
 	g_nNumCollision = 0;
 
-	float f = DegreeToRadian(110.0f);
-	f = DegreeToRadian(90.0f);
-
+	// メッシュコライダーの設定
 	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(-122.5f, -6.0f, -2400.0f), INIT_D3DXVEC3);
 	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(2200.0f, -6.0f, -833.0f), D3DXVECTOR3(0.0f, DegreeToRadian(110.0f), 0.0f));
 	LoadMeshColldier("data\\SCRIPTS\\MESH\\bridge001.bin", D3DXVECTOR3(2000.0f, -6.0f, 940.0f), D3DXVECTOR3(0.0f, DegreeToRadian(90.0f), 0.0f));
@@ -159,17 +157,16 @@ CollisionInfo UpdateCollision(int nMyIdx, int nTargetIdx, bool isTrigger)
 
 				// カプセルの当たり判定
 			case COLLIDERTYPE_CAPSULE:
-				//CapsuleCollision[g_aCollider[pTargetCollision->nColliderIdx[nCntTargetCollider]].type]
-				//(CollisionInfo, 
-				//g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].Collidertype, 
-				//g_aCollider[pMyCollision->nColliderIdx[nCntMyCollider]].Collidertype);
+				// 未実装
 				break;
 			}
 		}
 	}
 
+	// 衝突していたかどうか
 	CollisionInfo.isCollision = isCollision;
 
+	// 衝突情報を返す
 	return CollisionInfo;
 }
 
@@ -206,6 +203,7 @@ int SetCollision(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			continue;
 		}
 
+		// 位置と向きを設定
 		pCollision->pos = pos;
 		pCollision->rot = rot;
 
@@ -215,11 +213,6 @@ int SetCollision(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	}
 
 	return nCntCollision;			// 使用状態にした当たり判定の番号を返す
-
-	//// 今使ってる最大数をインデックスとして指定
-	//g_aCollision[g_nNumCollider].bUse = true;
-	//g_nNumCollision++;
-	//return g_nNumCollision - 1;
 }
 
 //=============================================================================
@@ -227,11 +220,14 @@ int SetCollision(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=============================================================================
 void ResetCollision(int nIdx)
 {
+	// 指定したインデックスのコライダーをすべてリセット
 	for (int nCntCollider = 0; nCntCollider < g_aCollision[nIdx].nNumCollider; nCntCollider++)
 	{
 		memset(&g_aCollider[g_aCollision[nIdx].nColliderIdx[nCntCollider]], NULL, sizeof(Collider));
 		g_nNumCollider--;
 	}
+
+	// 指定したインデックスの当たり判定をリセット
 	memset(&g_aCollision[nIdx], NULL, sizeof(Collision));
 	g_nNumCollision--;
 }
@@ -262,15 +258,12 @@ void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 			g_aCollision[nIdx].rot.x + pCollider->Collidertype.rot.x, 
 			g_aCollision[nIdx].rot.z + pCollider->Collidertype.rot.z);
 
-		// X方面ベクトル
+		// 各方面ベクトルを回転行列から抜き取る
 		D3DXVECTOR3 AxisXNor = { mtxRot._11, mtxRot._12, mtxRot._13 };
-
-		// Y方面ベクトル
 		D3DXVECTOR3 AxisYNor = { mtxRot._21, mtxRot._22, mtxRot._23 };
-
-		// Z方面ベクトル
 		D3DXVECTOR3 AxisZNor = { mtxRot._31, mtxRot._32, mtxRot._33 };
 
+		// オフセット位置を算出
 		D3DXVECTOR3 OffSet = (ColliderInfo.Collidertype.pos.x * AxisXNor) +
 			(ColliderInfo.Collidertype.pos.y * AxisYNor) +
 			(ColliderInfo.Collidertype.pos.z * AxisZNor);
@@ -280,15 +273,18 @@ void SetCollider(int nIdx, ColliderInfo ColliderInfo)
 
 		// 各値代入
 		pCollider->Collidertype = ColliderInfo.Collidertype;
+
+		// 原点からのオフセット位置を設定
 		pCollider->Collidertype.pos = g_aCollision[nIdx].pos + OffSet;
 
 		if (ColliderInfo.type != COLLIDERTYPE_SPHERE)
-		{
+		{// 球以外のコライダーだったら
+			// 向きを設定
 			pCollider->Collidertype.rot = g_aCollision[nIdx].rot + pCollider->Collidertype.rot;
 		}
 
-		pCollider->type = ColliderInfo.type;
-		pCollider->bUse = true;
+		pCollider->type = ColliderInfo.type;		// 種類を設定
+		pCollider->bUse = true;						// 使用状態に
 
 		// コライダー使用数を当たり判定でも全体でも増やす
 		g_aCollision[nIdx].nNumCollider++;
@@ -314,29 +310,24 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	D3DXMatrixRotationYawPitchRoll(&MymtxRot, MyCollider.box.rot.y, MyCollider.box.rot.x, MyCollider.box.rot.z);
 	D3DXMatrixRotationYawPitchRoll(&TargetmtxRot, TargetCollider.box.rot.y, TargetCollider.box.rot.x, TargetCollider.box.rot.z);
 
-	// 向き行列から各方向ベクトルの確保 (正規化Norと長さ)
-	// 自分の矩形のX方面ベクトル
-	D3DXVECTOR3 MyAxisXNor = { MymtxRot._11, MymtxRot._12, MymtxRot._13 },
+	//----------------------------------------------------
+	// 回転行列から各軸ベクトルの確保 (正規化Norと長さ)
+	//----------------------------------------------------
+
+	// 自分の矩形の各軸ベクトル
+	D3DXVECTOR3 MyAxisXNor = { MymtxRot._11, MymtxRot._12, MymtxRot._13 },	// X軸
 		MyAxisX = MyAxisXNor * MyCollider.box.fWidth;
-
-	// 自分の矩形のY方面ベクトル
-	D3DXVECTOR3 MyAxisYNor = { MymtxRot._21, MymtxRot._22, MymtxRot._23 },
+	D3DXVECTOR3 MyAxisYNor = { MymtxRot._21, MymtxRot._22, MymtxRot._23 },	// Y軸
 		MyAxisY = MyAxisYNor * MyCollider.box.fHeight;
-
-	// 自分の矩形のZ方面ベクトル
-	D3DXVECTOR3 MyAxisZNor = { MymtxRot._31, MymtxRot._32, MymtxRot._33 },
+	D3DXVECTOR3 MyAxisZNor = { MymtxRot._31, MymtxRot._32, MymtxRot._33 },	// Z軸
 		MyAxisZ = MyAxisZNor * MyCollider.box.fDepth;
 
-	// 対象の矩形のX方面ベクトル
-	D3DXVECTOR3 TargetAxisXNor = { TargetmtxRot._11, TargetmtxRot._12, TargetmtxRot._13 },
+	// 対象の矩形の各軸ベクトル
+	D3DXVECTOR3 TargetAxisXNor = { TargetmtxRot._11, TargetmtxRot._12, TargetmtxRot._13 },	// X軸
 		TargetAxisX = TargetAxisXNor * TargetCollider.box.fWidth;
-
-	// 対象の矩形のY方面ベクトル
-	D3DXVECTOR3 TargetAxisYNor = { TargetmtxRot._21, TargetmtxRot._22, TargetmtxRot._23 },
+	D3DXVECTOR3 TargetAxisYNor = { TargetmtxRot._21, TargetmtxRot._22, TargetmtxRot._23 },	// Y軸
 		TargetAxisY = TargetAxisYNor * TargetCollider.box.fHeight;
-
-	// 対象の矩形のZ方面ベクトル
-	D3DXVECTOR3 TargetAxisZNor = { TargetmtxRot._31, TargetmtxRot._32, TargetmtxRot._33 },
+	D3DXVECTOR3 TargetAxisZNor = { TargetmtxRot._31, TargetmtxRot._32, TargetmtxRot._33 },	// Z軸
 		TargetAxisZ = TargetAxisZNor * TargetCollider.box.fDepth;
 
 	// 自分と対象の中心点の距離
@@ -428,7 +419,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	// 自分のX方向と対象のY方向との外積の分離軸
@@ -442,7 +433,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	// 自分のX方向と対象のZ方向との外積の分離軸
@@ -456,7 +447,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	// 自分のY方向と対象のX方向との外積の分離軸
@@ -470,7 +461,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	// 自分のY方向と対象のY方向との外積の分離軸
@@ -484,7 +475,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	// 自分のY方向と対象のZ方向との外積の分離軸
@@ -498,7 +489,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	// 自分のZ方向と対象のX方向との外積の分離軸
@@ -512,7 +503,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	// 自分のZ方向と対象のY方向との外積の分離軸
@@ -526,7 +517,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	// 自分のZ方向と対象のZ方向との外積の分離軸
@@ -540,7 +531,7 @@ bool CollisionBoxToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider, C
 	L = fabsf(D3DXVec3Dot(&Distance, &Cross));
 	if (L > rA + rB)
 	{
-		return false;
+		return false;	// 衝突していない
 	}
 
 	PrintDebugProc("MyPos = {%.2f, %.2f, %.2f}\n", MyCollider.pos.x, MyCollider.pos.y, MyCollider.pos.z);;
@@ -672,16 +663,12 @@ bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 	// 向きを算出
 	D3DXMatrixRotationYawPitchRoll(&TargetmtxRot, TargetCollider.box.rot.y, TargetCollider.box.rot.x, TargetCollider.box.rot.z);
 
-	// 対象の矩形のX方面ベクトル
-	D3DXVECTOR3 TargetAxisXNor = { TargetmtxRot._11, TargetmtxRot._12, TargetmtxRot._13 },
+	// 対象の矩形の各軸ベクトル
+	D3DXVECTOR3 TargetAxisXNor = { TargetmtxRot._11, TargetmtxRot._12, TargetmtxRot._13 },	// X軸
 		TargetAxisX = TargetAxisXNor * TargetCollider.box.fWidth;
-
-	// 対象の矩形のY方面ベクトル
-	D3DXVECTOR3 TargetAxisYNor = { TargetmtxRot._21, TargetmtxRot._22, TargetmtxRot._23 },
+	D3DXVECTOR3 TargetAxisYNor = { TargetmtxRot._21, TargetmtxRot._22, TargetmtxRot._23 },	// Y軸
 		TargetAxisY = TargetAxisYNor * TargetCollider.box.fHeight;
-
-	// 対象の矩形のZ方面ベクトル
-	D3DXVECTOR3 TargetAxisZNor = { TargetmtxRot._31, TargetmtxRot._32, TargetmtxRot._33 },
+	D3DXVECTOR3 TargetAxisZNor = { TargetmtxRot._31, TargetmtxRot._32, TargetmtxRot._33 },	// Z軸
 		TargetAxisZ = TargetAxisZNor * TargetCollider.box.fDepth;
 
 	// 自分と対象の中心点とのベクトル
@@ -726,16 +713,18 @@ bool CollisionSphereToBox(CollisionInfo& _CollisionInfo, ColliderType MyCollider
 		// 距離を含んだ押し出しベクトル
 		vecPush = vecPush * fPush;
 		
+		// 入り込んだ位置に押し出しベクトルを加算
 		_CollisionInfo.Intersection = MyCollider.sphere.pos + vecPush;
 		_CollisionInfo.isCollision = true;
 
 		if (vecPush.y > 0.0f)
-		{
+		{// 上方向への押し出しベクトルがあれば
+			// 着地判定
 			_CollisionInfo.isRand = true;
 		}
 	}
 
-	// 
+	// 衝突判定情報を返す
 	return _CollisionInfo.isCollision;
 }
 
@@ -956,8 +945,9 @@ bool CollisionMeshCollider(CollisionInfo& _CollisionInfo, D3DXVECTOR3 pos, D3DXV
 void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	D3DXMATRIX mtx, mtxRot, mtxTrans;			// 計算用マトリックス
-	D3DXVECTOR3 vecLineB, vecLineC;
+	D3DXVECTOR3 vecLineB, vecLineC;				// 境界線ベクトル
 
+	// メッシュコライダーファイルを開く
 	FILE* pColliderFile = fopen(pColliderScript, "rb");
 
 	if (pColliderFile == NULL)
@@ -976,7 +966,7 @@ void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 
 	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
 	D3DXMatrixMultiply(&mtx, &mtx, &mtxTrans);
 
-	MeshCollider* pMeshCollider = &g_aMeshCollider[0];
+	MeshCollider* pMeshCollider = &g_aMeshCollider[0];	// メッシュコライダーへのポインタ
 
 	for (int nCntMeshCollider = 0; nCntMeshCollider < MAX_MESHCOLLIDER; nCntMeshCollider++, pMeshCollider++)
 	{
@@ -985,6 +975,7 @@ void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 
 			continue;
 		}
 
+		// ファイルから情報を取得する
 		fread(&pMeshCollider->nNumTriangle, sizeof(int), 1, pColliderFile);
 		fread(&pMeshCollider->aTriangle[0], sizeof(Triangle), pMeshCollider->nNumTriangle, pColliderFile);
 		pMeshCollider->bUse = true;
@@ -996,16 +987,18 @@ void LoadMeshColldier(const char* pColliderScript, D3DXVECTOR3 pos, D3DXVECTOR3 
 			D3DXVec3TransformCoord(&pMeshCollider->aTriangle[nCntTriangle].posB, &pMeshCollider->aTriangle[nCntTriangle].posB, &mtx);
 			D3DXVec3TransformCoord(&pMeshCollider->aTriangle[nCntTriangle].posC, &pMeshCollider->aTriangle[nCntTriangle].posC, &mtx);
 
+			// 面のベクトルを算出
 			vecLineB = pMeshCollider->aTriangle[nCntTriangle].posB - pMeshCollider->aTriangle[nCntTriangle].posA;
 			vecLineC = pMeshCollider->aTriangle[nCntTriangle].posC - pMeshCollider->aTriangle[nCntTriangle].posB;
 			pMeshCollider->aTriangle[nCntTriangle].vecNor = { (vecLineB.y * vecLineC.z) - (vecLineB.z * vecLineC.y), (vecLineB.z * vecLineC.x) - (vecLineB.x * vecLineC.z), (vecLineB.x * vecLineC.y) - (vecLineB.y * vecLineC.x) };
 			D3DXVec3Normalize(&pMeshCollider->aTriangle[nCntTriangle].vecNor, &pMeshCollider->aTriangle[nCntTriangle].vecNor);
 
+			// 逆ベクトルにする
 			pMeshCollider->aTriangle[nCntTriangle].vecNor = -pMeshCollider->aTriangle[nCntTriangle].vecNor;
 		}
 
 		break;
 	}
 
-	fclose(pColliderFile);
+	fclose(pColliderFile);		// ファイルを閉じる
 }
