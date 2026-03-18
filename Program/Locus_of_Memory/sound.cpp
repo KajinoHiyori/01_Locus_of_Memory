@@ -81,6 +81,7 @@ SOUNDINFO g_aSoundInfo[SOUND_LABEL_MAX] =
 	{"data/SE/19_questclear.wav", 0},	// クエストクリア
 	{"data/SE/20_getmagic.wav", 0},		// 魔法取得
 	{"data/SE/20_getmagic.wav", 0},		// 魔法取得
+	{"data/SE/dragon_roar.wav", 0},		// 咆哮
 };
 
 //=============================================================================

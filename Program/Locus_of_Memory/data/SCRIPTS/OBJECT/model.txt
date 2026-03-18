@@ -728,53 +728,6 @@ END_MODELSET
 # チュートリアル門前
 #------------------------------------------------------------------------------
 
-MODELSET
-	TYPE = 19
-	POS = -1060 0 -3500
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
-END_MODELSET
-
-MODELSET
-	TYPE = 19
-	POS = -1060 0 -3300
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
-END_MODELSET
-
-MODELSET
-	TYPE = 19
-	POS = -1060 0 -3800
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
-END_MODELSET
-
-MODELSET
-	TYPE = 19
-	POS = -1060 0 -4000
-	ROT = 0 90 0
-	SHADOW = 0
-	COLLISION = 0
-	COLLIDERSET
-		TYPE = 1
-		RADIUS = 25.0
-	END_COLLIDERSET
-END_MODELSET
 
 #------------------------------------------------------------------------------
 # 門

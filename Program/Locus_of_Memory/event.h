@@ -40,6 +40,7 @@ typedef enum EVENTTYPE
 	EVENTTYPE_011_0,	// 鍛冶場に火をつける
 	EVENTTYPE_011_1,	// 鍛冶場に火をつける
 	EVENTTYPE_012_0,	// 焚火に火をつける
+	EVENTTYPE_013_0,	// 篝火に火をつける
 	EVENTTYPE_MAX,
 }EVENTTYPE;
 
@@ -63,6 +64,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx);
 bool SetMagicEvent010(MAGICTYPE type, int nIdx);
 bool SetMagicEvent011(MAGICTYPE type, int nIdx);
 bool SetMagicEvent012(MAGICTYPE type, int nIdx);
+bool SetMagicEvent013(MAGICTYPE type, int nIdx);
 
 //*****************************************************************************
 // イベントの更新処理

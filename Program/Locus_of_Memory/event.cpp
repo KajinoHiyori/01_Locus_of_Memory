@@ -42,6 +42,7 @@ bool(*SetMagicEventSelecter[MAGICEVENT_MAX])(MAGICTYPE type, int nIdx) =
 	SetMagicEvent010,
 	SetMagicEvent011,
 	SetMagicEvent012,
+	SetMagicEvent013,
 };
 
 //========================================================================
@@ -357,6 +358,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 		isSuccess = true;
 		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx); 
 		ClearQuest(QUESTTYPE_DRAGON);
+		PlaySound(SOUND_LABEL_DRAGON);
 		break;
 
 	case MAGICTYPE_RAINPRAY:	// 雨乞い
@@ -369,6 +371,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx);
 		isSuccess = true;
 		ClearQuest(QUESTTYPE_DRAGON);
+		PlaySound(SOUND_LABEL_DRAGON);
 		break;
 	}
 
@@ -453,6 +456,29 @@ bool SetMagicEvent012(MAGICTYPE type, int nIdx)
 	return isSuccess;
 }
 
+//========================================================================
+// 各魔法イベント処理[篝火に火をつける]
+//========================================================================
+bool SetMagicEvent013(MAGICTYPE type, int nIdx)
+{
+	EventObject* pEventObject = GetEventObject(nIdx);
+	bool isSuccess = false;
+	switch (type)
+	{
+	case MAGICTYPE_COMBUSTION:	// 燃焼
+		pEventObject->EventType = EVENTTYPE_013_0;
+		SetEffectFire(pEventObject->pos, FIRE_TYPE_BONFIRE, nIdx);
+		isSuccess = true;
+		break;
+
+	case MAGICTYPE_FIREBALL:	// 燃焼
+		pEventObject->EventType = EVENTTYPE_013_0;
+		SetEffectFire(pEventObject->pos, FIRE_TYPE_BONFIRE, nIdx);
+		isSuccess = true;
+		break;
+	}
+	return isSuccess;
+}
 
 //========================================================================
 // イベントの設置

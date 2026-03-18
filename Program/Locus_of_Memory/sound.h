@@ -64,6 +64,7 @@ typedef enum
 	SOUND_LABEL_QUESTCLEAR,			// クエストクリア
 	SOUND_LABEL_GETMAGIC0,			// 魔法取得
 	SOUND_LABEL_GETMAGIC1,			// 魔法取得
+	SOUND_LABEL_DRAGON,				// ドラゴンの咆哮
 	SOUND_LABEL_MAX,
 } SOUND_LABEL;
 
