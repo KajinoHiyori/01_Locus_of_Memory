@@ -6,80 +6,18 @@
 //======================================================================================
 #include "main.h"
 #include "fade.h"
-#include "resultui.h"
 #include "diagnosisui.h"
 #include "diagnosis.h"
 #include "input.h"
 #include "fog.h"
 #include "color.h"
-
-// 診断結果UIの種類
-typedef enum
-{
-	DIAGNOSISTYPE_TITLE = 0,		// 診断結果ロゴ
-	DIAGNOSISTYPE_USEDCOMMAND,		// 使われたコマンド
-	DIAGNOSISTYPE_R_COMMANDTYPE,	// Rコマンドの種類
-	DIAGNOSISTYPE_R_COMMAND100,		// Rコマンド回数[X00]
-	DIAGNOSISTYPE_R_COMMAND010,		// Rコマンド回数[0X0]
-	DIAGNOSISTYPE_R_COMMAND001,		// Rコマンド回数[00X]
-	DIAGNOSISTYPE_R_COMMANDTIMES,	// RXXX回
-	DIAGNOSISTYPE_G_COMMANDTYPE,	// Gコマンドの種類
-	DIAGNOSISTYPE_G_COMMAND100,		// Gコマンド回数[X00]
-	DIAGNOSISTYPE_G_COMMAND010,		// Gコマンド回数[0X0]
-	DIAGNOSISTYPE_G_COMMAND001,		// Gコマンド回数[00X]
-	DIAGNOSISTYPE_G_COMMANDTIMES,	// GXXX回
-	DIAGNOSISTYPE_B_COMMANDTYPE,	// Bコマンドの種類
-	DIAGNOSISTYPE_B_COMMAND100,		// Bコマンド回数[X00]
-	DIAGNOSISTYPE_B_COMMAND010,		// Bコマンド回数[0X0]
-	DIAGNOSISTYPE_B_COMMAND001,		// Bコマンド回数[00X]
-	DIAGNOSISTYPE_B_COMMANDTIMES,	// BXXX回
-	DIAGNOSISTYPE_Y_COMMANDTYPE,	// Yコマンドの種類
-	DIAGNOSISTYPE_Y_COMMAND100,		// Yコマンド回数[X00]
-	DIAGNOSISTYPE_Y_COMMAND010,		// Yコマンド回数[0X0]
-	DIAGNOSISTYPE_Y_COMMAND001,		// Yコマンド回数[00X]
-	DIAGNOSISTYPE_Y_COMMANDTIMES,	// YXXX回
-	DIAGNOSISTYPE_MOSTMAGIC,		// 1番使われた魔法
-	DIAGNOSISTYPE_MAGICCIRCLE,		// 魔法陣
-	DIAGNOSISTYPE_HAPPENDEVENT,		// 発生したイベント数
-	DIAGNOSISTYPE_EVENT100,			// イベント数[X00]
-	DIAGNOSISTYPE_EVENT010,			// イベント数[0X0]
-	DIAGNOSISTYPE_EVENT001,			// イベント数[00X]
-	DIAGNOSISTYPE_EVENTTIMES,		// イベントXXX回
-	DIAGNOSISTYPE_MAX
-}DIAGNOSISTYPE;
-
-// 診断結果UIのテクスチャの種類
-typedef enum
-{
-	DIAGNOSISTEX_TITLE = 0,		// 診断結果ロゴ
-	DIAGNOSISTEX_USEDCOMMAND,	// 使われたコマンド数
-	DIAGNOSISTEX_R,				// 赤魔法
-	DIAGNOSISTEX_G,				// 緑魔法
-	DIAGNOSISTEX_B,				// 青魔法
-	DIAGNOSISTEX_Y,				// 黄魔法
-	DIAGNOSISTEX_MOSTMAGIC,		// 1番使われた魔法
-	DIAGNOSISTEX_LEVITATION,	// 浮遊
-	DIAGNOSISTEX_COMBUSTION,	// 燃焼
-	DIAGNOSISTEX_FLOOD,			// 洪水
-	DIAGNOSISTEX_FLASH,			// フラッシュ
-	DIAGNOSISTEX_FIREBALL,		// 火球
-	DIAGNOSISTEX_SUNSETDELAY,	// 時間停止
-	DIAGNOSISTEX_RAINPRAY,		// 雨乞い
-	DIAGNOSISTEX_FREEZE,		// 凍結
-	DIAGNOSISTEX_GROWTH,		// 成長
-	DIAGNOSISTEX_ACCELERATION,	// 加速
-	DIAGNOSISTEX_TIMEREVERT,	// 巻き戻し
-	DIAGNOSISTEX_HAPPENDEVENT,	// 発生したイベント数
-	DIAGNOSISTEX_TIMES,			// 回
-	DIAGNOSISTEX_NUMBER,		// 数字
-	DIAGNOSISTEX_MAX
-}DIAGNOSISTEX;
+#include "magic.h"
 
 // 診断結果UIの構造体
 typedef struct
 {
 	DIAGNOSISTYPE	type;	// 種類
-	DIAGNOSISTEX	tex;	// 停止
+	DIAGNOSISTEX	tex;	// テクスチャの種類
 	D3DXVECTOR3		pos;	// 位置
 	float	fWidth;			// 幅
 	float	fHeight;		// 高さ
@@ -176,6 +114,16 @@ void InitDiagnosisUI(void)
 	for (int nCntUI = 0; nCntUI < DIAGNOSIS_TEX; nCntUI++)
 	{
 		D3DXCreateTextureFromFile(pDevice, c_apFilenameDiagnosisUI[nCntUI], &g_apTextureDiagnosisUI[nCntUI]);
+	}
+
+	for (int nCntUI = 0; nCntUI < NUM_DIAGNOSISTYPE; nCntUI++)
+	{
+		g_aDiagnosis[nCntUI].type = DIAGNOSISTYPE_TITLE;	// 種類
+		g_aDiagnosis[nCntUI].tex = DIAGNOSISTEX_TITLE;	// テクスチャの種類
+		g_aDiagnosis[nCntUI].pos = INIT_D3DXVEC3;	// 位置
+		g_aDiagnosis[nCntUI].fWidth = 0.0f;			// 幅
+		g_aDiagnosis[nCntUI].fHeight = 0.0f;		// 高さ
+		g_aDiagnosis[nCntUI].bDisp = false;			// 表示状態
 	}
 
 	// 頂点バッファの生成
@@ -592,7 +540,7 @@ void SetDiagnosisUI(void)
 			g_aDiagnosis[nCntUI].fHeight = MAGICCIRCLE_SIZE;
 			g_aDiagnosis[nCntUI].fWidth = MAGICCIRCLE_SIZE;
 			g_aDiagnosis[nCntUI].pos = CIRCLE_POS;
-			g_aDiagnosis[nCntUI].tex = DIAGNOSISTEX_COMBUSTION;
+			g_aDiagnosis[nCntUI].tex = SetMostMagic(DiagnosisData);
 			g_aDiagnosis[nCntUI].type = DIAGNOSISTYPE_MAGICCIRCLE;
 			// テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -673,35 +621,9 @@ void SetDiagnosisUI(void)
 			break;
 
 		default:
+
 			break;
 		}
-		// DIAGNOSISTEX_TITLE = 0,		// 診断結果ロゴ
-		// DIAGNOSISTEX_USEDCOMMAND,	// 使われたコマンド数
-		// DIAGNOSISTEX_R,				// 赤魔法
-		// DIAGNOSISTEX_G,				// 緑魔法
-		// DIAGNOSISTEX_B,				// 青魔法
-		// DIAGNOSISTEX_Y,				// 黄魔法
-		// DIAGNOSISTEX_MOSTMAGIC,		// 1番使われた魔法
-		// DIAGNOSISTEX_LEVITATION,	// 浮遊
-		// DIAGNOSISTEX_COMBUSTION,	// 燃焼
-		// DIAGNOSISTEX_FLOOD,			// 洪水
-		// DIAGNOSISTEX_FLASH,			// フラッシュ
-		// DIAGNOSISTEX_FIREBALL,		// 火球
-		// DIAGNOSISTEX_SUNSETDELAY,	// 時間停止
-		// DIAGNOSISTEX_RAINPRAY,		// 雨乞い
-		// DIAGNOSISTEX_FREEZE,		// 凍結
-		// DIAGNOSISTEX_GROWTH,		// 成長
-		// DIAGNOSISTEX_ACCELERATION,	// 加速
-		// DIAGNOSISTEX_TIMEREVERT,	// 巻き戻し
-		// DIAGNOSISTEX_HAPPENDEVENT,	// 発生したイベント数
-		// DIAGNOSISTEX_TIMES,			// 回
-		// DIAGNOSISTEX_NUMBER,		// 数字
-
-		// DIAGNOSISTYPE_HAPPENDEVENT,		// 発生したイベント数
-		// DIAGNOSISTYPE_EVENT100,			// イベント数[X00]
-		// DIAGNOSISTYPE_EVENT010,			// イベント数[0X0]
-		// DIAGNOSISTYPE_EVENT001,			// イベント数[00X]
-		// DIAGNOSISTYPE_EVENTTIMES,		// イベントXXX回
 
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3(g_aDiagnosis[nCntUI].pos.x - g_aDiagnosis[nCntUI].fWidth, g_aDiagnosis[nCntUI].pos.y - g_aDiagnosis[nCntUI].fHeight, 0.0f);
@@ -725,4 +647,86 @@ void SetDiagnosisUI(void)
 
 	// 頂点バッファをアンロック
 	g_pVtxBuffDiagnosisUI->Unlock();
+}
+
+//========================================================================
+// 1番使われた魔法の判定
+//========================================================================
+DIAGNOSISTEX SetMostMagic(TotalData totalData)
+{
+	DIAGNOSISTEX tex;
+	int nMagic = -10;	// 魔法の比較用使用回数を保存
+	MAGICTYPE type;		// 最も使用された魔法の種類を保存
+
+	// forで回せるように情報を格納
+	int aMagic[MAGICTYPE_MAX];
+	aMagic[0] = totalData.nLevitation;		// 使われた魔法数[浮遊]
+	aMagic[1] = totalData.nCombustion;		// 使われた魔法数[燃焼]
+	aMagic[2] = totalData.nFlood;			// 使われた魔法数[洪水]
+	aMagic[3] = totalData.nFlash;			// 使われた魔法数[フラッシュ]
+	aMagic[4] = totalData.nFireBall;		// 使われた魔法数[火球]
+	aMagic[5] = totalData.nSunsetDelay;		// 使われた魔法数[時間停止]
+	aMagic[6] = totalData.nRainPray;		// 使われた魔法数[雨乞い]
+	aMagic[7] = totalData.nFreeze;			// 使われた魔法数[凍結]
+	aMagic[8] = totalData.nGrowth;			// 使われた魔法数[成長]
+	aMagic[9] = totalData.nAcceleration;	// 使われた魔法数[加速]
+	aMagic[10] = totalData.nTimeRevert;		// 使われた魔法数[巻き戻し]
+
+	for (int nCntMagic = 0; nCntMagic < MAGICTYPE_MAX; nCntMagic++)
+	{
+		if (aMagic[nCntMagic] > nMagic)
+		{ // 保存されている値より
+			nMagic = aMagic[nCntMagic];
+			type = (MAGICTYPE)nCntMagic;
+		}
+	}
+
+	switch (type)
+	{
+	case MAGICTYPE_LEVITATION:	// 浮遊
+		tex = DIAGNOSISTEX_LEVITATION;
+		break;
+
+	case MAGICTYPE_COMBUSTION:	// 燃焼
+		tex = DIAGNOSISTEX_COMBUSTION;
+		break;
+
+	case MAGICTYPE_FLOOD:	// 洪水
+		tex = DIAGNOSISTEX_FLOOD;
+		break;
+
+	case MAGICTYPE_FLASH:	// フラッシュ
+		tex = DIAGNOSISTEX_FLASH;
+		break;
+
+	case MAGICTYPE_FIREBALL:	// 火球
+		tex = DIAGNOSISTEX_FIREBALL;
+		break;
+
+	case MAGICTYPE_SUNSETDELAY:	// 時間停止
+		tex = DIAGNOSISTEX_SUNSETDELAY;
+		break;
+
+	case MAGICTYPE_RAINPRAY:	// 雨乞い
+		tex = DIAGNOSISTEX_RAINPRAY;
+		break;
+
+	case MAGICTYPE_FREEZE:	// 凍結
+		tex = DIAGNOSISTEX_FREEZE;
+		break;
+
+	case MAGICTYPE_GROWTH:	// 成長
+		tex = DIAGNOSISTEX_GROWTH;
+		break;
+
+	case MAGICTYPE_ACCELERATION:	// 加速
+		tex = DIAGNOSISTEX_ACCELERATION;
+		break;
+
+	case MAGICTYPE_TIMEREVERT:	// 巻き戻し
+		tex = DIAGNOSISTEX_TIMEREVERT;
+		break;
+	}
+
+	return tex;
 }

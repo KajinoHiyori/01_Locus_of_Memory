@@ -233,7 +233,7 @@ void InitResultUI(void)
 	default:	// 1人操作
 		SetResultUI1P();
 		// データ保存
-		SavaPairData();
+		SavaSoloData();
 		break;
 	}
 	// データ保存
