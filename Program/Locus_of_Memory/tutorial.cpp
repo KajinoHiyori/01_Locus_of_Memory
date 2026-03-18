@@ -80,6 +80,8 @@ void InitTutorial(void)
 	g_abReady[0] = false;
 	g_abReady[1] = false;
 
+	g_nTutorialWallIdx = -1;
+
 	// プレイヤーの初期化設定
 	//InitBG();
 
@@ -236,7 +238,12 @@ void UninitTutorial(void)
 	// 目的地の終了処理
 	UninitDestinationUI();
 
-	DeleteObject(g_nTutorialWallIdx);
+	// チュートリアルの壁を消去
+	if (g_nTutorialWallIdx >= 0)
+	{
+		DeleteObject(g_nTutorialWallIdx);
+	}
+
 
 	//UninitModel();
 
