@@ -882,7 +882,10 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 			PlaySound(SOUND_LABEL_MAGICFAILD1);
 		}
 		SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD, false, true, BLENDFRAME);
-		SetParticle(pPlayer[nIdx].pos, 300, PARTICLETYPE_RAINPRAY, nIdx);
+		if (type == MAGICTYPE_RAINPRAY)
+		{
+			SetParticle(pPlayer[nIdx].pos, 300, PARTICLETYPE_RAINPRAY, nIdx);
+		}
 	}
 	return false;
 }

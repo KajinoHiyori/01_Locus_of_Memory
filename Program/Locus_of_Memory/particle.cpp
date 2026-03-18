@@ -292,6 +292,10 @@ void UpdateParticle(void)
 						pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + sinf(phi) * sinf(theta);
 						pos[0].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + cosf(phi);
 
+						pos[2].x = sinf(phi) * cosf(theta);
+						pos[2].y = sinf(phi) * sinf(theta);
+						pos[2].z = cosf(phi);
+
 						fSpeed = 1.0f + RandFloat() * 2.0f;
 
 						//pos[0].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + (sinf((float)(rand() % 629 - 314 / 100))) * (float)(rand() % 40 + 1);
@@ -307,15 +311,15 @@ void UpdateParticle(void)
 						rot.y = ((float)(rand() % 629 - 314) / pos[0].y);
 						rot.z = ((float)(rand() % 629 - 314) / pos[0].z);*/
 
-						move[0][PARTICLETYPE_FLASH].x = (pos[0].x) * 3;
-						move[0][PARTICLETYPE_FLASH].y = (pos[0].y) * 3;
-						move[0][PARTICLETYPE_FLASH].z = (pos[0].z) * 3;
+						move[0][PARTICLETYPE_FLASH].x = (pos[2].x) * 2;
+						move[0][PARTICLETYPE_FLASH].y = (pos[2].y) * 2;
+						move[0][PARTICLETYPE_FLASH].z = (pos[2].z) * 2;
 
-						move[1][PARTICLETYPE_FLASH].x = (sinf(pos[1].y)) * 3;
-						move[1][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 3;
+						move[1][PARTICLETYPE_FLASH].x = (sinf(pos[1].y)) * 2;
+						move[1][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 2;
 
-						move[2][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 3;
-						move[2][PARTICLETYPE_FLASH].z = (sinf(pos[1].y)) * 3;
+						move[2][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 2;
+						move[2][PARTICLETYPE_FLASH].z = (sinf(pos[1].y)) * 2;
 
 						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 12);
 						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 20);
@@ -383,7 +387,7 @@ void UpdateParticle(void)
 					{
 						//à íuÇÃê›íË
 						pos[0].x = g_aParticle[nCntPlayerType][nCntParticle].pos.x + sinf((float)(rand() % 500)) * 200;
-						pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + 300.0f;
+						pos[0].y = g_aParticle[nCntPlayerType][nCntParticle].pos.y + 400.0f;
 						pos[0].z = g_aParticle[nCntPlayerType][nCntParticle].pos.z + cosf((float)(rand() % 500)) * 200;
 
 						fSpeed = (float)(rand() % 2 + 1);

@@ -19,8 +19,9 @@
 //=============================================================================
 // ƒ}ƒNƒ’è‹`
 //=============================================================================
-#define BLACKSMITH_POS_FIRE		(D3DXVECTOR3(-3200.0f, 40.0f, 950.0f))	// ’b–èê‚ÌˆÊ’u
-#define BLACKSMITH_POS_SMOKE	(D3DXVECTOR3(-3200.0f, 500.0f, 980.0f))	// ’b–èê‚Ì‰Œ‚ðÝ’u
+#define BLACKSMITH_POS_FIRE		(D3DXVECTOR3(-3200.0f, 40.0f, 950.0f))		// ’b–èê‚ÌˆÊ’u
+#define BLACKSMITH_POS_SMOKE	(D3DXVECTOR3(-3200.0f, 500.0f, 980.0f))		// ’b–èê‚Ì‰Œ‚ðÝ’u
+#define DRAGONFLASH_POS			(D3DXVECTOR3(2220.0f, 1000.0f, -4410.0f))	// ’b–èê‚Ì‰Œ‚ðÝ’u
 #define FIRE_PARTICLE			(D3DXVECTOR3(BLACKSMITH_POS.x - 100.0f, BLACKSMITH_POS.y + 20.0f, BLACKSMITH_POS.z))	// ’b–èê‚Ì‰Š‚ÌÝ’u
 
 //=============================================================================
@@ -352,7 +353,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_FLASH:	// ƒtƒ‰ƒbƒVƒ…
 		pEventObject->EventType = EVENTTYPE_009_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_FLASH, nIdx);
+		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_FLASH, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
@@ -365,7 +366,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_RAINPRAY:	// ‰JŒî‚¢
 		pEventObject->EventType = EVENTTYPE_009_1;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_RAINPRAY, nIdx);
+		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_RAINPRAY, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
@@ -465,13 +466,13 @@ bool SetMagicEvent013(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_COMBUSTION:	// ”RÄ
 		pEventObject->EventType = EVENTTYPE_013_0;
-		SetEffectFire(pEventObject->pos, FIRE_TYPE_BONFIRE, nIdx);
+		SetEffectFire(D3DXVECTOR3(pEventObject->pos.x, pEventObject->pos.y + 150.0f, pEventObject->pos.z), FIRE_TYPE_BONFIRE, nIdx);
 		isSuccess = true;
 		break;
 
 	case MAGICTYPE_FIREBALL:	// ”RÄ
 		pEventObject->EventType = EVENTTYPE_013_0;
-		SetEffectFire(pEventObject->pos, FIRE_TYPE_BONFIRE, nIdx);
+		SetEffectFire(D3DXVECTOR3(pEventObject->pos.x, pEventObject->pos.y + 150.0f, pEventObject->pos.z), FIRE_TYPE_BONFIRE, nIdx);
 		isSuccess = true;
 		break;
 	}
