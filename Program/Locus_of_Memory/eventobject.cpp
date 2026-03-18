@@ -39,7 +39,20 @@ void InitEventObject(void)
 //=============================================================================
 void UninitEventObject(void)
 {
+	EventObject* pEventObject = &g_aEventObject[0];
 
+	for (int nCntEventObject = 0; nCntEventObject < MAX_EVENTOBJECT; nCntEventObject++, pEventObject++)
+	{
+		if (pEventObject->bUse == false)
+		{
+			continue;
+		}
+
+		if (pEventObject->nCollisionIdx != -1)
+		{
+			ResetCollision(pEventObject->nCollisionIdx);
+		}
+	}
 }
 
 //=============================================================================
