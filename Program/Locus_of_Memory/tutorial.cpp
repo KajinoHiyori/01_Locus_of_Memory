@@ -69,6 +69,7 @@
 int g_nCounterTutorialState = 0;				// 状態管理カウンター
 int g_nCntFade = 0;
 bool g_abReady[MAX_PLAYER];	// プレイヤーのゴール状態を管理
+int g_nTutorialWallIdx = -1;
 
 //=======================================================
 // ゲームの初期化処理
@@ -176,6 +177,8 @@ void InitTutorial(void)
 		break;
 	}
 
+	g_nTutorialWallIdx = SetTutorialWallCollision();
+
 	// ドラゴンの状態を設定
 	ResetDragon(0);
 }
@@ -232,6 +235,8 @@ void UninitTutorial(void)
 
 	// 目的地の終了処理
 	UninitDestinationUI();
+
+	DeleteObject(g_nTutorialWallIdx);
 
 	//UninitModel();
 

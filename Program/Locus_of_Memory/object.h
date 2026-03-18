@@ -192,5 +192,8 @@ ObjectModel* GetObjectModel(int nIdx);
 void UninitRandomObject(void);
 void UpdateObjectEvent001(ParentObject* pParentObject);
 
+void DeleteObject(int nIdx);
+int SetTutorialWallCollision(void);
+
 void ResetObject(void);
 #endif

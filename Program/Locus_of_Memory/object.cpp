@@ -189,11 +189,6 @@ void UpdateObject(void)
 	for (int nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
 	{
 
-		if ((D3DXMATERIAL*)g_aObjectModel[g_aObject[nCntObject].type].pBuffMat == NULL)
-		{
-			g_aObject[nCntObject].bUse = false;
-		}
-
 		if (g_aObject[nCntObject].bUse == true)
 		{
 			for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
@@ -268,6 +263,12 @@ void DrawObject(void)
 	{
 		if (g_aObject[nCntObject].bUse == true)
 		{
+
+			if ((D3DXMATERIAL*)g_aObjectModel[g_aObject[nCntObject].type].pBuffMat == NULL)
+			{
+				continue;
+			}
+
 			// ワールドマトリックスの初期化(デフォルトの値にする)
 			D3DXMatrixIdentity(&g_aObject[nCntObject].mtxWorld);
 
@@ -1020,4 +1021,60 @@ void UpdateObjectEvent001(ParentObject* pParentObject)
 			pParentObject->bUse = false;
 		}
 	}
+}
+
+//=============================================================================
+//	任意のオブジェクトの削除処理
+//=============================================================================
+void DeleteObject(int nIdx)
+{
+	ResetCollision(g_aObject[nIdx].nCollisionIdx);
+	memset(&g_aObject[nIdx], NULL, sizeof(Object));
+}
+
+//=============================================================================
+//	チュートリアル壁判定設置処理
+//=============================================================================
+int SetTutorialWallCollision(void)
+{
+	// 直で！！
+	int nCntObject = -1;
+
+	ColliderInfo ColliderInfo = {};
+
+	D3DXVECTOR3 pos = D3DXVECTOR3(-985.0f, 0.0f, -2850.0f);
+	D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 90.0f, 0.0f);
+
+	ColliderInfo.type = COLLIDERTYPE_BOX;
+	ColliderInfo.Collidertype.box.pos = D3DXVECTOR3(750.0f, 120.0f, 0.0f);
+	ColliderInfo.Collidertype.box.rot = INIT_D3DXVEC3;
+	ColliderInfo.Collidertype.box.fWidth = 600.0f;
+	ColliderInfo.Collidertype.box.fHeight = 250.0f;
+	ColliderInfo.Collidertype.box.fDepth = 50.0f;
+
+	for (nCntObject = 0; nCntObject < MAX_OBJECT; nCntObject++)
+	{
+		if (g_aObject[nCntObject].bUse == false)
+		{
+			// 弧度法への変換
+			rot.x = DegreeToRadian(rot.x);
+			rot.y = DegreeToRadian(rot.y);
+			rot.z = DegreeToRadian(rot.z);
+
+			// 各種変数設定
+			g_aObject[nCntObject].pos = pos;
+			g_aObject[nCntObject].rot = rot;
+			g_aObject[nCntObject].type = OBJECTTYPE_TEST;
+			g_aObject[nCntObject].bUse = true;
+
+#if 1
+			// 当たり判定
+			g_aObject[nCntObject].nCollisionIdx = SetCollision(pos, rot);
+			SetCollider(g_aObject[nCntObject].nCollisionIdx, ColliderInfo);
+				
+#endif
+			break;
+		}
+	}
+	return nCntObject;
 }
