@@ -583,7 +583,6 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
 				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
-				SetParticle(pPlayer->pos, 300, PARTICLETYPE_RAINPRAY, nIdx);
 				if (nIdx == 0)	// 1P
 				{
 					PlaySound(SOUND_LABEL_RAINPRAY0);
@@ -874,7 +873,8 @@ bool CollisionMagicLocus(MAGICTYPE type, D3DXVECTOR3 pos, float fRadius, int nId
 		{
 			PlaySound(SOUND_LABEL_MAGICFAILD1);
 		}
-		SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD, false, true, BLENDFRAME);
+		SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FAILD, false, true, BLENDFRAME);
+		SetParticle(pPlayer[nIdx].pos, 300, PARTICLETYPE_RAINPRAY, nIdx);
 	}
 	return false;
 }
