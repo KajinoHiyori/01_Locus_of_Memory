@@ -349,8 +349,6 @@ void SetEventObjectNormal(D3DXVECTOR3 pos, D3DXVECTOR3 rot, OBJECTTYPE type, Col
 			// 当たり判定を設定
 			pEventObject->nCollisionIdx = SetCollision(pos, rot);
 
-			pColliderInfo->Collidertype.pos = pos;
-
 			// 使うコライダーの分だけ
 			for (int nCntCollider = 0; nCntCollider < nNumCollider; nCntCollider++, pColliderInfo++)
 			{

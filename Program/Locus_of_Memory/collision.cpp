@@ -82,7 +82,7 @@ void InitCollision(void)
 	Collider* pCollider = &g_aCollider[0];
 	Collision* pCollision = &g_aCollision[0];
 	MeshCollider* pMeshCollider = &g_aMeshCollider[0];
-
+	
 	// èâä˙âª
 	memset(pCollider, NULL, sizeof(Collider) * MAX_COLLIDER);
 	memset(pCollision, NULL, sizeof(Collision) * MAX_COLLISION);
