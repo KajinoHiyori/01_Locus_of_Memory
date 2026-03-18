@@ -137,7 +137,7 @@ void InitAura(void)
 		g_aAura[nCntAura].pIdxBuff->Unlock();
 	}
 
-	SetAura(D3DXVECTOR3(0.0f, AURA_HEIGHT, 1050.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	SetAura(D3DXVECTOR3(1000.0f, AURA_HEIGHT, 2800.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
 //=============================================================================
