@@ -5,9 +5,6 @@
 // 
 //=============================================================================
 
-// メモ
-// フィールド全体の情報
-
 #include "main.h"
 #include "meshfield.h"
 #include "input.h"
@@ -29,7 +26,7 @@ MeshField g_ameshfield[MAX_MESHFIELD];									// メッシュフィールドの情報
 
 const char* c_pMeshFieldTextureName[MESHFIELDTYPE_MAX] =
 {
-	"data\\TEXTURE\\clock001.png",
+	"data\\TEXTURE\\road000.jpg",
 	"data\\TEXTURE\\road000.jpg",
 	"data\\TEXTURE\\road000.jpg",
 };
@@ -63,13 +60,10 @@ void InitMeshField(void)
 		pMeshField->bUse = false;
 	}
 
-	// いったん直
-	//SetMeshField(D3DXVECTOR3(-3250.0f, -50.0f, -3000.0f), D3DXVECTOR3(D3DX_PI * 0.115f, D3DX_PI * 0.25f, 0.0f), 100.0f, 100.0f, 10, 10, MESHFIELDTYPE_000);
-	//SetMeshField(D3DXVECTOR3(-5000.1f, 0.0f, 5000.1f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 500.0f, 500.0f, 20, 20, MESHFIELDTYPE_000);
-	MeshInfo MeshInfo = {};
-	//LoadMesh("data\\SCRIPTS\\MESH\\bridge000.bin", &MeshInfo);
-	//LoadMesh("data\\SCRIPTS\\MESH\\test.bin", &MeshInfo);
-	//SetMesh(D3DXVECTOR3(0.0f, 0.0f, 0.0f), INIT_D3DXVEC3, MeshInfo.nVtx, &MeshInfo.VtxPos[0], MeshInfo.nSplitWidth, MeshInfo.nSplitDepth, MESHFIELDTYPE_000, NULL);
+	// 応急処置！！
+	SetMeshField(D3DXVECTOR3(-12500.0f, -1.0f, 12500.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 2500.0f, 750.0f, 10, 10, MESHFIELDTYPE_000);
+	SetMeshField(D3DXVECTOR3(-12500.0f, -1.0f, 12500.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 750.0f, 2500.0f, 10, 10, MESHFIELDTYPE_000);
+	SetMeshField(D3DXVECTOR3(2500.0f, -1.0f, 12500.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 2500.0f, 2500.0f, 10, 10, MESHFIELDTYPE_000);
 }
 
 //=============================================================================
@@ -148,7 +142,7 @@ void DrawMeshField(void)
 		pDevice->SetFVF(FVF_VERTEX_3D);
 
 		// テクスチャの設定
-		pDevice->SetTexture(0, g_apTextureMeshField[pMeshField->type]);
+		pDevice->SetTexture(0, g_apTextureMeshField[0]);
 
 		// メッシュフィールドの描画
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,

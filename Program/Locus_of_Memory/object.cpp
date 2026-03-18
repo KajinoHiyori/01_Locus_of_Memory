@@ -508,6 +508,7 @@ bool CollisionObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3* pMove
 			if (CollisionInfo.isCollision)
 			{// “–‚½‚Á‚Ä‚¢‚ê‚Î
 				*pPos = CollisionInfo.Intersection;
+				isRand = CollisionInfo.isRand;
 				break;
 			}
 		}
@@ -596,6 +597,7 @@ bool CollisionParentObject(D3DXVECTOR3* pPos, D3DXVECTOR3* pPosOld, D3DXVECTOR3*
 			if (CollisionInfo.isCollision)
 			{// “–‚½‚Á‚Ä‚¢‚ê‚Î
 				*pPos = CollisionInfo.Intersection;
+				isRand = CollisionInfo.isRand;
 				break;
 			}
 		}

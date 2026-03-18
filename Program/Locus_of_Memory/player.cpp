@@ -640,19 +640,19 @@ void UpdatePlayer(void)
 		UpdateCollider(g_aPlayer[nCntPlayer].nIdxCollision, g_aPlayer[nCntPlayer].pos);
 
 		// イベントオブジェクトとの当たり判定
-		if (CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
+		if (CollisionEventObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].nIdxCollision))
 		{
 			isRand = isRand ? false : true;
 		}
 
 		// 階層構造オブジェクトとの当たり判定
-		if (CollisionParentObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
+		if (CollisionParentObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision))
 		{
 			isRand = isRand ? false : true;
 		}
 
 		// オブジェクトとの当たり判定
-		if (CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision) && g_aPlayer[nCntPlayer].bJump == true)
+		if (CollisionObject(&g_aPlayer[nCntPlayer].pos, &g_aPlayer[nCntPlayer].posOld, &g_aPlayer[nCntPlayer].move, g_aPlayer[nCntPlayer].fRadius, g_aPlayer[nCntPlayer].nIdxCollision))
 		{
 			isRand = isRand ? false : true;
 		}
