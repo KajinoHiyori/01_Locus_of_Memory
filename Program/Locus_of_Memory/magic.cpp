@@ -575,6 +575,14 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				SetTimerStop(SUNSETDELAY_TIME);
 				*pEventState = EVENTSTATE_SUNSETDELAY;
 				AddMagicEvent(nIdx); 
+				if (nIdx == 0)	// 1P
+				{
+					PlaySound(SOUND_LABEL_SUNSETDELAY0);
+				}
+				else if (nIdx == 1)	// 2P
+				{
+					PlaySound(SOUND_LABEL_SUNSETDELAY1);
+				}
 				break;
 
 				//‰JŒî‚¢
