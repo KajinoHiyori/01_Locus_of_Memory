@@ -154,7 +154,7 @@ void UpdateBrickWall(void)
 	D3DXVECTOR3 posStart, posEnd;
 	Player* pPlayer = GetPlayer();
 
-	for (int nCntPlayer = 0; nCntPlayer < 1; nCntPlayer++, pPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++, pPlayer++)
 	{
 		for (int nCntWidth = 0; nCntWidth < WIDTH_SIZE; nCntWidth++)
 		{

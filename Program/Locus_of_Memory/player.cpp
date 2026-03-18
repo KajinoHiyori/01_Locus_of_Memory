@@ -310,7 +310,7 @@ void UpdatePlayer(void)
 				break;
 			}
 		}
-		else if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadRightTriggePress(nCntPlayer) == true || GetJoypadLeftTriggePress(nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
+		else if (((GetKeyboardPress(DIK_TAB) == true && nCntPlayer == 0) || GetJoypadPress(JOYKEY_LEFT_TRIGGER, nCntPlayer) == true || GetJoypadPress(JOYKEY_RIGHT_TRIGGER, nCntPlayer) == true) && g_aPlayer[nCntPlayer].bJump == false)
 		{
 			if (bPause == false)
 			{

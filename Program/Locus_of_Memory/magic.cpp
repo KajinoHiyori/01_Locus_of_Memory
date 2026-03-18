@@ -502,7 +502,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 	Player* pPlayer = GetPlayer();
 	EVENTSTATE* pEventState = GetEventState();
 
-	pPlayer += nIdx;
+	//pPlayer += nIdx;
 
 	for (int nCntMagic = 0; nCntMagic < MAX_MAGIC; nCntMagic++)
 	{
@@ -515,7 +515,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			g_aMagic[nIdx].nLife = 300;
 			g_aMagic[nIdx].bUse = true;
 			SetSpellUI(g_aMagic[nIdx].mType, nIdx, DISP_MAGIC);
-			SetMagicCircle(type, &pPlayer->pos);
+			SetMagicCircle(type, &pPlayer[nIdx].pos);
 
 			switch (type)
 			{
@@ -523,7 +523,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			case MAGICTYPE_LEVITATION:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_LEVITATION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 3;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FLOATONG, true, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_FLOATONG, true, true, BLENDFRAME);
 				SetMagicUIDisappear(nIdx);
 				SetSpellUIDisappear(nIdx);
 				AddMagicEvent(nIdx);
@@ -541,21 +541,21 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 			case MAGICTYPE_COMBUSTION:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_COMBUSTION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R] += 3;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 
 				//^…A”Ã—”
 			case MAGICTYPE_FLOOD:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FLOOD]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B] += 3;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 
 				//ƒtƒ‰ƒbƒVƒ…
 			case MAGICTYPE_FLASH:
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FLASH]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 3;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
 				break;
 
 				//‰Î‹…
@@ -563,7 +563,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FIREBALL]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 
 				//‘¾—z‚Ì“®‚«‚ð’x‰„‚·‚é
@@ -571,7 +571,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_SUNSETDELAY]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
 				SetTimerStop(SUNSETDELAY_TIME);
 				*pEventState = EVENTSTATE_SUNSETDELAY;
 				AddMagicEvent(nIdx); 
@@ -590,7 +590,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_RAINPRAY]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_TOSKYACTION, false, true, BLENDFRAME);
 				if (nIdx == 0)	// 1P
 				{
 					PlaySound(SOUND_LABEL_RAINPRAY0);
@@ -606,7 +606,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_FREEZE]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_CROUCHING, false, true, BLENDFRAME);
 				break;
 
 				//¬’·(A•¨‚È‚Ç)
@@ -614,7 +614,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_GROWTH]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 
 				//‰Á‘¬
@@ -622,7 +622,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nMagicTypeCounter[MAGICTYPE_ACCELERATION]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G] += 2;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_Y]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				AddMagicEvent(nIdx);
 				if (nIdx == 0)	// 1P
 				{
@@ -640,7 +640,7 @@ void SetMagic(MAGICTYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_R]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_G]++;
 				g_aCounter[nIdx].nCommandCounter[COMMANDTYPE_B]++;
-				SetMotion(&pPlayer->motion, pPlayer->pModelData, &pPlayer->OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
+				SetMotion(&pPlayer[nIdx].motion, pPlayer[nIdx].pModelData, &pPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_STOPACTION, false, true, BLENDFRAME);
 				break;
 			}
 
