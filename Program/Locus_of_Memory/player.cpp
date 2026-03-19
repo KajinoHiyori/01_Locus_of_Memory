@@ -223,6 +223,8 @@ void UpdatePlayer(void)
 		moveDir = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		fMoveDir = 0.0f;
 
+		g_aPlayer[nCntPlayer].InputCommand = COMMANDOREDER_NONE;
+
 		// ポーズ状態の取得
 		bPause = GetPause(nCntPlayer);
 		UISTATE uiState = GetUIState(nCntPlayer);
@@ -455,7 +457,7 @@ void UpdatePlayer(void)
 		case PLAYERSTATE_SPELL:
 			if (g_aPlayer[nCntPlayer].bJump == false) // 設置中のみ受け付ける
 			{
-				InputCommand = PressCommand(nCntPlayer);	// 呪文の入力を受け付ける
+				g_aPlayer[nCntPlayer].InputCommand = PressCommand(nCntPlayer);	// 呪文の入力を受け付ける
 			}
 			break;
 
@@ -601,9 +603,9 @@ void UpdatePlayer(void)
 		g_aPlayer[nCntPlayer].rot.y = AngleNormalize(g_aPlayer[nCntPlayer].rot.y);
 
 		// 今使っている魔法を取得
-		CurrentMagictype = GetCurrentMagicType(nCntPlayer);
+		g_aPlayer[nCntPlayer].CurrentMagictype = GetCurrentMagicType(nCntPlayer);
 
-		switch (CurrentMagictype)
+		switch (g_aPlayer[nCntPlayer].CurrentMagictype)
 		{
 		case MAGICTYPE_NONE:
 			g_aPlayer[nCntPlayer].fSpeed = MOVE;
@@ -706,11 +708,11 @@ void UpdatePlayer(void)
 		// 使用したコマンドと所持コマンドを判定
 		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
 		{
-			if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == InputCommand && g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] != MAGICTYPE_NONE)
+			if (g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] == g_aPlayer[nCntPlayer].InputCommand && g_aPlayer[nCntPlayer].magicbook.OwnCommand[nCntCommand] != MAGICTYPE_NONE)
 			{// コマンドを所有していたら
 				// 魔法を使用する (モーションセット, 魔法セット)
 				g_aPlayer[nCntPlayer].state = PLAYERSTATE_MAGIC;
-				SetMagic(ChangeMagic(InputCommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
+				SetMagic(ChangeMagic(g_aPlayer[nCntPlayer].InputCommand), g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].rot, INIT_D3DXVEC3, nCntPlayer);
 				break;
 			}
 		}

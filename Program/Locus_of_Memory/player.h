@@ -74,6 +74,8 @@ typedef struct
 	float			fRadius;		// ”¼Œa
 	float			fSpeed;			// ˆÚ“®—Ê
 	float			fInertia;		// Šµ«
+	COMMANDOREDER InputCommand;
+	MAGICTYPE CurrentMagictype;
 	bool			bJump;			// ƒWƒƒƒ“ƒvó‘Ô
 	bool			bKey1;			// Œ®‚Ìæ“¾ó‘Ô
 	bool			bKey2;			// Œ®‚Ìæ“¾ó‘Ô
