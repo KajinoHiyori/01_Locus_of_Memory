@@ -570,7 +570,7 @@ void SetDiagnosisUI(void)
 			g_aDiagnosis[nCntUI].tex = DIAGNOSISTEX_NUMBER;
 			g_aDiagnosis[nCntUI].type = DIAGNOSISTYPE_EVENT100;
 			// 数字の情報を取得
-			TecU = DiagnosisData.nYellow % 1000 / 100;
+			TecU = DiagnosisData.nEvent % 1000 / 100;
 			// テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(TecU * 0.1f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(TecU * 0.1f + 0.1f, 0.0f);
@@ -585,7 +585,7 @@ void SetDiagnosisUI(void)
 			g_aDiagnosis[nCntUI].tex = DIAGNOSISTEX_NUMBER;
 			g_aDiagnosis[nCntUI].type = DIAGNOSISTYPE_EVENT010;
 			// 数字の情報を取得
-			TecU = DiagnosisData.nYellow % 100 / 10;
+			TecU = DiagnosisData.nEvent % 100 / 10;
 			// テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(TecU * 0.1f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(TecU * 0.1f + 0.1f, 0.0f);
@@ -600,7 +600,7 @@ void SetDiagnosisUI(void)
 			g_aDiagnosis[nCntUI].tex = DIAGNOSISTEX_NUMBER;
 			g_aDiagnosis[nCntUI].type = DIAGNOSISTYPE_EVENT001;
 			// 数字の情報を取得
-			TecU = DiagnosisData.nYellow % 10 / 1;
+			TecU = DiagnosisData.nEvent % 10 / 1;
 			// テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(TecU * 0.1f, 0.0f);
 			pVtx[1].tex = D3DXVECTOR2(TecU * 0.1f + 0.1f, 0.0f);
