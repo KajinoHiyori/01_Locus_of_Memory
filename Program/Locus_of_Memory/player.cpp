@@ -91,6 +91,7 @@ void InitPlayer(void)
 		g_aPlayer[nCntPlayer].rot			= INIT_D3DXVEC3;
 		g_aPlayer[nCntPlayer].rotDest		= INIT_D3DXVEC3;
 		g_aPlayer[nCntPlayer].move			= INIT_D3DXVEC3;
+		g_aPlayer[nCntPlayer].fRadius	    = 15.0f;
 		g_aPlayer[nCntPlayer].nIdxShadow	= -1;
 		g_aPlayer[nCntPlayer].nIdxCollision = -1;
 		g_aPlayer[nCntPlayer].fSpeed		= MOVE;
@@ -698,6 +699,8 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].bJump = false;
 			isRand = false;
 		}
+
+		RangeRestriction(&g_aPlayer[nCntPlayer].pos, g_aPlayer[nCntPlayer].fRadius);
 
 		// 使用したコマンドと所持コマンドを判定
 		for (int nCntCommand = 0; nCntCommand < g_aPlayer[nCntPlayer].magicbook.nCntOwn; nCntCommand++)
