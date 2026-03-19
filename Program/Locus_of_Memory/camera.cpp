@@ -543,6 +543,7 @@ void SetModeCamera(MODE mode)
 		break;
 
 	case MODE_TITLE:
+		SetNumCamera(mode);
 		pCamera->posV		= INIT_TITLECAMERA_POSV;
 		pCamera->posVDest	= INIT_TITLECAMERA_POSV;
 		pCamera->posR		= INIT_TITLECAMERA_POSR;
