@@ -95,6 +95,7 @@ void InitPlayer(void)
 		g_aPlayer[nCntPlayer].nIdxShadow	= -1;
 		g_aPlayer[nCntPlayer].nIdxCollision = -1;
 		g_aPlayer[nCntPlayer].fSpeed		= MOVE;
+		g_aPlayer[nCntPlayer].fInertia		= INERTIA;
 		g_aPlayer[nCntPlayer].state			= PLAYERSTATE_NORMAL;
 		g_aPlayer[nCntPlayer].bKey1			= false;
 		g_aPlayer[nCntPlayer].bKey2			= false;
@@ -606,7 +607,7 @@ void UpdatePlayer(void)
 		{
 		case MAGICTYPE_NONE:
 			g_aPlayer[nCntPlayer].fSpeed = MOVE;
-			fInertia = INERTIA;
+			g_aPlayer[nCntPlayer].fInertia = INERTIA;
 			break;
 
 			// 浮遊魔法発動中
@@ -614,14 +615,14 @@ void UpdatePlayer(void)
 			g_aPlayer[nCntPlayer].bJump = true;				// ジャンプ状態にする
 			g_aPlayer[nCntPlayer].move.y += FLOATSPEED;		// 浮遊速度加算
 			g_aPlayer[nCntPlayer].fSpeed = FLOATMOVE;		// 浮遊中の移動量に
-			fInertia = FLOATINERTIA;						// 浮遊中の慣性に
+			g_aPlayer[nCntPlayer].fInertia = FLOATINERTIA;						// 浮遊中の慣性に
 			SetParticle(g_aPlayer[nCntPlayer].pos, 1, PARTICLETYPE_LEVITATION, nCntPlayer);
 			break;
 
 			// 加速魔法発動中
 		case MAGICTYPE_ACCELERATION:
-			g_aPlayer[nCntPlayer].fSpeed = ACCELEMOVE;		// 加速中の移動量に
-			fInertia = ACCELEINERTIA;						// 加速中の慣性に
+			g_aPlayer[nCntPlayer].fSpeed = ACCELEMOVE;			// 加速中の移動量に
+			g_aPlayer[nCntPlayer].fInertia = ACCELEINERTIA;		// 加速中の慣性に
 			break;
 		}
 
@@ -715,9 +716,9 @@ void UpdatePlayer(void)
 		}
 
 		// 移動量の更新
-		g_aPlayer[nCntPlayer].move.x += (0.0f - g_aPlayer[nCntPlayer].move.x) * fInertia;
-		g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * fInertia;
-		g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * fInertia;
+		g_aPlayer[nCntPlayer].move.x += (0.0f - g_aPlayer[nCntPlayer].move.x) * g_aPlayer[nCntPlayer].fInertia;
+		g_aPlayer[nCntPlayer].move.y += (0.0f - g_aPlayer[nCntPlayer].move.y) * g_aPlayer[nCntPlayer].fInertia;
+		g_aPlayer[nCntPlayer].move.z += (0.0f - g_aPlayer[nCntPlayer].move.z) * g_aPlayer[nCntPlayer].fInertia;
 
 		// 特定のモーションから着地モーションへの切り替え
 		if ((g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_LANDING ||		// 着地

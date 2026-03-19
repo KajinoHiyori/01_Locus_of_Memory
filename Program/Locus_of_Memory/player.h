@@ -73,6 +73,7 @@ typedef struct
 	int				nIdxCollision;	// 当たり判定のインデックス
 	float			fRadius;		// 半径
 	float			fSpeed;			// 移動量
+	float			fInertia;		// 慣性
 	bool			bJump;			// ジャンプ状態
 	bool			bKey1;			// 鍵の取得状態
 	bool			bKey2;			// 鍵の取得状態
