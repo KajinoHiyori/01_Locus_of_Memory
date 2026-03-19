@@ -592,7 +592,7 @@ void SetNumCamera(MODE mode)
 	CameraInfo* pCameraInfo = &g_acameraInfo[0];
 	OPERATIONTYPE operationtype = GetOperationType();		// ¡‚Ì‘€ìƒ^ƒCƒv
 
-	if (mode == MODE_RESULT || mode == MODE_RESULT || mode == MODE_DIAGNOSIS)
+	if (mode == MODE_RESULT || mode == MODE_TITLE || mode == MODE_DIAGNOSIS)
 	{
 		g_nNumCamera = INIT_NUMCAMERA;
 		pCamera->viewport = DEFAULT_VEIWPORT;
