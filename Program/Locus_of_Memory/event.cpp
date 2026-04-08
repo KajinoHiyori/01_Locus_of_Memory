@@ -394,7 +394,7 @@ bool SetMagicEvent010(MAGICTYPE type, int nIdx)
 	{
 	case MAGICTYPE_FLASH:	// ƒtƒ‰ƒbƒVƒ…
 		pEventObject->EventType = EVENTTYPE_010_0;
-		SetParticle(pEventObject->pos, 150, PARTICLETYPE_FLASH, nIdx);
+		SetParticle(D3DXVECTOR3(pEventObject->pos.x, pEventObject->pos.y + 200.0f, pEventObject->pos.z), 100, PARTICLETYPE_FLASH, nIdx);
 		pEventObject->ObjectInfo.NormalObject.type = OBJECTTYPE_STREETLIGHT001;
 		pEventObject->ObjectInfo.NormalObject.pModelData = pObjectModel;
 		isSuccess = true;

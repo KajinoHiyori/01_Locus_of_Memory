@@ -311,22 +311,22 @@ void UpdateParticle(void)
 						rot.y = ((float)(rand() % 629 - 314) / pos[0].y);
 						rot.z = ((float)(rand() % 629 - 314) / pos[0].z);*/
 
-						move[0][PARTICLETYPE_FLASH].x = (pos[2].x) * 2;
-						move[0][PARTICLETYPE_FLASH].y = (pos[2].y) * 2;
-						move[0][PARTICLETYPE_FLASH].z = (pos[2].z) * 2;
+						move[0][PARTICLETYPE_FLASH].x = (pos[2].x) * 3;
+						move[0][PARTICLETYPE_FLASH].y = (pos[2].y) * 3;
+						move[0][PARTICLETYPE_FLASH].z = (pos[2].z) * 3;
 
-						move[1][PARTICLETYPE_FLASH].x = (sinf(pos[1].y)) * 2;
-						move[1][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 2;
+						//move[1][PARTICLETYPE_FLASH].x = (sinf(pos[1].y)) * 3;
+						//move[1][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 3;
 
-						move[2][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 2;
-						move[2][PARTICLETYPE_FLASH].z = (sinf(pos[1].y)) * 2;
+						//move[2][PARTICLETYPE_FLASH].y = (cosf(pos[1].y)) * 3;
+						//move[2][PARTICLETYPE_FLASH].z = (sinf(pos[1].y)) * 3;
 
-						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 12);
-						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 20);
-						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[1][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 8);
-						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[1][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 12);
-						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[2][PARTICLETYPE_FLASH], COLOR_WHITE, 100, 8);
-						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[2][PARTICLETYPE_FLASH], COLOR_YELLOW, 100, 12);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_WHITE, 40, 12);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_CIRCLE, pos[0], move[0][PARTICLETYPE_FLASH], COLOR_YELLOW, 40, 20);
+						/*SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[1][PARTICLETYPE_FLASH], COLOR_WHITE, 40, 8);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[1][PARTICLETYPE_FLASH], COLOR_YELLOW, 40, 12);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[2][PARTICLETYPE_FLASH], COLOR_WHITE, 40, 8);
+						SetEffect(EFFECT_TYPE_FLASH, EFFECT_TEX_DIAMOND, pos[1], move[2][PARTICLETYPE_FLASH], COLOR_YELLOW, 40, 12);*/
 					}
 					//move.x = (sinf((float)(rand() % ANGLE_DOUBLE - MAX_ANGLE) / ANGLE_ADJUST) * (float)(rand() % MOVE_PARTICLE) / MOVE_ADJUST + MOVE_MIN) * SPEED_EXPLOSION;	// ˆÚ“®—ÊX
 					//move.y = (cosf((float)(rand() % ANGLE_DOUBLE - MAX_ANGLE) / ANGLE_ADJUST) * (float)(rand() % MOVE_PARTICLE) / MOVE_ADJUST + MOVE_MIN) * SPEED_EXPLOSION;	// ˆÚ“®—ÊY
