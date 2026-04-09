@@ -913,6 +913,8 @@ void SetUINonDisp(int nIdx)
 	g_aUIManager[nIdx].stateNext = UISTATE_NONDISPLAY;				// UIの表示状態
 	g_aUIManager[nIdx].nSelect = UITYPE_CLOCK;						// 選択している種類(int)
 	DissapearBattery(nIdx);
+	DisappearClock(nIdx);
+
 	Player* pPlayer = GetPlayer();
 	pPlayer[nIdx].state = PLAYERSTATE_NORMAL;
 	if (((GetKeyboardPress(DIK_TAB) == true && nIdx == 0) || GetJoypadRightTriggePress(nIdx) == true || GetJoypadLeftTriggePress(nIdx) == true))
@@ -1004,6 +1006,7 @@ void SetClockNonDisp(int nIdx)
 {
 	for (int nCntUI = 0; nCntUI < MAXUI_TEX; nCntUI++)
 	{
+
 		g_aUIManager[nIdx].aUITexture[nCntUI].bDisp = false;		// 表示状態
 	}
 	g_aUIManager[nIdx].state = UISTATE_NONDISPLAY;					// 選択状態

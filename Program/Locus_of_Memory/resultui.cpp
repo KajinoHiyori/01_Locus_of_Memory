@@ -854,23 +854,39 @@ void SavaSoloData(void)
 		MagicCounter* pMagicCounter = GetMagicCounter(0);
 		// コマンドの使用回数
 		g_SoloData.nRed		= g_SoloData.nRed		+ pMagicCounter->nCommandCounter[COMMANDTYPE_R];
+		g_SoloData.nRed		= SetMax999(g_SoloData.nRed);		// 最大値制限
 		g_SoloData.nGreen	= g_SoloData.nGreen		+ pMagicCounter->nCommandCounter[COMMANDTYPE_G];
+		g_SoloData.nGreen	= SetMax999(g_SoloData.nGreen);		// 最大値制限
 		g_SoloData.nBlue	= g_SoloData.nBlue		+ pMagicCounter->nCommandCounter[COMMANDTYPE_B];
+		g_SoloData.nBlue	= SetMax999(g_SoloData.nBlue);		// 最大値制限
 		g_SoloData.nYellow	= g_SoloData.nYellow	+ pMagicCounter->nCommandCounter[COMMANDTYPE_Y];
+		g_SoloData.nYellow	= SetMax999(g_SoloData.nYellow);		// 最大値制限
 		// 魔法の使用回数
 		g_SoloData.nLevitation		= g_SoloData.nLevitation	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_LEVITATION];	// 使われた魔法数[浮遊]
+		g_SoloData.nLevitation		= SetMax999(g_SoloData.nLevitation);		// 最大値制限
 		g_SoloData.nCombustion		= g_SoloData.nCombustion	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_COMBUSTION];	// 使われた魔法数[燃焼]
+		g_SoloData.nCombustion		= SetMax999(g_SoloData.nCombustion);		// 最大値制限
 		g_SoloData.nFlood			= g_SoloData.nFlood			+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_FLOOD];		// 使われた魔法数[洪水]
+		g_SoloData.nFlood			= SetMax999(g_SoloData.nFlood);		// 最大値制限
 		g_SoloData.nFlash			= g_SoloData.nFlash			+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_FLASH];		// 使われた魔法数[フラッシュ]
+		g_SoloData.nFlash			= SetMax999(g_SoloData.nFlash);		// 最大値制限
 		g_SoloData.nFireBall		= g_SoloData.nFireBall		+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_FIREBALL];		// 使われた魔法数[火球]
+		g_SoloData.nFireBall		= SetMax999(g_SoloData.nFireBall);		// 最大値制限
 		g_SoloData.nSunsetDelay		= g_SoloData.nSunsetDelay	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_SUNSETDELAY];	// 使われた魔法数[時間停止]
+		g_SoloData.nSunsetDelay		= SetMax999(g_SoloData.nSunsetDelay);		// 最大値制限
 		g_SoloData.nRainPray		= g_SoloData.nRainPray		+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_RAINPRAY];		// 使われた魔法数[雨乞い]
+		g_SoloData.nRainPray		= SetMax999(g_SoloData.nRainPray);		// 最大値制限
 		g_SoloData.nFreeze			= g_SoloData.nFreeze		+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_FREEZE];		// 使われた魔法数[凍結]
+		g_SoloData.nFreeze			= SetMax999(g_SoloData.nFreeze);		// 最大値制限
 		g_SoloData.nGrowth			= g_SoloData.nGrowth		+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_GROWTH];		// 使われた魔法数[成長]
+		g_SoloData.nGrowth			= SetMax999(g_SoloData.nGrowth);		// 最大値制限
 		g_SoloData.nAcceleration	= g_SoloData.nAcceleration	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_ACCELERATION];	// 使われた魔法数[加速]
+		g_SoloData.nAcceleration	= SetMax999(g_SoloData.nAcceleration);		// 最大値制限
 		g_SoloData.nTimeRevert		= g_SoloData.nTimeRevert	+ pMagicCounter->nMagicTypeCounter[MAGICTYPE_TIMEREVERT];	// 使われた魔法数[巻き戻し]
+		g_SoloData.nTimeRevert		= SetMax999(g_SoloData.nTimeRevert);		// 最大値制限
 		// イベントの発生回数
 		g_SoloData.nEvent	= g_SoloData.nEvent	+ nGetMagicEvent(0);
+		g_SoloData.nEvent	= SetMax999(g_SoloData.nEvent);		// 最大値制限
 
 		// 外部ファイルに情報を書き出す
 		fwrite(&g_SoloData, sizeof(SoloData), 1, pFile);
@@ -897,21 +913,36 @@ void SavaPairData(void)
 		MagicCounter* pMagicCounter1 = GetMagicCounter(1);
 		// コマンドの使用回数を取得
 		g_PairData.nRed		= g_PairData.nRed		+ pMagicCounter0->nCommandCounter[COMMANDTYPE_R]	+ pMagicCounter1->nCommandCounter[COMMANDTYPE_R];	// 使われたコマンド数[赤]
+		g_PairData.nRed		= SetMax999(g_PairData.nRed);		// 最大値制限
 		g_PairData.nGreen	= g_PairData.nGreen		+ pMagicCounter0->nCommandCounter[COMMANDTYPE_G]	+ pMagicCounter1->nCommandCounter[COMMANDTYPE_G];	// 使われたコマンド数[緑]
+		g_PairData.nGreen	= SetMax999(g_PairData.nGreen);		// 最大値制限
 		g_PairData.nBlue	= g_PairData.nBlue		+ pMagicCounter0->nCommandCounter[COMMANDTYPE_B]	+ pMagicCounter1->nCommandCounter[COMMANDTYPE_B];	// 使われたコマンド数[青]
+		g_PairData.nBlue	= SetMax999(g_PairData.nBlue);		// 最大値制限
 		g_PairData.nYellow	= g_PairData.nYellow	+ pMagicCounter0->nCommandCounter[COMMANDTYPE_Y]	+ pMagicCounter1->nCommandCounter[COMMANDTYPE_Y];	// 使われたコマンド数[黄]
+		g_PairData.nYellow	= SetMax999(g_PairData.nYellow);	// 最大値制限
 		// 魔法の使用回数
 		g_PairData.nLevitation		= g_PairData.nLevitation	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_LEVITATION]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_LEVITATION]	;	// 使われた魔法数[浮遊]
+		g_PairData.nLevitation		= SetMax999(g_PairData.nLevitation);	// 最大値制限
 		g_PairData.nCombustion		= g_PairData.nCombustion	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_COMBUSTION]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_COMBUSTION]	;	// 使われた魔法数[燃焼]
+		g_PairData.nCombustion		= SetMax999(g_PairData.nCombustion);	// 最大値制限
 		g_PairData.nFlood			= g_PairData.nFlood			+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_FLOOD]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_FLOOD]		;	// 使われた魔法数[洪水]
+		g_PairData.nFlood			= SetMax999(g_PairData.nFlood);			// 最大値制限
 		g_PairData.nFlash			= g_PairData.nFlash			+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_FLASH]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_FLASH]		;	// 使われた魔法数[フラッシュ]
+		g_PairData.nFlash			= SetMax999(g_PairData.nFlash);			// 最大値制限
 		g_PairData.nFireBall		= g_PairData.nFireBall		+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_FIREBALL]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_FIREBALL]		;	// 使われた魔法数[火球]
+		g_PairData.nFireBall		= SetMax999(g_PairData.nFireBall);		// 最大値制限
 		g_PairData.nSunsetDelay		= g_PairData.nSunsetDelay	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_SUNSETDELAY]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_SUNSETDELAY]	;	// 使われた魔法数[時間停止]
+		g_PairData.nSunsetDelay		= SetMax999(g_PairData.nSunsetDelay);	// 最大値制限
 		g_PairData.nRainPray		= g_PairData.nRainPray		+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_RAINPRAY]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_RAINPRAY]		;	// 使われた魔法数[雨乞い]
+		g_PairData.nRainPray		= SetMax999(g_PairData.nRainPray);		// 最大値制限
 		g_PairData.nFreeze			= g_PairData.nFreeze		+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_FREEZE]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_FREEZE]		;	// 使われた魔法数[凍結]
+		g_PairData.nFreeze			= SetMax999(g_PairData.nFreeze);		// 最大値制限
 		g_PairData.nGrowth			= g_PairData.nGrowth		+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_GROWTH]		+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_GROWTH]		;	// 使われた魔法数[成長]
+		g_PairData.nGrowth			= SetMax999(g_PairData.nGrowth);		// 最大値制限
 		g_PairData.nAcceleration	= g_PairData.nAcceleration	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_ACCELERATION]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_ACCELERATION]	;	// 使われた魔法数[加速]
+		g_PairData.nAcceleration	= SetMax999(g_PairData.nAcceleration);	// 最大値制限
 		g_PairData.nTimeRevert		= g_PairData.nTimeRevert	+ pMagicCounter0->nMagicTypeCounter[MAGICTYPE_TIMEREVERT]	+ pMagicCounter1->nMagicTypeCounter[MAGICTYPE_TIMEREVERT]	;	// 使われた魔法数[巻き戻し]
+		g_PairData.nTimeRevert		= SetMax999(g_PairData.nTimeRevert);	// 最大値制限
 		// コマンド相性
 		switch (PairCommand())
 		{
@@ -957,6 +988,7 @@ void SavaPairData(void)
 		}			
 		// イベント発生回数
 		g_PairData.nEvent	= g_PairData.nEvent + nGetMagicEvent(0) + nGetMagicEvent(1);
+		g_PairData.nEvent = SetMax999(g_PairData.nEvent);	// 最大値制限
 
 		// 外部ファイルに情報を書き出す
 		fwrite(&g_PairData, sizeof(PairData), 1, pFile);
@@ -985,23 +1017,39 @@ void SavaTotalData(void)
 		// 情報を格納する================================================================
 		// コマンドの使用回数を取得
 		g_TotalData.nRed	= g_TotalData.nRed		+ g_SoloData.nRed		+ g_PairData.nRed;			// 使われたコマンド数[赤]
+		g_TotalData.nRed	= SetMax999(g_TotalData.nRed);		// 最大値制限
 		g_TotalData.nGreen	= g_TotalData.nGreen	+ g_SoloData.nGreen		+ g_PairData.nGreen;		// 使われたコマンド数[緑]
+		g_TotalData.nGreen	= SetMax999(g_TotalData.nGreen);	// 最大値制限
 		g_TotalData.nBlue	= g_TotalData.nBlue		+ g_SoloData.nBlue		+ g_PairData.nBlue;			// 使われたコマンド数[青]
+		g_TotalData.nBlue	= SetMax999(g_TotalData.nBlue);		// 最大値制限
 		g_TotalData.nYellow	= g_TotalData.nYellow	+ g_SoloData.nYellow	+ g_PairData.nYellow;		// 使われたコマンド数[黄]
+		g_TotalData.nYellow = SetMax999(g_TotalData.nYellow);	// 最大値制限
 		// 魔法の使用回数
 		g_TotalData.nLevitation		= g_TotalData.nLevitation	+ g_SoloData.nLevitation	+ g_PairData.nLevitation;	// 使われた魔法数[浮遊]
+		g_TotalData.nLevitation		= SetMax999(g_TotalData.nLevitation);	// 最大値制限
 		g_TotalData.nCombustion		= g_TotalData.nCombustion	+ g_SoloData.nCombustion	+ g_PairData.nCombustion;	// 使われた魔法数[燃焼]
+		g_TotalData.nCombustion		= SetMax999(g_TotalData.nCombustion);	// 最大値制限
 		g_TotalData.nFlood			= g_TotalData.nFlood		+ g_SoloData.nFlood			+ g_PairData.nFlood;		// 使われた魔法数[洪水]
+		g_TotalData.nFlood			= SetMax999(g_TotalData.nFlood);	// 最大値制限
 		g_TotalData.nFlash			= g_TotalData.nFlash		+ g_SoloData.nFlash			+ g_PairData.nFlash;		// 使われた魔法数[フラッシュ]
+		g_TotalData.nFlash			= SetMax999(g_TotalData.nFlash);	// 最大値制限
 		g_TotalData.nFireBall		= g_TotalData.nFireBall		+ g_SoloData.nFireBall		+ g_PairData.nFireBall;		// 使われた魔法数[火球]
+		g_TotalData.nFireBall		= SetMax999(g_TotalData.nFireBall);	// 最大値制限
 		g_TotalData.nSunsetDelay	= g_TotalData.nSunsetDelay	+ g_SoloData.nSunsetDelay	+ g_PairData.nSunsetDelay;	// 使われた魔法数[時間停止]
+		g_TotalData.nSunsetDelay	= SetMax999(g_TotalData.nSunsetDelay);	// 最大値制限
 		g_TotalData.nRainPray		= g_TotalData.nRainPray		+ g_SoloData.nRainPray		+ g_PairData.nRainPray;		// 使われた魔法数[雨乞い]
+		g_TotalData.nRainPray		= SetMax999(g_TotalData.nRainPray);	// 最大値制限
 		g_TotalData.nFreeze			= g_TotalData.nFreeze		+ g_SoloData.nFreeze		+ g_PairData.nFreeze;		// 使われた魔法数[凍結]
+		g_TotalData.nFreeze			= SetMax999(g_TotalData.nFreeze);	// 最大値制限
 		g_TotalData.nGrowth			= g_TotalData.nGrowth		+ g_SoloData.nGrowth		+ g_PairData.nGrowth;		// 使われた魔法数[成長]
+		g_TotalData.nGrowth			= SetMax999(g_TotalData.nGrowth);	// 最大値制限
 		g_TotalData.nAcceleration	= g_TotalData.nAcceleration + g_SoloData.nAcceleration	+ g_PairData.nAcceleration;	// 使われた魔法数[加速]
+		g_TotalData.nAcceleration	= SetMax999(g_TotalData.nAcceleration);	// 最大値制限
 		g_TotalData.nTimeRevert		= g_TotalData.nTimeRevert	+ g_SoloData.nTimeRevert	+ g_PairData.nTimeRevert;	// 使われた魔法数[巻き戻し]
+		g_TotalData.nTimeRevert		= SetMax999(g_TotalData.nTimeRevert);	// 最大値制限
 		// イベントの発生回数
 		g_TotalData.nEvent	= g_TotalData.nEvent + g_SoloData.nEvent + g_PairData.nEvent;			// 累計イベント発生回数
+		g_TotalData.nEvent = SetMax999(g_TotalData.nEvent);	// 最大値制限
 
 		// 外部ファイルに情報を書き出す
 		fwrite(&g_TotalData, sizeof(TotalData), 1, pFile);
@@ -1089,6 +1137,21 @@ void LoadPairData(void)
 		g_PairData.nGG	= 0;	// コマンド相性[GG]
 		g_PairData.nGY	= 0;	// コマンド相性[GY]
 		g_PairData.nYY	= 0;	// コマンド相性[YY]
+	}
+}
+
+//======================================================================================
+// 999を越えたら999に戻す
+//======================================================================================
+int SetMax999(int nNum)
+{
+	if (nNum > 999)
+	{
+		return 999;
+	}
+	else
+	{
+		return nNum;
 	}
 }
 

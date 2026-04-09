@@ -123,5 +123,6 @@ void SavaPairData(void);
 void SavaTotalData(void);
 void LoadSoloData(void);
 void LoadPairData(void);
+int SetMax999(int nNum);
 TotalData LoadTotalData(void);
 #endif

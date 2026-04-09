@@ -532,6 +532,7 @@ void UpdatePlayer(void)
 			break;
 		}
 
+		// 移動中の場合
 		if (fMoveDir != 0.0f)
 		{// 移動している場合
 			fRotMove = g_aPlayer[nCntPlayer].rot.y;							// 今の向き
@@ -580,7 +581,7 @@ void UpdatePlayer(void)
 				}
 			}
 		}
-
+		// 前のフレームで歩いていた&&移動していない
 		else if (g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_MOVE || g_aPlayer[nCntPlayer].motion.motionTypeBlend == (MOTIONTYPE)PLAYERMOTIONTYPE_RUNNING)
 		{// もし歩行中だったら
 			if (nCntPlayer == 0)	// 1P
@@ -605,6 +606,7 @@ void UpdatePlayer(void)
 		// 今使っている魔法を取得
 		g_aPlayer[nCntPlayer].CurrentMagictype = GetCurrentMagicType(nCntPlayer);
 
+		// 魔法の種類に応じて状態を変更
 		switch (g_aPlayer[nCntPlayer].CurrentMagictype)
 		{
 		case MAGICTYPE_NONE:
@@ -897,6 +899,10 @@ void SetPlayer(int nIdx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, PARENTMODELTYPE paren
 
 	// モーションを設定
 	SetMotion(&g_aPlayer[nIdx].motion, g_aPlayer[nIdx].pModelData, &g_aPlayer[nIdx].OffSetData, (MOTIONTYPE)PLAYERMOTIONTYPE_NEUTRAL, true, false, 10);
+
+	// UIを非表示状態に
+	SetUINonDisp(nIdx);
+	SetClockNonDisp(nIdx);
 }
 
 //========================================================================
