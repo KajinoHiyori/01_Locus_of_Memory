@@ -97,11 +97,11 @@ void UpdateEffectFire(void)
 		{//使用されていたら
 			switch (g_aEffectFire[nCntEffectFire].Type)
 			{
-			case FIRE_TYPE_FORGE:
+			case FIRE_TYPE_FORGE:	//鍛冶場の火
 				//位置の設定
-				pos[0].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
-				pos[0].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 17 + 1) + 30;
-				pos[0].z = g_aEffectFire[nCntEffectFire].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 25 + 1);
+				pos[0].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 22 + 1);
+				pos[0].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 17 + 1) + 22;
+				pos[0].z = g_aEffectFire[nCntEffectFire].pos.z + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 22 + 1);
 
 				//位置の設定
 				pos[1].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 15 + 1);
@@ -111,7 +111,7 @@ void UpdateEffectFire(void)
 				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_DIAMOND, pos[0], move[0][FIRE_TYPE_FORGE], COLOR_RED, 100, 18);
 				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_CIRCLE, pos[1], move[0][FIRE_TYPE_FORGE], COLOR_ORANGE, 100, 10);
 				break;
-			case FIRE_TYPE_BONFIRE:
+			case FIRE_TYPE_BONFIRE:		//焚火
 				//位置の設定
 				pos[0].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1);
 				pos[0].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 30 + 1) + 30;
@@ -125,7 +125,7 @@ void UpdateEffectFire(void)
 				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_DIAMOND, pos[0], move[0][FIRE_TYPE_BONFIRE], COLOR_RED, 100, 18);
 				SetEffect(EFFECT_TYPE_FIRE, EFFECT_TEX_CIRCLE, pos[1], move[0][FIRE_TYPE_BONFIRE], COLOR_ORANGE, 100, 10);
 				break;
-			case FIRE_TYPE_SMOKE:
+			case FIRE_TYPE_SMOKE:	//煙
 				//位置の設定
 				pos[0].x = g_aEffectFire[nCntEffectFire].pos.x + (sinf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 20 + 1);
 				pos[0].y = g_aEffectFire[nCntEffectFire].pos.y + (cosf((float)(rand() % 629 - 314 / 100.0f))) * (float)(rand() % 50 + 1) + 50;
