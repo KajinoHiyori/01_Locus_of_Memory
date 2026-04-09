@@ -379,7 +379,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_COMBUSTION:	// ”RÄ
 		pEventObject->EventType = EVENTTYPE_009_2;
-		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_RAINPRAY, nIdx);
+		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
@@ -392,7 +392,7 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 
 	case MAGICTYPE_FIREBALL:	// ‰Î‹…
 		pEventObject->EventType = EVENTTYPE_009_2;
-		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_RAINPRAY, nIdx);
+		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_COMBUSTION, nIdx);
 		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
 			pEventObject->ObjectInfo.ParentObject.pModelData,
 			&pEventObject->ObjectInfo.ParentObject.OffSetData,
