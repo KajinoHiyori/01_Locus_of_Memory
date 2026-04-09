@@ -21,7 +21,7 @@
 //=============================================================================
 #define BLACKSMITH_POS_FIRE		(D3DXVECTOR3(-3200.0f, 40.0f, 950.0f))		// ’b–èê‚ÌˆÊ’u
 #define BLACKSMITH_POS_SMOKE	(D3DXVECTOR3(-3200.0f, 500.0f, 980.0f))		// ’b–èê‚Ì‰Œ‚ðÝ’u
-#define DRAGONFLASH_POS			(D3DXVECTOR3(2220.0f, 1000.0f, -4410.0f))	// ’b–èê‚Ì‰Œ‚ðÝ’u
+#define DRAGONFLASH_POS			(D3DXVECTOR3(2220.0f, 1000.0f, -4410.0f))	// ƒhƒ‰ƒSƒ“‚É‘MŒõ‚ðÝ’u
 #define FIRE_PARTICLE			(D3DXVECTOR3(BLACKSMITH_POS.x - 100.0f, BLACKSMITH_POS.y + 20.0f, BLACKSMITH_POS.z))	// ’b–èê‚Ì‰Š‚ÌÝ’u
 
 //=============================================================================
@@ -376,6 +376,71 @@ bool SetMagicEvent009(MAGICTYPE type, int nIdx)
 		ClearQuest(QUESTTYPE_DRAGON);
 		PlaySound(SOUND_LABEL_DRAGON);
 		break;
+
+	case MAGICTYPE_COMBUSTION:	// ”RÄ
+		pEventObject->EventType = EVENTTYPE_009_2;
+		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_RAINPRAY, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx);
+		isSuccess = true;
+		ClearQuest(QUESTTYPE_DRAGON);
+		PlaySound(SOUND_LABEL_DRAGON);
+		break;
+
+	case MAGICTYPE_FIREBALL:	// ‰Î‹…
+		pEventObject->EventType = EVENTTYPE_009_2;
+		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_RAINPRAY, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx);
+		isSuccess = true;
+		ClearQuest(QUESTTYPE_DRAGON);
+		PlaySound(SOUND_LABEL_DRAGON);
+		break;
+
+	case MAGICTYPE_FREEZE:	// •XŒ‹
+		pEventObject->EventType = EVENTTYPE_009_3;
+		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_FREEZE, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx);
+		isSuccess = true;
+		ClearQuest(QUESTTYPE_DRAGON);
+		PlaySound(SOUND_LABEL_DRAGON);
+		break;
+
+	case MAGICTYPE_GROWTH:	// ¬’·
+		pEventObject->EventType = EVENTTYPE_009_4;
+		SetParticle(DRAGONFLASH_POS, 150, PARTICLETYPE_GROWTH, nIdx);
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx);
+		isSuccess = true;
+		ClearQuest(QUESTTYPE_DRAGON);
+		PlaySound(SOUND_LABEL_DRAGON);
+		break;
+
+	case MAGICTYPE_LEVITATION:	// •‚—V
+		pEventObject->EventType = EVENTTYPE_009_5;
+		SetMotion(&pEventObject->ObjectInfo.ParentObject.motion,
+			pEventObject->ObjectInfo.ParentObject.pModelData,
+			&pEventObject->ObjectInfo.ParentObject.OffSetData,
+			MOTIONTYPE_MOVE, false, false, 10);
+		SetMagicLocus(MAGICEVENT_009, pEventObject->pos, 500.0f, nIdx);
+		isSuccess = true;
+		ClearQuest(QUESTTYPE_DRAGON);
+		PlaySound(SOUND_LABEL_DRAGON);
+		break;
+
 	}
 
 	pEventObject->isEvent = isSuccess;

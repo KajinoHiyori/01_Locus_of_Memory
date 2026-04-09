@@ -34,8 +34,12 @@ typedef enum EVENTTYPE
 	EVENTTYPE_007_0,	// 花の水やり
 	EVENTTYPE_007_1,	// 花の成長
 	EVENTTYPE_008_0,	// 花が萎む
-	EVENTTYPE_009_0,	// ドラゴンが眩しがる
-	EVENTTYPE_009_1,	// ドラゴンが眩しがる
+	EVENTTYPE_009_0,	// ドラゴンが魔法に驚く[フラッシュ]
+	EVENTTYPE_009_1,	// ドラゴンが魔法に驚く[雨乞い]
+	EVENTTYPE_009_2,	// ドラゴンが魔法に驚く[炎]
+	EVENTTYPE_009_3,	// ドラゴンが魔法に驚く[氷]
+	EVENTTYPE_009_4,	// ドラゴンが魔法に驚く[成長]
+	EVENTTYPE_009_5,	// ドラゴンが魔法に驚く[浮遊]
 	EVENTTYPE_010_0,	// 街灯に灯りをともす
 	EVENTTYPE_011_0,	// 鍛冶場に火をつける
 	EVENTTYPE_011_1,	// 鍛冶場に火をつける
